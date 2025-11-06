@@ -1,0 +1,19 @@
+name: "review-invite-agent"
+description: "Sends review invitations after invoice paid and tracks response." 
+author: "BMad Builder"
+version: "0.1.0"
+type: "autonomous"
+
+config_source: "{project-root}/bmad/bmb/config.yaml"
+
+runtime: deno
+entry: "handler.ts"
+
+inputs:
+  - invoice_paid_events
+
+outputs:
+  - reviews
+
+description_long: |
+  Review Invite Agent listens for INVOICE_PAID or INVOICE_COMPLETED events and sends templated review request emails/SMS. Captures responses into reviews table for analytics.
