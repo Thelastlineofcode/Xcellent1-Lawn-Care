@@ -1,0 +1,19 @@
+name: "digest-agent"
+description: "Weekly digest agent to aggregate KPIs and enqueue owner notifications."
+author: "BMad Builder"
+version: "0.1.0"
+type: "autonomous"
+
+config_source: "{project-root}/bmad/bmb/config.yaml"
+
+runtime: deno
+entry: "handler.ts"
+
+schedule:
+  cron: "0 18 * * 0" # Sunday 18:00
+
+outputs:
+  - outbox
+
+description_long: |
+  Digest Agent aggregates revenue_week, revenue_mtd, jobs_completed, reviews_new, and critical alerts then creates an owner digest message (email + SMS) by writing to events_outbox.

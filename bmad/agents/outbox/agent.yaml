@@ -1,0 +1,16 @@
+name: "outbox-agent"
+description: "Worker that reads events_outbox and dispatches messages to SendGrid/Twilio/other integrations with retry/backoff."
+author: "BMad Builder"
+version: "0.1.0"
+type: "autonomous"
+
+config_source: "{project-root}/bmad/bmb/config.yaml"
+
+runtime: deno
+entry: "worker.ts"
+
+schedule:
+  cron: "*/5 * * * *" # every 5 minutes
+
+description_long: |
+  Outbox agent is a reliable worker that selects queued events from events_outbox, performs idempotent deliveries to third parties, and marks successes/failures with attempt counts and next_attempt_at.
