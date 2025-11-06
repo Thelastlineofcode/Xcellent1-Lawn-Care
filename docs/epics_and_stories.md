@@ -199,6 +199,8 @@ Stories:
   - Estimate: 3 pts
   - Roles: BE, PM, BMAD
 
+Note: AI BMAD agent scaffolds have been created in the repository under `bmad/agents/` for the following agents: intake, quote, scheduler, invoice, outbox, digest, and review. Each contains an `agent.yaml` manifest and a minimal Deno `handler.ts` or `worker.ts` stub. Implementations still need Supabase, Twilio, SendGrid and Stripe wiring and tests.
+
 ---
 
 ## Epic 8 — Observability, Security & CI/CD
