@@ -1,19 +1,12 @@
 // Quote Agent handler (Deno)
-// Returns price ranges and two suggested slots. Simple heuristic stub.
+// Returns price ranges and two suggested slots. Writes a QUOTE_PROPOSED event to outbox.
 
 import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
 
-function estimatePrice({
-  service_type,
-  lawn_size_sqft,
-  frequency,
-}: Record<string, any>) {
-  const base =
-    { mowing: 3000, edging: 500, aeration: 8000 }[service_type] ?? 2500;
-  const sizeFactor = Math.max(
-    0.5,
-    Math.min(3, (lawn_size_sqft || 2000) / 2000)
-  );
+function estimatePrice({ service_type, lawn_size_sqft }: Record<string, any>) {
+  const catalog: Record<string, number> = { mowing: 3000, edging: 500, aeration: 8000 };
+  const base = catalog[service_type] ?? 2500;
+  const sizeFactor = Math.max(0.5, Math.min(3, (lawn_size_sqft || 2000) / 2000));
   const low = Math.round(base * sizeFactor);
   const high = Math.round(low * 1.25);
   return { price_low_cents: low, price_high_cents: high };
@@ -24,29 +17,24 @@ export async function handler(req: Request) {
     const data = await req.json().catch(() => ({}));
     const estimate = estimatePrice(data);
     const now = new Date();
-    const slot1 = new Date(
-      now.getTime() + 3 * 24 * 60 * 60 * 1000
-    ).toISOString();
-    const slot2 = new Date(
-      now.getTime() + 7 * 24 * 60 * 60 * 1000
-    ).toISOString();
+    const slot1 = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
+    const slot2 = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
-    return new Response(
-      JSON.stringify({
-        ...estimate,
-        notes: "heuristic",
-        valid_until: new Date(
-          now.getTime() + 24 * 60 * 60 * 1000
-        ).toISOString(),
-        slots: [slot1, slot2],
-      }),
-      { status: 200 }
-    );
+    // write a suggestion event to outbox (uses supabase helper with fallback)
+    const lib = await import("../lib/supabase.ts");
+    const payload = { lead: data, estimate, slots: [slot1, slot2], created_at: now.toISOString() };
+    await lib
+      .supabaseInsert("events_outbox", { type: "QUOTE_PROPOSED", payload })
+      .catch(async (e) => {
+        console.error(e);
+        const stub = await import("../supabase_client_stub.ts");
+        return stub.insertOutboxEvent({ type: "QUOTE_PROPOSED", payload });
+      });
+
+    return new Response(JSON.stringify({ ...estimate, notes: "heuristic", valid_until: new Date(now.getTime() + 24*60*60*1000).toISOString(), slots: [slot1, slot2] }), { status: 200 });
   } catch (err) {
     console.error(err);
-    return new Response(JSON.stringify({ error: "bad request" }), {
-      status: 400,
-    });
+    return new Response(JSON.stringify({ error: "bad request" }), { status: 400 });
   }
 }
 
