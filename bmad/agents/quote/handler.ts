@@ -4,9 +4,16 @@
 import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
 
 function estimatePrice({ service_type, lawn_size_sqft }: Record<string, any>) {
-  const catalog: Record<string, number> = { mowing: 3000, edging: 500, aeration: 8000 };
+  const catalog: Record<string, number> = {
+    mowing: 3000,
+    edging: 500,
+    aeration: 8000,
+  };
   const base = catalog[service_type] ?? 2500;
-  const sizeFactor = Math.max(0.5, Math.min(3, (lawn_size_sqft || 2000) / 2000));
+  const sizeFactor = Math.max(
+    0.5,
+    Math.min(3, (lawn_size_sqft || 2000) / 2000)
+  );
   const low = Math.round(base * sizeFactor);
   const high = Math.round(low * 1.25);
   return { price_low_cents: low, price_high_cents: high };
@@ -17,12 +24,21 @@ export async function handler(req: Request) {
     const data = await req.json().catch(() => ({}));
     const estimate = estimatePrice(data);
     const now = new Date();
-    const slot1 = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
-    const slot2 = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const slot1 = new Date(
+      now.getTime() + 3 * 24 * 60 * 60 * 1000
+    ).toISOString();
+    const slot2 = new Date(
+      now.getTime() + 7 * 24 * 60 * 60 * 1000
+    ).toISOString();
 
     // write a suggestion event to outbox (uses supabase helper with fallback)
     const lib = await import("../lib/supabase.ts");
-    const payload = { lead: data, estimate, slots: [slot1, slot2], created_at: now.toISOString() };
+    const payload = {
+      lead: data,
+      estimate,
+      slots: [slot1, slot2],
+      created_at: now.toISOString(),
+    };
     await lib
       .supabaseInsert("events_outbox", { type: "QUOTE_PROPOSED", payload })
       .catch(async (e) => {
@@ -31,10 +47,22 @@ export async function handler(req: Request) {
         return stub.insertOutboxEvent({ type: "QUOTE_PROPOSED", payload });
       });
 
-    return new Response(JSON.stringify({ ...estimate, notes: "heuristic", valid_until: new Date(now.getTime() + 24*60*60*1000).toISOString(), slots: [slot1, slot2] }), { status: 200 });
+    return new Response(
+      JSON.stringify({
+        ...estimate,
+        notes: "heuristic",
+        valid_until: new Date(
+          now.getTime() + 24 * 60 * 60 * 1000
+        ).toISOString(),
+        slots: [slot1, slot2],
+      }),
+      { status: 200 }
+    );
   } catch (err) {
     console.error(err);
-    return new Response(JSON.stringify({ error: "bad request" }), { status: 400 });
+    return new Response(JSON.stringify({ error: "bad request" }), {
+      status: 400,
+    });
   }
 }
 

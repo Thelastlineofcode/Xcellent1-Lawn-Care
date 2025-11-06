@@ -1,14 +1,21 @@
 // Outbox worker (Deno) - polls events_outbox and dispatches messages with retry/backoff.
-import { fetchPendingOutbox, updateOutboxEvent, hasRealSupabase } from "../lib/supabase.ts";
+import {
+  fetchPendingOutbox,
+  updateOutboxEvent,
+  hasRealSupabase,
+} from "../lib/supabase.ts";
 
 console.log("[outbox-agent] starting worker");
 
 async function sendIntegration(event: any) {
   // Dev-safe: if no real integration keys present, simulate success
-  const hasSendKey = !!Deno.env.get("SENDGRID_API_KEY") || !!Deno.env.get("TWILIO_AUTH_TOKEN");
+  const hasSendKey =
+    !!Deno.env.get("SENDGRID_API_KEY") || !!Deno.env.get("TWILIO_AUTH_TOKEN");
   console.log("[outbox-agent] delivering event", event.id, event.type);
   if (!hasSendKey) {
-    console.log("[outbox-agent] no provider keys, simulating delivery (dev mode)");
+    console.log(
+      "[outbox-agent] no provider keys, simulating delivery (dev mode)"
+    );
     return { ok: true, provider: "dev" };
   }
   // TODO: implement real SendGrid/Twilio calls here using env keys
@@ -29,19 +36,37 @@ async function processBatch() {
       try {
         const res = await sendIntegration(ev.payload || ev);
         if (res.ok) {
-          await updateOutboxEvent(ev.id, { status: "success", attempts, last_attempt_at: new Date().toISOString() }).catch(console.error);
+          await updateOutboxEvent(ev.id, {
+            status: "success",
+            attempts,
+            last_attempt_at: new Date().toISOString(),
+          }).catch(console.error);
           console.log(`[outbox-agent] delivered event ${ev.id}`);
         } else {
           const nextDelayMin = Math.pow(2, attempts);
-          const nextAttempt = new Date(Date.now() + nextDelayMin * 60 * 1000).toISOString();
-          await updateOutboxEvent(ev.id, { attempts, next_attempt_at: nextAttempt, last_attempt_at: new Date().toISOString() }).catch(console.error);
-          console.log(`[outbox-agent] scheduled retry for ${ev.id} in ${nextDelayMin} minutes`);
+          const nextAttempt = new Date(
+            Date.now() + nextDelayMin * 60 * 1000
+          ).toISOString();
+          await updateOutboxEvent(ev.id, {
+            attempts,
+            next_attempt_at: nextAttempt,
+            last_attempt_at: new Date().toISOString(),
+          }).catch(console.error);
+          console.log(
+            `[outbox-agent] scheduled retry for ${ev.id} in ${nextDelayMin} minutes`
+          );
         }
       } catch (err) {
         console.error("[outbox-agent] error delivering event", ev.id, err);
         const nextDelayMin = Math.pow(2, attempts);
-        const nextAttempt = new Date(Date.now() + nextDelayMin * 60 * 1000).toISOString();
-        await updateOutboxEvent(ev.id, { attempts, next_attempt_at: nextAttempt, last_attempt_at: new Date().toISOString() }).catch(console.error);
+        const nextAttempt = new Date(
+          Date.now() + nextDelayMin * 60 * 1000
+        ).toISOString();
+        await updateOutboxEvent(ev.id, {
+          attempts,
+          next_attempt_at: nextAttempt,
+          last_attempt_at: new Date().toISOString(),
+        }).catch(console.error);
       }
     }
   } catch (err) {
