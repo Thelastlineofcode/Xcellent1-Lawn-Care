@@ -199,6 +199,10 @@ Stories:
   - Estimate: 3 pts
   - Roles: BE, PM, BMAD
 
+### Implementation note
+
+AI agent scaffolds were created in the repo under `bmad/agents/` for intake, quote, scheduler, invoice, outbox, digest, and review. Each scaffold includes an `agent.yaml` manifest and a Deno `handler.ts` or `worker.ts` stub. These stubs use a local Supabase client stub (`bmad/agents/supabase_client_stub.ts`) for safe local testing. Integrations and idempotency patterns still need implementation.
+
 Note: AI BMAD agent scaffolds have been created in the repository under `bmad/agents/` for the following agents: intake, quote, scheduler, invoice, outbox, digest, and review. Each contains an `agent.yaml` manifest and a minimal Deno `handler.ts` or `worker.ts` stub. Implementations still need Supabase, Twilio, SendGrid and Stripe wiring and tests.
 
 ---
