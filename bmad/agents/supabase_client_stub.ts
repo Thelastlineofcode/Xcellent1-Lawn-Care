@@ -10,3 +10,8 @@ export async function insertOutboxEvent(event: Record<string, any>) {
   console.log("[supabase-stub] insertOutboxEvent", event);
   return { id: `outbox_${Date.now()}` };
 }
+
+export async function createInvoice(invoice: Record<string, any>) {
+  console.log("[supabase-stub] createInvoice", invoice);
+  return { id: `inv_${Date.now()}` };
+}
