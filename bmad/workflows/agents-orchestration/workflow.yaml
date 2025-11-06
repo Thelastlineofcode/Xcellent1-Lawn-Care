@@ -1,0 +1,21 @@
+name: "agents-orchestration"
+description: "Orchestration workflow to list and document available agents for Xcellent1 Lawn Care."
+author: "BMad Builder"
+
+config_source: "{project-root}/bmad/bmb/config.yaml"
+
+template: "{installed_path}/template.md"
+instructions: "{installed_path}/instructions.md"
+
+installed_path: "{project-root}/bmad/workflows/agents-orchestration"
+
+agents:
+  - bmad/agents/intake
+  - bmad/agents/quote
+  - bmad/agents/scheduler
+  - bmad/agents/invoice
+  - bmad/agents/outbox
+  - bmad/agents/digest
+  - bmad/agents/review
+
+default_output_file: "{config_source}:output_folder/agents-orchestration-{{date}}.md"

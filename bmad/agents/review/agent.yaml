@@ -1,5 +1,5 @@
 name: "review-invite-agent"
-description: "Sends review invitations after invoice paid and tracks response." 
+description: "Sends review invitations after invoice paid and tracks response."
 author: "BMad Builder"
 version: "0.1.0"
 type: "autonomous"
