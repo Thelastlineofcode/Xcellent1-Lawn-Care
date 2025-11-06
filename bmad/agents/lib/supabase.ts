@@ -2,7 +2,10 @@
 // Uses REST (PostgREST) endpoints. Falls back to local stub if SUPABASE_URL or SERVICE_ROLE_KEY not set.
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
-const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || Deno.env.get("SUPABASE_KEY") || "";
+const SERVICE_ROLE_KEY =
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ||
+  Deno.env.get("SUPABASE_KEY") ||
+  "";
 
 function hasRealSupabase() {
   return !!SUPABASE_URL && !!SERVICE_ROLE_KEY;
@@ -38,7 +41,9 @@ async function post(table: string, row: Record<string, any>) {
   }
   const json = await res.json().catch(() => null);
   // PostgREST can return inserted representation if Prefer header used; otherwise return a generated id
-  return Array.isArray(json) && json[0] ? json[0] : { id: `remote_${Date.now()}` };
+  return Array.isArray(json) && json[0]
+    ? json[0]
+    : { id: `remote_${Date.now()}` };
 }
 
 async function getLeadById(id: string) {
@@ -66,12 +71,24 @@ async function updateOutboxEvent(id: string, patch: Record<string, any>) {
     return { id };
   }
   const url = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/events_outbox?id=eq.${encodeURIComponent(id)}`;
-  const res = await fetch(url, { method: "PATCH", headers: headers(), body: JSON.stringify(patch) });
+  const res = await fetch(url, {
+    method: "PATCH",
+    headers: headers(),
+    body: JSON.stringify(patch),
+  });
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Supabase PATCH events_outbox failed: ${res.status} ${text}`);
+    throw new Error(
+      `Supabase PATCH events_outbox failed: ${res.status} ${text}`
+    );
   }
   return await res.json().catch(() => ({ id }));
 }
 
-export { post as supabaseInsert, getLeadById, fetchPendingOutbox, updateOutboxEvent, hasRealSupabase };
+export {
+  post as supabaseInsert,
+  getLeadById,
+  fetchPendingOutbox,
+  updateOutboxEvent,
+  hasRealSupabase,
+};
