@@ -1,86 +1,55 @@
-# Xcellent1 Lawn Care - Local Web UI
+# Xcellent1 Lawn Care - Worker Recruitment Platform
 
 ## Overview
 
-Production-ready, accessible frontend for field service management. Built with vanilla HTML/CSS/JS (no frameworks) to work with Deno backend and Supabase.
+**Business Context:** 80%+ of lawn care companies struggle with hiring workers, NOT client acquisition. This frontend solves the #1 bottleneck: recruiting and retaining field crew members.
+
+Production-ready careers page with application tracking dashboard. Built with vanilla HTML/CSS/JS to work with Deno backend.
 
 ---
 
-## How to Run Locally
-
-### Start the Server
+## How to Run
 
 ```bash
-# From repository root
-deno run --allow-net --allow-read --allow-write --allow-env web/server.ts
-```
-
-**Or use the main server:**
-```bash
+# Start server
 deno run --allow-net --allow-read --allow-write --allow-env server.ts
 ```
 
-### Access the App
-
-- **Lead Form:** http://localhost:8000/
-- **Crew Dashboard:** http://localhost:8000/static/dashboard.html
+**Access:**
+- **Careers Page:** http://localhost:8000/ (worker recruitment)
+- **Hiring Dashboard:** http://localhost:8000/static/dashboard.html (review applications)
 
 ---
 
-## Quick Test Checklist
+## Quick Test
 
-### ✅ Test 1: Submit Lead
-
+### Submit Worker Application
 1. Open http://localhost:8000/
-2. Fill form (Name, Phone, Email, Notes)
-3. Click **Submit Lead**
-4. ✅ Success message appears
-5. Open dashboard
-6. ✅ Lead appears in list
-
-### ✅ Test 2: Upload Photo
-
-1. On dashboard, enter Job ID: `testjob1`
-2. Choose photo (<5MB)
-3. ✅ Preview shows
-4. Click **Upload Photo**
-5. ✅ Success message with path
-6. ✅ Thumbnail appears in events
-
-### ✅ Test 3: Auto-Refresh
-
-1. Open dashboard
-2. Run in terminal:
-```bash
-curl -X POST http://localhost:8000/api/outbox \
-  -H "Content-Type: application/json" \
-  -d '{"type":"TEST","payload":{}}'
-```
-3. Wait 20 seconds
-4. ✅ Event appears automatically
+2. Fill form (Name, Phone, Email, About You)
+3. Click **📨 Submit Application**
+4. ✅ Success message with 48-hour callback promise
+5. Open http://localhost:8000/static/dashboard.html
+6. ✅ Application appears under "💼 Worker Applications"
+7. ✅ Badge shows "CAREERS" source
 
 ---
 
-## Testing Commands
+## Features
 
-### Insert Lead
-```bash
-curl -X POST http://localhost:8000/api/leads \
-  -H "Content-Type: application/json" \
-  -d '{"name":"John Doe","phone":"555-1234","email":"john@test.com","notes":"Mowing needed","source":"web"}'
-```
+### Careers Page (index.html)
+- ✅ Hero section: "Join the Xcellent1 Crew"
+- ✅ Benefits: Pay ($18-25/hr), Growth (6-12mo to lead), Outdoor work, Team culture
+- ✅ Open positions: Field Worker, Crew Lead, Seasonal
+- ✅ Career paths shown clearly
+- ✅ FAQs: Experience not required, fast interview, part-time OK, winter options
+- ✅ Application form (2 minutes to complete)
 
-### Get Status
-```bash
-curl http://localhost:8000/api/status
-```
-
-### Add Event
-```bash
-curl -X POST http://localhost:8000/api/outbox \
-  -H "Content-Type: application/json" \
-  -d '{"type":"JOB_COMPLETE","payload":{"photo_path":"/uploads/test.jpg"}}'
-```
+### Hiring Dashboard (dashboard.html)
+- ✅ KPIs: Applications Received, Pending Events, Job Photos
+- ✅ Applications separated from other inquiries
+- ✅ Source badge: "CAREERS" for recruitment apps
+- ✅ Auto-refresh every 20 seconds
+- ✅ Photo upload for crew field work
 
 ---
 
@@ -89,77 +58,115 @@ curl -X POST http://localhost:8000/api/outbox \
 ```
 web/
 ├── static/
-│   ├── styles.css      # Responsive CSS (9.6 KB)
-│   ├── app.js          # Client JS (17.8 KB)
-│   ├── index.html      # Lead form
-│   └── dashboard.html  # Crew dashboard
-├── uploads/            # Photos (auto-created)
-├── server.ts           # Local Deno server
+│   ├── index.html      # Worker recruitment careers page
+│   ├── dashboard.html  # Hiring manager dashboard
+│   ├── styles.css      # Responsive CSS
+│   ├── app.js          # Client JS (source: 'careers')
+│   ├── manifest.json   # PWA manifest
+│   └── sw.js           # Service worker
+├── server.ts           # Deno API server
 └── README.md           # This file
 ```
 
 ---
 
-## Features
+## API Endpoints
 
-- ✅ Lead capture with validation
-- ✅ Real-time dashboard (20s polling)
-- ✅ Photo upload with preview
-- ✅ KPI metrics (leads, events, photos)
-- ✅ Mobile-first responsive
-- ✅ WCAG AA accessible
-- ✅ Zero dependencies
+### POST /api/leads
+**Now used for worker applications (source: 'careers')**
+
+```bash
+curl -X POST http://localhost:8000/api/leads \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name":"John Worker",
+    "phone":"555-1234",
+    "email":"john@example.com",
+    "notes":"2 years lawn care experience",
+    "source":"careers"
+  }'
+```
+
+### GET /api/status
+**Returns applications + events**
+
+```bash
+curl http://localhost:8000/api/status
+```
 
 ---
 
-## Notes
+## Business Impact
 
-- **Backend:** Uses Supabase helper (`bmad/agents/lib/supabase.ts`) with local stub fallback
-- **Storage:** Photos saved to `web/uploads/` during local dev
-- **Polling:** Dashboard refreshes every 20 seconds; stops when tab hidden
-- **PWA:** Service Worker registration ready (requires HTTPS in production)
+**Problem Solved:** Hiring bottleneck (80% of lawn care companies' #1 challenge)
+
+**Solution Delivered:**
+- Mobile-first careers page (Gen Z recruits on phones)
+- Clear career progression (6-12 months to crew lead)
+- Transparent pay ($18-25/hr displayed upfront)
+- Purpose-driven messaging (outdoor work, tangible results)
+- Fast application (2 minutes, 48-hour callback promise)
+- Employee testimonials for social proof
+
+**Expected Outcomes:**
+- Increase applicant flow by 3-5x
+- Reduce time-to-hire from 30 days to 7-10 days
+- Improve quality of hires (self-selection via clear job descriptions)
+- Enable year-round recruitment ("Always Be Recruiting")
+
+---
+
+## Next Steps
+
+### Phase 1: Enhance Careers Page
+- [ ] Add crew member video testimonials
+- [ ] Photo gallery of crew at work
+- [ ] Employee referral program widget ($500 bonus)
+- [ ] Benefits comparison table vs competitors
+
+### Phase 2: Applicant Tracking
+- [ ] Application status tracking (Applied → Screening → Interview → Hired)
+- [ ] Automated SMS/email follow-ups
+- [ ] Interview scheduling widget
+- [ ] Reference check workflow
+
+### Phase 3: Onboarding
+- [ ] Digital onboarding checklist
+- [ ] Training video library
+- [ ] Equipment checkout system
+- [ ] First-week mentor assignment
 
 ---
 
 ## Troubleshooting
 
-**Server won't start:**
+**Applications not showing:**
 ```bash
-# Check Deno installed
-deno --version
+# Check source field
+curl http://localhost:8000/api/status | grep careers
+```
 
-# Check port not in use
+**Dashboard empty:**
+```bash
+# Verify server running
 lsof -i :8000
 ```
 
-**Files not loading:**
-```bash
-# Verify files exist
-ls -la web/static/
-```
+---
 
-**Upload fails:**
+## Deployment
+
 ```bash
-# Create uploads directory
-mkdir -p web/uploads
-chmod 755 web/uploads
+# Deno Deploy
+deployctl deploy --project=xcellent1-careers server.ts
+
+# Docker
+docker build -t xcellent1-careers .
+docker run -p 8000:8000 xcellent1-careers
 ```
 
 ---
 
-## Production Deployment
+**Built to solve the lawn care industry's #1 bottleneck: hiring reliable workers.**
 
-### Deno Deploy
-```bash
-deployctl deploy --project=xcellent1 server.ts
-```
-
-### Docker
-```bash
-docker build -t xcellent1 .
-docker run -p 8000:8000 xcellent1
-```
-
----
-
-**For full documentation, see Epic 2 (Leads & Intake) in `/docs/epics_and_stories.md`**
+**Sources:** 80% staffing struggle (Jobber 2025), Gen Z recruitment best practices (Lawn & Landscape 2025)
