@@ -1,14 +1,20 @@
 // Simple file-backed dev DB for local MVP runs.
 // Stores leads, outbox events, invoices in a JSON file under bmad/agents/dev_db.json
 
-// Use decodeURIComponent to handle spaces in file paths on macOS
-const DB_PATH = decodeURIComponent(
-  new URL("./dev_db.json", import.meta.url).pathname
-);
+// Handle both encoded and decoded file paths so tests and runtime can read the file
+const RAW_DB_PATH = new URL("./dev_db.json", import.meta.url).pathname;
+const DB_PATH = decodeURIComponent(RAW_DB_PATH);
 
 async function readDB() {
   try {
-    const raw = await Deno.readTextFile(DB_PATH);
+    // prefer decoded path if it exists, otherwise fallback to raw path
+    let usePath = DB_PATH;
+    try {
+      await Deno.stat(DB_PATH);
+    } catch (_e) {
+      usePath = RAW_DB_PATH;
+    }
+    const raw = await Deno.readTextFile(usePath);
     return JSON.parse(raw);
   } catch (err) {
     if (err instanceof Deno.errors.NotFound) {
@@ -19,17 +25,23 @@ async function readDB() {
 }
 
 async function writeDB(db: any) {
-  const tmp = DB_PATH + ".tmp";
-  // ensure parent directory exists
+  const parentDir = new URL("./", import.meta.url).pathname;
   try {
-    await Deno.mkdir(new URL("./", import.meta.url).pathname, {
-      recursive: true,
-    });
+    await Deno.mkdir(parentDir, { recursive: true });
   } catch (_err) {
     // ignore
   }
-  await Deno.writeTextFile(tmp, JSON.stringify(db, null, 2));
-  await Deno.rename(tmp, DB_PATH);
+  const content = JSON.stringify(db, null, 2);
+  // write both decoded and raw paths to be compatible with different URL.pathname behavior
+  const tmpDecoded = DB_PATH + ".tmp";
+  const tmpRaw = RAW_DB_PATH + ".tmp";
+  await Deno.writeTextFile(tmpDecoded, content);
+  await Deno.rename(tmpDecoded, DB_PATH);
+  // also write raw path if different
+  if (RAW_DB_PATH !== DB_PATH) {
+    await Deno.writeTextFile(tmpRaw, content);
+    await Deno.rename(tmpRaw, RAW_DB_PATH);
+  }
   return db;
 }
 

@@ -2,21 +2,21 @@
   "leads": [],
   "events_outbox": [
     {
-      "id": "outbox_1762498641323_2957",
+      "id": "outbox_1762498704381_6683",
       "status": "pending",
       "attempts": 1,
-      "created_at": "2025-11-07T06:57:21.323Z",
+      "created_at": "2025-11-07T06:58:24.381Z",
       "payload": {
         "hello": "world"
       },
       "type": "TEST_EVENT",
-      "next_attempt_at": "2025-11-07T06:58:21.327Z"
+      "next_attempt_at": "2025-11-07T06:59:24.385Z"
     },
     {
-      "id": "outbox_1762498641444_2741",
+      "id": "outbox_1762498704490_8259",
       "status": "pending",
       "attempts": 0,
-      "created_at": "2025-11-07T06:57:21.444Z",
+      "created_at": "2025-11-07T06:58:24.490Z",
       "payload": {
         "lead": {
           "service_type": "mowing",
@@ -27,10 +27,10 @@
           "price_high_cents": 1875
         },
         "slots": [
-          "2025-11-10T06:57:21.437Z",
-          "2025-11-14T06:57:21.437Z"
+          "2025-11-10T06:58:24.484Z",
+          "2025-11-14T06:58:24.484Z"
         ],
-        "created_at": "2025-11-07T06:57:21.437Z"
+        "created_at": "2025-11-07T06:58:24.484Z"
       },
       "type": "QUOTE_PROPOSED"
     }
