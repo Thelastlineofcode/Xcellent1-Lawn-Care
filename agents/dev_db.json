@@ -1,14 +1,8 @@
 {
-  "leads": [
-    {
-      "id": "lead_local_1",
-      "name": "Test Lead",
-      "phone": "555-0000"
-    }
-  ],
+  "leads": [],
   "events_outbox": [
     {
-      "id": "lc_outbox_1762499125_0",
+      "id": "lc_outbox_1762499103_0",
       "type": "QUOTE_PROPOSED",
       "payload": {
         "lead_id": "lead_local_1",

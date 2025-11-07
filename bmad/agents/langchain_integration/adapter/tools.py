@@ -13,15 +13,22 @@ from typing import Any, Dict
 def _db_path() -> Path:
     # repo root is four parents up from this file: adapter -> langchain_integration -> agents -> bmad
     p = Path(__file__).resolve()
-    repo_root = p.parents[4]
-    # Tests write dev_db.json into the `bmad/` folder (repo_root), while other
-    # parts of the project keep it under `bmad/agents/dev_db.json`. Check both
-    # so the prototype works regardless of where the test or runner places the file.
-    candidate1 = repo_root / "dev_db.json"
-    candidate2 = repo_root / "agents" / "dev_db.json"
-    if candidate1.exists():
-        return candidate1
-    return candidate2
+    # p.parents: 0=adapter,1=langchain_integration,2=agents,3=bmad,4=workspace_root
+    bmad_dir = p.parents[3]
+    workspace_root = p.parents[4]
+
+    # Prefer the dev_db placed under bmad/ (this is where the tests write it).
+    candidate_bmad = bmad_dir / "dev_db.json"
+    if candidate_bmad.exists():
+        return candidate_bmad
+
+    # Fall back to older locations used by other parts of the repo.
+    candidate_agents = workspace_root / "bmad" / "agents" / "dev_db.json"
+    if candidate_agents.exists():
+        return candidate_agents
+
+    # Final fallback: workspace-level agents/dev_db.json
+    return workspace_root / "agents" / "dev_db.json"
 
 
 def read_db() -> Dict[str, Any]:
