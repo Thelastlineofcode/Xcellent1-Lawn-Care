@@ -1,118 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Crew Dashboard — Xcellent1</title>
-    <style>
-      body {
-        font-family:
-          system-ui,
-          -apple-system,
-          Roboto,
-          "Segoe UI",
-          Arial;
-        padding: 24px;
-      }
-      .card {
-        border: 1px solid #ddd;
-        padding: 12px;
-        margin-bottom: 12px;
-      }
-      .photos img {
-        max-width: 200px;
-        margin: 8px;
-        border-radius: 6px;
-      }
-    </style>
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Crew dashboard for Xcellent1 Lawn Care - view leads, jobs, and upload photos">
+  <meta name="theme-color" content="#10b981">
+  <title>Crew Dashboard | Xcellent1 Lawn Care</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="manifest" href="/static/manifest.json">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
+      <nav>
+        <a href="/static/index.html" class="nav-link">← Lead Form</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" id="dashboard">
     <h1>Crew Dashboard</h1>
-    <p><a href="/">Back to lead form</a></p>
+    <p class="text-muted mb-md">
+      View submitted leads, pending events, and upload job photos. Page auto-refreshes every 20 seconds.
+    </p>
 
-    <section>
-      <h2>Leads</h2>
-      <div id="leads"></div>
+    <!-- Dashboard Status Messages -->
+    <div id="dashboard-status" role="alert" aria-live="polite"></div>
+
+    <!-- Leads Section -->
+    <section class="mb-lg">
+      <h2>📄 Leads</h2>
+      <div id="leads-list">
+        <div class="loading-container">
+          <span class="spinner"></span>
+          <span>Loading leads...</span>
+        </div>
+      </div>
     </section>
 
-    <section>
-      <h2>Pending Outbox Events</h2>
-      <div id="pending"></div>
+    <!-- Pending Outbox Events Section -->
+    <section class="mb-lg">
+      <h2>📤 Pending Outbox Events</h2>
+      <div id="outbox-list">
+        <div class="loading-container">
+          <span class="spinner"></span>
+          <span>Loading events...</span>
+        </div>
+      </div>
     </section>
 
-    <section>
-      <h2>Upload Job Photo</h2>
-      <form id="photoForm">
-        <label>Job ID <input name="jobId" required /></label>
-        <label
-          >Photo <input name="photo" type="file" accept="image/*" required
-        /></label>
-        <button type="submit">Upload</button>
+    <!-- Photo Upload Section -->
+    <section class="card">
+      <h2>📸 Upload Job Photo</h2>
+      <p class="text-muted mb-md">Upload before/after photos for completed jobs.</p>
+      
+      <div id="upload-status" role="alert" aria-live="polite"></div>
+      
+      <form id="upload-form" class="mt-md">
+        <div class="form-group">
+          <label for="jobId">
+            Job ID
+            <span class="required" aria-label="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="jobId"
+            name="jobId"
+            required
+            placeholder="e.g., testjob1"
+            aria-required="true"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="photo-file">
+            Choose Photo
+            <span class="required" aria-label="required">*</span>
+            <span class="text-muted">(max 5MB)</span>
+          </label>
+          <input
+            type="file"
+            id="photo-file"
+            name="photo"
+            accept="image/*"
+            required
+            aria-required="true"
+            aria-describedby="photo-hint"
+          >
+          <small id="photo-hint" class="text-muted">JPEG or PNG format, maximum 5MB</small>
+        </div>
+
+        <!-- Photo Preview -->
+        <div id="photo-preview"></div>
+
+        <button type="submit" id="upload-btn" class="btn">
+          Upload Photo
+        </button>
       </form>
-      <div id="uploadResult"></div>
     </section>
+  </main>
 
-    <script>
-      async function refresh() {
-        const res = await fetch("/api/status");
-        const j = await res.json();
-        const leadsEl = document.getElementById("leads");
-        leadsEl.innerHTML = "";
-        (j.leads || []).forEach((ld) => {
-          const d = document.createElement("div");
-          d.className = "card";
-          d.innerHTML = `<strong>${ld.name}</strong> ${ld.phone || ""} <div>${ld.notes || ""}</div>`;
-          leadsEl.appendChild(d);
-        });
-        const pendingEl = document.getElementById("pending");
-        pendingEl.innerHTML = "";
-        (j.pending || []).forEach((ev) => {
-          const d = document.createElement("div");
-          d.className = "card";
-          let html = `<strong>${ev.type}</strong>`;
-          if (ev.payload && ev.payload.photo_path) {
-            html += `<div class="photos"><img src="${ev.payload.photo_path}" alt="photo" /></div>`;
-          }
-          html += `<pre>${JSON.stringify(ev.payload || {}, null, 2)}</pre>`;
-          d.innerHTML = html;
-          pendingEl.appendChild(d);
-        });
-      }
-      refresh();
+  <!-- Footer -->
+  <footer class="text-center mt-lg text-muted">
+    <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
+    <p><small>Dashboard auto-refreshes every 20 seconds</small></p>
+  </footer>
 
-      const form = document.getElementById("photoForm");
-      const uploadResult = document.getElementById("uploadResult");
-      form.addEventListener("submit", async (ev) => {
-        ev.preventDefault();
-        const fd = new FormData(form);
-        const jobId = fd.get("jobId");
-        const file = fd.get("photo");
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async () => {
-          const dataUrl = reader.result;
-          uploadResult.textContent = "Uploading...";
-          try {
-            const res = await fetch(
-              `/api/jobs/${encodeURIComponent(jobId)}/photo`,
-              {
-                method: "POST",
-                headers: { "content-type": "application/json" },
-                body: JSON.stringify({ dataUrl }),
-              }
-            );
-            const j = await res.json();
-            if (j.ok) {
-              uploadResult.innerHTML = "Uploaded: " + j.path;
-              refresh();
-            } else
-              uploadResult.textContent = "Error: " + (j.error || "unknown");
-          } catch (e) {
-            uploadResult.textContent = "Network error: " + e.message;
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-    </script>
-  </body>
+  <!-- JavaScript -->
+  <script src="/static/app.js"></script>
+</body>
 </html>
