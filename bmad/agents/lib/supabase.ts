@@ -28,11 +28,10 @@ async function post(table: string, row: Record<string, any>) {
     if (table === "invoices") return stub.createInvoice(row);
     return { id: `stub_${Date.now()}` };
   }
-
   const url = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${table}`;
   const res = await fetch(url, {
     method: "POST",
-    headers: headers(),
+    headers: { ...headers(), Prefer: "return=representation" },
     body: JSON.stringify(row),
   });
   if (!res.ok) {
@@ -56,7 +55,10 @@ async function getLeadById(id: string) {
 }
 
 async function fetchPendingOutbox(now = new Date()) {
-  if (!hasRealSupabase()) return [];
+  if (!hasRealSupabase()) {
+    const stub = await import("../supabase_client_stub.ts");
+    return stub.fetchPendingOutbox(now);
+  }
   // fetch events where status = pending and (next_attempt_at <= now OR next_attempt_at is null)
   const time = now.toISOString();
   const url = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/events_outbox?status=eq.pending&or=(next_attempt_at.lte.${encodeURIComponent(time)},next_attempt_at.is.null)&select=*`;
@@ -67,8 +69,8 @@ async function fetchPendingOutbox(now = new Date()) {
 
 async function updateOutboxEvent(id: string, patch: Record<string, any>) {
   if (!hasRealSupabase()) {
-    console.log("[supabase-lib] updateOutboxEvent (stub)", id, patch);
-    return { id };
+    const stub = await import("../supabase_client_stub.ts");
+    return stub.updateOutboxEvent(id, patch);
   }
   const url = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/events_outbox?id=eq.${encodeURIComponent(id)}`;
   const res = await fetch(url, {

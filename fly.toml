@@ -1,0 +1,10 @@
+app = "xcellent1-lawn-care"
+
+[build]
+  image = "Dockerfile"
+
+[env]
+  PORT = "8000"
+
+[experimental]
+  auto_rollback = true

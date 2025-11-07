@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Xcellent1 - Contact</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          Roboto,
+          "Segoe UI",
+          Arial;
+        padding: 24px;
+      }
+      form {
+        max-width: 520px;
+      }
+      label {
+        display: block;
+        margin-top: 12px;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 6px;
+      }
+      button {
+        margin-top: 12px;
+        padding: 10px 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Get a Quote — Xcellent1 Lawn Care</h1>
+    <form id="leadForm">
+      <label
+        >Full name
+        <input name="name" required />
+      </label>
+      <label
+        >Phone
+        <input name="phone" />
+      </label>
+      <label
+        >Email
+        <input name="email" type="email" />
+      </label>
+      <label
+        >Notes / Address
+        <textarea name="notes"></textarea>
+      </label>
+      <button type="submit">Send</button>
+    </form>
+
+    <div id="status" style="margin-top: 16px"></div>
+
+    <script>
+      const form = document.getElementById("leadForm");
+      const status = document.getElementById("status");
+      form.addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+        const fd = new FormData(form);
+        const body = {};
+        fd.forEach((v, k) => (body[k] = v));
+        status.textContent = "Sending...";
+        try {
+          const res = await fetch("/api/leads", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          const j = await res.json();
+          if (j.ok) {
+            status.innerHTML =
+              "Thanks! We received your request — id: " +
+              j.id +
+              ". We will contact you shortly.";
+            form.reset();
+          } else {
+            status.textContent = "Error: " + (j.error || "unknown");
+          }
+        } catch (e) {
+          status.textContent = "Network error: " + e.message;
+        }
+      });
+    </script>
+  </body>
+</html>

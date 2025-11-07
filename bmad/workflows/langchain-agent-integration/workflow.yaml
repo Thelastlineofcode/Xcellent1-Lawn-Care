@@ -1,0 +1,15 @@
+name: "langchain-agent-integration"
+description: "Workflow scaffold describing LangChain-based agent migration and prototypes for BMAD agents"
+author: "BMad Builder"
+
+config_source: "{project-root}/bmad/bmb/config.yaml"
+
+template: "{installed_path}/template.md"
+instructions: "{installed_path}/instructions.md"
+
+installed_path: "{project-root}/bmad/workflows/langchain-agent-integration"
+
+agents:
+  - bmad/agents/langchain-integration
+
+default_output_file: "{config_source}:output_folder/langchain-agent-integration-{{date}}.md"

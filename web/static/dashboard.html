@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Crew Dashboard — Xcellent1</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          Roboto,
+          "Segoe UI",
+          Arial;
+        padding: 24px;
+      }
+      .card {
+        border: 1px solid #ddd;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+      .photos img {
+        max-width: 200px;
+        margin: 8px;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Crew Dashboard</h1>
+    <p><a href="/">Back to lead form</a></p>
+
+    <section>
+      <h2>Leads</h2>
+      <div id="leads"></div>
+    </section>
+
+    <section>
+      <h2>Pending Outbox Events</h2>
+      <div id="pending"></div>
+    </section>
+
+    <section>
+      <h2>Upload Job Photo</h2>
+      <form id="photoForm">
+        <label>Job ID <input name="jobId" required /></label>
+        <label
+          >Photo <input name="photo" type="file" accept="image/*" required
+        /></label>
+        <button type="submit">Upload</button>
+      </form>
+      <div id="uploadResult"></div>
+    </section>
+
+    <script>
+      async function refresh() {
+        const res = await fetch("/api/status");
+        const j = await res.json();
+        const leadsEl = document.getElementById("leads");
+        leadsEl.innerHTML = "";
+        (j.leads || []).forEach((ld) => {
+          const d = document.createElement("div");
+          d.className = "card";
+          d.innerHTML = `<strong>${ld.name}</strong> ${ld.phone || ""} <div>${ld.notes || ""}</div>`;
+          leadsEl.appendChild(d);
+        });
+        const pendingEl = document.getElementById("pending");
+        pendingEl.innerHTML = "";
+        (j.pending || []).forEach((ev) => {
+          const d = document.createElement("div");
+          d.className = "card";
+          let html = `<strong>${ev.type}</strong>`;
+          if (ev.payload && ev.payload.photo_path) {
+            html += `<div class="photos"><img src="${ev.payload.photo_path}" alt="photo" /></div>`;
+          }
+          html += `<pre>${JSON.stringify(ev.payload || {}, null, 2)}</pre>`;
+          d.innerHTML = html;
+          pendingEl.appendChild(d);
+        });
+      }
+      refresh();
+
+      const form = document.getElementById("photoForm");
+      const uploadResult = document.getElementById("uploadResult");
+      form.addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+        const fd = new FormData(form);
+        const jobId = fd.get("jobId");
+        const file = fd.get("photo");
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const dataUrl = reader.result;
+          uploadResult.textContent = "Uploading...";
+          try {
+            const res = await fetch(
+              `/api/jobs/${encodeURIComponent(jobId)}/photo`,
+              {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ dataUrl }),
+              }
+            );
+            const j = await res.json();
+            if (j.ok) {
+              uploadResult.innerHTML = "Uploaded: " + j.path;
+              refresh();
+            } else
+              uploadResult.textContent = "Error: " + (j.error || "unknown");
+          } catch (e) {
+            uploadResult.textContent = "Network error: " + e.message;
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    </script>
+  </body>
+</html>
