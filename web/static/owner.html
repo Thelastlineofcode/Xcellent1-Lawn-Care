@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Xcellent1 Lawn Care owner dashboard - business KPIs, hiring metrics, revenue tracking">
+  <meta name="theme-color" content="#10b981">
+  <title>Business Dashboard | Xcellent1 Owner</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    /* Owner Dashboard Styles */
+    .owner-header {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: white;
+      padding: 2rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .owner-greeting {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .business-name {
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+    
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .kpi-card {
+      background: white;
+      padding: 1.5rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .kpi-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: 0.25rem;
+    }
+    .kpi-label {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    .kpi-trend {
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+    .kpi-trend.up { color: var(--color-success); }
+    .kpi-trend.down { color: var(--color-error); }
+    
+    /* Chart Card */
+    .chart-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+      margin-bottom: 1.5rem;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .chart-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+    .chart-period {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+    }
+    .chart-placeholder {
+      aspect-ratio: 16/9;
+      background: var(--color-bg);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      border: 2px dashed var(--color-border);
+    }
+    
+    /* Action Grid */
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .action-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      background: white;
+      border: 2px solid var(--color-border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 120px;
+    }
+    .action-card:hover {
+      border-color: var(--color-primary);
+      background: var(--color-bg);
+      transform: translateY(-2px);
+    }
+    .action-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .action-label {
+      font-weight: 600;
+      text-align: center;
+      font-size: 0.875rem;
+    }
+    .action-count {
+      font-size: 0.75rem;
+      color: var(--color-error);
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+    
+    /* Alert Cards */
+    .alert-card {
+      border-left: 4px solid var(--color-warning);
+      background: #fffbeb;
+    }
+    .alert-card.critical {
+      border-left-color: var(--color-error);
+      background: #fef2f2;
+    }
+    .alert-card.success {
+      border-left-color: var(--color-success);
+      background: #f0fdf4;
+    }
+    
+    @media (max-width: 768px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
+      <nav>
+        <a href="/static/crew.html" class="nav-link">Crew</a>
+        <a href="/static/client.html" class="nav-link">Clients</a>
+        <a href="/static/dashboard.html" class="nav-link">Hiring</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Owner Header -->
+  <div class="owner-header">
+    <div class="container">
+      <div class="owner-greeting">Business Dashboard</div>
+      <div class="business-name">🌱 Xcellent1 Lawn Care</div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div id="owner-status" role="alert" aria-live="polite"></div>
+
+    <!-- Key Business Metrics -->
+    <section>
+      <h2>Today's Snapshot</h2>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon">💵</div>
+          <div class="kpi-value" id="kpi-revenue">$0</div>
+          <div class="kpi-label">This Month Revenue</div>
+          <div class="kpi-trend up">
+            <span>↑</span>
+            <span id="revenue-trend">+0%</span>
+          </div>
+        </div>
+        
+        <div class="kpi-card">
+          <div class="kpi-icon">👥</div>
+          <div class="kpi-value" id="kpi-crew">0</div>
+          <div class="kpi-label">Active Crew</div>
+          <div class="kpi-trend" id="crew-trend"></div>
+        </div>
+        
+        <div class="kpi-card">
+          <div class="kpi-icon">✅</div>
+          <div class="kpi-value" id="kpi-jobs">0</div>
+          <div class="kpi-label">Jobs This Week</div>
+          <div class="kpi-trend up">
+            <span>↑</span>
+            <span id="jobs-trend">+0%</span>
+          </div>
+        </div>
+        
+        <div class="kpi-card">
+          <div class="kpi-icon">💼</div>
+          <div class="kpi-value" id="kpi-applications">0</div>
+          <div class="kpi-label">New Applications</div>
+          <div class="kpi-trend" id="app-trend"></div>
+        </div>
+        
+        <div class="kpi-card">
+          <div class="kpi-icon">📊</div>
+          <div class="kpi-value" id="kpi-margin">0%</div>
+          <div class="kpi-label">Profit Margin</div>
+          <div class="kpi-trend" id="margin-trend"></div>
+        </div>
+        
+        <div class="kpi-card">
+          <div class="kpi-icon">📸</div>
+          <div class="kpi-value" id="kpi-photos">0</div>
+          <div class="kpi-label">Job Photos Today</div>
+          <div class="kpi-trend"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="mb-lg">
+      <h2>Quick Actions</h2>
+      <div class="action-grid">
+        <a href="/static/dashboard.html" class="action-card">
+          <div class="action-icon">💼</div>
+          <div class="action-label">Review Applications</div>
+          <div class="action-count" id="action-apps">0 pending</div>
+        </a>
+        
+        <a href="/static/crew.html" class="action-card">
+          <div class="action-icon">🚩</div>
+          <div class="action-label">Crew Routes</div>
+          <div class="action-count" id="action-routes">0 active</div>
+        </a>
+        
+        <a href="/static/client.html" class="action-card">
+          <div class="action-icon">👥</div>
+          <div class="action-label">Client Portal</div>
+          <div class="action-count" id="action-clients">0 accounts</div>
+        </a>
+        
+        <a href="/static/index.html" class="action-card">
+          <div class="action-icon">📢</div>
+          <div class="action-label">Careers Page</div>
+          <div class="action-count">Share to recruit</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Alerts & Notifications -->
+    <section class="mb-lg">
+      <h2>Alerts & Priorities</h2>
+      <div id="alerts-list">
+        <!-- Dynamic alerts will be inserted here -->
+      </div>
+    </section>
+
+    <!-- Revenue Chart -->
+    <section class="mb-lg">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">📈 Revenue Trend</div>
+          <div class="chart-period">Last 6 Months</div>
+        </div>
+        <div class="chart-placeholder">
+          <div style="text-align: center;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📉</div>
+            <div>Revenue chart loading...</div>
+            <small class="text-muted">Chart.js integration coming soon</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hiring Pipeline -->
+    <section class="mb-lg">
+      <h2>Hiring Pipeline</h2>
+      <div class="card">
+        <div class="grid grid-2">
+          <div>
+            <h3>Applications</h3>
+            <div style="font-size: 2rem; font-weight: 700; color: var(--color-primary);" id="hiring-applications">0</div>
+            <p class="text-muted">This week</p>
+          </div>
+          <div>
+            <h3>Interviews</h3>
+            <div style="font-size: 2rem; font-weight: 700; color: var(--color-primary);" id="hiring-interviews">0</div>
+            <p class="text-muted">Scheduled</p>
+          </div>
+          <div>
+            <h3>Open Roles</h3>
+            <div style="font-size: 2rem; font-weight: 700; color: var(--color-warning);" id="hiring-openings">0</div>
+            <p class="text-muted">To fill</p>
+          </div>
+          <div>
+            <h3>Retention</h3>
+            <div style="font-size: 2rem; font-weight: 700; color: var(--color-success);" id="hiring-retention">0%</div>
+            <p class="text-muted">90-day rate</p>
+          </div>
+        </div>
+        <button class="btn mt-md" onclick="window.location.href='/static/dashboard.html'">
+          📄 View All Applications
+        </button>
+      </div>
+    </section>
+
+    <!-- Crew Performance -->
+    <section class="mb-lg">
+      <h2>Crew Performance</h2>
+      <div id="crew-list">
+        <div class="loading-container">
+          <span class="spinner"></span>
+          <span>Loading crew data...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Financial Summary -->
+    <section>
+      <h2>Financial Summary</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>💰 Accounts Receivable</h3>
+          <div style="font-size: 1.75rem; font-weight: 700; color: var(--color-warning);" id="fin-ar">$0</div>
+          <p class="text-muted">Outstanding invoices</p>
+          <button class="btn-secondary mt-sm full-width">View Details</button>
+        </div>
+        
+        <div class="card">
+          <h3>📊 Profit Margin</h3>
+          <div style="font-size: 1.75rem; font-weight: 700; color: var(--color-success);" id="fin-margin">0%</div>
+          <p class="text-muted">This month (target: 50%)</p>
+          <div class="progress-bar" style="height: 8px; background: var(--color-bg); border-radius: 4px; overflow: hidden; margin-top: 0.5rem;">
+            <div id="margin-bar" style="height: 100%; background: var(--color-success); width: 0%; transition: width 0.5s;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center mt-lg text-muted">
+    <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
+    <p><small>Owner Dashboard v1.0</small></p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="/static/app.js"></script>
+  <script>
+    // Owner Dashboard Logic
+    
+    // Mock business data - replace with API call to /api/owner/metrics
+    const mockBusinessData = {
+      revenue_this_month: 13750,
+      revenue_last_month: 11200,
+      active_crew: 6,
+      jobs_this_week: 42,
+      jobs_last_week: 38,
+      new_applications: 12,
+      interviews_scheduled: 4,
+      open_positions: 3,
+      retention_90day: 78,
+      profit_margin: 52,
+      accounts_receivable: 1250,
+      photos_today: 18,
+      alerts: [
+        { type: 'critical', icon: '🔴', message: '3 open crew positions - hiring urgent', action: 'Review Applications', link: '/static/dashboard.html' },
+        { type: 'warning', icon: '⚠️', message: '$1,250 in overdue invoices (>30 days)', action: 'Send Reminders', link: '#' },
+        { type: 'success', icon: '✅', message: '4 interviews scheduled this week', action: 'View Calendar', link: '#' },
+      ],
+      crew_performance: [
+        { name: 'Marcus T.', role: 'Crew Lead', jobs: 14, rating: 4.9, photos: 28 },
+        { name: 'Priya K.', role: 'Field Worker', jobs: 18, rating: 4.8, photos: 36 },
+        { name: 'James L.', role: 'Field Worker', jobs: 12, rating: 4.7, photos: 24 },
+      ]
+    };
+
+    // Load owner dashboard
+    function loadOwnerDashboard() {
+      const data = mockBusinessData;
+      
+      // Revenue KPI
+      document.getElementById('kpi-revenue').textContent = '$' + data.revenue_this_month.toLocaleString();
+      const revGrowth = ((data.revenue_this_month - data.revenue_last_month) / data.revenue_last_month * 100).toFixed(0);
+      document.getElementById('revenue-trend').textContent = (revGrowth > 0 ? '+' : '') + revGrowth + '%';
+      
+      // Crew KPI
+      document.getElementById('kpi-crew').textContent = data.active_crew;
+      document.getElementById('crew-trend').textContent = data.open_positions + ' openings';
+      document.getElementById('crew-trend').classList.add(data.open_positions > 0 ? 'down' : 'up');
+      
+      // Jobs KPI
+      document.getElementById('kpi-jobs').textContent = data.jobs_this_week;
+      const jobGrowth = ((data.jobs_this_week - data.jobs_last_week) / data.jobs_last_week * 100).toFixed(0);
+      document.getElementById('jobs-trend').textContent = (jobGrowth > 0 ? '+' : '') + jobGrowth + '%';
+      
+      // Applications KPI
+      document.getElementById('kpi-applications').textContent = data.new_applications;
+      document.getElementById('app-trend').textContent = 'This week';
+      
+      // Margin KPI
+      document.getElementById('kpi-margin').textContent = data.profit_margin + '%';
+      const marginStatus = data.profit_margin >= 50 ? 'up' : data.profit_margin >= 40 ? '' : 'down';
+      document.getElementById('margin-trend').textContent = data.profit_margin >= 50 ? 'On target' : 'Below target';
+      if (marginStatus) document.getElementById('margin-trend').classList.add(marginStatus);
+      
+      // Photos KPI
+      document.getElementById('kpi-photos').textContent = data.photos_today;
+      
+      // Action counts
+      document.getElementById('action-apps').textContent = data.new_applications + ' pending';
+      document.getElementById('action-routes').textContent = data.active_crew + ' crews';
+      document.getElementById('action-clients').textContent = '24 accounts'; // Mock
+      
+      // Financial
+      document.getElementById('fin-ar').textContent = '$' + data.accounts_receivable.toLocaleString();
+      document.getElementById('fin-margin').textContent = data.profit_margin + '%';
+      document.getElementById('margin-bar').style.width = data.profit_margin + '%';
+      
+      // Hiring metrics
+      document.getElementById('hiring-applications').textContent = data.new_applications;
+      document.getElementById('hiring-interviews').textContent = data.interviews_scheduled;
+      document.getElementById('hiring-openings').textContent = data.open_positions;
+      document.getElementById('hiring-retention').textContent = data.retention_90day + '%';
+      
+      // Render alerts
+      renderAlerts(data.alerts);
+      
+      // Render crew performance
+      renderCrewPerformance(data.crew_performance);
+    }
+
+    // Render alerts
+    function renderAlerts(alerts) {
+      const container = document.getElementById('alerts-list');
+      if (alerts.length === 0) {
+        container.innerHTML = '<div class="card alert-card success"><p>✅ No alerts. Business is running smoothly!</p></div>';
+        return;
+      }
+      
+      container.innerHTML = alerts.map(alert => `
+        <div class="card alert-card ${alert.type} mb-md">
+          <div style="display: flex; justify-content: space-between; align-items: start; gap: 1rem;">
+            <div style="flex: 1;">
+              <div style="font-weight: 600; margin-bottom: 0.5rem;">${alert.icon} ${alert.message}</div>
+            </div>
+            <a href="${alert.link}" class="btn-secondary" style="white-space: nowrap;">${alert.action}</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render crew performance
+    function renderCrewPerformance(crew) {
+      const container = document.getElementById('crew-list');
+      if (crew.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p class="text-muted">No active crew members.</p></div>';
+        return;
+      }
+      
+      container.innerHTML = crew.map(member => `
+        <div class="card mb-md">
+          <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+              <h3>👤 ${member.name}</h3>
+              <p class="text-muted" style="font-size: 0.875rem; margin: 0.25rem 0;">${member.role}</p>
+              <div style="display: flex; gap: 1rem; margin-top: 0.75rem; font-size: 0.875rem;">
+                <span>🚩 ${member.jobs} jobs</span>
+                <span>⭐ ${member.rating}/5.0</span>
+                <span>📸 ${member.photos} photos</span>
+              </div>
+            </div>
+            <span class="badge badge-primary">Active</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Initial load
+    loadOwnerDashboard();
+    
+    // Auto-refresh every 60 seconds
+    setInterval(loadOwnerDashboard, 60000);
+  </script>
+</body>
+</html>
