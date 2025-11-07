@@ -15,8 +15,7 @@
         ".venv/**",
         "**/*.py"
       ]
-    }
-  ,
+    },
     "rules": {
       "exclude": [
         "no-import-prefix",

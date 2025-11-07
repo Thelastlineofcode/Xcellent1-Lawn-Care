@@ -17,3 +17,25 @@ jobs:
           deno-version: v1.x
       - name: Run deno lint
         run: deno lint
+
+  python-tests:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Create venv
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+      - name: Install Python requirements
+        run: |
+          source .venv/bin/activate
+          pip install -r bmad/agents/langchain-integration/requirements.txt
+      - name: Run pytest for LangChain prototype
+        run: |
+          source .venv/bin/activate
+          PYTHONPATH=bmad pytest bmad/agents/langchain-integration/tests -q
