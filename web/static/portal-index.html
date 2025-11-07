@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Xcellent1 Lawn Care - Portal Navigation">
+  <meta name="theme-color" content="#10b981">
+  <title>Portal Navigation | Xcellent1 Lawn Care</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    .hero {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: white;
+    }
+    .hero p {
+      font-size: 1.125rem;
+      opacity: 0.95;
+    }
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .portal-card {
+      background: white;
+      border: 2px solid var(--color-border);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .portal-card:hover {
+      border-color: var(--color-primary);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
+    }
+    .portal-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    .portal-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .portal-description {
+      color: var(--color-text-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+    .portal-features {
+      text-align: left;
+      margin: 1rem 0;
+      padding: 0;
+      list-style: none;
+    }
+    .portal-features li {
+      padding: 0.25rem 0;
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+    }
+    .portal-features li:before {
+      content: '✓ ';
+      color: var(--color-success);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .portal-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero -->
+  <section class="hero">
+    <h1>🌱 Xcellent1 Lawn Care</h1>
+    <p>Modern CRM for lawn care professionals</p>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container">
+    <h2 class="text-center mb-lg">Choose Your Portal</h2>
+    
+    <div class="portal-grid">
+      <!-- Crew Portal -->
+      <a href="/static/crew.html" class="portal-card">
+        <div class="portal-icon">👷</div>
+        <div class="portal-title">Crew Dashboard</div>
+        <div class="portal-description">For field workers and crew leads</div>
+        <ul class="portal-features">
+          <li>View today's job assignments</li>
+          <li>Navigate to job locations</li>
+          <li>Upload before/after photos</li>
+          <li>Mark jobs complete</li>
+          <li>Track daily progress</li>
+        </ul>
+        <div class="portal-badge">Mobile Optimized</div>
+      </a>
+
+      <!-- Owner Portal -->
+      <a href="/static/owner.html" class="portal-card">
+        <div class="portal-icon">📈</div>
+        <div class="portal-title">Owner Dashboard</div>
+        <div class="portal-description">For business owners and managers</div>
+        <ul class="portal-features">
+          <li>Business KPIs and revenue</li>
+          <li>Hiring pipeline metrics</li>
+          <li>Crew performance tracking</li>
+          <li>Financial summaries</li>
+          <li>Priority alerts</li>
+        </ul>
+        <div class="portal-badge">Executive View</div>
+      </a>
+
+      <!-- Client Portal -->
+      <a href="/static/client.html" class="portal-card">
+        <div class="portal-icon">👤</div>
+        <div class="portal-title">Client Portal</div>
+        <div class="portal-description">For customers and property owners</div>
+        <ul class="portal-features">
+          <li>View before/after job photos</li>
+          <li>Service history & invoices</li>
+          <li>Pay via Cash App/Zelle/PayPal</li>
+          <li>Account management</li>
+          <li>Contact support</li>
+        </ul>
+        <div class="portal-badge">Customer Access</div>
+      </a>
+
+      <!-- Hiring Dashboard -->
+      <a href="/static/dashboard.html" class="portal-card">
+        <div class="portal-icon">💼</div>
+        <div class="portal-title">Hiring Dashboard</div>
+        <div class="portal-description">For hiring managers and recruiters</div>
+        <ul class="portal-features">
+          <li>Review worker applications</li>
+          <li>Track hiring pipeline</li>
+          <li>View applicant details</li>
+          <li>Outbox events monitoring</li>
+          <li>Crew photo uploads</li>
+        </ul>
+        <div class="portal-badge">Recruitment Hub</div>
+      </a>
+    </div>
+
+    <!-- Public Pages -->
+    <section class="mt-lg">
+      <h2 class="text-center mb-md">Public Pages</h2>
+      <div class="grid grid-2">
+        <a href="/" class="card" style="text-decoration: none; color: inherit;">
+          <h3>🌿 Careers Page</h3>
+          <p class="text-muted">Worker recruitment and job applications</p>
+          <span class="badge badge-primary mt-sm">Public</span>
+        </a>
+        <a href="#" class="card" style="text-decoration: none; color: inherit; opacity: 0.6;">
+          <h3>🌻 Customer Site</h3>
+          <p class="text-muted">Service info and quote requests</p>
+          <span class="badge mt-sm">Coming Soon</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Demo Instructions -->
+    <section class="card mt-lg" style="background: #fef3c7; border: 2px solid #fbbf24;">
+      <h3>🧠 Demo Mode Active</h3>
+      <p>This is a demonstration version with mock data. All portals are accessible without authentication for evaluation purposes.</p>
+      <p class="mt-sm"><strong>To test:</strong></p>
+      <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+        <li>Click any portal card above</li>
+        <li>Explore the interface and features</li>
+        <li>Submit test data via forms</li>
+        <li>Test on your smartphone for mobile experience</li>
+      </ul>
+      <p class="mt-sm text-muted"><small>Production version will require login and role-based authentication.</small></p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center mt-lg text-muted">
+    <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
+    <p><small>Modern CRM Platform | Powered by BMAD Framework</small></p>
+  </footer>
+</body>
+</html>
