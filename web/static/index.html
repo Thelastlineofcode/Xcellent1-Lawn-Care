@@ -1,91 +1,145 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Xcellent1 - Contact</title>
-    <style>
-      body {
-        font-family:
-          system-ui,
-          -apple-system,
-          Roboto,
-          "Segoe UI",
-          Arial;
-        padding: 24px;
-      }
-      form {
-        max-width: 520px;
-      }
-      label {
-        display: block;
-        margin-top: 12px;
-      }
-      input,
-      textarea {
-        width: 100%;
-        padding: 8px;
-        margin-top: 6px;
-      }
-      button {
-        margin-top: 12px;
-        padding: 10px 14px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Get a Quote — Xcellent1 Lawn Care</h1>
-    <form id="leadForm">
-      <label
-        >Full name
-        <input name="name" required />
-      </label>
-      <label
-        >Phone
-        <input name="phone" />
-      </label>
-      <label
-        >Email
-        <input name="email" type="email" />
-      </label>
-      <label
-        >Notes / Address
-        <textarea name="notes"></textarea>
-      </label>
-      <button type="submit">Send</button>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Submit a lawn care service request to Xcellent1 Lawn Care">
+  <meta name="theme-color" content="#10b981">
+  <title>Submit a Lead | Xcellent1 Lawn Care</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="manifest" href="/static/manifest.json">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
+      <nav>
+        <a href="/static/dashboard.html" class="nav-link">Crew Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <h1>Request Lawn Care Service</h1>
+    <p class="text-muted mb-lg">
+      Fill out the form below to get started. We'll review your request and get back to you with a quote.
+    </p>
+
+    <!-- Form Status Messages -->
+    <div id="form-status" role="alert" aria-live="polite"></div>
+
+    <!-- Lead Capture Form -->
+    <form id="lead-form" class="card" novalidate>
+      <div class="form-group">
+        <label for="name">
+          Your Name
+          <span class="required" aria-label="required">*</span>
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          required
+          minlength="2"
+          maxlength="100"
+          autocomplete="name"
+          placeholder="John Doe"
+          aria-required="true"
+          aria-describedby="name-hint"
+        >
+        <small id="name-hint" class="text-muted">At least 2 characters</small>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">
+          Phone Number
+          <span class="required" aria-label="required">*</span>
+        </label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          required
+          autocomplete="tel"
+          placeholder="(555) 123-4567"
+          aria-required="true"
+          aria-describedby="phone-hint"
+        >
+        <small id="phone-hint" class="text-muted">We'll call or text you with updates</small>
+      </div>
+
+      <div class="form-group">
+        <label for="email">
+          Email Address
+          <span class="required" aria-label="required">*</span>
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          autocomplete="email"
+          placeholder="john@example.com"
+          aria-required="true"
+          aria-describedby="email-hint"
+        >
+        <small id="email-hint" class="text-muted">For quotes and invoices</small>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">
+          Additional Notes
+          <span class="text-muted">(optional)</span>
+        </label>
+        <textarea
+          id="notes"
+          name="notes"
+          rows="4"
+          maxlength="500"
+          placeholder="Describe your lawn care needs (e.g., lawn size, special requests, preferred schedule)"
+          aria-describedby="notes-hint"
+        ></textarea>
+        <small id="notes-hint" class="text-muted">Up to 500 characters</small>
+      </div>
+
+      <button type="submit" id="submit-btn" class="btn">
+        Submit Lead
+      </button>
     </form>
 
-    <div id="status" style="margin-top: 16px"></div>
+    <!-- Additional Info -->
+    <section class="mt-lg">
+      <h2>What Happens Next?</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>📞 1. We'll Contact You</h3>
+          <p class="text-muted">Our team will reach out within 24 hours to discuss your lawn care needs.</p>
+        </div>
+        <div class="card">
+          <h3>💵 2. Get a Quote</h3>
+          <p class="text-muted">Receive a personalized estimate based on your lawn size and service requirements.</p>
+        </div>
+        <div class="card">
+          <h3>📅 3. Schedule Service</h3>
+          <p class="text-muted">Choose a convenient time for our crew to visit and complete the work.</p>
+        </div>
+        <div class="card">
+          <h3>✅ 4. Enjoy Your Lawn</h3>
+          <p class="text-muted">Relax while we take care of everything. Photos and invoices sent after completion.</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-    <script>
-      const form = document.getElementById("leadForm");
-      const status = document.getElementById("status");
-      form.addEventListener("submit", async (ev) => {
-        ev.preventDefault();
-        const fd = new FormData(form);
-        const body = {};
-        fd.forEach((v, k) => (body[k] = v));
-        status.textContent = "Sending...";
-        try {
-          const res = await fetch("/api/leads", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify(body),
-          });
-          const j = await res.json();
-          if (j.ok) {
-            status.innerHTML =
-              "Thanks! We received your request — id: " +
-              j.id +
-              ". We will contact you shortly.";
-            form.reset();
-          } else {
-            status.textContent = "Error: " + (j.error || "unknown");
-          }
-        } catch (e) {
-          status.textContent = "Network error: " + e.message;
-        }
-      });
-    </script>
-  </body>
+  <!-- Footer -->
+  <footer class="text-center mt-lg text-muted">
+    <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
+    <p><small>Powered by BMAD Framework</small></p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="/static/app.js"></script>
+</body>
 </html>
