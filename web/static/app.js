@@ -406,7 +406,7 @@ if (document.getElementById('dashboard')) {
   /**
    * Fetch and render dashboard data (exposed for photo upload)
    */
-  window.refreshDashboard = async function() {
+  globalThis.refreshDashboard = async function() {
     try {
       const data = await fetchJSON(`${API_BASE}/api/status`);
       
@@ -447,7 +447,7 @@ if (document.getElementById('dashboard')) {
   });
   
   // Cleanup on page unload
-  window.addEventListener('beforeunload', stopPolling);
+  globalThis.addEventListener('beforeunload', stopPolling);
 }
 
 // ========================================
@@ -611,7 +611,7 @@ function animateCounter(elementId, target) {
 // ========================================
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
-  window.addEventListener('load', () => {
+  globalThis.addEventListener('load', () => {
     navigator.serviceWorker.register('/static/sw.js')
       .then(reg => console.log('[SW] Registered:', reg.scope))
       .catch(err => console.warn('[SW] Registration failed:', err));
