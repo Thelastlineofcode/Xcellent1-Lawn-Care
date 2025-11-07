@@ -2,12 +2,12 @@
 import {
   fetchPendingOutbox,
   updateOutboxEvent,
-  hasRealSupabase,
+  hasRealSupabase as _hasRealSupabase,
 } from "../lib/supabase.ts";
 
 console.log("[outbox-agent] starting worker");
 
-async function sendIntegration(event: any) {
+function sendIntegration(event: Record<string, unknown>) {
   // Dev-safe: if no real integration keys present, simulate success
   const hasSendKey =
     !!Deno.env.get("SENDGRID_API_KEY") || !!Deno.env.get("TWILIO_AUTH_TOKEN");

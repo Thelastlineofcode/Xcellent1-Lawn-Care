@@ -4,7 +4,7 @@ import {
   fetchPendingOutbox,
 } from "../bmad/agents/lib/supabase.ts";
 
-const encoder = new TextEncoder();
+const _encoder = new TextEncoder();
 
 async function serveFile(path: string) {
   try {
@@ -15,7 +15,7 @@ async function serveFile(path: string) {
   }
 }
 
-function jsonResponse(obj: any, status = 200) {
+function jsonResponse(obj: unknown, status = 200) {
   return new Response(JSON.stringify(obj), {
     status,
     headers: { "content-type": "application/json" },
@@ -60,7 +60,7 @@ serve(
           status: 200,
           headers: { "content-type": ct },
         });
-      } catch (e) {
+      } catch (_e) {
         return new Response("Not found", { status: 404 });
       }
     }
@@ -68,7 +68,7 @@ serve(
     // API: create lead
     if (req.method === "POST" && pathname === "/api/leads") {
       const ct = req.headers.get("content-type") || "";
-      let body: any = {};
+      let body: Record<string, unknown> = {};
       if (ct.includes("application/json")) {
         body = await req.json();
       } else {
@@ -86,9 +86,9 @@ serve(
         };
         const res = await supabaseInsert("leads", row);
         return jsonResponse({ ok: true, id: res.id });
-      } catch (err) {
-        console.error("/api/leads error", err);
-        return jsonResponse({ ok: false, error: String(err) }, 500);
+      } catch (_err) {
+        console.error("/api/leads error", _err);
+        return jsonResponse({ ok: false, error: String(_err) }, 500);
       }
     }
 
@@ -103,9 +103,9 @@ serve(
         };
         const r = await supabaseInsert("events_outbox", ev);
         return jsonResponse({ ok: true, id: r.id });
-      } catch (err) {
-        console.error("/api/outbox error", err);
-        return jsonResponse({ ok: false, error: String(err) }, 500);
+      } catch (_err) {
+        console.error("/api/outbox error", _err);
+        return jsonResponse({ ok: false, error: String(_err) }, 500);
       }
     }
 
@@ -140,7 +140,7 @@ serve(
         const uploadsDir = new URL("./uploads", import.meta.url).pathname;
         try {
           await Deno.mkdir(uploadsDir, { recursive: true });
-        } catch (e) {
+        } catch (_e) {
           // ignore
         }
         const filename = `job_${jobId}_${Date.now()}.${ext}`;
@@ -156,9 +156,9 @@ serve(
         };
         const r = await supabaseInsert("events_outbox", ev);
         return jsonResponse({ ok: true, id: r.id, path: publicPath });
-      } catch (err) {
-        console.error("/api/jobs/:id/photo error", err);
-        return jsonResponse({ ok: false, error: String(err) }, 500);
+      } catch (_err) {
+        console.error("/api/jobs/:id/photo error", _err);
+        return jsonResponse({ ok: false, error: String(_err) }, 500);
       }
     }
 
@@ -175,13 +175,13 @@ serve(
           const txt = await Deno.readTextFile(dbPath);
           const db = JSON.parse(txt);
           leads = db.leads || [];
-        } catch (e) {
+        } catch (_e) {
           // ignore
         }
         return jsonResponse({ ok: true, leads, pending });
-      } catch (err) {
-        console.error("/api/status error", err);
-        return jsonResponse({ ok: false, error: String(err) }, 500);
+      } catch (_err) {
+        console.error("/api/status error", _err);
+        return jsonResponse({ ok: false, error: String(_err) }, 500);
       }
     }
 

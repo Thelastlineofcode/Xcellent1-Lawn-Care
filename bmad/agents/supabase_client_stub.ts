@@ -3,32 +3,29 @@
 
 import * as devdb from "./dev_db.ts";
 
-export async function insertLead(lead: Record<string, any>) {
+export function insertLead(lead: Record<string, unknown>) {
   console.log("[supabase-stub] insertLead", lead);
-  return devdb.insertLead(lead);
+  return devdb.insertLead(lead as Record<string, unknown>);
 }
 
-export async function insertOutboxEvent(event: Record<string, any>) {
+export function insertOutboxEvent(event: Record<string, unknown>) {
   console.log("[supabase-stub] insertOutboxEvent", event);
-  return devdb.insertOutboxEvent(event);
+  return devdb.insertOutboxEvent(event as Record<string, unknown>);
 }
 
-export async function createInvoice(invoice: Record<string, any>) {
+export function createInvoice(invoice: Record<string, unknown>) {
   console.log("[supabase-stub] createInvoice", invoice);
-  return devdb.createInvoice(invoice);
+  return devdb.createInvoice(invoice as Record<string, unknown>);
 }
 
-export async function fetchPendingOutbox(now = new Date()) {
+export function fetchPendingOutbox(now = new Date()) {
   return devdb.fetchPendingOutbox(now);
 }
 
-export async function updateOutboxEvent(
-  id: string,
-  patch: Record<string, any>
-) {
-  return devdb.updateOutboxEvent(id, patch);
+export function updateOutboxEvent(id: string, patch: Record<string, unknown>) {
+  return devdb.updateOutboxEvent(id, patch as Record<string, unknown>);
 }
 
-export async function getLeadById(id: string) {
+export function getLeadById(id: string) {
   return devdb.getLeadById(id);
 }

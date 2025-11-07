@@ -20,7 +20,7 @@ function headers() {
   };
 }
 
-async function post(table: string, row: Record<string, any>) {
+async function post(table: string, row: Record<string, unknown>) {
   if (!hasRealSupabase()) {
     const stub = await import("../supabase_client_stub.ts");
     if (table === "leads") return stub.insertLead(row);
@@ -67,7 +67,7 @@ async function fetchPendingOutbox(now = new Date()) {
   return await res.json();
 }
 
-async function updateOutboxEvent(id: string, patch: Record<string, any>) {
+async function updateOutboxEvent(id: string, patch: Record<string, unknown>) {
   if (!hasRealSupabase()) {
     const stub = await import("../supabase_client_stub.ts");
     return stub.updateOutboxEvent(id, patch);

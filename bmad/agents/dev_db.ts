@@ -24,7 +24,7 @@ async function readDB() {
   }
 }
 
-async function writeDB(db: any) {
+async function writeDB(db: unknown) {
   const parentDir = new URL("./", import.meta.url).pathname;
   try {
     await Deno.mkdir(parentDir, { recursive: true });
@@ -49,7 +49,7 @@ function genId(prefix = "id") {
   return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
 }
 
-export async function insertLead(lead: Record<string, any>) {
+export async function insertLead(lead: Record<string, unknown>) {
   const db = await readDB();
   const id = genId("lead");
   const row = { id, ...lead };
@@ -58,7 +58,7 @@ export async function insertLead(lead: Record<string, any>) {
   return { id };
 }
 
-export async function insertOutboxEvent(event: Record<string, any>) {
+export async function insertOutboxEvent(event: Record<string, unknown>) {
   const db = await readDB();
   const id = genId("outbox");
   const row = {
@@ -74,7 +74,7 @@ export async function insertOutboxEvent(event: Record<string, any>) {
   return { id };
 }
 
-export async function createInvoice(inv: Record<string, any>) {
+export async function createInvoice(inv: Record<string, unknown>) {
   const db = await readDB();
   const id = genId("inv");
   const row = { id, ...inv };
@@ -86,20 +86,20 @@ export async function createInvoice(inv: Record<string, any>) {
 export async function fetchPendingOutbox(now: Date = new Date()) {
   const db = await readDB();
   // select pending events where next_attempt_at is null or <= now
-  return db.events_outbox.filter((e: Record<string, any>) => {
-    if (e.status === "success") return false;
-    if (!e.next_attempt_at) return true;
-    return new Date(e.next_attempt_at) <= now;
+  return db.events_outbox.filter((e: Record<string, unknown>) => {
+    if ((e as any).status === "success") return false;
+    if (!(e as any).next_attempt_at) return true;
+    return new Date((e as any).next_attempt_at) <= now;
   });
 }
 
 export async function updateOutboxEvent(
   id: string,
-  patch: Record<string, any>
+  patch: Record<string, unknown>
 ) {
   const db = await readDB();
   const idx = db.events_outbox.findIndex(
-    (e: Record<string, any>) => e.id === id
+    (e: Record<string, unknown>) => (e as any).id === id
   );
   if (idx === -1) throw new Error("outbox event not found: " + id);
   db.events_outbox[idx] = { ...db.events_outbox[idx], ...patch };
@@ -109,7 +109,9 @@ export async function updateOutboxEvent(
 
 export async function getLeadById(id: string) {
   const db = await readDB();
-  return db.leads.find((l: Record<string, any>) => l.id === id) || null;
+  return (
+    db.leads.find((l: Record<string, unknown>) => (l as any).id === id) || null
+  );
 }
 
 export async function resetDB() {

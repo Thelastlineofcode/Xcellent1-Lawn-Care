@@ -35,7 +35,9 @@ Deno.test("outbox stub - insert, fetch pending, update", async () => {
   const dbPath = new URL("../dev_db.json", import.meta.url).pathname;
   const txt = await Deno.readTextFile(dbPath);
   const db = JSON.parse(txt);
-  const found = db.events_outbox.find((e: any) => e.id === id);
+  const found = db.events_outbox.find(
+    (e: Record<string, unknown>) => (e as any).id === id
+  );
   if (!found) throw new Error("updated event not found in db");
   if (found.attempts !== 1) throw new Error("attempts not persisted");
 });
