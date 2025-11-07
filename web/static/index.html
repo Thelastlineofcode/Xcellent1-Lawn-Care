@@ -3,143 +3,382 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Submit a lawn care service request to Xcellent1 Lawn Care">
+  <meta name="description" content="Join Xcellent1 Lawn Care - Hiring field crew members, team leads, and supervisors. Great pay, career growth, and outdoor work.">
   <meta name="theme-color" content="#10b981">
-  <title>Submit a Lead | Xcellent1 Lawn Care</title>
+  <title>Join Our Crew | Xcellent1 Lawn Care Careers</title>
   <link rel="stylesheet" href="/static/styles.css">
   <link rel="manifest" href="/static/manifest.json">
+  <style>
+    .hero {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: white;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      opacity: 0.95;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+    .hero .btn {
+      background: white;
+      color: #059669;
+      font-size: 1.125rem;
+      padding: 0.875rem 2rem;
+    }
+    .hero .btn:hover {
+      background: #f0fdf4;
+      transform: scale(1.05);
+    }
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .benefit-card {
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+    .benefit-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .stat {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: 0.5rem;
+    }
+    .video-placeholder {
+      aspect-ratio: 16/9;
+      background: var(--color-bg);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed var(--color-border);
+      margin: 2rem 0;
+    }
+  </style>
 </head>
 <body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>🌱 Join the Xcellent1 Crew</h1>
+    <p>We're hiring field workers, crew leads, and supervisors. Start your lawn care career with great pay, flexible schedules, and real growth opportunities.</p>
+    <a href="#apply" class="btn">🚀 Apply Now</a>
+  </section>
+
   <!-- Header -->
   <header class="header">
     <div class="header-content">
       <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
       <nav>
-        <a href="/static/dashboard.html" class="nav-link">Crew Dashboard</a>
+        <a href="#benefits" class="nav-link">Benefits</a>
+        <a href="#openings" class="nav-link">Open Positions</a>
+        <a href="#apply" class="nav-link">Apply</a>
+        <a href="/static/dashboard.html" class="nav-link">Crew Portal</a>
       </nav>
     </div>
   </header>
 
   <!-- Main Content -->
   <main class="container">
-    <h1>Request Lawn Care Service</h1>
-    <p class="text-muted mb-lg">
-      Fill out the form below to get started. We'll review your request and get back to you with a quote.
-    </p>
-
-    <!-- Form Status Messages -->
-    <div id="form-status" role="alert" aria-live="polite"></div>
-
-    <!-- Lead Capture Form -->
-    <form id="lead-form" class="card" novalidate>
-      <div class="form-group">
-        <label for="name">
-          Your Name
-          <span class="required" aria-label="required">*</span>
-        </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          required
-          minlength="2"
-          maxlength="100"
-          autocomplete="name"
-          placeholder="John Doe"
-          aria-required="true"
-          aria-describedby="name-hint"
-        >
-        <small id="name-hint" class="text-muted">At least 2 characters</small>
-      </div>
-
-      <div class="form-group">
-        <label for="phone">
-          Phone Number
-          <span class="required" aria-label="required">*</span>
-        </label>
-        <input
-          type="tel"
-          id="phone"
-          name="phone"
-          required
-          autocomplete="tel"
-          placeholder="(555) 123-4567"
-          aria-required="true"
-          aria-describedby="phone-hint"
-        >
-        <small id="phone-hint" class="text-muted">We'll call or text you with updates</small>
-      </div>
-
-      <div class="form-group">
-        <label for="email">
-          Email Address
-          <span class="required" aria-label="required">*</span>
-        </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          autocomplete="email"
-          placeholder="john@example.com"
-          aria-required="true"
-          aria-describedby="email-hint"
-        >
-        <small id="email-hint" class="text-muted">For quotes and invoices</small>
-      </div>
-
-      <div class="form-group">
-        <label for="notes">
-          Additional Notes
-          <span class="text-muted">(optional)</span>
-        </label>
-        <textarea
-          id="notes"
-          name="notes"
-          rows="4"
-          maxlength="500"
-          placeholder="Describe your lawn care needs (e.g., lawn size, special requests, preferred schedule)"
-          aria-describedby="notes-hint"
-        ></textarea>
-        <small id="notes-hint" class="text-muted">Up to 500 characters</small>
-      </div>
-
-      <button type="submit" id="submit-btn" class="btn">
-        Submit Lead
-      </button>
-    </form>
-
-    <!-- Additional Info -->
-    <section class="mt-lg">
-      <h2>What Happens Next?</h2>
-      <div class="grid grid-2">
-        <div class="card">
-          <h3>📞 1. We'll Contact You</h3>
-          <p class="text-muted">Our team will reach out within 24 hours to discuss your lawn care needs.</p>
+    
+    <!-- Why Work Here -->
+    <section id="benefits" class="mb-lg">
+      <h2 class="text-center">Why Work at Xcellent1?</h2>
+      <p class="text-center text-muted mb-lg">More than just a job. This is a career with purpose, growth, and a team that has your back.</p>
+      
+      <div class="benefits-grid">
+        <div class="benefit-card card">
+          <div class="benefit-icon">💵</div>
+          <h3>Competitive Pay</h3>
+          <p class="stat">$18-$25/hr</p>
+          <p class="text-muted">Starting wage based on experience. Weekly pay + performance bonuses.</p>
         </div>
-        <div class="card">
-          <h3>💵 2. Get a Quote</h3>
-          <p class="text-muted">Receive a personalized estimate based on your lawn size and service requirements.</p>
+        
+        <div class="benefit-card card">
+          <div class="benefit-icon">📈</div>
+          <h3>Career Growth</h3>
+          <p class="stat">6-12 months</p>
+          <p class="text-muted">Average time to crew lead. Clear path to supervisor and management.</p>
         </div>
-        <div class="card">
-          <h3>📅 3. Schedule Service</h3>
-          <p class="text-muted">Choose a convenient time for our crew to visit and complete the work.</p>
+        
+        <div class="benefit-card card">
+          <div class="benefit-icon">🏞️</div>
+          <h3>Outdoor Work</h3>
+          <p class="stat">100%</p>
+          <p class="text-muted">No cubicles. Fresh air, exercise, and tangible results every single day.</p>
         </div>
-        <div class="card">
-          <h3>✅ 4. Enjoy Your Lawn</h3>
-          <p class="text-muted">Relax while we take care of everything. Photos and invoices sent after completion.</p>
+        
+        <div class="benefit-card card">
+          <div class="benefit-icon">👥</div>
+          <h3>Team Culture</h3>
+          <p class="stat">4.8/5</p>
+          <p class="text-muted">Rated by crew members. Supportive team, mentorship, and work-life balance.</p>
         </div>
       </div>
     </section>
+
+    <!-- Day in the Life -->
+    <section class="mb-lg">
+      <h2>A Day in the Life of Our Crew</h2>
+      <div class="video-placeholder">
+        <p class="text-muted">🎥 Video: Meet our crew members (Coming soon)</p>
+      </div>
+      <div class="grid grid-2 mt-md">
+        <div class="card">
+          <h3>☀️ Morning (7am-12pm)</h3>
+          <p>Tool check, route briefing, travel to job sites. Complete 2-3 properties with your crew.</p>
+        </div>
+        <div class="card">
+          <h3>🌙 Afternoon (12pm-4pm)</h3>
+          <p>Lunch break, finish routes, equipment cleanup. Upload before/after photos, head home.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Career Paths -->
+    <section id="openings" class="mb-lg">
+      <h2>Open Positions & Career Paths</h2>
+      <p class="text-muted mb-md">We hire year-round and promote from within. Most crew leads started as field workers.</p>
+      
+      <div class="card mb-md">
+        <div class="card-header">
+          <h3 class="card-title">🌿 Field Crew Member</h3>
+          <span class="badge badge-primary">5 OPENINGS</span>
+        </div>
+        <div class="card-body">
+          <p><strong>Pay:</strong> $18-$22/hour (weekly pay)</p>
+          <p><strong>Requirements:</strong> Valid driver's license, physical fitness, reliable transportation</p>
+          <p><strong>You'll Learn:</strong> Mowing, trimming, edging, equipment operation, customer service</p>
+          <p><strong>Growth Path:</strong> Field Worker → Senior Worker (6mo) → Crew Lead (12mo)</p>
+        </div>
+      </div>
+      
+      <div class="card mb-md">
+        <div class="card-header">
+          <h3 class="card-title">👥 Crew Lead</h3>
+          <span class="badge badge-primary">2 OPENINGS</span>
+        </div>
+        <div class="card-body">
+          <p><strong>Pay:</strong> $22-$28/hour + crew performance bonus</p>
+          <p><strong>Requirements:</strong> 1+ year lawn care experience, leadership skills, clean driving record</p>
+          <p><strong>Responsibilities:</strong> Manage 2-4 person crew, quality control, route planning, customer communication</p>
+          <p><strong>Growth Path:</strong> Crew Lead → Supervisor (12-18mo) → Operations Manager</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">📅 Seasonal Worker</h3>
+          <span class="badge">SPRING/SUMMER</span>
+        </div>
+        <div class="card-body">
+          <p><strong>Pay:</strong> $16-$20/hour</p>
+          <p><strong>Requirements:</strong> Available weekends, reliable, eager to learn</p>
+          <p><strong>Perfect For:</strong> Students, second job, testing lawn care career</p>
+          <p><strong>Note:</strong> Top seasonal workers often convert to full-time in 3-6 months</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- What We Offer -->
+    <section class="mb-lg">
+      <h2>Full Benefits Package</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>✅ Compensation</h3>
+          <ul>
+            <li>Weekly direct deposit</li>
+            <li>Performance bonuses (up to $200/month)</li>
+            <li>Overtime pay (1.5x after 40hrs)</li>
+            <li>Referral bonuses ($500 per hire)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>✅ Work-Life Balance</h3>
+          <ul>
+            <li>Monday-Friday schedule (most weeks)</li>
+            <li>Paid time off (10 days/year)</li>
+            <li>Flexible start times (7am-9am)</li>
+            <li>Winter season options (snow removal or reduced hours)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>✅ Training & Growth</h3>
+          <ul>
+            <li>Paid on-the-job training (2 weeks)</li>
+            <li>Equipment certification programs</li>
+            <li>Leadership development workshops</li>
+            <li>Turf management courses (optional)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>✅ Perks</h3>
+          <ul>
+            <li>Company truck and equipment provided</li>
+            <li>Uniforms and gear included</li>
+            <li>Team lunches and end-of-season BBQ</li>
+            <li>Crew competitions with cash prizes</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="mb-lg">
+      <h2>Hear From Our Crew</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <p><em>"I started as a field worker last spring. Within 8 months, I was leading my own crew. Best decision I ever made."</em></p>
+          <p class="text-muted"><strong>- Marcus T.</strong>, Crew Lead (14 months with Xcellent1)</p>
+        </div>
+        <div class="card">
+          <p><em>"The team actually cares. I get paid well, work outside, and I'm learning skills that'll help me start my own business someday."</em></p>
+          <p class="text-muted"><strong>- Priya K.</strong>, Senior Field Worker (2 years with Xcellent1)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Application Form -->
+    <section id="apply" class="card">
+      <h2>🚀 Apply to Join Our Team</h2>
+      <p class="text-muted mb-md">Takes 2 minutes. We'll review your application and call you within 48 hours.</p>
+
+      <!-- Form Status Messages -->
+      <div id="form-status" role="alert" aria-live="polite"></div>
+
+      <!-- Recruitment Application Form -->
+      <form id="lead-form" novalidate>
+        <div class="form-group">
+          <label for="name">
+            Full Name
+            <span class="required" aria-label="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            minlength="2"
+            maxlength="100"
+            autocomplete="name"
+            placeholder="John Doe"
+            aria-required="true"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="phone">
+            Phone Number
+            <span class="required" aria-label="required">*</span>
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            required
+            autocomplete="tel"
+            placeholder="(555) 123-4567"
+            aria-required="true"
+          >
+          <small class="text-muted">We'll call or text to schedule your interview</small>
+        </div>
+
+        <div class="form-group">
+          <label for="email">
+            Email Address
+            <span class="required" aria-label="required">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder="john@example.com"
+            aria-required="true"
+          >
+          <small class="text-muted">For application updates and offers</small>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">
+            Tell Us About Yourself
+            <span class="text-muted">(optional)</span>
+          </label>
+          <textarea
+            id="notes"
+            name="notes"
+            rows="4"
+            maxlength="500"
+            placeholder="Previous lawn care or outdoor work experience? When can you start? Preferred position? Any questions for us?"
+          ></textarea>
+          <small class="text-muted">Previous experience helpful but not required!</small>
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn">
+          📨 Submit Application
+        </button>
+      </form>
+    </section>
+
+    <!-- FAQs -->
+    <section class="mt-lg">
+      <h2>Frequently Asked Questions</h2>
+      <div class="card mb-sm">
+        <h3>Do I need experience?</h3>
+        <p class="text-muted mb-0">No! We provide 2 weeks paid training. If you're reliable, physically fit, and willing to learn, we'll teach you the rest.</p>
+      </div>
+      <div class="card mb-sm">
+        <h3>What's the interview process?</h3>
+        <p class="text-muted mb-0">1) Submit application. 2) Phone screening (15 min). 3) In-person interview (30 min). 4) Offer within 24-48 hours.</p>
+      </div>
+      <div class="card mb-sm">
+        <h3>Can I work part-time or weekends only?</h3>
+        <p class="text-muted mb-0">Yes! We have seasonal and part-time positions. Many students work with us during summer.</p>
+      </div>
+      <div class="card mb-sm">
+        <h3>What about winter?</h3>
+        <p class="text-muted mb-0">We offer snow removal work, or you can take the season off and return in spring. Top performers stay year-round.</p>
+      </div>
+      <div class="card">
+        <h3>How fast can I get promoted?</h3>
+        <p class="text-muted mb-0">Average time to crew lead is 6-12 months. We promote based on performance, not seniority.</p>
+      </div>
+    </section>
+
   </main>
 
   <!-- Footer -->
   <footer class="text-center mt-lg text-muted">
-    <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
-    <p><small>Powered by BMAD Framework</small></p>
+    <p>&copy; 2025 Xcellent1 Lawn Care. Equal Opportunity Employer.</p>
+    <p><small>Powered by BMAD Framework | <a href="/static/dashboard.html">Employee Portal</a></small></p>
   </footer>
 
   <!-- JavaScript -->
   <script src="/static/app.js"></script>
+  <script>
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
 </body>
 </html>
