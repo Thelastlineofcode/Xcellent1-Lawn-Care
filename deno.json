@@ -1,0 +1,16 @@
+{
+  "fmt": {
+    "options": {}
+  },
+  "lint": {
+    "files": {
+      "exclude": [
+        "web/static/**",
+        "bmad/agents/langchain-integration/**",
+        "bmad/agents/langchain_integration/**",
+        ".venv/**",
+        "**/*.py"
+      ]
+    }
+  }
+}

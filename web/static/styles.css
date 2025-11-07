@@ -1,3 +1,46 @@
+:root{
+  --color-primary: #10b981;
+  --color-primary-dark: #0f766e;
+  --color-bg: #ffffff;
+  --color-border: #e6e6e6;
+  --color-text: #0f172a;
+  --color-text-secondary: #64748b;
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --spacing-xs: 6px;
+  --spacing-sm: 12px;
+  --spacing-md: 18px;
+  --spacing-lg: 24px;
+  --shadow-md: 0 6px 18px rgba(16,24,40,0.08);
+  --transition: 200ms ease;
+}
+
+*{box-sizing:border-box}
+body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; color:var(--color-text); background:var(--color-bg); line-height:1.4}
+.container{max-width:980px;margin:24px auto;padding:0 16px}
+.header{background:linear-gradient(90deg,var(--color-primary),var(--color-primary-dark));color:white;padding:12px 0}
+.header .header-content{max-width:980px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:0 16px}
+.logo{font-weight:700;color:white;text-decoration:none}
+.nav-link{color:rgba(255,255,255,0.9);text-decoration:none}
+.card{background:white;border:1px solid var(--color-border);padding:16px;border-radius:10px;box-shadow:var(--shadow-md);}
+.card-header{margin-bottom:12px}
+.form-group{margin-bottom:12px}
+label{display:block;font-weight:600;margin-bottom:6px}
+input[type=text],input[type=tel],input[type=email],textarea,select{width:100%;padding:10px;border:1px solid var(--color-border);border-radius:8px}
+button.btn{background:var(--color-primary);color:white;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
+.text-muted{color:var(--color-text-secondary)}
+.mb-lg{margin-bottom:24px}
+.mt-lg{margin-top:24px}
+.mt-md{margin-top:16px}
+.mb-md{margin-bottom:16px}
+.grid{display:grid}
+.grid-2{grid-template-columns:repeat(2,1fr);gap:12px}
+.loading-container{display:flex;gap:8px;align-items:center}
+#photo-preview img{max-width:220px;border-radius:8px;margin-top:8px}
+
+@media (max-width:700px){.grid-2{grid-template-columns:1fr}}
 /* CSS custom properties */
 :root {
   --color-primary: #10b981;
