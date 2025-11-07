@@ -1,0 +1,45 @@
+{
+  "name": "Xcellent1 Lawn Care",
+  "short_name": "Xcellent1",
+  "description": "Field service management for lawn care crews",
+  "start_url": "/static/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10b981",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "New Lead",
+      "short_name": "Lead",
+      "url": "/static/index.html",
+      "icons": [{
+        "src": "/static/icon-192.png",
+        "sizes": "192x192"
+      }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/static/dashboard.html",
+      "icons": [{
+        "src": "/static/icon-192.png",
+        "sizes": "192x192"
+      }]
+    }
+  ]
+}
