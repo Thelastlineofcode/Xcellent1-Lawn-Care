@@ -56,6 +56,72 @@ class QuoteAgent:
             else:
                 self.llm = MockLLM()
 
+    def propose(self, lead_id: str) -> Dict[str, Any]:
+        """Propose a quote for the given lead id using the configured LLM.
+
+        This normalizes the different LLM interfaces (generate/propose/call)
+        and returns the parsed quote dict. It also enqueues a QUOTE_PROPOSED
+        event in the local dev DB.
+        """
+        lead = tools.get_lead(lead_id) or {}
+
+        # If the LLM itself exposes a propose method (like PerplexityLLM), use it.
+        if hasattr(self.llm, "propose"):
+            try:
+                result = self.llm.propose(lead_id)
+                return result
+            except Exception:
+                pass
+
+        # Build a prompt (prefer LLM helper if present)
+        if hasattr(self.llm, "_build_prompt"):
+            prompt = self.llm._build_prompt(lead)
+        else:
+            prompt = (
+                "You are a pricing assistant for a lawn care company. Given the lead data, "
+                "produce a JSON object with fields: price_low_cents, price_high_cents, confidence (0-1), notes, slots (array of two ISO datetimes).\n"
+                f"Lead: {json.dumps(lead)}\n\nReturn only JSON."
+            )
+
+        # Ask the LLM
+        try:
+            if hasattr(self.llm, "__call__"):
+                raw = self.llm(prompt)
+            else:
+                raw = self.llm.generate(prompt)
+        except Exception:
+            raw = MockLLM().generate(prompt)
+
+        # Parse output
+        try:
+            out = json.loads(raw)
+        except Exception:
+            start = raw.find('{')
+            end = raw.rfind('}')
+            if start != -1 and end != -1 and end > start:
+                try:
+                    out = json.loads(raw[start:end+1])
+                except Exception:
+                    out = {}
+            else:
+                out = {}
+
+        result = {
+            "price_low_cents": int(out.get("price_low_cents") or 0),
+            "price_high_cents": int(out.get("price_high_cents") or 0),
+            "confidence": float(out.get("confidence") or 0.0),
+            "notes": out.get("notes") or "",
+            "slots": out.get("slots") or [],
+        }
+
+        tools.enqueue_outbox_event({
+            "type": "QUOTE_PROPOSED",
+            "payload": {"lead_id": lead_id, "quote": result},
+            "created_at": "synthetic",
+        })
+
+        return result
+
 
 class PerplexityLLM:
     """A very small Perplexity API wrapper used when PERPLEXITY_API_KEY is set.

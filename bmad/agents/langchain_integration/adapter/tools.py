@@ -14,7 +14,14 @@ def _db_path() -> Path:
     # repo root is four parents up from this file: adapter -> langchain_integration -> agents -> bmad
     p = Path(__file__).resolve()
     repo_root = p.parents[4]
-    return repo_root / "bmad" / "agents" / "dev_db.json"
+    # Tests write dev_db.json into the `bmad/` folder (repo_root), while other
+    # parts of the project keep it under `bmad/agents/dev_db.json`. Check both
+    # so the prototype works regardless of where the test or runner places the file.
+    candidate1 = repo_root / "dev_db.json"
+    candidate2 = repo_root / "agents" / "dev_db.json"
+    if candidate1.exists():
+        return candidate1
+    return candidate2
 
 
 def read_db() -> Dict[str, Any]:

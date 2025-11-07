@@ -33,6 +33,24 @@
         "created_at": "2025-11-07T06:58:24.484Z"
       },
       "type": "QUOTE_PROPOSED"
+    },
+    {
+      "id": "lc_outbox_1762499032_2",
+      "type": "QUOTE_PROPOSED",
+      "payload": {
+        "lead_id": "lead_local_1",
+        "quote": {
+          "price_low_cents": 5000,
+          "price_high_cents": 7000,
+          "confidence": 0.85,
+          "notes": "Standard lawn, weekly service recommended.",
+          "slots": [
+            "2025-11-10T09:00:00",
+            "2025-11-12T13:00:00"
+          ]
+        }
+      },
+      "created_at": "synthetic"
     }
   ],
   "invoices": []
