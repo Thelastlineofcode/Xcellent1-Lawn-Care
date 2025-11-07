@@ -1,3 +1,136 @@
+// Minimal frontend behavior for lead form and dashboard
+(() => {
+  // Helper: show status
+  function setStatus(id, msg, isError) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = isError ? 'crimson' : '';
+  }
+
+  // Lead form submission
+  const leadForm = document.getElementById('lead-form');
+  if (leadForm) {
+    leadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setStatus('form-status', 'Submitting...');
+      const fd = new FormData(leadForm);
+      const body = {};
+      fd.forEach((v, k) => body[k] = v);
+      try {
+        const res = await fetch('/api/leads', { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } });
+        const j = await res.json();
+        if (j.ok) {
+          setStatus('form-status', 'Lead submitted — thank you!');
+          leadForm.reset();
+        } else {
+          setStatus('form-status', 'Error: ' + (j.error || 'unknown'), true);
+        }
+      } catch (err) {
+        setStatus('form-status', 'Network error', true);
+      }
+    });
+  }
+
+  // Dashboard: auto-refresh status
+  async function refreshDashboard() {
+    const statusEl = document.getElementById('dashboard-status');
+    try {
+      const res = await fetch('/api/status');
+      const j = await res.json();
+      if (!j.ok) {
+        if (statusEl) statusEl.textContent = 'Error fetching status';
+        return;
+      }
+      const leads = j.leads || [];
+      const pending = j.pending || [];
+      document.getElementById('stat-leads').textContent = ''+leads.length;
+      document.getElementById('stat-events').textContent = ''+pending.length;
+      // photos count derived from pending events containing JOB_PHOTO
+      const photos = (pending.filter(p => p.type === 'JOB_PHOTO').length) || 0;
+      document.getElementById('stat-photos').textContent = ''+photos;
+
+      // render leads list
+      const leadsList = document.getElementById('leads-list');
+      if (leadsList) {
+        leadsList.innerHTML = '';
+        if (leads.length === 0) {
+          leadsList.innerHTML = '<div class="card">No active leads</div>';
+        } else {
+          leads.forEach(l => {
+            const div = document.createElement('div');
+            div.className = 'card lead-card mb-md';
+            div.innerHTML = `<div class="lead-info"><h3>${l.name || '—'}</h3><div class="lead-meta"><span>${l.phone||''}</span><span>${l.email||''}</span></div></div><div><button class="btn" data-lead-id="${l.id}">View</button></div>`;
+            leadsList.appendChild(div);
+          });
+        }
+      }
+
+      // render outbox
+      const outboxList = document.getElementById('outbox-list');
+      if (outboxList) {
+        outboxList.innerHTML = '';
+        if (pending.length === 0) outboxList.innerHTML = '<div class="card">No pending events</div>';
+        else pending.forEach(ev => {
+          const div = document.createElement('div');
+          div.className = 'card mb-md';
+          div.innerHTML = `<strong>${ev.type}</strong><div class="text-muted">${JSON.stringify(ev.payload||{})}</div>`;
+          outboxList.appendChild(div);
+        });
+      }
+    } catch (err) {
+      if (statusEl) statusEl.textContent = 'Network error while fetching status';
+    }
+  }
+
+  if (document.getElementById('dashboard')) {
+    refreshDashboard();
+    setInterval(refreshDashboard, 20000);
+  }
+
+  // Upload form handling (convert file to data URL and POST)
+  const uploadForm = document.getElementById('upload-form');
+  if (uploadForm) {
+    const fileInput = document.getElementById('photo-file');
+    const preview = document.getElementById('photo-preview');
+    fileInput && fileInput.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        preview.innerHTML = `<img src="${ev.target.result}" alt="preview">`;
+      };
+      reader.readAsDataURL(f);
+    });
+
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setStatus('upload-status', 'Uploading...');
+      const jobId = document.getElementById('jobId').value.trim();
+      const f = fileInput.files && fileInput.files[0];
+      if (!jobId || !f) {
+        setStatus('upload-status', 'Missing job id or photo', true);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = async (ev) => {
+        const dataUrl = ev.target.result;
+        try {
+          const res = await fetch(`/api/jobs/${encodeURIComponent(jobId)}/photo`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ dataUrl }) });
+          const j = await res.json();
+          if (j.ok) {
+            setStatus('upload-status', 'Photo uploaded');
+            uploadForm.reset();
+            preview.innerHTML = '';
+          } else setStatus('upload-status', 'Upload error: '+(j.error||'unknown'), true);
+        } catch (err) {
+          setStatus('upload-status', 'Network error', true);
+        }
+      };
+      reader.readAsDataURL(f);
+    });
+  }
+})();
 // Shared API utilities and frontend logic for Xcellent1 Lawn Care
 // Field service dashboard with real-time KPIs and photo management
 
