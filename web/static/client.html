@@ -92,6 +92,17 @@
       height: auto;
       border-radius: 8px;
     }
+    .modal-info {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
     .modal-close {
       position: absolute;
       top: -2.5rem;
@@ -162,12 +173,59 @@
       color: var(--color-text-secondary);
       margin-top: 0.25rem;
     }
+    
+    /* Payment Options Grid */
+    .payment-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .payment-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      border: 2px solid var(--color-border);
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 120px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .payment-option:hover {
+      border-color: var(--color-primary);
+      background: var(--color-bg);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .payment-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .payment-label {
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-align: center;
+    }
+    .payment-handle {
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+      margin-top: 0.25rem;
+    }
+    
     @media (max-width: 768px) {
       .photo-gallery {
         grid-template-columns: repeat(2, 1fr);
       }
       .modal-prev, .modal-next {
         display: none;
+      }
+      .payment-options {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -222,8 +280,8 @@
     <!-- Recent Job Photos -->
     <section class="mb-lg">
       <div class="card-header">
-        <h2>📸 Recent Job Photos</h2>
-        <p class="text-muted">Before & after photos from your recent services</p>
+        <h2>📸 Before & After Photos</h2>
+        <p class="text-muted">See the results from your recent lawn services. Tap any photo to view full size.</p>
       </div>
       <div id="photo-gallery" class="photo-gallery">
         <div class="loading-container">
@@ -247,45 +305,74 @@
     <!-- Payment Section -->
     <section class="card">
       <h2>💳 Make a Payment</h2>
-      <p class="text-muted mb-md">Pay your outstanding balance securely online.</p>
+      <p class="text-muted mb-md">Choose your preferred payment method. Tap to open app or copy payment details.</p>
       
       <div id="payment-status" role="alert" aria-live="polite"></div>
       
-      <form id="payment-form" class="mt-md">
-        <div class="form-group">
-          <label for="payment-amount">
-            Payment Amount
-            <span class="required">*</span>
-          </label>
-          <input
-            type="number"
-            id="payment-amount"
-            name="amount"
-            min="0"
-            step="0.01"
-            placeholder="0.00"
-            required
-          >
-          <small class="text-muted">Enter amount to pay or leave blank for full balance</small>
-        </div>
+      <!-- Payment Amount Input -->
+      <div class="form-group">
+        <label for="payment-amount">
+          Amount to Pay
+          <span class="required">*</span>
+        </label>
+        <input
+          type="number"
+          id="payment-amount"
+          name="amount"
+          min="0"
+          step="0.01"
+          placeholder="0.00"
+          required
+          readonly
+          style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary);"
+        >
+        <small class="text-muted">Current balance due</small>
+      </div>
 
-        <div class="form-group">
-          <label for="payment-method">
-            Payment Method
-            <span class="required">*</span>
-          </label>
-          <select id="payment-method" name="method" required>
-            <option value="">Select payment method</option>
-            <option value="card">Credit/Debit Card</option>
-            <option value="bank">Bank Transfer</option>
-            <option value="cash">Cash (Mark as Paid)</option>
-          </select>
-        </div>
+      <!-- Payment Options -->
+      <div class="payment-options">
+        <!-- Cash App -->
+        <a href="#" class="payment-option" id="cashapp-btn" onclick="handleCashApp(event)">
+          <div class="payment-icon">💵</div>
+          <div class="payment-label">Cash App</div>
+          <div class="payment-handle">$Xcellent1Lawn</div>
+        </a>
 
-        <button type="submit" id="payment-btn" class="btn">
-          💳 Submit Payment
-        </button>
-      </form>
+        <!-- Zelle -->
+        <a href="#" class="payment-option" id="zelle-btn" onclick="handleZelle(event)">
+          <div class="payment-icon">🏦</div>
+          <div class="payment-label">Zelle</div>
+          <div class="payment-handle">pay@xcellent1.com</div>
+        </a>
+
+        <!-- PayPal -->
+        <a href="https://www.paypal.com/paypalme/Xcellent1Lawn" target="_blank" class="payment-option" id="paypal-btn">
+          <div class="payment-icon">🔵</div>
+          <div class="payment-label">PayPal</div>
+          <div class="payment-handle">@Xcellent1Lawn</div>
+        </a>
+
+        <!-- Traditional Card (Future) -->
+        <a href="#" class="payment-option" onclick="handleCard(event)" style="opacity: 0.5; cursor: not-allowed;">
+          <div class="payment-icon">💳</div>
+          <div class="payment-label">Credit Card</div>
+          <div class="payment-handle">Coming Soon</div>
+        </a>
+      </div>
+
+      <!-- Payment Instructions -->
+      <div class="card" style="background: var(--color-bg); border: 1px solid var(--color-border);">
+        <h3>Payment Instructions</h3>
+        <ol style="padding-left: 1.5rem; margin: 0.5rem 0;">
+          <li class="mb-sm">Tap your preferred payment method above</li>
+          <li class="mb-sm">Send the amount shown (or your preferred amount)</li>
+          <li class="mb-sm">Include your name in the note/memo: <strong id="payment-memo">Sarah Martinez - 123 Oak St</strong></li>
+          <li>We'll update your balance within 24 hours</li>
+        </ol>
+        <p class="text-muted mt-md">
+          <small>🔒 Secure: We never store payment credentials. All transactions processed through trusted payment providers.</small>
+        </p>
+      </div>
     </section>
 
   </main>
@@ -296,6 +383,10 @@
       <button class="modal-close" onclick="closePhotoModal()">×</button>
       <button class="modal-nav modal-prev" onclick="prevPhoto()">‹</button>
       <img id="modal-image" class="modal-image" src="" alt="Job photo">
+      <div class="modal-info" id="modal-info">
+        <strong id="modal-title">Before Photo</strong>
+        <div id="modal-date">Nov 5, 2025</div>
+      </div>
       <button class="modal-nav modal-next" onclick="nextPhoto()">›</button>
     </div>
   </div>
@@ -313,11 +404,19 @@
     const CLIENT_ID = 'demo_client_001'; // TODO: Get from auth/session
     let allPhotos = [];
     let currentPhotoIndex = 0;
+    let clientData = null;
+
+    // Payment provider handles (replace with your actual accounts)
+    const PAYMENT_CONFIG = {
+      cashapp: '$Xcellent1Lawn',
+      zelle: 'pay@xcellent1.com',
+      paypal: 'Xcellent1Lawn'
+    };
 
     // Fetch client data
     async function loadClientData() {
       try {
-        // Mock data for demo - replace with real API call
+        // Mock data for demo - replace with: await fetchJSON('/api/client/' + CLIENT_ID)
         const mockClient = {
           name: 'Sarah Martinez',
           address: '123 Oak Street, Austin TX',
@@ -339,6 +438,8 @@
           ]
         };
 
+        clientData = mockClient;
+
         // Update UI
         document.getElementById('client-name').textContent = mockClient.name;
         document.getElementById('client-address').textContent = mockClient.address;
@@ -346,6 +447,7 @@
         document.getElementById('stat-services').textContent = mockClient.services_this_month;
         document.getElementById('stat-photos').textContent = mockClient.photos.length;
         document.getElementById('payment-amount').value = mockClient.balance.toFixed(2);
+        document.getElementById('payment-memo').textContent = mockClient.name + ' - ' + mockClient.address.split(',')[0];
 
         allPhotos = mockClient.photos;
         renderPhotoGallery(mockClient.photos);
@@ -360,13 +462,13 @@
     function renderPhotoGallery(photos) {
       const gallery = document.getElementById('photo-gallery');
       if (photos.length === 0) {
-        gallery.innerHTML = '<div class="empty-state"><p class="text-muted">No photos available yet. Photos will appear after your next service.</p></div>';
+        gallery.innerHTML = '<div class="empty-state"><p class="text-muted">🏞️ No photos yet. Your crew will upload before/after photos after each service!</p></div>';
         return;
       }
 
       gallery.innerHTML = photos.map((photo, index) => `
         <div class="photo-card" onclick="openPhotoModal(${index})">
-          <img src="${photo.url}" alt="${photo.type} photo" loading="lazy">
+          <img src="${photo.url}" alt="${photo.type} photo from ${new Date(photo.date).toLocaleDateString()}" loading="lazy">
           <div class="photo-badge ${photo.type}">${photo.type}</div>
         </div>
       `).join('');
@@ -383,14 +485,14 @@
       container.innerHTML = history.map(job => `
         <div class="card job-history-card mb-md">
           <div class="card-header">
-            <h3 class="card-title">📅 ${new Date(job.date).toLocaleDateString()}</h3>
-            <span class="badge badge-primary">${job.status}</span>
+            <h3 class="card-title">📅 ${new Date(job.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</h3>
+            <span class="badge badge-primary">✓ ${job.status}</span>
           </div>
           <div class="card-body">
             <div>
               ${job.services.map(s => `<span class="service-badge">${s}</span>`).join('')}
             </div>
-            ${job.photos > 0 ? `<p class="text-muted mt-sm"><small>📸 ${job.photos} photos available</small></p>` : ''}
+            ${job.photos > 0 ? `<p class="text-muted mt-sm"><small>📸 ${job.photos} photos - <a href="#" onclick="scrollToPhotos(event)">View Gallery ↑</a></small></p>` : '<p class="text-muted mt-sm"><small>⚠️ No photos for this service</small></p>'}
           </div>
         </div>
       `).join('');
@@ -399,10 +501,16 @@
     // Photo modal functions
     function openPhotoModal(index) {
       currentPhotoIndex = index;
-      const photo = allPhotos[index];
-      document.getElementById('modal-image').src = photo.url;
+      updateModalPhoto();
       document.getElementById('photo-modal').classList.add('active');
       document.body.style.overflow = 'hidden';
+    }
+
+    function updateModalPhoto() {
+      const photo = allPhotos[currentPhotoIndex];
+      document.getElementById('modal-image').src = photo.url;
+      document.getElementById('modal-title').textContent = photo.type.charAt(0).toUpperCase() + photo.type.slice(1) + ' Photo';
+      document.getElementById('modal-date').textContent = new Date(photo.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     }
 
     function closePhotoModal() {
@@ -412,12 +520,17 @@
 
     function prevPhoto() {
       currentPhotoIndex = (currentPhotoIndex - 1 + allPhotos.length) % allPhotos.length;
-      document.getElementById('modal-image').src = allPhotos[currentPhotoIndex].url;
+      updateModalPhoto();
     }
 
     function nextPhoto() {
       currentPhotoIndex = (currentPhotoIndex + 1) % allPhotos.length;
-      document.getElementById('modal-image').src = allPhotos[currentPhotoIndex].url;
+      updateModalPhoto();
+    }
+
+    function scrollToPhotos(e) {
+      e.preventDefault();
+      document.getElementById('photo-gallery').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // Close modal on escape or click outside
@@ -425,57 +538,58 @@
       if (e.target.id === 'photo-modal') closePhotoModal();
     });
     document.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('photo-modal');
+      if (!modal.classList.contains('active')) return;
       if (e.key === 'Escape') closePhotoModal();
       if (e.key === 'ArrowLeft') prevPhoto();
       if (e.key === 'ArrowRight') nextPhoto();
     });
 
-    // Payment form handling
-    if (document.getElementById('payment-form')) {
-      const form = document.getElementById('payment-form');
-      const btn = document.getElementById('payment-btn');
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        clearMessage('payment-status');
-
-        const amount = parseFloat(form.amount.value);
-        const method = form.method.value;
-
-        if (!amount || amount <= 0) {
-          return showMessage('payment-status', 'Please enter a valid payment amount', 'error');
-        }
-        if (!method) {
-          return showMessage('payment-status', 'Please select a payment method', 'error');
-        }
-
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span> Processing...';
-
-        try {
-          // Mock payment - replace with real Stripe/payment API
-          await new Promise(resolve => setTimeout(resolve, 2000));
-
-          showMessage(
-            'payment-status',
-            `✓ Payment of $${amount.toFixed(2)} processed successfully!<br><small>Confirmation sent to your email.</small>`,
-            'success',
-            0
-          );
-
-          form.reset();
-          
-          // Update balance
-          const currentBalance = parseFloat(document.getElementById('stat-balance').textContent.replace('$', ''));
-          const newBalance = Math.max(0, currentBalance - amount);
-          document.getElementById('stat-balance').textContent = '$' + newBalance.toFixed(2);
-        } catch (err) {
-          showMessage('payment-status', '✗ Payment failed. Please try again or contact us.', 'error');
-        } finally {
-          btn.disabled = false;
-          btn.innerHTML = '💳 Submit Payment';
-        }
+    // Payment handlers
+    function handleCashApp(e) {
+      e.preventDefault();
+      const amount = document.getElementById('payment-amount').value;
+      const memo = encodeURIComponent(clientData.name + ' - Lawn Care');
+      
+      // Try to open Cash App with deep link
+      const cashAppUrl = `https://cash.app/${PAYMENT_CONFIG.cashapp}/${amount}?note=${memo}`;
+      window.location.href = cashAppUrl;
+      
+      showMessage('payment-status', `💵 Opening Cash App...<br><small>Send <strong>$${amount}</strong> to <strong>${PAYMENT_CONFIG.cashapp}</strong></small>`, 'info', 8000);
+      
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(PAYMENT_CONFIG.cashapp).then(() => {
+        console.log('Cash App handle copied to clipboard');
       });
+    }
+
+    function handleZelle(e) {
+      e.preventDefault();
+      const amount = document.getElementById('payment-amount').value;
+      
+      // Zelle doesn't have deep links - show instructions
+      showMessage(
+        'payment-status',
+        `🏦 <strong>Pay with Zelle:</strong><br><br>
+        1. Open your banking app<br>
+        2. Select Zelle<br>
+        3. Send <strong>$${amount}</strong> to: <strong>${PAYMENT_CONFIG.zelle}</strong><br>
+        4. Add note: "${clientData.name} - Lawn Care"<br><br>
+        <button class="btn btn-sm" onclick="copyZelle()">📋 Copy Email</button>`,
+        'info',
+        0
+      );
+    }
+
+    function copyZelle() {
+      navigator.clipboard.writeText(PAYMENT_CONFIG.zelle).then(() => {
+        showMessage('payment-status', '✓ Zelle email copied to clipboard!', 'success', 3000);
+      });
+    }
+
+    function handleCard(e) {
+      e.preventDefault();
+      showMessage('payment-status', 'Credit card payments coming soon! Please use Cash App, Zelle, or PayPal.', 'warning', 5000);
     }
 
     // Initial load
