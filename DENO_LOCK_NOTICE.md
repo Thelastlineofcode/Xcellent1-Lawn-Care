@@ -20,5 +20,6 @@ The lock file was generated with an older version of Deno and is not compatible 
      ```
 
 ## Best Practice
+
 - Always generate and commit `deno.lock` using the same Deno version as in your Dockerfile to avoid compatibility issues.
 - Update this notice if the Dockerfile Deno version changes.
