@@ -69,7 +69,7 @@ async function handler(req: Request): Promise<Response> {
   if (url.pathname === "/") {
     return new Response(null, {
       status: 302,
-      headers: { "Location": "/static/index.html" }
+  headers: { "Location": "/static/home.html" }
     });
   }
   
