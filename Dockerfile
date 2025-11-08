@@ -1,14 +1,15 @@
-FROM denoland/deno:alpine-1.35.0
+FROM denoland/deno:1.38.0
 
 WORKDIR /app
 
-# Copy project
+# Copy application files
 COPY . .
 
-# Cache dependencies for the web server
-RUN deno cache web/server.ts
+# Create uploads directory
+RUN mkdir -p web/uploads
 
+# Expose port
 EXPOSE 8000
 
-# Run the web server; in production you'll supply SUPABASE_URL and keys via secrets
-CMD ["run", "--allow-net", "--allow-read", "--allow-write", "--allow-env", "web/server.ts"]
+# Run the server
+CMD ["deno", "run", "--allow-net", "--allow-read", "--allow-write", "--allow-env", "server.ts"]
