@@ -1,46 +1,22 @@
-# Fly.io deployment configuration for Xcellent1 Lawn Care CRM
+# fly.toml app configuration file generated for xcellent1-lawn-care-rpneaa on 2025-11-08T02:15:27Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "xcellent1-lawn-care"
-primary_region = "dfw"
+app = 'xcellent1-lawn-care-rpneaa'
+primary_region = 'dfw'
 
 [build]
 
 [http_service]
   internal_port = 8000
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
+  processes = ['app']
 
-[[services.ports]]
-  port = 80
-  handlers = ["http"]
-
-[[services.ports]]
-  port = 443
-  handlers = ["tls", "http"]
-
-[http_service.concurrency]
-  type = "connections"
-  hard_limit = 25
-  soft_limit = 20
-
-[[http_service.checks]]
-  grace_period = "10s"
-  interval = "30s"
-  method = "GET"
-  timeout = "5s"
-  path = "/api/status"
-
-[env]
-  PORT = "8000"
-  DENO_ENV = "production"
-
-[[mounts]]
-  source = "xcellent1_uploads"
-  destination = "/app/web/uploads"
-
-[vm]
-  cpu_kind = "shared"
+[[vm]]
+  cpu_kind = 'shared'
   cpus = 1
   memory_mb = 256
