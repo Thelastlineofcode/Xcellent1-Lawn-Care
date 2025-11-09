@@ -1,193 +1,450 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Xcellent1 Lawn Care | LaPlace, LA Professional Lawn Services</title>
-  <meta name="description" content="Professional lawn care services in LaPlace & St. John Parish, Louisiana. Expert tips, seasonal guides, and quality landscaping supplies delivered to your door.">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
-    .hero-home { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 4rem 2rem; text-align: center; }
-    .hero-home h1 { font-size: 3rem; margin-bottom: 1rem; }
-    .subtitle { font-size: 1.3rem; opacity: 0.95; margin-bottom: 0.5rem; }
-    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
-    .hero-button { padding: 14px 28px; font-size: 1.1rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s; }
-    .hero-button:hover { transform: translateY(-2px); }
-    .btn-primary { background: white; color: #10b981; }
-    .btn-secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid white; }
-    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
-    .service-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; transition: transform 0.2s; }
-    .service-card:hover { transform: translateY(-4px); }
-    .service-icon { font-size: 3rem; margin-bottom: 1rem; }
-    .blog-section { background: #f9fafb; padding: 4rem 2rem; }
-    .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; max-width: 1200px; margin: 2rem auto 0; }
-    .blog-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s; }
-    .blog-card:hover { transform: translateY(-4px); }
-    .blog-image { width: 100%; height: 200px; background: linear-gradient(135deg, #10b981, #059669); }
-    .blog-content { padding: 1.5rem; }
-    .blog-date { color: #6b7280; font-size: 0.9rem; margin-bottom: 0.5rem; }
-    .blog-title { font-size: 1.3rem; margin-bottom: 0.75rem; color: #111827; }
-    .blog-excerpt { color: #4b5563; margin-bottom: 1rem; }
-    .read-more { color: #10b981; text-decoration: none; font-weight: 600; }
-    .shop-section { padding: 4rem 2rem; }
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; max-width: 1200px; margin: 2rem auto 0; }
-    .product-card { background: white; border: 2px solid #e5e7eb; border-radius: 12px; overflow: hidden; transition: all 0.2s; }
-    .product-card:hover { border-color: #10b981; transform: translateY(-4px); }
-    .product-image { width: 100%; height: 220px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
-    .product-info { padding: 1.5rem; }
-    .product-name { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
-    .product-price { font-size: 1.5rem; color: #10b981; font-weight: 700; margin-bottom: 0.5rem; }
-    .product-description { color: #6b7280; font-size: 0.95rem; margin-bottom: 1rem; }
-    .buy-button { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
-    .buy-button:hover { background: #059669; }
-  .logo-container { margin-bottom: 2rem; text-align: center; }
-  .main-logo { max-width: 400px; width: 90%; height: auto; }
-  @media (max-width: 768px) { .main-logo { max-width: 280px; } }
-  </style>
-</head>
-<body>
-  <section class="hero-home">
-    <div class="logo-container">
-      <img src="images/logo.png" alt="Xcellent1 Lawn Care" class="main-logo">
-    </div>
-    <h1>🌱 Xcellent1 Lawn Care</h1>
-    <p class="subtitle">Professional Lawn Services in LaPlace & St. John Parish, Louisiana</p>
-    <p>Expert lawn care, seasonal tips, and quality supplies for beautiful Louisiana lawns</p>
-    <div class="hero-buttons">
-      <a href="#services" class="hero-button btn-primary">Our Services</a>
-      <a href="#shop" class="hero-button btn-secondary">Shop Supplies</a>
-      <a href="/static/index.html" class="hero-button btn-secondary">Join Our Team</a>
-    </div>
-  </section>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xcellent1 Lawn Care | LaPlace, LA Professional Lawn Services</title>
+    <meta
+      name="description"
+      content="Professional lawn care services in LaPlace & St. John Parish, Louisiana. Expert tips, seasonal guides, and quality landscaping supplies delivered to your door."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+        color: #333;
+      }
+      .hero-home {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 4rem 2rem;
+        text-align: center;
+      }
+      .hero-home h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+      .subtitle {
+        font-size: 1.3rem;
+        opacity: 0.95;
+        margin-bottom: 0.5rem;
+      }
+      .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+      .hero-button {
+        padding: 14px 28px;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.2s;
+      }
+      .hero-button:hover {
+        transform: translateY(-2px);
+      }
+      .btn-primary {
+        background: white;
+        color: #10b981;
+      }
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid white;
+      }
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        padding: 4rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .service-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.2s;
+      }
+      .service-card:hover {
+        transform: translateY(-4px);
+      }
+      .service-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+      .blog-section {
+        background: #f9fafb;
+        padding: 4rem 2rem;
+      }
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 2rem auto 0;
+      }
+      .blog-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+      }
+      .blog-card:hover {
+        transform: translateY(-4px);
+      }
+      .blog-image {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #10b981, #059669);
+      }
+      .blog-content {
+        padding: 1.5rem;
+      }
+      .blog-date {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+      }
+      .blog-title {
+        font-size: 1.3rem;
+        margin-bottom: 0.75rem;
+        color: #111827;
+      }
+      .blog-excerpt {
+        color: #4b5563;
+        margin-bottom: 1rem;
+      }
+      .read-more {
+        color: #10b981;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .shop-section {
+        padding: 4rem 2rem;
+      }
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 2rem auto 0;
+      }
+      .product-card {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.2s;
+      }
+      .product-card:hover {
+        border-color: #10b981;
+        transform: translateY(-4px);
+      }
+      .product-image {
+        width: 100%;
+        height: 220px;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+      }
+      .product-info {
+        padding: 1.5rem;
+      }
+      .product-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      .product-price {
+        font-size: 1.5rem;
+        color: #10b981;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+      .product-description {
+        color: #6b7280;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+      .buy-button {
+        width: 100%;
+        padding: 12px;
+        background: #10b981;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .buy-button:hover {
+        background: #059669;
+      }
+      .logo-container {
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+      .main-logo {
+        max-width: 400px;
+        width: 90%;
+        height: auto;
+      }
+      @media (max-width: 768px) {
+        .main-logo {
+          max-width: 280px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="hero-home">
+      <div class="logo-container">
+        <img
+          src="images/logo.png"
+          alt="Xcellent1 Lawn Care"
+          class="main-logo"
+        />
+      </div>
+      <h1>🌱 Xcellent1 Lawn Care</h1>
+      <p class="subtitle">
+        Professional Lawn Services in LaPlace & St. John Parish, Louisiana
+      </p>
+      <p>
+        Expert lawn care, seasonal tips, and quality supplies for beautiful
+        Louisiana lawns
+      </p>
+      <div class="hero-buttons">
+        <a href="#services" class="hero-button btn-primary">Our Services</a>
+        <a href="#shop" class="hero-button btn-secondary">Shop Supplies</a>
+        <a href="/static/index.html" class="hero-button btn-secondary"
+          >Join Our Team</a
+        >
+      </div>
+    </section>
 
-  <section id="services">
-    <h2 style="text-align: center; margin: 3rem 0;">Our Services</h2>
-    <div class="services-grid">
-      <div class="service-card">
-        <div class="service-icon">🌿</div>
-        <h3>Weekly Lawn Maintenance</h3>
-        <p>Mowing, edging, trimming, and blowing. Keep your LaPlace lawn pristine year-round (March-November).</p>
-        <p style="color: #10b981; font-weight: 600; margin-top: 1rem;">Starting at $75/visit</p>
+    <section id="services">
+      <h2 style="text-align: center; margin: 3rem 0">Our Services</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">🌿</div>
+          <h3>Weekly Lawn Maintenance</h3>
+          <p>
+            Mowing, edging, trimming, and blowing. Keep your LaPlace lawn
+            pristine year-round (March-November).
+          </p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
+            Starting at $75/visit
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">💧</div>
+          <h3>Irrigation & Watering</h3>
+          <p>
+            Professional sprinkler system installation and maintenance for
+            Louisiana's humid climate.
+          </p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
+            Free consultation
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🌳</div>
+          <h3>Tree & Shrub Care</h3>
+          <p>
+            Pruning, trimming, and seasonal maintenance for healthy landscape
+            growth.
+          </p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
+            Custom quotes
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🌺</div>
+          <h3>Flower Bed Design</h3>
+          <p>
+            Beautiful seasonal plantings with Louisiana-native flowers that
+            thrive in St. John Parish.
+          </p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
+            From $200
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🍂</div>
+          <h3>Leaf & Debris Removal</h3>
+          <p>
+            Fall cleanup services to keep your property looking great through
+            Louisiana's mild winters.
+          </p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
+            Seasonal pricing
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🌱</div>
+          <h3>Fertilization & Weed Control</h3>
+          <p>
+            Custom fertilization plans for St. Augustine, Bermuda, and Zoysia
+            grass types common in LaPlace.
+          </p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
+            $50-150/treatment
+          </p>
+        </div>
       </div>
-      <div class="service-card">
-        <div class="service-icon">💧</div>
-        <h3>Irrigation & Watering</h3>
-        <p>Professional sprinkler system installation and maintenance for Louisiana's humid climate.</p>
-        <p style="color: #10b981; font-weight: 600; margin-top: 1rem;">Free consultation</p>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🌳</div>
-        <h3>Tree & Shrub Care</h3>
-        <p>Pruning, trimming, and seasonal maintenance for healthy landscape growth.</p>
-        <p style="color: #10b981; font-weight: 600; margin-top: 1rem;">Custom quotes</p>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🌺</div>
-        <h3>Flower Bed Design</h3>
-        <p>Beautiful seasonal plantings with Louisiana-native flowers that thrive in St. John Parish.</p>
-        <p style="color: #10b981; font-weight: 600; margin-top: 1rem;">From $200</p>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🍂</div>
-        <h3>Leaf & Debris Removal</h3>
-        <p>Fall cleanup services to keep your property looking great through Louisiana's mild winters.</p>
-        <p style="color: #10b981; font-weight: 600; margin-top: 1rem;">Seasonal pricing</p>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🌱</div>
-        <h3>Fertilization & Weed Control</h3>
-        <p>Custom fertilization plans for St. Augustine, Bermuda, and Zoysia grass types common in LaPlace.</p>
-        <p style="color: #10b981; font-weight: 600; margin-top: 1rem;">$50-150/treatment</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="blog" class="blog-section">
-    <h2 style="text-align: center;">LaPlace Lawn Care Blog</h2>
-    <p style="text-align: center; color: #6b7280; margin-bottom: 3rem;">Expert tips for maintaining beautiful lawns in St. John Parish</p>
-    <div class="blog-grid">
-      <article class="blog-card">
-        <div class="blog-image"></div>
-        <div class="blog-content">
-          <div class="blog-date">November 2025</div>
-          <h3 class="blog-title">Best Grass Types for LaPlace, Louisiana</h3>
-          <p class="blog-excerpt">St. Augustine, Bermuda, Zoysia, and Centipede grass thrive in LaPlace's humid climate.</p>
-          <a href="#" class="read-more">Read More →</a>
-        </div>
-      </article>
-      <article class="blog-card">
-        <div class="blog-image"></div>
-        <div class="blog-content">
-          <div class="blog-date">October 2025</div>
-          <h3 class="blog-title">Fall Lawn Care Schedule</h3>
-          <p class="blog-excerpt">Prepare your lawn for dormancy with proper mowing, fertilization, and weed control.</p>
-          <a href="#" class="read-more">Read More →</a>
-        </div>
-      </article>
-      <article class="blog-card">
-        <div class="blog-image"></div>
-        <div class="blog-content">
-          <div class="blog-date">September 2025</div>
-          <h3 class="blog-title">Watering Tips for Louisiana's Hot Summers</h3>
-          <p class="blog-excerpt">Deep watering 1-2x/week beats daily sprinkling. Water early morning.</p>
-          <a href="#" class="read-more">Read More →</a>
-        </div>
-      </article>
-    </div>
-  </section>
+    <section id="blog" class="blog-section">
+      <h2 style="text-align: center">LaPlace Lawn Care Blog</h2>
+      <p style="text-align: center; color: #6b7280; margin-bottom: 3rem">
+        Expert tips for maintaining beautiful lawns in St. John Parish
+      </p>
+      <div class="blog-grid">
+        <article class="blog-card">
+          <div class="blog-image"></div>
+          <div class="blog-content">
+            <div class="blog-date">November 2025</div>
+            <h3 class="blog-title">Best Grass Types for LaPlace, Louisiana</h3>
+            <p class="blog-excerpt">
+              St. Augustine, Bermuda, Zoysia, and Centipede grass thrive in
+              LaPlace's humid climate.
+            </p>
+            <a href="#" class="read-more">Read More →</a>
+          </div>
+        </article>
+        <article class="blog-card">
+          <div class="blog-image"></div>
+          <div class="blog-content">
+            <div class="blog-date">October 2025</div>
+            <h3 class="blog-title">Fall Lawn Care Schedule</h3>
+            <p class="blog-excerpt">
+              Prepare your lawn for dormancy with proper mowing, fertilization,
+              and weed control.
+            </p>
+            <a href="#" class="read-more">Read More →</a>
+          </div>
+        </article>
+        <article class="blog-card">
+          <div class="blog-image"></div>
+          <div class="blog-content">
+            <div class="blog-date">September 2025</div>
+            <h3 class="blog-title">
+              Watering Tips for Louisiana's Hot Summers
+            </h3>
+            <p class="blog-excerpt">
+              Deep watering 1-2x/week beats daily sprinkling. Water early
+              morning.
+            </p>
+            <a href="#" class="read-more">Read More →</a>
+          </div>
+        </article>
+      </div>
+    </section>
 
-  <section id="shop" class="shop-section">
-    <h2 style="text-align: center;">Landscaping Supply Shop</h2>
-    <p style="text-align: center; color: #6b7280; margin-bottom: 3rem;">Quality lawn care products delivered to LaPlace & St. John Parish</p>
-    <div class="product-grid">
-      <div class="product-card">
-        <div class="product-image">🌱</div>
-        <div class="product-info">
-          <div class="product-name">St. Augustine Grass Sod</div>
-          <div class="product-price">$0.45/sq ft</div>
-          <p class="product-description">Premium sod, perfect for Louisiana's humid climate. Minimum order 400 sq ft.</p>
-          <button class="buy-button" onclick="alert('Order: St. Augustine Sod')">Order Now</button>
+    <section id="shop" class="shop-section">
+      <h2 style="text-align: center">Landscaping Supply Shop</h2>
+      <p style="text-align: center; color: #6b7280; margin-bottom: 3rem">
+        Quality lawn care products delivered to LaPlace & St. John Parish
+      </p>
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="product-image">🌱</div>
+          <div class="product-info">
+            <div class="product-name">St. Augustine Grass Sod</div>
+            <div class="product-price">$0.45/sq ft</div>
+            <p class="product-description">
+              Premium sod, perfect for Louisiana's humid climate. Minimum order
+              400 sq ft.
+            </p>
+            <button
+              class="buy-button"
+              onclick="alert('Order: St. Augustine Sod')"
+            >
+              Order Now
+            </button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-image">💧</div>
+          <div class="product-info">
+            <div class="product-name">Fertilizer (50 lb)</div>
+            <div class="product-price">$49.99</div>
+            <p class="product-description">
+              15-0-15 slow-release formula for St. Augustine & Bermuda grass.
+              Covers 15,000 sq ft.
+            </p>
+            <button class="buy-button" onclick="alert('Added to cart')">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-image">🌿</div>
+          <div class="product-info">
+            <div class="product-name">Weed & Feed (40 lb)</div>
+            <div class="product-price">$39.99</div>
+            <p class="product-description">
+              Pre-emergent weed control + fertilizer combo. Apply March &
+              September.
+            </p>
+            <button class="buy-button" onclick="alert('Added to cart')">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-image">🌳</div>
+          <div class="product-info">
+            <div class="product-name">Pine Straw (Bale)</div>
+            <div class="product-price">$7.99/bale</div>
+            <p class="product-description">
+              Natural mulch for flower beds. Each bale covers ~50 sq ft.
+            </p>
+            <button class="buy-button" onclick="alert('Added to cart')">
+              Add to Cart
+            </button>
+          </div>
         </div>
       </div>
-      <div class="product-card">
-        <div class="product-image">💧</div>
-        <div class="product-info">
-          <div class="product-name">Fertilizer (50 lb)</div>
-          <div class="product-price">$49.99</div>
-          <p class="product-description">15-0-15 slow-release formula for St. Augustine & Bermuda grass. Covers 15,000 sq ft.</p>
-          <button class="buy-button" onclick="alert('Added to cart')">Add to Cart</button>
-        </div>
-      </div>
-      <div class="product-card">
-        <div class="product-image">🌿</div>
-        <div class="product-info">
-          <div class="product-name">Weed & Feed (40 lb)</div>
-          <div class="product-price">$39.99</div>
-          <p class="product-description">Pre-emergent weed control + fertilizer combo. Apply March & September.</p>
-          <button class="buy-button" onclick="alert('Added to cart')">Add to Cart</button>
-        </div>
-      </div>
-      <div class="product-card">
-        <div class="product-image">🌳</div>
-        <div class="product-info">
-          <div class="product-name">Pine Straw (Bale)</div>
-          <div class="product-price">$7.99/bale</div>
-          <p class="product-description">Natural mulch for flower beds. Each bale covers ~50 sq ft.</p>
-          <button class="buy-button" onclick="alert('Added to cart')">Add to Cart</button>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <footer style="background: #111827; color: white; padding: 3rem 2rem; text-align: center;">
-    <h3>🌱 Xcellent1 Lawn Care</h3>
-    <p>Professional lawn services in LaPlace & St. John Parish, Louisiana</p>
-    <p style="margin-top: 1rem;">
-      📞 <a href="tel:555-867-5309" style="color: #10b981;">(555) 867-5309</a> | 
-      ✉️ <a href="mailto:info@xcellent1lawn.com" style="color: #10b981;">info@xcellent1lawn.com</a>
-    </p>
-    <p style="margin-top: 2rem; color: #6b7280;">© 2025 Xcellent1 Lawn Care. All rights reserved.</p>
-  </footer>
-</body>
+    <footer
+      style="
+        background: #111827;
+        color: white;
+        padding: 3rem 2rem;
+        text-align: center;
+      "
+    >
+      <h3>🌱 Xcellent1 Lawn Care</h3>
+      <p>Professional lawn services in LaPlace & St. John Parish, Louisiana</p>
+      <p style="margin-top: 1rem">
+        📞
+        <a href="tel:555-867-5309" style="color: #10b981">(555) 867-5309</a> |
+        ✉️
+        <a href="mailto:info@xcellent1lawn.com" style="color: #10b981"
+          >info@xcellent1lawn.com</a
+        >
+      </p>
+      <p style="margin-top: 2rem; color: #6b7280">
+        © 2025 Xcellent1 Lawn Care. All rights reserved.
+      </p>
+    </footer>
+  </body>
 </html>
