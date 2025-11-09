@@ -45,31 +45,21 @@ async function saveBase64Image(
 }
 
 async function handler(req: Request): Promise<Response> {
-  // Move url and headers to top for all endpoint logic
-  const url = new URL(req.url);
-  const headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PATCH, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type": "application/json",
-  };
+  // ...existing code...
 
-  // Helper: Supabase JWT auth check (for protected endpoints)
-  async function requireAuth(): Promise<any | null> {
-    const authHeader = req.headers.get("authorization") || "";
-    try {
-      // Minimal decode (for demo/dev only)
-      const base64Payload = authHeader.split(".")[1];
-      if (!base64Payload) return null;
-      const payload = JSON.parse(atob(base64Payload));
-      return payload;
-    } catch {
-      return null;
-    }
-  }
+  // ...existing code...
 
-  // POST /jobs (create job API)
+  // Move all custom endpoints after url/headers are defined
+
+  // POST /jobs (create job API, protected)
   if (url.pathname === "/jobs" && req.method === "POST") {
+    const user = await requireAuth();
+    if (!user) {
+      return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }), {
+        status: 401,
+        headers,
+      });
+    }
     try {
       const body = await req.json();
       // Basic validation
