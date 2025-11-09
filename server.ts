@@ -45,9 +45,8 @@ async function saveBase64Image(
 }
 
 async function handler(req: Request): Promise<Response> {
+  // Move url and headers to top for all endpoint logic
   const url = new URL(req.url);
-
-  // CORS headers
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, PATCH, OPTIONS",
@@ -55,9 +54,203 @@ async function handler(req: Request): Promise<Response> {
     "Content-Type": "application/json",
   };
 
+  // Helper: Supabase JWT auth check (for protected endpoints)
+  async function requireAuth(): Promise<any | null> {
+    const authHeader = req.headers.get("authorization") || "";
+    try {
+      // Minimal decode (for demo/dev only)
+      const base64Payload = authHeader.split(".")[1];
+      if (!base64Payload) return null;
+      const payload = JSON.parse(atob(base64Payload));
+      return payload;
+    } catch {
+      return null;
+    }
+  }
+
+  // POST /jobs (create job API)
+  if (url.pathname === "/jobs" && req.method === "POST") {
+    try {
+      const body = await req.json();
+      // Basic validation
+      if (!body.customer_id || !body.job_date || !body.address) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Missing required fields: customer_id, job_date, address" }),
+          { status: 400, headers }
+        );
+      }
+      let jobId;
+      if (dbConnected) {
+        // Save to database
+        const result = await db.queryObject(
+          `INSERT INTO jobs (customer_id, crew_id, job_date, job_time, address, city, state, zip, job_type, description, status, estimated_hours, amount)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'scheduled', $11, $12)
+           RETURNING id`,
+          [
+            body.customer_id,
+            body.crew_id || null,
+            body.job_date,
+            body.job_time || null,
+            body.address,
+            body.city || null,
+            body.state || null,
+            body.zip || null,
+            body.job_type || null,
+            body.description || null,
+            body.estimated_hours || null,
+            body.amount || null
+          ]
+        );
+        jobId = (result.rows[0] as any).id;
+        // Emit JOB_SCHEDULED event
+        await db.queryObject(
+          `INSERT INTO outbox_events (event_type, ref_id, payload, status)
+           VALUES ($1, $2, $3, 'pending')`,
+          ["JOB_SCHEDULED", jobId, JSON.stringify(body)]
+        );
+      } else {
+        // Fallback to in-memory
+        jobId = `job-${Date.now()}`;
+        // ...existing code...
+        // Optionally add to in-memory outbox
+        const eventId = `event-${eventCounter++}`;
+        outbox.set(eventId, {
+          id: eventId,
+          type: "JOB_SCHEDULED",
+          ref_id: jobId,
+          payload: body,
+          created_at: new Date().toISOString(),
+        });
+      }
+      return new Response(
+        JSON.stringify({ ok: true, job_id: jobId, status: "scheduled" }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error creating job:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // Move url and headers to top for all endpoint logic
+  const url = new URL(req.url);
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PATCH, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Content-Type": "application/json",
+  };
+
+  // Helper: Supabase JWT auth check (for protected endpoints)
+  async function requireAuth(): Promise<any | null> {
+    const authHeader = req.headers.get("authorization") || "";
+    try {
+      // Minimal decode (for demo/dev only)
+      const base64Payload = authHeader.split(".")[1];
+      if (!base64Payload) return null;
+      const payload = JSON.parse(atob(base64Payload));
+      return payload;
+    } catch {
+      return null;
+    }
+  }
+
+  // POST /quotes/estimate (stateless pricing helper)
+  if (url.pathname === "/quotes/estimate" && req.method === "POST") {
+    try {
+      const body = await req.json();
+      const { service_type, lawn_size, frequency } = body;
+      if (!service_type || !lawn_size || !frequency) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Missing required fields: service_type, lawn_size, frequency" }),
+          { status: 400, headers }
+        );
+      }
+      // Simple pricing logic
+      let base = 45;
+      if (lawn_size === "large") base += 20;
+      if (lawn_size === "small") base -= 10;
+      if (frequency === "weekly") base *= 0.9;
+      if (frequency === "biweekly") base *= 1.0;
+      if (frequency === "monthly") base *= 1.2;
+      if (service_type === "premium") base += 15;
+      if (service_type === "basic") base += 0;
+      const price_low_cents = Math.round(base * 100);
+      const price_high_cents = Math.round((base + 10) * 100);
+      const valid_until = new Date(Date.now() + 1000 * 60 * 60).toISOString();
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          price_low_cents,
+          price_high_cents,
+          notes: "Estimate based on average yard charge and selected options.",
+          valid_until,
+        }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error in /quotes/estimate:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // POST /webhooks/twilio (Twilio SMS webhook receiver, stub)
+  if (url.pathname === "/webhooks/twilio" && req.method === "POST") {
+    try {
+      // Parse Twilio payload (form-encoded or JSON)
+      let body: any = {};
+      const contentType = req.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        body = await req.json();
+      } else if (contentType.includes("application/x-www-form-urlencoded")) {
+        const form = await req.formData();
+        for (const [k, v] of form.entries()) body[k] = v;
+      }
+
+      // Signature verification placeholder
+      // TODO: Implement Twilio signature verification
+      const signatureValid = false; // Always false for now
+
+      // Insert event into outbox (stub)
+      const eventId = `event-${eventCounter++}`;
+      outbox.set(eventId, {
+        id: eventId,
+        type: "TWILIO_INBOUND",
+        ref_id: body.MessageSid || "unknown",
+        payload: body,
+        created_at: new Date().toISOString(),
+      });
+
+      return new Response(
+        JSON.stringify({ ok: true, received: true, signatureValid }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error in /webhooks/twilio:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
   // Handle OPTIONS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers });
+  }
+
+  // Health check endpoint
+  if (url.pathname === "/health" && req.method === "GET") {
+    return new Response(JSON.stringify({ status: "ok" }), {
+      status: 200,
+      headers,
+    });
   }
 
   // Serve static files
@@ -277,15 +470,21 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
-  // GET /api/owner/metrics (business KPIs)
+  // GET /api/owner/metrics (business KPIs, protected)
   if (url.pathname === "/api/owner/metrics" && req.method === "GET") {
+    const user = await requireAuth();
+    if (!user) {
+      return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }), {
+        status: 401,
+        headers,
+      });
+    }
     try {
       if (dbConnected) {
         const result = await db.queryObject(
           `SELECT get_owner_metrics() as metrics`
         );
         const metrics = (result.rows[0] as any).metrics;
-
         return new Response(JSON.stringify({ ok: true, ...metrics }), {
           status: 200,
           headers,

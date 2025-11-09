@@ -360,7 +360,7 @@ test.describe('Reliability NFR: Error Handling & Recovery', () => {
   });
 
   test('health check endpoint returns service status', async ({ request }) => {
-    const response = await request.get('/api/health');
+  const response = await request.get('/health');
 
     expect(response.status()).toBe(200);
 
@@ -434,7 +434,7 @@ test.describe('Reliability NFR: Error Handling & Recovery', () => {
 - Error handling: Graceful degradation (500 error → user-friendly message + retry button)
 - Retries: 3 attempts on transient failures (503 → eventual success)
 - Offline handling: Network disconnection detected (sync when reconnected)
-- Health checks: `/api/health` monitors database, cache, queue
+- Health checks: `/health` monitors database, cache, queue
 - Circuit breaker: Opens after 5 failures (fallback UI, stop retries)
 - Rate limiting: 429 response handled (Retry-After header respected)
 
@@ -630,7 +630,7 @@ Before release gate:
 - [ ] **Reliability** (Playwright E2E + API Tests):
   - [ ] Error handling graceful (500 → user-friendly message + retry)
   - [ ] Retries implemented (3 attempts on transient failures)
-  - [ ] Health checks monitored (/api/health endpoint)
+  - [ ] Health checks monitored (/health endpoint)
   - [ ] Circuit breaker tested (opens after failure threshold)
   - [ ] Offline handling validated (network disconnection graceful)
 
