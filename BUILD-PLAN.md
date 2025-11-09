@@ -1,4 +1,8 @@
-# Xcellent1 Build Plan - Keep It Simple
+const port = Number(Deno.env.get("PORT") || 8000);
+// if using std/http
+serve(handler, { hostname: "0.0.0.0", port });const port = Number(Deno.env.get("PORT") || 8000);
+// if using std/http
+serve(handler, { hostname: "0.0.0.0", port });# Xcellent1 Build Plan - Keep It Simple
 
 ## 🎯 Goal
 Working lawn care app for 5-person team. Customers book → Crew works → Get paid.
