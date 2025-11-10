@@ -210,6 +210,12 @@
           max-width: 280px;
         }
       }
+      /* Waitlist form styles */
+      .waitlist-form { display: flex; gap: 0.5rem; align-items: center; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+      .waitlist-form .form-field { padding: 10px 12px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 1rem; }
+      .waitlist-form .form-select { padding: 10px 12px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 1rem; background: white; }
+      .waitlist-submit { padding: 12px 20px; border-radius: 8px; border: none; background: #111827; color: white; font-weight: 700; cursor: pointer; }
+      .waitlist-submit:hover { background: #0f1724; }
     </style>
   </head>
   <body>
@@ -236,6 +242,19 @@
           >Join Our Team</a
         >
       </div>
+      <!-- Waitlist form -->
+      <form id="waitlist-form" class="waitlist-form" action="#" onsubmit="return handleWaitlistSubmit(event)">
+        <input aria-label="Name" name="name" class="form-field" placeholder="Your name" required />
+        <input aria-label="Email" name="email" type="email" class="form-field" placeholder="Email address" required />
+        <select name="service" class="form-select" aria-label="Service of interest">
+          <option value="weekly">Weekly Lawn Maintenance</option>
+          <option value="flower-bed">Flower Bed Clean Out &amp; Weed Removal</option>
+          <option value="spring-cleaning">Spring Cleaning</option>
+          <option value="leaf-debris">Leaf &amp; Debris Removal</option>
+          <option value="tractor">Tractor / Bush Hog Services</option>
+        </select>
+        <button type="submit" class="waitlist-submit">Join Waitlist</button>
+      </form>
     </section>
 
     <section id="services">
@@ -244,68 +263,38 @@
         <div class="service-card">
           <div class="service-icon">🌿</div>
           <h3>Weekly Lawn Maintenance</h3>
-          <p>
-            Mowing, edging, trimming, and blowing. Keep your LaPlace lawn
-            pristine year-round (March-November).
-          </p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
-            Starting at $75/visit
-          </p>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">💧</div>
-          <h3>Irrigation & Watering</h3>
-          <p>
-            Professional sprinkler system installation and maintenance for
-            Louisiana's humid climate.
-          </p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
-            Free consultation
-          </p>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">🌳</div>
-          <h3>Tree & Shrub Care</h3>
-          <p>
-            Pruning, trimming, and seasonal maintenance for healthy landscape
-            growth.
-          </p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
-            Custom quotes
-          </p>
+          <p>Mowing, edging, trimming, and blowing. Keep your LaPlace lawn pristine with scheduled weekly visits.</p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">Starting at $75/visit</p>
         </div>
         <div class="service-card">
           <div class="service-icon">🌺</div>
-          <h3>Flower Bed Design</h3>
-          <p>
-            Beautiful seasonal plantings with Louisiana-native flowers that
-            thrive in St. John Parish.
-          </p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
-            From $200
-          </p>
+          <h3>Flower Bed Clean Out &amp; Weed Removal</h3>
+          <p>Thorough clean-outs, weed removal, and bed preparation using Louisiana-native plant recommendations.</p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">From $150</p>
         </div>
         <div class="service-card">
-          <div class="service-icon">🍂</div>
-          <h3>Leaf & Debris Removal</h3>
-          <p>
-            Fall cleanup services to keep your property looking great through
-            Louisiana's mild winters.
-          </p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
-            Seasonal pricing
-          </p>
+          <div class="service-icon">🧹</div>
+          <h3>Spring Cleaning</h3>
+          <p>Full spring refresh: debris removal, edging, mulching, and prepping your yard for the growing season.</p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">Custom quotes</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">�</div>
+          <h3>Leaf &amp; Debris Removal</h3>
+          <p>Seasonal cleanup to remove leaves, branches, and debris to keep landscapes healthy and tidy.</p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">Seasonal pricing</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🚜</div>
+          <h3>Tractor / Bush Hog Services</h3>
+          <p>Heavy-duty land clearing, pasture mowing, and overgrown lot maintenance using tractor-mounted bush hogs.</p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">Call for pricing</p>
         </div>
         <div class="service-card">
           <div class="service-icon">🌱</div>
-          <h3>Fertilization & Weed Control</h3>
-          <p>
-            Custom fertilization plans for St. Augustine, Bermuda, and Zoysia
-            grass types common in LaPlace.
-          </p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">
-            $50-150/treatment
-          </p>
+          <h3>Fertilization &amp; Weed Control</h3>
+          <p>Custom fertilization plans for St. Augustine, Bermuda, and Zoysia grass types common in LaPlace.</p>
+          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">$50-150/treatment</p>
         </div>
       </div>
     </section>
