@@ -541,6 +541,68 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // POST /api/waitlist - collect waitlist signups (name, email, service)
+  if (url.pathname === "/api/waitlist" && req.method === "POST") {
+    try {
+      const body = await req.json();
+
+      if (!body.name || body.name.trim().length < 2) {
+        return new Response(JSON.stringify({ ok: false, error: "Name must be at least 2 characters" }), { status: 400, headers });
+      }
+      if (!body.email || !/^\S+@\S+\.\S+$/.test(body.email)) {
+        return new Response(JSON.stringify({ ok: false, error: "Valid email is required" }), { status: 400, headers });
+      }
+
+      const record = {
+        id: `wait_${Date.now()}`,
+        name: body.name.trim(),
+        email: body.email.trim(),
+        service: body.service || "general",
+        notes: body.notes ? String(body.notes).trim() : "",
+        created_at: new Date().toISOString(),
+      };
+
+      if (dbConnected) {
+        // Save to applications table with source=waitlist if available
+        try {
+          const result = await db.queryObject(
+            `INSERT INTO applications (name, phone, email, notes, source, status) VALUES ($1, $2, $3, $4, $5, 'pending') RETURNING id`,
+            [record.name, "", record.email, `waitlist:${record.service} ${record.notes}`, "waitlist"]
+          );
+          const id = (result.rows[0] as any).id;
+          return new Response(JSON.stringify({ ok: true, id }), { status: 201, headers });
+        } catch (dbErr) {
+          console.error("[server] DB insert error for waitlist:", dbErr);
+          // fallback to file below
+        }
+      }
+
+      // File-backed dev DB fallback: append to agents/dev_db.json
+      try {
+        const dbPath = './agents/dev_db.json';
+        let file = '{}';
+        try {
+          file = await Deno.readTextFile(dbPath);
+        } catch (e) {
+          // If file doesn't exist, create a basic structure
+          file = JSON.stringify({ waitlist: [], leads: [], events_outbox: [], invoices: [] }, null, 2);
+        }
+        const json = JSON.parse(file || '{}');
+        if (!Array.isArray(json.waitlist)) json.waitlist = [];
+        json.waitlist.push(record);
+        await Deno.writeTextFile(dbPath, JSON.stringify(json, null, 2));
+
+        return new Response(JSON.stringify({ ok: true, id: record.id }), { status: 201, headers });
+      } catch (fileErr) {
+        console.error('[server] Error writing waitlist to dev_db:', fileErr);
+        return new Response(JSON.stringify({ ok: false, error: 'Internal server error' }), { status: 500, headers });
+      }
+    } catch (err) {
+      console.error('[server] Error handling waitlist:', err);
+      return new Response(JSON.stringify({ ok: false, error: 'Internal server error' }), { status: 500, headers });
+    }
+  }
+
   // 404 for unknown routes
   return new Response(JSON.stringify({ ok: false, error: "Not found" }), {
     status: 404,

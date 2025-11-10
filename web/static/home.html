@@ -435,5 +435,36 @@
         © 2025 Xcellent1 Lawn Care. All rights reserved.
       </p>
     </footer>
+    <script>
+      async function handleWaitlistSubmit(e) {
+        e.preventDefault();
+        const form = document.getElementById('waitlist-form');
+        const data = new FormData(form);
+        const payload = {
+          name: data.get('name'),
+          email: data.get('email'),
+          service: data.get('service'),
+        };
+
+        try {
+          const res = await fetch('/api/waitlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const json = await res.json();
+          if (json.ok) {
+            alert('Thanks! You have been added to the waitlist. We will email you soon.');
+            form.reset();
+          } else {
+            alert('Error: ' + (json.error || 'Unable to join waitlist'));
+          }
+        } catch (err) {
+          alert('Network error, please try again later');
+          console.error(err);
+        }
+        return false;
+      }
+    </script>
   </body>
 </html>
