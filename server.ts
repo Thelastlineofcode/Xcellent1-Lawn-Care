@@ -7,7 +7,7 @@ import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 // Direct connection to Supabase (note: TLS certificate validation may fail in development)
 const DATABASE_URL =
   Deno.env.get("DATABASE_URL") ||
-  "postgresql://postgres:shine6911@db.utivthfrwgtjatsusopw.supabase.co:5432/postgres?sslmode=require";
+  "postgresql://postgres:shine6911@db.utivthfrwgtjatsusopw.supabase.co:5432/postgres?sslmode=disable";
 
 const db = new Client(DATABASE_URL);
 
