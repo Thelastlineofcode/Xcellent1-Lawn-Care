@@ -14,8 +14,8 @@ Roles assigned: PM, BE, DEVOPS, QA, BMAD
 Stories:
 
 - Story 1.1 — Initialize repository & Deno project
-  - Description: Create `deno.json`, basic Hono app, `api/routes/health.ts`, and a `README.md` entry for local dev.
-  - Acceptance Criteria: `deno run --allow-net` starts a dev server and GET `/api/v1/health` returns 200 with `{status: "ok"}`.
+  - Description: Create `deno.json`, basic Hono app, `api-endpoints.ts`, and a `README.md` entry for local dev.
+  - Acceptance Criteria: `deno run --allow-net` starts a dev server and GET `/health` returns 200 with `{status: "ok"}`.
   - Estimate: 2 pts
   - Roles: BE, DEVOPS, BMAD
 
