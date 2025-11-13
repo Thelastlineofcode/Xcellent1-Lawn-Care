@@ -1,3 +1,10 @@
+// QA Scaffold: Outbox Event Tests
+
+// Test event creation
+// Test event retrieval
+// Test error handling (invalid event)
+
+// Implement with your preferred test runner
 import * as stub from "../supabase_client_stub.ts";
 import * as devdb from "../dev_db.ts";
 

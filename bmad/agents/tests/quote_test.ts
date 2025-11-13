@@ -1,3 +1,10 @@
+// QA Scaffold: Quote API Agent Tests
+
+// Test valid quote request (in-area)
+// Test out-of-area address
+// Test missing/invalid fields
+
+// Implement with your preferred test runner (e.g., Jest, Mocha, Deno)
 import { handler } from "../quote/handler.ts";
 
 Deno.test("quote heuristic - mowing 1000 sqft", async () => {

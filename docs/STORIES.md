@@ -101,7 +101,6 @@ This document contains all 90+ user stories across 9 epics for the Xcellent1 Law
 **I want** all forms to work perfectly on my phone  
 **So that** I can book services while on the go
 
-
 **Acceptance Criteria**:
 
 - [x] Touch-friendly inputs (large tap targets)

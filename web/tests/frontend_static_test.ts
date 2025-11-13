@@ -1,3 +1,10 @@
+// QA Scaffold: Frontend Quote Form Tests
+
+// Test: Quote form renders and submits
+// Test: Shows error for out-of-area address
+// Test: Map displays River Parishes area
+
+// Implement with your preferred browser automation (e.g., Playwright, Cypress)
 import { assert } from "https://deno.land/std@0.201.0/testing/asserts.ts";
 
 Deno.test("index.html contains lead form", async () => {

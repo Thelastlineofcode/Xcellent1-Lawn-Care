@@ -2,12 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Xcellent1 Lawn Care | LaPlace, LA Professional Lawn Services</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Xcellent1 Lawn Care | River Parishes Professional Lawn Services</title>
     <meta
       name="description"
-      content="Professional lawn care services in LaPlace & St. John Parish, Louisiana. Expert tips, seasonal guides, and quality landscaping supplies delivered to your door."
+      content="Professional lawn care services in the River Parishes, Louisiana. Expert tips, seasonal guides, and quality landscaping supplies delivered to your door."
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
     <style>
       * {
@@ -16,101 +19,180 @@
         box-sizing: border-box;
       }
       body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         line-height: 1.6;
-        color: #333;
+        color: #222D39;
       }
       .hero-home {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        background: linear-gradient(to bottom, rgba(1, 39, 20, 0.6), rgba(59, 131, 42, 0.7)) center/cover no-repeat;
         color: white;
-        padding: 4rem 2rem;
+        padding: 8rem 2rem 6rem;
         text-align: center;
+        position: relative;
+        min-height: 600px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .hero-home::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(1, 39, 20, 0.3);
+        z-index: 0;
+      }
+      .hero-home > * {
+        position: relative;
+        z-index: 1;
       }
       .hero-home h1 {
-        font-size: 3rem;
-        margin-bottom: 1rem;
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+        letter-spacing: -0.5px;
       }
       .subtitle {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
         opacity: 0.95;
         margin-bottom: 0.5rem;
+        font-weight: 400;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
       }
       .hero-buttons {
         display: flex;
         gap: 1rem;
         justify-content: center;
         flex-wrap: wrap;
-        margin-top: 2rem;
+        margin-top: 2.5rem;
       }
       .hero-button {
-        padding: 14px 28px;
+        padding: 16px 32px;
         font-size: 1.1rem;
-        border-radius: 8px;
+        border-radius: 6px;
         text-decoration: none;
         font-weight: 600;
-        transition: transform 0.2s;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       }
       .hero-button:hover {
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
       }
       .btn-primary {
-        background: white;
-        color: #10b981;
+        background: #f23d00;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #bc2800;
       }
       .btn-secondary {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
+        background: rgba(255, 255, 255, 0.95);
+        color: #3b832a;
         border: 2px solid white;
+      }
+      .btn-secondary:hover {
+        background: white;
+        color: #012714;
       }
       .services-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
-        padding: 4rem 2rem;
-        max-width: 1200px;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+        padding: 5rem 2rem;
+        max-width: 1400px;
         margin: 0 auto;
       }
       .service-card {
         background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        transition: transform 0.2s;
+        padding: 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+        text-align: left;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
       }
       .service-card:hover {
-        transform: translateY(-4px);
+        transform: translateY(-6px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      }
+      .service-image {
+        width: 100%;
+        height: 220px;
+        background: linear-gradient(135deg, rgba(59, 131, 42, 0.9), rgba(96, 200, 72, 0.9)) center/cover no-repeat;
+        position: relative;
+        overflow: hidden;
+        background-size: cover;
+        background-position: center;
+      }
+      .service-image::after {
+        content: attr(data-icon);
+        position: absolute;
+        font-size: 5rem;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      }
+      .service-content {
+        padding: 2rem;
       }
       .service-icon {
-        font-size: 3rem;
+        font-size: 2.5rem;
         margin-bottom: 1rem;
+        display: block;
       }
       .blog-section {
-        background: #f9fafb;
-        padding: 4rem 2rem;
+        background: #F7F6F5;
+        padding: 5rem 2rem;
+      }
+      .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+      .section-header h2 {
+        font-size: 2.5rem;
+        color: #3b832a;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+      .section-header p {
+        font-size: 1.1rem;
+        color: #64748b;
       }
       .blog-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 2rem;
-        max-width: 1200px;
-        margin: 2rem auto 0;
+        gap: 2.5rem;
+        max-width: 1400px;
+        margin: 0 auto;
       }
       .blog-card {
         background: white;
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
       }
       .blog-card:hover {
-        transform: translateY(-4px);
+        transform: translateY(-6px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
       }
       .blog-image {
         width: 100%;
-        height: 200px;
-        background: linear-gradient(135deg, #10b981, #059669);
+        height: 240px;
+        background: linear-gradient(135deg, #3b832a, #60C848) center/cover no-repeat;
+      }
+      .blog-image[style*="background-image"] {
+        background-size: cover;
+        background-position: center;
       }
       .blog-content {
         padding: 1.5rem;
@@ -135,101 +217,165 @@
         font-weight: 600;
       }
       .shop-section {
-        padding: 4rem 2rem;
+        padding: 5rem 2rem;
+        background: white;
       }
       .product-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-        max-width: 1200px;
-        margin: 2rem auto 0;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 2.5rem;
+        max-width: 1400px;
+        margin: 0 auto;
       }
       .product-card {
         background: white;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
         overflow: hidden;
-        transition: all 0.2s;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
       }
       .product-card:hover {
-        border-color: #10b981;
-        transform: translateY(-4px);
+        border-color: #3b832a;
+        transform: translateY(-6px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
       }
       .product-image {
         width: 100%;
         height: 220px;
-        background: #f3f4f6;
+        background: linear-gradient(135deg, #F7F6F5, #e5e7eb);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 4rem;
       }
       .product-info {
-        padding: 1.5rem;
+        padding: 2rem;
       }
       .product-name {
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: #222D39;
       }
       .product-price {
-        font-size: 1.5rem;
-        color: #10b981;
+        font-size: 1.8rem;
+        color: #f23d00;
         font-weight: 700;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
       }
       .product-description {
-        color: #6b7280;
+        color: #64748b;
         font-size: 0.95rem;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
       }
       .buy-button {
         width: 100%;
-        padding: 12px;
-        background: #10b981;
+        padding: 14px;
+        background: #3b832a;
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 6px;
         font-weight: 600;
         cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
       }
       .buy-button:hover {
-        background: #059669;
+        background: #60C848;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 131, 42, 0.3);
       }
       .logo-container {
         margin-bottom: 2rem;
         text-align: center;
       }
-      .main-logo {
-        max-width: 400px;
-        width: 90%;
-        height: auto;
+      .brand-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.5rem 3rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+      .brand-logo:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      }
+      .logo-icon {
+        height: 80px;
+        width: auto;
+        filter: drop-shadow(0 2px 4px rgba(59, 131, 42, 0.3));
+      }
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+      .logo-name {
+        font-size: 3rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        color: #3b832a;
+        line-height: 1;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      }
+      .logo-tagline {
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 3px;
+        color: #64748b;
+        text-transform: uppercase;
       }
       @media (max-width: 768px) {
-        .main-logo {
-          max-width: 280px;
+        .brand-logo {
+          padding: 1rem 2rem;
+          gap: 1rem;
+        }
+        .logo-icon {
+          height: 60px;
+        }
+        .logo-name {
+          font-size: 2rem;
+        }
+        .logo-tagline {
+          font-size: 0.75rem;
+          letter-spacing: 2px;
+        }
+        .subtitle {
+          font-size: 1.2rem;
         }
       }
       /* Waitlist form styles */
       .waitlist-form { display: flex; gap: 0.5rem; align-items: center; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
-      .waitlist-form .form-field { padding: 10px 12px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 1rem; }
-      .waitlist-form .form-select { padding: 10px 12px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 1rem; background: white; }
-      .waitlist-submit { padding: 12px 20px; border-radius: 8px; border: none; background: #111827; color: white; font-weight: 700; cursor: pointer; }
+      .waitlist-form .form-field, .waitlist-form .form-select { padding: 16px 16px; border-radius: 12px; border: 1.5px solid #e5e7eb; font-size: 1.15rem; min-width: 160px; min-height: 48px; }
+      .waitlist-form .form-select { background: white; }
+      .waitlist-submit { padding: 16px 28px; border-radius: 12px; border: none; background: #111827; color: white; font-weight: 700; cursor: pointer; font-size: 1.15rem; min-height: 48px; }
       .waitlist-submit:hover { background: #0f1724; }
+      @media (max-width: 600px) {
+        .waitlist-form { flex-direction: column; align-items: stretch; gap: 1rem; }
+        .waitlist-form .form-field, .waitlist-form .form-select, .waitlist-submit { width: 100%; min-width: 0; }
+      }
     </style>
   </head>
   <body>
     <section class="hero-home">
       <div class="logo-container">
-        <img
-          src="images/logo.png"
-          alt="Xcellent1 Lawn Care"
-          class="main-logo"
-        />
+        <div class="brand-logo">
+          <img src="/static/images/logo-nobg.png" alt="Xcellent1 Logo" class="logo-icon">
+          <div class="logo-text">
+            <span class="logo-name">XCELLENT1</span>
+            <span class="logo-tagline">LAWN CARE</span>
+          </div>
+        </div>
       </div>
-      <h1>🌱 Xcellent1 Lawn Care</h1>
       <p class="subtitle">
-        Professional Lawn Services in LaPlace & St. John Parish, Louisiana
+        Professional Lawn Services in the River Parishes, Louisiana
       </p>
       <p>
         Expert lawn care, seasonal tips, and quality supplies for beautiful
@@ -244,66 +390,97 @@
       </div>
       <!-- Waitlist form -->
       <form id="waitlist-form" class="waitlist-form" action="#" onsubmit="return handleWaitlistSubmit(event)">
-        <input aria-label="Name" name="name" class="form-field" placeholder="Your name" required />
-        <input aria-label="Email" name="email" type="email" class="form-field" placeholder="Email address" required />
-        <select name="service" class="form-select" aria-label="Service of interest">
-          <option value="weekly">Weekly Lawn Maintenance</option>
-          <option value="flower-bed">Flower Bed Clean Out &amp; Weed Removal</option>
-          <option value="spring-cleaning">Spring Cleaning</option>
-          <option value="leaf-debris">Leaf &amp; Debris Removal</option>
-          <option value="tractor">Tractor / Bush Hog Services</option>
-        </select>
-        <button type="submit" class="waitlist-submit">Join Waitlist</button>
+        <div class="waitlist-step" id="waitlist-step-1">
+          <input aria-label="Name" name="name" class="form-field" placeholder="Your name" required autocomplete="name" inputmode="text" />
+          <button type="button" class="waitlist-submit" onclick="showWaitlistStep(2)">Next</button>
+        </div>
+        <div class="waitlist-step" id="waitlist-step-2" style="display:none;">
+          <input aria-label="Email" name="email" type="email" class="form-field" placeholder="Email address" required autocomplete="email" inputmode="email" />
+          <button type="button" class="waitlist-submit" onclick="showWaitlistStep(3)">Next</button>
+        </div>
+        <div class="waitlist-step" id="waitlist-step-3" style="display:none;">
+          <select name="service" class="form-select" aria-label="Service of interest">
+            <option value="weekly">Weekly Lawn Maintenance</option>
+            <option value="flower-bed">Flower Bed Clean Out &amp; Weed Removal</option>
+            <option value="spring-cleaning">Spring Cleaning</option>
+            <option value="leaf-debris">Leaf &amp; Debris Removal</option>
+            <option value="tractor">Tractor / Bush Hog Services</option>
+          </select>
+          <button type="submit" class="waitlist-submit">Join Waitlist</button>
+        </div>
       </form>
+      <script>
+        function showWaitlistStep(step) {
+          for (let i = 1; i <= 3; i++) {
+            document.getElementById('waitlist-step-' + i).style.display = (i === step) ? '' : 'none';
+          }
+        }
+      </script>
+      <div id="waitlist-success" style="display:none; margin-top:1rem; text-align:center; color:#059669; font-weight:600; font-size:1.1rem;">Thank you for joining the waitlist! We'll be in touch soon.</div>
     </section>
 
     <section id="services">
-      <h2 style="text-align: center; margin: 3rem 0">Our Services</h2>
+      <div class="section-header">
+        <h2>Our Professional Services</h2>
+        <p>Transforming lawns across the River Parishes, Louisiana</p>
+      </div>
       <div class="services-grid">
         <div class="service-card">
-          <div class="service-icon">🌿</div>
-          <h3>Weekly Lawn Maintenance</h3>
-          <p>Mowing, edging, trimming, and blowing. Keep your LaPlace lawn pristine with scheduled weekly visits.</p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">Starting at $75/visit</p>
+          <div class="service-image" data-icon="🌿" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.7), rgba(96, 200, 72, 0.7));"></div>
+          <div class="service-content">
+            <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Weekly Lawn Maintenance</h3>
+            <p style="color: #64748b; line-height: 1.7;">Mowing, edging, trimming, and blowing. Keep your LaPlace lawn pristine with scheduled weekly visits.</p>
+            <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">Starting at $75/visit</p>
+          </div>
         </div>
         <div class="service-card">
-          <div class="service-icon">🌺</div>
-          <h3>Flower Bed Clean Out &amp; Weed Removal</h3>
-          <p>Thorough clean-outs, weed removal, and bed preparation using Louisiana-native plant recommendations.</p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">From $150</p>
+          <div class="service-image" data-icon="🌺" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.7), rgba(96, 200, 72, 0.7));"></div>
+          <div class="service-content">
+            <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Flower Bed Clean Out &amp; Weed Removal</h3>
+            <p style="color: #64748b; line-height: 1.7;">Thorough clean-outs, weed removal, and bed preparation using Louisiana-native plant recommendations.</p>
+            <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">From $150</p>
+          </div>
         </div>
         <div class="service-card">
-          <div class="service-icon">🧹</div>
-          <h3>Spring Cleaning</h3>
-          <p>Full spring refresh: debris removal, edging, mulching, and prepping your yard for the growing season.</p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">Custom quotes</p>
+          <div class="service-image" data-icon="🧹" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.7), rgba(96, 200, 72, 0.7));"></div>
+          <div class="service-content">
+            <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Spring Cleaning</h3>
+            <p style="color: #64748b; line-height: 1.7;">Full spring refresh: debris removal, edging, mulching, and prepping your yard for the growing season.</p>
+            <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">Custom quotes</p>
+          </div>
         </div>
         <div class="service-card">
-          <div class="service-icon">�</div>
-          <h3>Leaf &amp; Debris Removal</h3>
-          <p>Seasonal cleanup to remove leaves, branches, and debris to keep landscapes healthy and tidy.</p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">Seasonal pricing</p>
+          <div class="service-image" data-icon="🍂" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.7), rgba(96, 200, 72, 0.7));"></div>
+          <div class="service-content">
+            <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Leaf &amp; Debris Removal</h3>
+            <p style="color: #64748b; line-height: 1.7;">Seasonal cleanup to remove leaves, branches, and debris to keep landscapes healthy and tidy.</p>
+            <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">Seasonal pricing</p>
+          </div>
         </div>
         <div class="service-card">
-          <div class="service-icon">🚜</div>
-          <h3>Tractor / Bush Hog Services</h3>
-          <p>Heavy-duty land clearing, pasture mowing, and overgrown lot maintenance using tractor-mounted bush hogs.</p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">Call for pricing</p>
+          <div class="service-image" data-icon="🚜" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.7), rgba(96, 200, 72, 0.7));"></div>
+          <div class="service-content">
+            <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Tractor / Bush Hog Services</h3>
+            <p style="color: #64748b; line-height: 1.7;">Heavy-duty land clearing, pasture mowing, and overgrown lot maintenance using tractor-mounted bush hogs.</p>
+            <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">Call for pricing</p>
+          </div>
         </div>
         <div class="service-card">
-          <div class="service-icon">🌱</div>
-          <h3>Fertilization &amp; Weed Control</h3>
-          <p>Custom fertilization plans for St. Augustine, Bermuda, and Zoysia grass types common in LaPlace.</p>
-          <p style="color: #10b981; font-weight: 600; margin-top: 1rem">$50-150/treatment</p>
+          <div class="service-image" data-icon="🌱" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.7), rgba(96, 200, 72, 0.7));"></div>
+          <div class="service-content">
+            <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Fertilization &amp; Weed Control</h3>
+            <p style="color: #64748b; line-height: 1.7;">Custom fertilization plans for St. Augustine, Bermuda, and Zoysia grass types common in LaPlace.</p>
+            <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">$50-150/treatment</p>
+          </div>
         </div>
       </div>
     </section>
 
     <section id="blog" class="blog-section">
-      <h2 style="text-align: center">LaPlace Lawn Care Blog</h2>
-      <p style="text-align: center; color: #6b7280; margin-bottom: 3rem">
-        Expert tips for maintaining beautiful lawns in St. John Parish
-      </p>
+      <div class="section-header">
+        <h2>River Parishes Lawn Care Blog</h2>
+        <p>Expert tips for maintaining beautiful lawns in the River Parishes</p>
+      </div>
       <div class="blog-grid">
         <article class="blog-card">
           <div class="blog-image"></div>
@@ -320,11 +497,11 @@
         <article class="blog-card">
           <div class="blog-image"></div>
           <div class="blog-content">
-            <div class="blog-date">October 2025</div>
-            <h3 class="blog-title">Fall Lawn Care Schedule</h3>
+            <div class="blog-date">November 2025</div>
+            <h3 class="blog-title">Louisiana Lawn Watering Guide</h3>
             <p class="blog-excerpt">
-              Prepare your lawn for dormancy with proper mowing, fertilization,
-              and weed control.
+              Deep watering 1-2x/week beats daily sprinkling. Water early
+              morning.
             </p>
             <a href="#" class="read-more">Read More →</a>
           </div>
@@ -332,13 +509,10 @@
         <article class="blog-card">
           <div class="blog-image"></div>
           <div class="blog-content">
-            <div class="blog-date">September 2025</div>
-            <h3 class="blog-title">
-              Watering Tips for Louisiana's Hot Summers
-            </h3>
+            <div class="blog-date">November 2025</div>
+            <h3 class="blog-title">Seasonal Lawn Care Tips</h3>
             <p class="blog-excerpt">
-              Deep watering 1-2x/week beats daily sprinkling. Water early
-              morning.
+              Learn how to keep your lawn healthy and beautiful through all four seasons in Louisiana.
             </p>
             <a href="#" class="read-more">Read More →</a>
           </div>
@@ -347,10 +521,10 @@
     </section>
 
     <section id="shop" class="shop-section">
-      <h2 style="text-align: center">Landscaping Supply Shop</h2>
-      <p style="text-align: center; color: #6b7280; margin-bottom: 3rem">
-        Quality lawn care products delivered to LaPlace & St. John Parish
-      </p>
+      <div class="section-header">
+        <h2>Landscaping Supply Shop</h2>
+        <p>Quality lawn care products delivered to the River Parishes</p>
+      </div>
       <div class="product-grid">
         <div class="product-card">
           <div class="product-image">🌱</div>
@@ -415,23 +589,24 @@
 
     <footer
       style="
-        background: #111827;
+        background: #222D39;
         color: white;
-        padding: 3rem 2rem;
+        padding: 4rem 2rem 2rem;
         text-align: center;
       "
     >
-      <h3>🌱 Xcellent1 Lawn Care</h3>
-      <p>Professional lawn services in LaPlace & St. John Parish, Louisiana</p>
-      <p style="margin-top: 1rem">
+      <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">🌱 Xcellent1 Lawn Care</h3>
+      <p style="font-size: 1.1rem; opacity: 0.9;">Professional lawn services in the River Parishes, Louisiana</p>
+      <p style="margin-top: 1.5rem; font-size: 1.1rem;">
         📞
-        <a href="tel:555-867-5309" style="color: #10b981">(555) 867-5309</a> |
+        <a href="tel:555-867-5309" style="color: #60C848; text-decoration: none; font-weight: 600;">(555) 867-5309</a>
+        <span style="margin: 0 1rem; opacity: 0.5;">|</span>
         ✉️
-        <a href="mailto:info@xcellent1lawn.com" style="color: #10b981"
+        <a href="mailto:info@xcellent1lawn.com" style="color: #60C848; text-decoration: none; font-weight: 600;"
           >info@xcellent1lawn.com</a
         >
       </p>
-      <p style="margin-top: 2rem; color: #6b7280">
+      <p style="margin-top: 3rem; color: rgba(255,255,255,0.6); font-size: 0.9rem;">
         © 2025 Xcellent1 Lawn Care. All rights reserved.
       </p>
     </footer>

@@ -471,6 +471,20 @@
             color: #059669;
           "
         ></div>
+        <div id="service-area-map" style="margin-top:2rem;">
+          <h3 style="font-size:1.1rem; margin-bottom:0.5rem;">Service Area: River Parishes</h3>
+          <iframe
+            title="River Parishes Service Area"
+            width="100%"
+            height="320"
+            style="border:1px solid #ccc; border-radius:12px;"
+            loading="lazy"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps/d/embed?mid=1Qn6Qw7Qw7Qw7Qw7Qw7Qw7Qw7Qw7Qw7Q&ehbc=2E312F"
+          ></iframe>
+          <div style="font-size:0.95rem; color:#666; margin-top:0.5rem;">Covers St. John the Baptist, St. Charles, and St. James Parishes (LaPlace, Norco, Reserve, Luling, Lutcher, Gramercy, and more).</div>
+        </div>
           <script>
             function showQuoteStep(step) {
               for (let i = 1; i <= 3; i++) {
@@ -554,6 +568,7 @@
         const resultDiv = document.getElementById("quote-result");
         resultDiv.style.display = "none";
         resultDiv.textContent = "";
+        resultDiv.style.color = "#059669";
         const data = Object.fromEntries(new FormData(form));
         try {
           const res = await fetch("/api/v1/quotes/estimate", {
@@ -565,6 +580,23 @@
           if (json.ok) {
             resultDiv.style.display = "block";
             resultDiv.textContent = `Estimated Price: $${json.price_low} - $${json.price_high} (${json.notes || ""})`;
+          } else if (json.error && json.error.includes("River Parishes")) {
+            resultDiv.style.display = "block";
+            resultDiv.style.color = "#b91c1c";
+            resultDiv.innerHTML = `${json.error}<br><button id='collect-lead-btn' class='waitlist-submit' style='margin-top:0.75rem;'>Request Future Service</button>`;
+            document.getElementById('collect-lead-btn').onclick = function() {
+              resultDiv.innerHTML = "Thank you! We'll notify you if we expand to your area.";
+              // Optionally, send the lead to a /api/leads endpoint for future expansion
+              fetch('/api/leads', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  name: data.address,
+                  type: 'future-service',
+                  details: data
+                })
+              });
+            };
           } else {
             resultDiv.style.display = "block";
             resultDiv.style.color = "#b91c1c";

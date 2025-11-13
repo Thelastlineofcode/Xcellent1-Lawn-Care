@@ -1,3 +1,10 @@
+# QA Scaffold: General Agent Tests
+#
+# Test agent initialization
+# Test valid request handling
+# Test invalid request/error handling
+#
+# Implement with your preferred test runner
 from saas_agents import create_dev_agent
 import os
 

@@ -55,6 +55,97 @@ async function handler(req: Request): Promise<Response> {
     "Content-Type": "application/json",
   };
 
+  // POST /api/v1/quotes/estimate (owner dashboard quote calculator)
+  if (url.pathname === "/api/v1/quotes/estimate" && req.method === "POST") {
+    try {
+      const body = await req.json();
+      // Basic validation
+      const address = (body.address || "").trim();
+      const lawnSize = parseInt(body.lawn_size, 10);
+      const serviceType = (body.service_type || "").trim();
+      if (!address || !lawnSize || !serviceType) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "All fields are required." }),
+          { status: 400, headers }
+        );
+      }
+      // Service area validation (River Parishes: St. John the Baptist, St. Charles, St. James)
+      const allowedAreas = [
+        /laplace/i,
+        /norco/i,
+        /reserve/i,
+        /garyville/i,
+        /edgard/i,
+        /mount\s?air/i,
+        /luling/i,
+        /destrehan/i,
+        /hahnville/i,
+        /paradis/i,
+        /killona/i,
+        /st\.\s?rose/i,
+        /boutte/i,
+        /lutcher/i,
+        /gramercy/i,
+        /convent/i,
+        /paulina/i,
+        /vacherie/i,
+        /st\.\s?james/i,
+        /river\s?parish/i,
+        /st\.?\s?john/i,
+        /st\.?\s?charles/i,
+        /st\.?\s?james/i,
+      ];
+      const inArea = allowedAreas.some((r) => r.test(address));
+      if (!inArea) {
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            error:
+              "Address must be in the River Parishes (St. John, St. Charles, or St. James Parish, LA).",
+          }),
+          { status: 400, headers }
+        );
+      }
+      // Simple price heuristics (can be replaced with more advanced logic)
+      let base = 50;
+      if (serviceType === "weekly") base = 75;
+      if (serviceType === "flower-bed") base = 150;
+      if (serviceType === "spring-cleaning") base = 120;
+      if (serviceType === "leaf-debris") base = 100;
+      if (serviceType === "tractor") base = 200;
+      // Adjust for lawn size
+      let multiplier = 1;
+      if (lawnSize > 4000) multiplier = 1.5;
+      else if (lawnSize > 2500) multiplier = 1.2;
+      else if (lawnSize < 1000) multiplier = 0.8;
+      const priceLow = Math.round(base * multiplier);
+      const priceHigh = Math.round(priceLow * 1.25);
+      // Notes for user
+      let notes = "";
+      if (serviceType === "weekly")
+        notes = "Includes mowing, edging, and blowing.";
+      if (serviceType === "flower-bed")
+        notes = "Includes weed removal and bed prep.";
+      if (serviceType === "tractor") notes = "Heavy-duty lot clearing.";
+      // Return result
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          price_low: priceLow,
+          price_high: priceHigh,
+          notes,
+        }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error in quote calculator:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
   // Handle OPTIONS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers });
@@ -62,7 +153,14 @@ async function handler(req: Request): Promise<Response> {
 
   // Serve static files
   if (url.pathname.startsWith("/static/")) {
-    return serveDir(req, { fsRoot: "./web", urlRoot: "" });
+    const response = await serveDir(req, { fsRoot: "./web", urlRoot: "" });
+    // Add cache control headers - don't cache HTML files
+    if (url.pathname.endsWith('.html')) {
+      response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+      response.headers.set('Pragma', 'no-cache');
+      response.headers.set('Expires', '0');
+    }
+    return response;
   }
 
   // Serve uploads
@@ -70,11 +168,16 @@ async function handler(req: Request): Promise<Response> {
     return serveDir(req, { fsRoot: "./web", urlRoot: "" });
   }
 
-  // Redirect root to careers page
+  // Redirect root to home page with cache-busting
   if (url.pathname === "/") {
     return new Response(null, {
       status: 302,
-      headers: { Location: "/static/home.html" },
+      headers: {
+        Location: `/static/home.html?v=${Date.now()}`,
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      },
     });
   }
 
@@ -547,10 +650,19 @@ async function handler(req: Request): Promise<Response> {
       const body = await req.json();
 
       if (!body.name || body.name.trim().length < 2) {
-        return new Response(JSON.stringify({ ok: false, error: "Name must be at least 2 characters" }), { status: 400, headers });
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            error: "Name must be at least 2 characters",
+          }),
+          { status: 400, headers }
+        );
       }
       if (!body.email || !/^\S+@\S+\.\S+$/.test(body.email)) {
-        return new Response(JSON.stringify({ ok: false, error: "Valid email is required" }), { status: 400, headers });
+        return new Response(
+          JSON.stringify({ ok: false, error: "Valid email is required" }),
+          { status: 400, headers }
+        );
       }
 
       const record = {
@@ -567,39 +679,69 @@ async function handler(req: Request): Promise<Response> {
         try {
           const result = await db.queryObject(
             `INSERT INTO applications (name, phone, email, notes, source, status) VALUES ($1, $2, $3, $4, $5, 'pending') RETURNING id`,
-            [record.name, "", record.email, `waitlist:${record.service} ${record.notes}`, "waitlist"]
+            [
+              record.name,
+              "",
+              record.email,
+              `waitlist:${record.service} ${record.notes}`,
+              "waitlist",
+            ]
           );
           const id = (result.rows[0] as any).id;
-          return new Response(JSON.stringify({ ok: true, id }), { status: 201, headers });
+          return new Response(JSON.stringify({ ok: true, id }), {
+            status: 201,
+            headers,
+          });
         } catch (dbErr) {
           console.error("[server] DB insert error for waitlist:", dbErr);
           // fallback to file below
         }
       }
 
-      // File-backed dev DB fallback: append to agents/dev_db.json
+      // File-backed dev DB fallback: append to bmad/agents/dev_db.json and add outbox event
       try {
-        const dbPath = './agents/dev_db.json';
-        let file = '{}';
+        const dbPath = "./bmad/agents/dev_db.json";
+        let file = "{}";
         try {
           file = await Deno.readTextFile(dbPath);
         } catch (e) {
           // If file doesn't exist, create a basic structure
-          file = JSON.stringify({ waitlist: [], leads: [], events_outbox: [], invoices: [] }, null, 2);
+          file = JSON.stringify(
+            { waitlist: [], leads: [], events_outbox: [], invoices: [] },
+            null,
+            2
+          );
         }
-        const json = JSON.parse(file || '{}');
+        const json = JSON.parse(file || "{}");
         if (!Array.isArray(json.waitlist)) json.waitlist = [];
         json.waitlist.push(record);
+        // Add outbox event for downstream processing
+        if (!Array.isArray(json.events_outbox)) json.events_outbox = [];
+        json.events_outbox.push({
+          id: `evt_${Date.now()}`,
+          type: "WAITLIST_SIGNUP",
+          created_at: new Date().toISOString(),
+          payload: record,
+          status: "pending",
+        });
         await Deno.writeTextFile(dbPath, JSON.stringify(json, null, 2));
-
-        return new Response(JSON.stringify({ ok: true, id: record.id }), { status: 201, headers });
+        return new Response(JSON.stringify({ ok: true, id: record.id }), {
+          status: 201,
+          headers,
+        });
       } catch (fileErr) {
-        console.error('[server] Error writing waitlist to dev_db:', fileErr);
-        return new Response(JSON.stringify({ ok: false, error: 'Internal server error' }), { status: 500, headers });
+        console.error("[server] Error writing waitlist to dev_db:", fileErr);
+        return new Response(
+          JSON.stringify({ ok: false, error: "Internal server error" }),
+          { status: 500, headers }
+        );
       }
     } catch (err) {
-      console.error('[server] Error handling waitlist:', err);
-      return new Response(JSON.stringify({ ok: false, error: 'Internal server error' }), { status: 500, headers });
+      console.error("[server] Error handling waitlist:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
     }
   }
 

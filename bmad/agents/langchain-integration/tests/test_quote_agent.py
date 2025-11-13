@@ -1,3 +1,10 @@
+# QA Scaffold: Quote Agent Python Tests
+#
+# Test valid quote request (in-area)
+# Test out-of-area address
+# Test missing/invalid fields
+#
+# Implement with pytest or unittest
 import json
 from pathlib import Path
 import sys
