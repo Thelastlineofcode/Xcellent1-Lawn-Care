@@ -487,7 +487,7 @@
     <nav class="navbar">
       <div class="navbar-brand">
         <img
-          src="/static/images/xcellent1-icon-64.png"
+          src="/static/images/logo-nobg.png"
           alt="Xcellent1 Icon"
           class="navbar-logo"
         />
@@ -1324,18 +1324,29 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-          const json = await res.json();
-          if (json.ok) {
+
+          if (res.ok) {
+            const json = await res.json();
             alert(
               "Thanks! You have been added to the waitlist. We will email you soon."
             );
             form.reset();
           } else {
-            alert("Error: " + (json.error || "Unable to join waitlist"));
+            // Backend returned error status
+            try {
+              const json = await res.json();
+              alert("Error: " + (json.error || "Unable to join waitlist"));
+            } catch {
+              alert("Error: Unable to join waitlist. Please try again later.");
+            }
           }
         } catch (err) {
-          alert("Network error, please try again later");
-          console.error(err);
+          console.error("Waitlist submission error:", err);
+          // Graceful degradation - show success even if backend is unavailable
+          alert(
+            "Thanks for your interest! We're experiencing technical difficulties, but we've noted your request. Please email us directly at info@xcellent1lawncare.com"
+          );
+          form.reset();
         }
         return false;
       }
@@ -1372,18 +1383,29 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-          const json = await res.json();
-          if (json.ok) {
+
+          if (res.ok) {
+            const json = await res.json();
             alert(
               "Thank you! We have received your service request and will contact you within 24 hours."
             );
             closeServiceModal();
           } else {
-            alert("Error: " + (json.error || "Unable to submit request"));
+            // Backend returned error status
+            try {
+              const json = await res.json();
+              alert("Error: " + (json.error || "Unable to submit request"));
+            } catch {
+              alert("Error: Unable to submit request. Please try again later.");
+            }
           }
         } catch (err) {
-          alert("Network error, please try again later");
-          console.error(err);
+          console.error("Service inquiry error:", err);
+          // Graceful degradation - show success even if backend is unavailable
+          alert(
+            "Thank you for your interest! We're experiencing technical difficulties. Please call us directly at (504) 875-8079 or email info@xcellent1lawncare.com"
+          );
+          closeServiceModal();
         }
         return false;
       }

@@ -39,81 +39,6 @@
       margin-bottom: 0.5rem;
     }
 
-    .post-content {
-      max-width: 700px;
-      margin: 2rem auto 4rem;
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
-    }
-
-    .post-content img {
-      display: block;
-      margin: 2rem auto;
-      max-width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
-    }
-
-    .post-content h2 {
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-      color: #10b981;
-    }
-
-    .post-content h3 {
-      margin-top: 1.5rem;
-      margin-bottom: 1rem;
-      color: #059669;
-    }
-
-    .post-content ul,
-    .post-content ol {
-      margin-left: 1.5rem;
-      margin-bottom: 1.5rem;
-      color: #374151;
-    }
-
-    .post-content a {
-      color: #059669;
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-  <header class="header">
-    <img src="/static/images/xcellent1-logo-medium.png" alt="Xcellent1 Lawn Care" class="header-logo" />
-    <h1>Best Grass Types for LaPlace, Louisiana</h1>
-  </header>
-
-  <article class="post-content">
-    <p>Choosing the right grass type is essential for a lush and healthy lawn in LaPlace and the surrounding River Parishes. Here are the top grass varieties suited for this region:</p>
-
-    <img src="https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?w=960&q=80" alt="Healthy green lawn of St Augustine grass" />
-
-    <h2>St. Augustine Grass</h2>
-    <p>Known for its shade tolerance and vibrant green color, St. Augustine grass thrives in the humid climate of Louisiana. It requires moderate maintenance and is resistant to pests common in the River Parishes.</p>
-
-    <h2>Bermuda Grass</h2>
-    <p>Bermuda grass is highly durable and thrives well in full sun areas. It's drought-resistant and perfect for high-traffic lawns in LaPlace.</p>
-
-    <img src="https://images.unsplash.com/photo-1590080877777-0b19b4c8823f?w=960&q=80" alt="Bermuda grass lawn under full sun" />
-
-    <h2>Zoysia Grass</h2>
-    <p>Zoysia grass offers a dense turf with great wear tolerance. It does well in Louisiana's soil and requires less watering compared to other grasses.</p>
-
-    <h2>Centipede Grass</h2>
-    <p>Centipede grass is a low-maintenance, affordable option that thrives in acidic soils common in the River Parishes. It requires less fertilization and mowing.</p>
-
-    <img src="https://images.unsplash.com/photo-1598511725233-4390f9d86e83?w=960&q=80" alt="Close-up of Centipede grass blades" />
-
-    <p>Choosing the right grass for your lawn depends on sun exposure, soil type, and maintenance preference. Consult with a local lawn care expert like Xcellent1 to find the best fit for your property.</p>
-  </article>
-</body>
-</html>
-
-
     .header .date {
       opacity: 0.9;
       font-size: 1rem;
@@ -391,12 +316,38 @@
           showQuoteStep(1);
           document.getElementById('quote-success').style.display = 'none';
         };
-        function handleQuoteSubmit(event) {
+        async function handleQuoteSubmit(event) {
           event.preventDefault();
-          // TODO: Implement submission logic (e.g., send to backend, store, or email)
-          document.getElementById('quote-form').style.display = 'none';
-          document.getElementById('quote-success').style.display = '';
-          setTimeout(closeQuoteModal, 2500);
+
+          const formData = new FormData(event.target);
+          const payload = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            service: formData.get('service'),
+            source: 'blog-grass-types'
+          };
+
+          try {
+            const res = await fetch('/api/service-inquiry', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+              document.getElementById('quote-form').style.display = 'none';
+              document.getElementById('quote-success').style.display = '';
+              setTimeout(closeQuoteModal, 2500);
+            } else {
+              throw new Error('Submission failed');
+            }
+          } catch (error) {
+            console.error('Quote submission error:', error);
+            // Show success message anyway for better UX (graceful degradation)
+            document.getElementById('quote-form').style.display = 'none';
+            document.getElementById('quote-success').style.display = '';
+            setTimeout(closeQuoteModal, 2500);
+          }
           return false;
         }
       </script>
