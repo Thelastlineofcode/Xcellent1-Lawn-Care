@@ -4,18 +4,26 @@ import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
 // Database connection
-// Direct connection to Supabase (note: TLS certificate validation may fail in development)
-const DATABASE_URL =
-  Deno.env.get("DATABASE_URL") ||
-  "postgresql://postgres:shine6911@db.utivthfrwgtjatsusopw.supabase.co:5432/postgres?sslmode=disable";
+// Prefer using an environment variable for DATABASE_URL. Avoid hardcoding
+// credentials in the repo. If DATABASE_URL is not set we run in fallback
+// (in-memory) mode and won't attempt a DB connection.
+const DATABASE_URL = Deno.env.get("DATABASE_URL") || "";
 
-const db = new Client(DATABASE_URL);
+// Create client only when a DATABASE_URL is provided
+let db: Client | null = null;
+if (DATABASE_URL) {
+  db = new Client(DATABASE_URL);
+}
 
 let dbConnected = false;
 
 // Connect to database
 async function connectDB() {
   try {
+    if (!db) {
+      console.log("ℹ️ No DATABASE_URL provided - skipping DB connection");
+      return;
+    }
     await db.connect();
     dbConnected = true;
     console.log("✅ Connected to Supabase PostgreSQL");
