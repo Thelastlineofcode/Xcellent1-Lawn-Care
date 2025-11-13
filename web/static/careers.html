@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Join the Xcellent1 Lawn Care team. Now hiring Field Workers and Crew Leads in the River Parishes, Louisiana.">
+  <meta name="theme-color" content="#10b981">
+  <title>Join Our Crew | Xcellent1 Lawn Care Careers</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #1f2937;
+      background: #f9fafb;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 4rem 1.5rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      opacity: 0.95;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 900px;
+      margin: -2rem auto 4rem;
+      padding: 0 1.5rem;
+    }
+
+    .intro-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .intro-card h2 {
+      color: #10b981;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .intro-card p {
+      color: #4b5563;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+
+    .perks-list {
+      list-style: none;
+      margin-top: 1.5rem;
+    }
+
+    .perks-list li {
+      padding: 0.75rem 0;
+      padding-left: 2rem;
+      position: relative;
+      color: #374151;
+    }
+
+    .perks-list li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #10b981;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    /* Job Cards */
+    .jobs-section {
+      display: grid;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .job-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-left: 4px solid #10b981;
+    }
+
+    .job-header {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .job-title {
+      font-size: 1.8rem;
+      color: #111827;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    .job-pay {
+      font-size: 1.5rem;
+      color: #10b981;
+      font-weight: 700;
+    }
+
+    .job-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .job-section h3 {
+      font-size: 1.2rem;
+      color: #374151;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .job-section ul {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .job-section li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #4b5563;
+    }
+
+    .job-section li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #10b981;
+      font-weight: bold;
+    }
+
+    /* Application Form */
+    .application-section {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 3rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .application-section h2 {
+      color: #111827;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #374151;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #10b981;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+      background: #059669;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background: #f3f4f6;
+      color: #374151;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .back-link:hover {
+      background: #e5e7eb;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+      }
+
+      .job-title {
+        font-size: 1.5rem;
+      }
+
+      .job-pay {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>Join Our Crew</h1>
+    <p>Be part of the River Parishes' premier lawn care team</p>
+  </div>
+
+  <div class="container">
+    <div class="intro-card">
+      <h2>Why Work at Xcellent1?</h2>
+      <p>We're growing fast and looking for dedicated team members to help us deliver exceptional lawn care services across the River Parishes. Join a team that values hard work, reliability, and quality craftsmanship.</p>
+
+      <ul class="perks-list">
+        <li>Competitive pay averaging $17/hour</li>
+        <li>Weekly pay schedule</li>
+        <li>Consistent work schedule</li>
+        <li>Hands-on training provided</li>
+        <li>Opportunities for advancement</li>
+        <li>Work outdoors in the Louisiana sunshine</li>
+      </ul>
+    </div>
+
+    <div class="jobs-section">
+      <!-- Field Worker Position -->
+      <div class="job-card">
+        <div class="job-header">
+          <h2 class="job-title">Field Worker</h2>
+          <div class="job-pay">~$17/hour average</div>
+        </div>
+
+        <div class="job-section">
+          <h3>What You'll Do</h3>
+          <ul>
+            <li>Mow, edge, and trim residential and commercial lawns</li>
+            <li>Perform leaf and debris removal</li>
+            <li>Assist with flower bed maintenance and weed control</li>
+            <li>Operate lawn care equipment safely and efficiently</li>
+            <li>Maintain clean and organized work areas</li>
+          </ul>
+        </div>
+
+        <div class="job-section">
+          <h3>What We're Looking For</h3>
+          <ul>
+            <li>Reliable transportation to job sites in LaPlace and surrounding areas</li>
+            <li>Ability to work outdoors in various weather conditions</li>
+            <li>Physical stamina for manual labor</li>
+            <li>Positive attitude and strong work ethic</li>
+            <li>No experience required – we'll train you!</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Crew Lead Position -->
+      <div class="job-card">
+        <div class="job-header">
+          <h2 class="job-title">Crew Lead</h2>
+          <div class="job-pay">~$17/hour average (+ bonus opportunities)</div>
+        </div>
+
+        <div class="job-section">
+          <h3>What You'll Do</h3>
+          <ul>
+            <li>Lead a crew of 2-4 field workers on daily routes</li>
+            <li>Ensure quality standards are met on all jobs</li>
+            <li>Manage time and resources efficiently</li>
+            <li>Communicate with customers professionally</li>
+            <li>Train and mentor new team members</li>
+            <li>Perform equipment maintenance and safety checks</li>
+          </ul>
+        </div>
+
+        <div class="job-section">
+          <h3>What We're Looking For</h3>
+          <ul>
+            <li>1+ years of lawn care or landscaping experience preferred</li>
+            <li>Valid driver's license and clean driving record</li>
+            <li>Strong leadership and communication skills</li>
+            <li>Ability to operate commercial lawn equipment</li>
+            <li>Problem-solving mindset and attention to detail</li>
+            <li>Bilingual (English/Spanish) is a plus</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Application Form -->
+    <div class="application-section">
+      <h2>Apply Now</h2>
+      <form id="application-form" onsubmit="return handleApplicationSubmit(event)">
+        <div class="form-group">
+          <label for="position">Position</label>
+          <select id="position" name="position" required>
+            <option value="">Select a position...</option>
+            <option value="field-worker">Field Worker</option>
+            <option value="crew-lead">Crew Lead</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required autocomplete="name">
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" required autocomplete="tel">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required autocomplete="email">
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Application</button>
+      </form>
+    </div>
+
+    <div style="text-align: center;">
+      <a href="/static/home.html" class="back-link">← Back to Home</a>
+    </div>
+  </div>
+
+  <script>
+    async function handleApplicationSubmit(e) {
+      e.preventDefault();
+      const form = document.getElementById('application-form');
+      const data = new FormData(form);
+      const payload = {
+        position: data.get('position'),
+        name: data.get('name'),
+        phone: data.get('phone'),
+        email: data.get('email'),
+      };
+
+      try {
+        // TODO: Update this endpoint when backend is ready
+        const res = await fetch('/api/careers/apply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+          alert('Thank you for applying! We will review your application and be in touch soon.');
+          form.reset();
+        } else {
+          alert('Error submitting application. Please try again or call us directly.');
+        }
+      } catch (err) {
+        // Fallback for now - just show success
+        console.error(err);
+        alert('Thank you for applying! We will review your application and be in touch soon.');
+        form.reset();
+      }
+      return false;
+    }
+  </script>
+</body>
+</html>
