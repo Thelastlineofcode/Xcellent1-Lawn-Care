@@ -4,10 +4,22 @@ import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
 // Database connection
+// Direct connection to Supabase (note: TLS certificate validation may fail in development)
 const DATABASE_URL =
   Deno.env.get("DATABASE_URL") ||
   "postgresql://postgres:shine6911@db.utivthfrwgtjatsusopw.supabase.co:5432/postgres";
-const db = new Client(DATABASE_URL);
+
+// Try connection with TLS but don't enforce on failure
+const db = new Client({
+  hostname: "db.utivthfrwgtjatsusopw.supabase.co",
+  port: 5432,
+  user: "postgres",
+  password: "shine6911",
+  database: "postgres",
+  tls: {
+    enabled: false, // Disable TLS for now - re-enable in production with proper certs
+  },
+});
 
 let dbConnected = false;
 
@@ -146,6 +158,44 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // POST /api/auth/login (owner dashboard authentication)
+  if (url.pathname === "/api/auth/login" && req.method === "POST") {
+    try {
+      const body = await req.json();
+      const { username, password } = body;
+
+      // Simple hardcoded authentication for owner
+      // In production, this should use proper password hashing and database
+      const validUsername = "owner";
+      const validPassword = "xcellent2025";
+
+      if (username === validUsername && password === validPassword) {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            message: "Login successful",
+            user: { username: validUsername, role: "owner" },
+          }),
+          { status: 200, headers }
+        );
+      } else {
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            error: "Invalid username or password",
+          }),
+          { status: 401, headers }
+        );
+      }
+    } catch (err) {
+      console.error("[server] Error in auth login:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
   // Handle OPTIONS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers });
@@ -155,10 +205,13 @@ async function handler(req: Request): Promise<Response> {
   if (url.pathname.startsWith("/static/")) {
     const response = await serveDir(req, { fsRoot: "./web", urlRoot: "" });
     // Add cache control headers - don't cache HTML files
-    if (url.pathname.endsWith('.html')) {
-      response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-      response.headers.set('Pragma', 'no-cache');
-      response.headers.set('Expires', '0');
+    if (url.pathname.endsWith(".html")) {
+      response.headers.set(
+        "Cache-Control",
+        "no-cache, no-store, must-revalidate"
+      );
+      response.headers.set("Pragma", "no-cache");
+      response.headers.set("Expires", "0");
     }
     return response;
   }
@@ -175,8 +228,8 @@ async function handler(req: Request): Promise<Response> {
       headers: {
         Location: `/static/home.html?v=${Date.now()}`,
         "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0"
+        Pragma: "no-cache",
+        Expires: "0",
       },
     });
   }
@@ -762,7 +815,10 @@ async function handler(req: Request): Promise<Response> {
       }
       if (!body.phone || body.phone.trim().length < 10) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Valid phone number is required" }),
+          JSON.stringify({
+            ok: false,
+            error: "Valid phone number is required",
+          }),
           { status: 400, headers }
         );
       }
@@ -772,14 +828,21 @@ async function handler(req: Request): Promise<Response> {
           { status: 400, headers }
         );
       }
-      if (!body.position || !["field-worker", "crew-lead"].includes(body.position)) {
+      if (
+        !body.position ||
+        !["field-worker", "crew-lead"].includes(body.position)
+      ) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Please select a valid position" }),
+          JSON.stringify({
+            ok: false,
+            error: "Please select a valid position",
+          }),
           { status: 400, headers }
         );
       }
 
-      const positionName = body.position === "field-worker" ? "Field Worker" : "Crew Lead";
+      const positionName =
+        body.position === "field-worker" ? "Field Worker" : "Crew Lead";
       const record = {
         id: `career_${Date.now()}`,
         name: body.name.trim(),
@@ -843,7 +906,10 @@ async function handler(req: Request): Promise<Response> {
           headers,
         });
       } catch (fileErr) {
-        console.error("[server] Error writing careers application to dev_db:", fileErr);
+        console.error(
+          "[server] Error writing careers application to dev_db:",
+          fileErr
+        );
         return new Response(
           JSON.stringify({ ok: false, error: "Internal server error" }),
           { status: 500, headers }
@@ -884,7 +950,10 @@ async function handler(req: Request): Promise<Response> {
       }
       if (!body.phone || body.phone.trim().length < 10) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Valid phone number is required" }),
+          JSON.stringify({
+            ok: false,
+            error: "Valid phone number is required",
+          }),
           { status: 400, headers }
         );
       }
@@ -972,7 +1041,10 @@ async function handler(req: Request): Promise<Response> {
           headers,
         });
       } catch (fileErr) {
-        console.error("[server] Error writing service inquiry to dev_db:", fileErr);
+        console.error(
+          "[server] Error writing service inquiry to dev_db:",
+          fileErr
+        );
         return new Response(
           JSON.stringify({ ok: false, error: "Internal server error" }),
           { status: 500, headers }

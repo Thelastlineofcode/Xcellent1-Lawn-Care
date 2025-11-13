@@ -450,6 +450,8 @@
         display: flex;
         flex-direction: column;
         line-height: 1;
+        align-items: center;
+        text-align: center;
       }
       .navbar .navbar-name {
         font-size: 1.6rem;
@@ -684,7 +686,7 @@
                   rgba(59, 131, 42, 0.5),
                   rgba(96, 200, 72, 0.5)
                 ),
-                url(&quot;https://images.unsplash.com/photo-1558904541-efa843a96f01?w=800&q=80&quot;);
+                url(&quot;/static/images/lawnservices.jpg&quot;);
               background-size: cover;
               background-position: center;
             "
@@ -725,7 +727,7 @@
                   rgba(59, 131, 42, 0.5),
                   rgba(96, 200, 72, 0.5)
                 ),
-                url(&quot;https://images.unsplash.com/photo-1598902108854-10e335adac99?w=800&q=80&quot;);
+                url(&quot;/static/images/flowerbedcleanup.jpg&quot;);
               background-size: cover;
               background-position: center;
             "
@@ -766,7 +768,7 @@
                   rgba(59, 131, 42, 0.5),
                   rgba(96, 200, 72, 0.5)
                 ),
-                url(&quot;https://images.unsplash.com/photo-1523301343968-6a6ebf63c672?w=800&q=80&quot;);
+                url(&quot;/static/images/springcleaning.jpg&quot;);
               background-size: cover;
               background-position: center;
             "
@@ -807,7 +809,7 @@
                   rgba(59, 131, 42, 0.5),
                   rgba(96, 200, 72, 0.5)
                 ),
-                url(&quot;https://images.unsplash.com/photo-1604429284222-2a0ac98a1fe7?w=800&q=80&quot;);
+                url(&quot;/static/images/lawnservices.jpg&quot;);
               background-size: cover;
               background-position: center;
             "
@@ -848,7 +850,7 @@
                   rgba(59, 131, 42, 0.5),
                   rgba(96, 200, 72, 0.5)
                 ),
-                url(&quot;https://bushhog.com/wp-content/uploads/2020/01/flexwingFull.jpg&quot;);
+                url(&quot;/static/images/bushhog.jpg&quot;);
               background-size: cover;
               background-position: center;
             "
@@ -1283,7 +1285,7 @@
             margin-bottom: 1.5rem;
           "
         >
-          <h2 style="color: #3b832a; margin: 0">Owner Login</h2>
+          <h2 style="color: #3b832a; margin: 0">Dashboard Access</h2>
           <button
             onclick="closeLoginModal()"
             style="
@@ -1298,12 +1300,111 @@
           </button>
         </div>
 
-        <!-- Login Step 1: Email Input -->
+        <!-- Login Step 1: Role Selection -->
         <div id="login-step-1">
           <p style="margin-bottom: 1rem; color: #64748b">
-            Enter your email address to receive a login code.
+            Select your dashboard to access.
           </p>
-          <form id="login-email-form" onsubmit="return handleLoginEmail(event)">
+          <form
+            id="login-role-form"
+            onsubmit="return handleRoleSelection(event)"
+          >
+            <div style="margin-bottom: 1.5rem">
+              <div style="margin-bottom: 1rem">
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    padding: 1rem;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 8px;
+                    transition: all 0.2s;
+                  "
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value="owner"
+                    required
+                    style="margin-right: 0.75rem; width: 18px; height: 18px"
+                  />
+                  <div>
+                    <div
+                      style="
+                        font-weight: 600;
+                        color: #374151;
+                        margin-bottom: 0.25rem;
+                      "
+                    >
+                      Owner Dashboard
+                    </div>
+                    <div style="font-size: 0.875rem; color: #64748b">
+                      Business KPIs, crew management, revenue tracking
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <div style="margin-bottom: 1rem">
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    padding: 1rem;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 8px;
+                    transition: all 0.2s;
+                  "
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value="crew"
+                    style="margin-right: 0.75rem; width: 18px; height: 18px"
+                  />
+                  <div>
+                    <div
+                      style="
+                        font-weight: 600;
+                        color: #374151;
+                        margin-bottom: 0.25rem;
+                      "
+                    >
+                      Crew Dashboard
+                    </div>
+                    <div style="font-size: 0.875rem; color: #64748b">
+                      Today's jobs, navigation, photo uploads
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <button
+              type="submit"
+              style="
+                width: 100%;
+                padding: 1rem;
+                background: #3b832a;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 1.1rem;
+                font-weight: 700;
+                cursor: pointer;
+              "
+            >
+              Access Dashboard
+            </button>
+          </form>
+        </div>
+
+        <!-- Login Step 2: Owner Authentication -->
+        <div id="login-step-2" style="display: none">
+          <p style="margin-bottom: 1rem; color: #64748b">
+            Enter your credentials to access the owner dashboard.
+          </p>
+          <form id="login-auth-form" onsubmit="return handleOwnerLogin(event)">
             <div style="margin-bottom: 1rem">
               <label
                 style="
@@ -1312,11 +1413,11 @@
                   margin-bottom: 0.5rem;
                   color: #374151;
                 "
-                >Email Address</label
+                >Username</label
               >
               <input
-                type="email"
-                id="login-email"
+                type="text"
+                name="username"
                 required
                 style="
                   width: 100%;
@@ -1325,36 +1426,11 @@
                   border-radius: 8px;
                   font-size: 1rem;
                 "
-                placeholder="owner@xcellent1lawn.com"
-                autocomplete="email"
+                autocomplete="username"
+                placeholder="Enter username"
               />
             </div>
-            <button
-              type="submit"
-              style="
-                width: 100%;
-                padding: 1rem;
-                background: #3b832a;
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-size: 1.1rem;
-                font-weight: 700;
-                cursor: pointer;
-              "
-            >
-              Send Login Code
-            </button>
-          </form>
-        </div>
-
-        <!-- Login Step 2: OTP Verification -->
-        <div id="login-step-2" style="display: none">
-          <p style="margin-bottom: 1rem; color: #64748b">
-            Enter the 6-digit code sent to your email.
-          </p>
-          <form id="login-otp-form" onsubmit="return handleLoginOTP(event)">
-            <div style="margin-bottom: 1rem">
+            <div style="margin-bottom: 1.5rem">
               <label
                 style="
                   display: block;
@@ -1362,61 +1438,58 @@
                   margin-bottom: 0.5rem;
                   color: #374151;
                 "
-                >Login Code</label
+                >Password</label
               >
               <input
-                type="text"
-                id="login-otp"
+                type="password"
+                name="password"
                 required
-                maxlength="6"
-                pattern="[0-9]{6}"
                 style="
                   width: 100%;
                   padding: 0.75rem;
                   border: 2px solid #e5e7eb;
                   border-radius: 8px;
-                  font-size: 1.2rem;
-                  text-align: center;
-                  letter-spacing: 0.5rem;
-                  font-family: monospace;
+                  font-size: 1rem;
                 "
-                placeholder="000000"
-                autocomplete="one-time-code"
+                autocomplete="current-password"
+                placeholder="Enter password"
               />
             </div>
-            <button
-              type="submit"
-              style="
-                width: 100%;
-                padding: 1rem;
-                background: #3b832a;
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-size: 1.1rem;
-                font-weight: 700;
-                cursor: pointer;
-              "
-            >
-              Login
-            </button>
-            <button
-              type="button"
-              onclick="backToEmailStep()"
-              style="
-                width: 100%;
-                padding: 0.75rem;
-                background: none;
-                color: #64748b;
-                border: none;
-                border-radius: 8px;
-                font-size: 1rem;
-                cursor: pointer;
-                margin-top: 0.5rem;
-              "
-            >
-              Back to Email
-            </button>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem">
+              <button
+                type="button"
+                onclick="showLoginStep(1)"
+                style="
+                  flex: 1;
+                  padding: 1rem;
+                  background: #6b7280;
+                  color: white;
+                  border: none;
+                  border-radius: 8px;
+                  font-size: 1rem;
+                  font-weight: 600;
+                  cursor: pointer;
+                "
+              >
+                Back
+              </button>
+              <button
+                type="submit"
+                style="
+                  flex: 1;
+                  padding: 1rem;
+                  background: #3b832a;
+                  color: white;
+                  border: none;
+                  border-radius: 8px;
+                  font-size: 1rem;
+                  font-weight: 700;
+                  cursor: pointer;
+                "
+              >
+                Login
+              </button>
+            </div>
           </form>
         </div>
 
@@ -1595,103 +1668,77 @@
         document.getElementById("login-step-1").style.display = "block";
         document.getElementById("login-step-2").style.display = "none";
         document.getElementById("login-message").textContent = "";
-        document.getElementById("login-email-form").reset();
-        document.getElementById("login-otp-form").reset();
+        document.getElementById("login-role-form").reset();
+        document.getElementById("login-auth-form").reset();
       }
 
       function closeLoginModal() {
         document.getElementById("login-modal").style.display = "none";
       }
 
-      function showOTPInput() {
-        document.getElementById("login-step-1").style.display = "none";
-        document.getElementById("login-step-2").style.display = "block";
-        document.getElementById("login-otp").focus();
-      }
-
-      function backToEmailStep() {
-        document.getElementById("login-step-1").style.display = "block";
-        document.getElementById("login-step-2").style.display = "none";
+      function showLoginStep(step) {
+        document.getElementById("login-step-1").style.display =
+          step === 1 ? "block" : "none";
+        document.getElementById("login-step-2").style.display =
+          step === 2 ? "block" : "none";
         document.getElementById("login-message").textContent = "";
       }
 
-      async function handleLoginEmail(e) {
+      async function handleRoleSelection(e) {
         e.preventDefault();
-        const email = document.getElementById("login-email").value;
-        const messageDiv = document.getElementById("login-message");
+        const form = document.getElementById("login-role-form");
+        const formData = new FormData(form);
+        const role = formData.get("role");
 
-        messageDiv.textContent = "Sending login code...";
-        messageDiv.style.color = "#64748b";
-
-        try {
-          const res = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
-          });
-
-          const data = await res.json();
-
-          if (res.ok) {
-            messageDiv.textContent = "Login code sent! Check your email.";
-            messageDiv.style.color = "#059669";
-            showOTPInput();
-          } else {
-            messageDiv.textContent =
-              data.message || "Failed to send login code.";
-            messageDiv.style.color = "#dc2626";
-          }
-        } catch (err) {
-          console.error("Login email error:", err);
-          messageDiv.textContent = "Network error. Please try again.";
-          messageDiv.style.color = "#dc2626";
+        if (role === "owner") {
+          // Show owner login form
+          showLoginStep(2);
+        } else if (role === "crew") {
+          // Direct redirect for crew
+          const messageDiv = document.getElementById("login-message");
+          messageDiv.textContent = "Accessing crew dashboard...";
+          messageDiv.style.color = "#059669";
+          setTimeout(() => {
+            window.location.href = "/static/crew.html";
+          }, 500);
         }
 
         return false;
       }
 
-      async function handleLoginOTP(e) {
+      async function handleOwnerLogin(e) {
         e.preventDefault();
-        const email = document.getElementById("login-email").value;
-        const otp = document.getElementById("login-otp").value;
+        const form = document.getElementById("login-auth-form");
+        const formData = new FormData(form);
+        const username = formData.get("username");
+        const password = formData.get("password");
         const messageDiv = document.getElementById("login-message");
 
-        messageDiv.textContent = "Verifying code...";
-        messageDiv.style.color = "#64748b";
+        messageDiv.textContent = "Authenticating...";
+        messageDiv.style.color = "#059669";
 
         try {
-          // For now, we'll simulate successful login since the backend OTP verification
-          // might not be fully implemented. In production, this would verify the OTP.
-          const res = await fetch("/api/auth/verify", {
+          const res = await fetch("/api/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, otp }),
+            body: JSON.stringify({ username, password }),
           });
 
-          // For demo purposes, accept any 6-digit code
-          if (otp.length === 6 && /^\d{6}$/.test(otp)) {
+          if (res.ok) {
+            const json = await res.json();
             messageDiv.textContent = "Login successful! Redirecting...";
-            messageDiv.style.color = "#059669";
             setTimeout(() => {
               window.location.href = "/static/owner.html";
-            }, 1000);
+            }, 500);
           } else {
-            messageDiv.textContent = "Invalid login code. Please try again.";
+            const json = await res.json();
+            messageDiv.textContent = json.error || "Invalid credentials";
             messageDiv.style.color = "#dc2626";
           }
         } catch (err) {
-          console.error("Login OTP error:", err);
-          // For demo purposes, accept the OTP anyway
-          if (otp.length === 6 && /^\d{6}$/.test(otp)) {
-            messageDiv.textContent = "Login successful! Redirecting...";
-            messageDiv.style.color = "#059669";
-            setTimeout(() => {
-              window.location.href = "/static/owner.html";
-            }, 1000);
-          } else {
-            messageDiv.textContent = "Network error. Please try again.";
-            messageDiv.style.color = "#dc2626";
-          }
+          console.error("Login error:", err);
+          messageDiv.textContent = "Login failed. Please try again.";
+          messageDiv.style.color = "#dc2626";
         }
 
         return false;
