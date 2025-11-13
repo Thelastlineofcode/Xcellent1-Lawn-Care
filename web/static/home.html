@@ -427,7 +427,7 @@
         <p>Transforming lawns across the River Parishes, Louisiana</p>
       </div>
       <div class="services-grid">
-        <div class="service-card">
+        <div class="service-card" onclick="openServiceModal('Weekly Lawn Maintenance')" style="cursor: pointer;">
           <div class="service-image" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)), url('https://images.unsplash.com/photo-1600298881974-6be191ceeda1?w=800&q=80'); background-size: cover; background-position: center;"></div>
           <div class="service-content">
             <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Weekly Lawn Maintenance</h3>
@@ -435,7 +435,7 @@
             <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">Starting at $75/visit</p>
           </div>
         </div>
-        <div class="service-card">
+        <div class="service-card" onclick="openServiceModal('Flower Bed Clean Out & Weed Removal')" style="cursor: pointer;">
           <div class="service-image" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)), url('https://images.unsplash.com/photo-1598902108854-10e335adac99?w=800&q=80'); background-size: cover; background-position: center;"></div>
           <div class="service-content">
             <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Flower Bed Clean Out &amp; Weed Removal</h3>
@@ -443,7 +443,7 @@
             <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">From $150</p>
           </div>
         </div>
-        <div class="service-card">
+        <div class="service-card" onclick="openServiceModal('Spring Cleaning')" style="cursor: pointer;">
           <div class="service-image" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)), url('https://images.unsplash.com/photo-1523301343968-6a6ebf63c672?w=800&q=80'); background-size: cover; background-position: center;"></div>
           <div class="service-content">
             <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Spring Cleaning</h3>
@@ -451,7 +451,7 @@
             <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">Custom quotes</p>
           </div>
         </div>
-        <div class="service-card">
+        <div class="service-card" onclick="openServiceModal('Leaf & Debris Removal')" style="cursor: pointer;">
           <div class="service-image" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)), url('https://images.unsplash.com/photo-1604429284222-2a0ac98a1fe7?w=800&q=80'); background-size: cover; background-position: center;"></div>
           <div class="service-content">
             <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Leaf &amp; Debris Removal</h3>
@@ -459,7 +459,7 @@
             <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">Seasonal pricing</p>
           </div>
         </div>
-        <div class="service-card">
+        <div class="service-card" onclick="openServiceModal('Tractor / Bush Hog Services')" style="cursor: pointer;">
           <div class="service-image" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)), url('https://images.unsplash.com/photo-1581578017098-3139ed697394?w=800&q=80'); background-size: cover; background-position: center;"></div>
           <div class="service-content">
             <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Tractor / Bush Hog Services</h3>
@@ -467,7 +467,7 @@
             <p style="color: #f23d00; font-weight: 700; margin-top: 1.5rem; font-size: 1.2rem;">Call for pricing</p>
           </div>
         </div>
-        <div class="service-card">
+        <div class="service-card" onclick="openServiceModal('Fertilization & Weed Control')" style="cursor: pointer;">
           <div class="service-image" style="background-image: linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)), url('https://images.unsplash.com/photo-1593113646773-028c64a8f1b8?w=800&q=80'); background-size: cover; background-position: center;"></div>
           <div class="service-content">
             <h3 style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem;">Fertilization &amp; Weed Control</h3>
@@ -529,13 +529,12 @@
       </div>
       <div class="product-grid">
         <div class="product-card">
-          <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1621452334882-5f480fe9cc65?w=800&q=80'); background-size: cover; background-position: center;"></div>
+          <div class="product-image" style="background-image: url('/static/images/product-sod.jpg'); background-size: cover; background-position: center;"></div>
           <div class="product-info">
-            <div class="product-name">St. Augustine Grass Sod</div>
+            <div class="product-name">St. Augustine Grass Plugs</div>
             <div class="product-price">$0.45/sq ft</div>
             <p class="product-description">
-              Premium sod, perfect for Louisiana's humid climate. Minimum order
-              400 sq ft.
+              Premium St. Augustine grass plugs, perfect for Louisiana's humid climate. Easy to install.
             </p>
             <a
               href="https://amzn.to/48aB41Y"
@@ -549,13 +548,12 @@
           </div>
         </div>
         <div class="product-card">
-          <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1610448721566-47369c768e70?w=800&q=80'); background-size: cover; background-position: center;"></div>
+          <div class="product-image" style="background-image: url('/static/images/product-fertilizer.jpg'); background-size: cover; background-position: center;"></div>
           <div class="product-info">
-            <div class="product-name">Fertilizer (50 lb)</div>
+            <div class="product-name">Scotts Liquid Green Max</div>
             <div class="product-price">$49.99</div>
             <p class="product-description">
-              15-0-15 slow-release formula for St. Augustine & Bermuda grass.
-              Covers 15,000 sq ft.
+              Liquid lawn food for quick greening. Covers up to 7,200 sq ft. Perfect for St. Augustine & Bermuda.
             </p>
             <a
               href="https://amzn.to/4qUz8Cc"
@@ -569,13 +567,12 @@
           </div>
         </div>
         <div class="product-card">
-          <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1617471346061-48e45e7b85e0?w=800&q=80'); background-size: cover; background-position: center;"></div>
+          <div class="product-image" style="background-image: url('/static/images/product-weed-feed.jpg'); background-size: cover; background-position: center;"></div>
           <div class="product-info">
-            <div class="product-name">Weed & Feed (40 lb)</div>
+            <div class="product-name">Scotts WinterGuard Weed & Feed</div>
             <div class="product-price">$39.99</div>
             <p class="product-description">
-              Pre-emergent weed control + fertilizer combo. Apply March &
-              September.
+              Fall fertilizer plus weed killer. Builds strong, deep roots for spring. Apply September-November.
             </p>
             <a
               href="https://amzn.to/3K0n8OS"
@@ -609,6 +606,40 @@
         </div>
       </div>
     </section>
+
+    <!-- Service Inquiry Modal -->
+    <div id="service-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
+      <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; margin: 2rem; max-height: 90vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="color: #10b981; margin: 0;" id="modal-service-title">Request Service</h2>
+          <button onclick="closeServiceModal()" style="background: none; border: none; font-size: 2rem; cursor: pointer; color: #6b7280;">&times;</button>
+        </div>
+        <form id="service-inquiry-form" onsubmit="return handleServiceInquiry(event)">
+          <input type="hidden" id="inquiry-service" name="service">
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">First Name</label>
+            <input type="text" name="firstName" required style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;" autocomplete="given-name">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Last Name</label>
+            <input type="text" name="lastName" required style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;" autocomplete="family-name">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Phone Number</label>
+            <input type="tel" name="phone" required style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;" autocomplete="tel">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Email Address</label>
+            <input type="email" name="email" required style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;" autocomplete="email">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">Service Address</label>
+            <input type="text" name="address" required style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;" autocomplete="street-address" placeholder="Street address, City, State, ZIP">
+          </div>
+          <button type="submit" style="width: 100%; padding: 1rem; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer;">Submit Request</button>
+        </form>
+      </div>
+    </div>
 
     <footer
       style="
@@ -663,6 +694,58 @@
         }
         return false;
       }
+
+      function openServiceModal(serviceName) {
+        document.getElementById('modal-service-title').textContent = serviceName;
+        document.getElementById('inquiry-service').value = serviceName;
+        const modal = document.getElementById('service-modal');
+        modal.style.display = 'flex';
+      }
+
+      function closeServiceModal() {
+        document.getElementById('service-modal').style.display = 'none';
+        document.getElementById('service-inquiry-form').reset();
+      }
+
+      async function handleServiceInquiry(e) {
+        e.preventDefault();
+        const form = document.getElementById('service-inquiry-form');
+        const data = new FormData(form);
+        const payload = {
+          firstName: data.get('firstName'),
+          lastName: data.get('lastName'),
+          phone: data.get('phone'),
+          email: data.get('email'),
+          address: data.get('address'),
+          service: data.get('service'),
+        };
+
+        try {
+          const res = await fetch('/api/service-inquiry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const json = await res.json();
+          if (json.ok) {
+            alert('Thank you! We have received your service request and will contact you within 24 hours.');
+            closeServiceModal();
+          } else {
+            alert('Error: ' + (json.error || 'Unable to submit request'));
+          }
+        } catch (err) {
+          alert('Network error, please try again later');
+          console.error(err);
+        }
+        return false;
+      }
+
+      // Close modal when clicking outside
+      document.getElementById('service-modal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeServiceModal();
+        }
+      });
     </script>
   </body>
 </html>
