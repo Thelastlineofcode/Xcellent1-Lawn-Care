@@ -745,6 +745,119 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // POST /api/careers/apply (careers application submission)
+  if (url.pathname === "/api/careers/apply" && req.method === "POST") {
+    try {
+      const body = await req.json();
+
+      // Validation
+      if (!body.name || body.name.trim().length < 2) {
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            error: "Name must be at least 2 characters",
+          }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.phone || body.phone.trim().length < 10) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Valid phone number is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.email || !/^\S+@\S+\.\S+$/.test(body.email)) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Valid email is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.position || !["field-worker", "crew-lead"].includes(body.position)) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Please select a valid position" }),
+          { status: 400, headers }
+        );
+      }
+
+      const positionName = body.position === "field-worker" ? "Field Worker" : "Crew Lead";
+      const record = {
+        id: `career_${Date.now()}`,
+        name: body.name.trim(),
+        phone: body.phone.trim(),
+        email: body.email.trim(),
+        position: positionName,
+        created_at: new Date().toISOString(),
+      };
+
+      if (dbConnected) {
+        // Save to applications table with source=careers
+        try {
+          const result = await db.queryObject(
+            `INSERT INTO applications (name, phone, email, notes, source, status) VALUES ($1, $2, $3, $4, $5, 'pending') RETURNING id`,
+            [
+              record.name,
+              record.phone,
+              record.email,
+              `Position: ${record.position}`,
+              "careers",
+            ]
+          );
+          const id = (result.rows[0] as any).id;
+          return new Response(JSON.stringify({ ok: true, id }), {
+            status: 201,
+            headers,
+          });
+        } catch (dbErr) {
+          console.error("[server] DB insert error for careers:", dbErr);
+          // fallback to file below
+        }
+      }
+
+      // Fallback: write to dev_db.json
+      try {
+        const dbPath = "./dev_db.json";
+        let json: any = {};
+        try {
+          const data = await Deno.readTextFile(dbPath);
+          json = JSON.parse(data);
+        } catch {
+          json = { applications: [], events_outbox: [] };
+        }
+        if (!json.applications) json.applications = [];
+        if (!json.events_outbox) json.events_outbox = [];
+        json.applications.push({
+          ...record,
+          source: "careers",
+          status: "pending",
+        });
+        json.events_outbox.push({
+          id: `evt_${Date.now()}`,
+          type: "CAREERS_APPLICATION",
+          created_at: new Date().toISOString(),
+          payload: record,
+          status: "pending",
+        });
+        await Deno.writeTextFile(dbPath, JSON.stringify(json, null, 2));
+        return new Response(JSON.stringify({ ok: true, id: record.id }), {
+          status: 201,
+          headers,
+        });
+      } catch (fileErr) {
+        console.error("[server] Error writing careers application to dev_db:", fileErr);
+        return new Response(
+          JSON.stringify({ ok: false, error: "Internal server error" }),
+          { status: 500, headers }
+        );
+      }
+    } catch (err) {
+      console.error("[server] Error handling careers application:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
   // 404 for unknown routes
   return new Response(JSON.stringify({ ok: false, error: "Not found" }), {
     status: 404,
