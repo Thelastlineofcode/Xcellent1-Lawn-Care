@@ -2,6 +2,7 @@
 import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
+import { authenticateRequest } from "./supabase_auth.ts";
 
 // Database connection
 // Prefer using an environment variable for DATABASE_URL. Avoid hardcoding
@@ -39,6 +40,51 @@ const outbox: Map<string, any> = new Map();
 let leadCounter = 1;
 let eventCounter = 1;
 
+// Authentication middleware helper
+async function requireAuth(req: Request, allowedRoles?: string[]): Promise<
+  { authorized: false; response: Response } | { authorized: true; auth: any }
+> {
+  const auth = await authenticateRequest(req);
+
+  if (!auth) {
+    return {
+      authorized: false,
+      response: new Response(
+        JSON.stringify({ ok: false, error: "Unauthorized - please log in" }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          }
+        }
+      ),
+    };
+  }
+
+  // Check role-based authorization if roles specified
+  if (allowedRoles && !allowedRoles.includes(auth.profile.role)) {
+    return {
+      authorized: false,
+      response: new Response(
+        JSON.stringify({ ok: false, error: "Forbidden - insufficient permissions" }),
+        {
+          status: 403,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          }
+        }
+      ),
+    };
+  }
+
+  return {
+    authorized: true,
+    auth,
+  };
+}
+
 // Helper: save base64 image to file
 async function saveBase64Image(
   dataUrl: string,
@@ -60,13 +106,17 @@ async function handler(req: Request): Promise<Response> {
   // CORS headers
   const headers = {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PATCH, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Content-Type": "application/json",
   };
 
   // POST /api/v1/quotes/estimate (owner dashboard quote calculator)
   if (url.pathname === "/api/v1/quotes/estimate" && req.method === "POST") {
+    // Require owner authentication
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
     try {
       const body = await req.json();
       // Basic validation
@@ -156,43 +206,10 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
-  // POST /api/auth/login (owner dashboard authentication)
-  if (url.pathname === "/api/auth/login" && req.method === "POST") {
-    try {
-      const body = await req.json();
-      const { username, password } = body;
-
-      // Simple hardcoded authentication for owner
-      // In production, this should use proper password hashing and database
-      const validUsername = "owner";
-      const validPassword = "xcellent2025";
-
-      if (username === validUsername && password === validPassword) {
-        return new Response(
-          JSON.stringify({
-            ok: true,
-            message: "Login successful",
-            user: { username: validUsername, role: "owner" },
-          }),
-          { status: 200, headers }
-        );
-      } else {
-        return new Response(
-          JSON.stringify({
-            ok: false,
-            error: "Invalid username or password",
-          }),
-          { status: 401, headers }
-        );
-      }
-    } catch (err) {
-      console.error("[server] Error in auth login:", err);
-      return new Response(
-        JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
-      );
-    }
-  }
+  // Authentication is handled by Supabase Auth
+  // Users should authenticate through the login page which uses Supabase client-side SDK
+  // The frontend will obtain a JWT token from Supabase and include it in the Authorization header
+  // All protected API endpoints verify this JWT using the authenticateRequest middleware
 
   // Handle OPTIONS preflight
   if (req.method === "OPTIONS") {
@@ -342,6 +359,10 @@ async function handler(req: Request): Promise<Response> {
 
   // GET /api/status (dashboard data)
   if (url.pathname === "/api/status" && req.method === "GET") {
+    // Require owner authentication
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
     try {
       if (dbConnected) {
         // Get from database
@@ -389,8 +410,26 @@ async function handler(req: Request): Promise<Response> {
     url.pathname.match(/^\/api\/crew\/[^\/]+\/jobs$/) &&
     req.method === "GET"
   ) {
+    // Require crew or owner authentication
+    const authCheck = await requireAuth(req, ["crew", "owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
     try {
       const crewId = url.pathname.split("/")[3];
+
+      // Ensure crew can only access their own jobs (unless they're an owner)
+      if (authCheck.auth.profile.role === "crew" && authCheck.auth.profile.id !== crewId) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Forbidden - can only access own jobs" }),
+          {
+            status: 403,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            }
+          }
+        );
+      }
 
       if (dbConnected) {
         const result = await db.queryObject(
@@ -433,6 +472,10 @@ async function handler(req: Request): Promise<Response> {
 
   // GET /api/owner/metrics (business KPIs)
   if (url.pathname === "/api/owner/metrics" && req.method === "GET") {
+    // Require owner authentication
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
     try {
       if (dbConnected) {
         const result = await db.queryObject(
@@ -473,8 +516,36 @@ async function handler(req: Request): Promise<Response> {
     url.pathname.match(/^\/api\/client\/[^\/]+\/dashboard$/) &&
     req.method === "GET"
   ) {
+    // Require client or owner authentication
+    const authCheck = await requireAuth(req, ["client", "owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
     try {
       const clientId = url.pathname.split("/")[3];
+
+      // Ensure clients can only access their own dashboard (unless they're an owner)
+      if (authCheck.auth.profile.role === "client") {
+        // Get the client's actual client_id from the clients table
+        if (dbConnected) {
+          const clientResult = await db.queryObject(
+            `SELECT id FROM clients WHERE user_id = $1`,
+            [authCheck.auth.profile.id]
+          );
+
+          if (clientResult.rows.length === 0 || (clientResult.rows[0] as any).id !== clientId) {
+            return new Response(
+              JSON.stringify({ ok: false, error: "Forbidden - can only access own dashboard" }),
+              {
+                status: 403,
+                headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                }
+              }
+            );
+          }
+        }
+      }
 
       if (dbConnected) {
         const result = await db.queryObject(
@@ -537,6 +608,10 @@ async function handler(req: Request): Promise<Response> {
   // POST /api/jobs/:id/photo (crew photo upload)
   const photoMatch = url.pathname.match(/^\/api\/jobs\/([^\/]+)\/photo$/);
   if (photoMatch && req.method === "POST") {
+    // Require crew or owner authentication
+    const authCheck = await requireAuth(req, ["crew", "owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
     try {
       const jobId = photoMatch[1];
       const body = await req.json();
@@ -606,6 +681,10 @@ async function handler(req: Request): Promise<Response> {
   // PATCH /api/jobs/:id/complete (mark job done)
   const completeMatch = url.pathname.match(/^\/api\/jobs\/([^\/]+)\/complete$/);
   if (completeMatch && req.method === "PATCH") {
+    // Require crew or owner authentication
+    const authCheck = await requireAuth(req, ["crew", "owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
     try {
       const jobId = completeMatch[1];
 

@@ -8,6 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- Users table (crew, owner, client, applicant)
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  auth_user_id UUID UNIQUE, -- Links to Supabase Auth user
   email TEXT UNIQUE NOT NULL,
   phone TEXT,
   name TEXT NOT NULL,
@@ -112,6 +113,7 @@ CREATE TABLE IF NOT EXISTS outbox_events (
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_auth_user_id ON users(auth_user_id);
 CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
 CREATE INDEX IF NOT EXISTS idx_applications_created ON applications(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_jobs_crew ON jobs(crew_id);
@@ -133,22 +135,61 @@ ALTER TABLE job_photos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 
--- Policies (examples - adjust based on auth setup)
--- Owner can see everything
-CREATE POLICY "Owners can view all" ON users FOR SELECT USING (true);
-CREATE POLICY "Owners can view all jobs" ON jobs FOR SELECT USING (true);
+-- RLS Policies for role-based access
+-- Helper function to get user role from auth.uid()
+CREATE OR REPLACE FUNCTION auth.user_role() RETURNS TEXT AS $$
+  SELECT role FROM users WHERE auth_user_id = auth.uid() LIMIT 1;
+$$ LANGUAGE SQL SECURITY DEFINER;
 
--- Crew can only see their own jobs
-CREATE POLICY "Crew can view own jobs" ON jobs FOR SELECT 
-  USING (crew_id = auth.uid());
+-- Users table policies
+CREATE POLICY "Users can view own profile" ON users FOR SELECT
+  USING (auth_user_id = auth.uid());
+CREATE POLICY "Owners can view all users" ON users FOR SELECT
+  USING (auth.user_role() = 'owner');
 
--- Clients can only see their own data
-CREATE POLICY "Clients can view own account" ON clients FOR SELECT 
-  USING (user_id = auth.uid());
-CREATE POLICY "Clients can view own jobs" ON jobs FOR SELECT 
-  USING (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid()));
-CREATE POLICY "Clients can view own photos" ON job_photos FOR SELECT 
-  USING (job_id IN (SELECT id FROM jobs WHERE client_id IN (SELECT id FROM clients WHERE user_id = auth.uid())));
+-- Jobs table policies
+CREATE POLICY "Owners can view all jobs" ON jobs FOR SELECT
+  USING (auth.user_role() = 'owner');
+CREATE POLICY "Owners can modify all jobs" ON jobs FOR ALL
+  USING (auth.user_role() = 'owner');
+CREATE POLICY "Crew can view assigned jobs" ON jobs FOR SELECT
+  USING (crew_id IN (SELECT id FROM users WHERE auth_user_id = auth.uid()));
+CREATE POLICY "Crew can update assigned jobs" ON jobs FOR UPDATE
+  USING (crew_id IN (SELECT id FROM users WHERE auth_user_id = auth.uid()));
+CREATE POLICY "Clients can view own jobs" ON jobs FOR SELECT
+  USING (client_id IN (SELECT id FROM clients WHERE user_id IN (SELECT id FROM users WHERE auth_user_id = auth.uid())));
+
+-- Clients table policies
+CREATE POLICY "Owners can view all clients" ON clients FOR SELECT
+  USING (auth.user_role() = 'owner');
+CREATE POLICY "Owners can modify clients" ON clients FOR ALL
+  USING (auth.user_role() = 'owner');
+CREATE POLICY "Clients can view own account" ON clients FOR SELECT
+  USING (user_id IN (SELECT id FROM users WHERE auth_user_id = auth.uid()));
+
+-- Job photos policies
+CREATE POLICY "Owners can view all photos" ON job_photos FOR SELECT
+  USING (auth.user_role() = 'owner');
+CREATE POLICY "Crew can view and upload photos" ON job_photos FOR ALL
+  USING (uploaded_by IN (SELECT id FROM users WHERE auth_user_id = auth.uid()));
+CREATE POLICY "Clients can view own job photos" ON job_photos FOR SELECT
+  USING (job_id IN (SELECT id FROM jobs WHERE client_id IN (SELECT id FROM clients WHERE user_id IN (SELECT id FROM users WHERE auth_user_id = auth.uid()))));
+
+-- Applications table policies (owner only)
+CREATE POLICY "Owners can manage applications" ON applications FOR ALL
+  USING (auth.user_role() = 'owner');
+
+-- Invoices policies
+CREATE POLICY "Owners can manage invoices" ON invoices FOR ALL
+  USING (auth.user_role() = 'owner');
+CREATE POLICY "Clients can view own invoices" ON invoices FOR SELECT
+  USING (client_id IN (SELECT id FROM clients WHERE user_id IN (SELECT id FROM users WHERE auth_user_id = auth.uid())));
+
+-- Payments policies
+CREATE POLICY "Owners can manage payments" ON payments FOR ALL
+  USING (auth.user_role() = 'owner');
+CREATE POLICY "Clients can view own payments" ON payments FOR SELECT
+  USING (client_id IN (SELECT id FROM clients WHERE user_id IN (SELECT id FROM users WHERE auth_user_id = auth.uid())));
 
 -- Insert demo data (optional)
 INSERT INTO users (email, phone, name, role) VALUES

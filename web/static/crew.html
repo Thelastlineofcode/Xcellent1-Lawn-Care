@@ -256,7 +256,10 @@
 <body>
   <!-- Crew Header -->
   <div class="crew-header">
-    <div class="greeting" id="crew-greeting">Good morning, Marcus 👋</div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+      <div class="greeting" id="crew-greeting">Good morning, Marcus 👋</div>
+      <button onclick="logout()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; cursor: pointer;">Logout</button>
+    </div>
     <div class="route-summary">
       <div class="route-summary-item">
         <span>📅</span>
@@ -326,9 +329,18 @@
 
   <!-- JavaScript -->
   <script src="/static/app.js"></script>
+  <script type="module">
+    import { requireAuth, logout } from '/static/auth-helper.js';
+
+    // Require crew authentication
+    const userProfile = await requireAuth('crew', '.greeting');
+
+    // Export for use in other scripts
+    window.crewProfile = userProfile;
+  </script>
   <script>
     // Crew Dashboard Logic
-    const CREW_ID = 'crew_marcus_01'; // TODO: Get from auth
+    const CREW_ID = window.crewProfile?.id || 'crew_marcus_01'; // Get from auth
     let currentJob = null;
     let photoType = 'before';
     let capturedPhoto = null;

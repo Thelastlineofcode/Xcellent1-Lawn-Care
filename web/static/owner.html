@@ -177,6 +177,69 @@
     </style>
   </head>
   <body>
+    <!-- Authentication Check -->
+    <script type="module">
+      import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
+
+      const SUPABASE_URL = 'https://utivthfrwgtjatsusopw.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0aXZ0aGZyd2d0amF0c3Vzb3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1NTA4NDEsImV4cCI6MjA3ODEyNjg0MX0.hcIzoqBwYSMC-571NRBAd_WMQZumuxavJ282nCNQ7QM';
+
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // Check authentication and role
+      async function checkAuth() {
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+          // Not logged in, redirect to login
+          window.location.href = '/static/login.html';
+          return;
+        }
+
+        // Get user profile and verify role
+        const { data: profile, error } = await supabase
+          .from('users')
+          .select('id, name, email, role, status')
+          .eq('auth_user_id', session.user.id)
+          .single();
+
+        if (error || !profile || profile.role !== 'owner') {
+          // Invalid role or no profile, logout and redirect
+          await supabase.auth.signOut();
+          alert('Access denied. This page is only for owners.');
+          window.location.href = '/static/login.html';
+          return;
+        }
+
+        if (profile.status !== 'active') {
+          await supabase.auth.signOut();
+          alert('Your account is not active. Please contact support.');
+          window.location.href = '/static/login.html';
+          return;
+        }
+
+        // Store user info and token for API calls
+        window.userProfile = profile;
+        window.supabaseSession = session;
+        window.supabaseClient = supabase;
+
+        // Update greeting
+        const greeting = document.querySelector('.owner-greeting');
+        if (greeting) {
+          greeting.textContent = `Welcome back, ${profile.name}!`;
+        }
+      }
+
+      // Run auth check immediately
+      checkAuth();
+
+      // Add logout handler
+      window.logout = async function() {
+        await supabase.auth.signOut();
+        window.location.href = '/static/login.html';
+      };
+    </script>
+
     <!-- Header -->
     <header class="header">
       <div class="header-content">
@@ -185,6 +248,7 @@
           <a href="/static/crew.html" class="nav-link">Crew</a>
           <a href="/static/client.html" class="nav-link">Clients</a>
           <a href="/static/dashboard.html" class="nav-link">Hiring</a>
+          <a href="javascript:void(0)" onclick="window.logout()" class="nav-link" style="color: #f87171;">Logout</a>
         </nav>
       </div>
     </header>
@@ -571,9 +635,14 @@
         resultDiv.style.color = "#059669";
         const data = Object.fromEntries(new FormData(form));
         try {
+          // Get auth token
+          const token = window.supabaseSession?.access_token;
           const res = await fetch("/api/v1/quotes/estimate", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
             body: JSON.stringify(data),
           });
           const json = await res.json();

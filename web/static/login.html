@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Xcellent1 Lawn Care</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #3b832a 0%, #2d6520 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 420px;
+      width: 100%;
+      padding: 48px 40px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .logo h1 {
+      color: #3b832a;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .logo p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      color: #333;
+      font-weight: 500;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #3b832a;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #3b832a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #2d6520;
+    }
+
+    .btn:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .error-message {
+      background: #fee;
+      border: 1px solid #fcc;
+      color: #c33;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .forgot-password {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .forgot-password a {
+      color: #3b832a;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .divider {
+      text-align: center;
+      margin: 24px 0;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .footer-text {
+      text-align: center;
+      margin-top: 24px;
+      color: #666;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <h1>Xcellent1 Lawn Care</h1>
+      <p>Sign in to your account</p>
+    </div>
+
+    <div id="error-message" class="error-message"></div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="you@example.com"
+          required
+          autocomplete="email"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Enter your password"
+          required
+          autocomplete="current-password"
+        >
+      </div>
+
+      <button type="submit" class="btn" id="login-btn">
+        Sign In
+      </button>
+    </form>
+
+    <div class="forgot-password">
+      <a href="#" id="forgot-password-link">Forgot your password?</a>
+    </div>
+
+    <div class="footer-text">
+      Secure login powered by Supabase
+    </div>
+  </div>
+
+  <!-- Supabase Client -->
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
+
+    // Initialize Supabase client
+    const SUPABASE_URL = 'https://utivthfrwgtjatsusopw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0aXZ0aGZyd2d0amF0c3Vzb3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1NTA4NDEsImV4cCI6MjA3ODEyNjg0MX0.hcIzoqBwYSMC-571NRBAd_WMQZumuxavJ282nCNQ7QM';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const loginForm = document.getElementById('login-form');
+    const loginBtn = document.getElementById('login-btn');
+    const errorMessage = document.getElementById('error-message');
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
+
+    // Check if user is already logged in
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session) {
+        // User is already logged in, redirect to appropriate dashboard
+        await redirectToDashboard(session.user);
+      }
+    }
+
+    // Handle login
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // Disable button and show loading
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<span class="loading"></span>Signing in...';
+      errorMessage.classList.remove('show');
+
+      try {
+        // Sign in with Supabase
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
+
+        if (error) throw error;
+
+        // Get user profile to determine role
+        const { data: profile, error: profileError } = await supabase
+          .from('users')
+          .select('id, name, email, role, status, auth_user_id')
+          .eq('auth_user_id', data.user.id)
+          .single();
+
+        if (profileError) {
+          throw new Error('Account not found. Please contact support.');
+        }
+
+        if (profile.status !== 'active') {
+          throw new Error('Account is not active. Please contact support.');
+        }
+
+        // Store user info for easy access
+        localStorage.setItem('user_profile', JSON.stringify(profile));
+
+        // Redirect based on role
+        await redirectToDashboard(data.user, profile.role);
+
+      } catch (error) {
+        console.error('Login error:', error);
+        errorMessage.textContent = error.message || 'Invalid email or password';
+        errorMessage.classList.add('show');
+
+        // Re-enable button
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = 'Sign In';
+      }
+    });
+
+    // Redirect to appropriate dashboard based on role
+    async function redirectToDashboard(user, role) {
+      if (!role) {
+        // If role not provided, fetch from database
+        const { data: profile } = await supabase
+          .from('users')
+          .select('role')
+          .eq('auth_user_id', user.id)
+          .single();
+
+        role = profile?.role;
+      }
+
+      switch (role) {
+        case 'owner':
+          window.location.href = '/static/owner.html';
+          break;
+        case 'crew':
+          window.location.href = '/static/crew.html';
+          break;
+        case 'client':
+          window.location.href = '/static/client.html';
+          break;
+        default:
+          errorMessage.textContent = 'Invalid user role. Please contact support.';
+          errorMessage.classList.add('show');
+          loginBtn.disabled = false;
+          loginBtn.innerHTML = 'Sign In';
+      }
+    }
+
+    // Handle forgot password
+    forgotPasswordLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+
+      if (!email) {
+        alert('Please enter your email address first');
+        return;
+      }
+
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/static/reset-password.html`,
+        });
+
+        if (error) throw error;
+
+        alert('Password reset email sent! Please check your inbox.');
+      } catch (error) {
+        console.error('Password reset error:', error);
+        alert('Error sending password reset email: ' + error.message);
+      }
+    });
+
+    // Check auth on page load
+    checkAuth();
+  </script>
+</body>
+</html>

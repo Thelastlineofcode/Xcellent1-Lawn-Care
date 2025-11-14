@@ -237,6 +237,7 @@
       <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
       <nav>
         <a href="/static/dashboard.html" class="nav-link">Dashboard</a>
+        <button onclick="logout()" style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; cursor: pointer; margin-left: 1rem;">Logout</button>
       </nav>
     </div>
   </header>
@@ -399,9 +400,18 @@
 
   <!-- JavaScript -->
   <script src="/static/app.js"></script>
+  <script type="module">
+    import { requireAuth, logout } from '/static/auth-helper.js';
+
+    // Require client authentication
+    const userProfile = await requireAuth('client', '#client-name');
+
+    // Export for use in other scripts
+    window.clientProfile = userProfile;
+  </script>
   <script>
     // Client Portal Logic
-    const CLIENT_ID = 'demo_client_001'; // TODO: Get from auth/session
+    const CLIENT_ID = window.clientProfile?.id || 'demo_client_001'; // Get from auth
     let allPhotos = [];
     let currentPhotoIndex = 0;
     let clientData = null;
