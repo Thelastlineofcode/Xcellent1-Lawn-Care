@@ -1,15 +1,16 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="UTF-8">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta
       name="description"
-      content="Xcellent1 Lawn Care owner dashboard - business KPIs, hiring metrics, revenue tracking"
-    />
-    <meta name="theme-color" content="#10b981" />
+      content="Xcellent1 Lawn Care owner dashboard - business KPIs, hiring metrics, revenue tracking">
+    <meta name="theme-color" content="#10b981">
     <title>Business Dashboard | Xcellent1 Owner</title>
-    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="stylesheet" href="/static/styles.css">
     <style>
       /* Owner Dashboard Styles */
       .owner-header {
@@ -177,44 +178,62 @@
     </style>
   </head>
   <body>
+    <nav class="navbar" style="position: sticky; top: 0; z-index: 100">
+      <div class="navbar-brand">
+        <div class="logo-bg" aria-hidden="true"></div>
+        <div class="navbar-title">
+          <span class="navbar-name">XCELLENT1</span>
+          <span class="navbar-tagline">LAWN CARE</span>
+        </div>
+      </div>
+      <div class="navbar-links">
+        <a href="/static/home.html" class="navbar-link">Home</a>
+        <a href="/static/shop.html" class="navbar-link">Shop</a>
+        <a href="/static/careers.html" class="navbar-link">Careers</a>
+        <button onclick="openLoginModal()" class="navbar-login">Login</button>
+      </div>
+    </nav>
     <!-- Authentication Check -->
     <script type="module">
-      import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
+      import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
-      const SUPABASE_URL = 'https://utivthfrwgtjatsusopw.supabase.co';
-      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0aXZ0aGZyd2d0amF0c3Vzb3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1NTA4NDEsImV4cCI6MjA3ODEyNjg0MX0.hcIzoqBwYSMC-571NRBAd_WMQZumuxavJ282nCNQ7QM';
+      const SUPABASE_URL = "https://utivthfrwgtjatsusopw.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0aXZ0aGZyd2d0amF0c3Vzb3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1NTA4NDEsImV4cCI6MjA3ODEyNjg0MX0.hcIzoqBwYSMC-571NRBAd_WMQZumuxavJ282nCNQ7QM";
 
       const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
       // Check authentication and role
       async function checkAuth() {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
         if (!session) {
           // Not logged in, redirect to login
-          window.location.href = '/static/login.html';
+          window.location.href = "/static/login.html";
           return;
         }
 
         // Get user profile and verify role
         const { data: profile, error } = await supabase
-          .from('users')
-          .select('id, name, email, role, status')
-          .eq('auth_user_id', session.user.id)
+          .from("users")
+          .select("id, name, email, role, status")
+          .eq("auth_user_id", session.user.id)
           .single();
 
-        if (error || !profile || profile.role !== 'owner') {
+        if (error || !profile || profile.role !== "owner") {
           // Invalid role or no profile, logout and redirect
           await supabase.auth.signOut();
-          alert('Access denied. This page is only for owners.');
-          window.location.href = '/static/login.html';
+          alert("Access denied. This page is only for owners.");
+          window.location.href = "/static/login.html";
           return;
         }
 
-        if (profile.status !== 'active') {
+        if (profile.status !== "active") {
           await supabase.auth.signOut();
-          alert('Your account is not active. Please contact support.');
-          window.location.href = '/static/login.html';
+          alert("Your account is not active. Please contact support.");
+          window.location.href = "/static/login.html";
           return;
         }
 
@@ -224,7 +243,7 @@
         window.supabaseClient = supabase;
 
         // Update greeting
-        const greeting = document.querySelector('.owner-greeting');
+        const greeting = document.querySelector(".owner-greeting");
         if (greeting) {
           greeting.textContent = `Welcome back, ${profile.name}!`;
         }
@@ -234,9 +253,9 @@
       checkAuth();
 
       // Add logout handler
-      window.logout = async function() {
+      window.logout = async function () {
         await supabase.auth.signOut();
-        window.location.href = '/static/login.html';
+        window.location.href = "/static/login.html";
       };
     </script>
 
@@ -248,7 +267,13 @@
           <a href="/static/crew.html" class="nav-link">Crew</a>
           <a href="/static/client.html" class="nav-link">Clients</a>
           <a href="/static/dashboard.html" class="nav-link">Hiring</a>
-          <a href="javascript:void(0)" onclick="window.logout()" class="nav-link" style="color: #f87171;">Logout</a>
+          <a
+            href="javascript:void(0)"
+            onclick="window.logout()"
+            class="nav-link"
+            style="color: #f87171"
+            >Logout</a
+          >
         </nav>
       </div>
     </header>
@@ -461,6 +486,7 @@
         <h2>Quote Calculator</h2>
         <form
           id="quote-form"
+          action="#"
           style="
             display: flex;
             flex-wrap: wrap;
@@ -469,20 +495,63 @@
             margin-bottom: 1rem;
           "
         >
-           <div class="quote-step" id="quote-step-1" style="flex:1; min-width:180px;">
+          <div
+            class="quote-step"
+            id="quote-step-1"
+            style="flex: 1; min-width: 180px"
+          >
             <label for="quote-address">Address</label>
             <input
               id="quote-address"
               name="address"
               class="form-field"
               placeholder="123 Main St, LaPlace, LA"
-              required
-            />
-           </div>
+              required>
+          </div>
           <div style="min-width: 120px">
-            <label for="quote-size">Lawn Size (sqft)</label>
+            <label for="quote-size-1">Lawn Size (sqft)</label>
             <input
-              id="quote-size"
+              id="quote-size-1"
+              name="lawn_size"
+              class="form-field"
+              type="number"
+              min="100"
+              step="10"
+              placeholder="e.g. 2500"
+              required>
+          </div>
+          <div style="min-width: 180px">
+            <label for="quote-service-1">Service</label>
+            <select
+              id="quote-service-1"
+              name="service_type"
+              class="form-select"
+              required
+            >
+              <option value="" disabled selected>Select a service</option>
+              <option value="weekly">Weekly Lawn Maintenance</option>
+              <option value="flower-bed">Flower Bed Clean Out</option>
+              <option value="spring-cleaning">Spring Cleaning</option>
+              <option value="leaf-debris">Leaf & Debris Removal</option>
+              <option value="tractor">Tractor / Bush Hog</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            class="waitlist-submit"
+            style="margin-top: 0.5rem; width: 100%"
+            onclick="showQuoteStep(2)"
+          >
+            Next
+          </button>
+          <div
+            class="quote-step"
+            id="quote-step-2"
+            style="min-width: 120px; display: none"
+          >
+            <label for="quote-size-2">Lawn Size (sqft)</label>
+            <input
+              id="quote-size-2"
               name="lawn_size"
               class="form-field"
               type="number"
@@ -490,40 +559,55 @@
               step="10"
               placeholder="e.g. 2500"
               required
-            />
+              autocomplete="off"
+              inputmode="numeric"
+              style="
+                padding: 16px;
+                border-radius: 12px;
+                font-size: 1.15rem;
+                min-height: 48px;
+              ">
+            <button
+              type="button"
+              class="waitlist-submit"
+              style="margin-top: 0.5rem; width: 100%"
+              onclick="showQuoteStep(3)"
+            >
+              Next
+            </button>
           </div>
-          <div style="min-width: 180px">
-            <label for="quote-service">Service</label>
+          <div
+            class="quote-step"
+            id="quote-step-3"
+            style="min-width: 180px; display: none"
+          >
+            <label for="quote-service-3">Service</label>
             <select
-              id="quote-service"
+              id="quote-service-3"
               name="service_type"
               class="form-select"
               required
+              style="
+                padding: 16px;
+                border-radius: 12px;
+                font-size: 1.15rem;
+                min-height: 48px;
+              "
             >
+              <option value="" disabled selected>Select a service</option>
               <option value="weekly">Weekly Lawn Maintenance</option>
               <option value="flower-bed">Flower Bed Clean Out</option>
               <option value="spring-cleaning">Spring Cleaning</option>
               <option value="leaf-debris">Leaf & Debris Removal</option>
               <option value="tractor">Tractor / Bush Hog</option>
             </select>
-          </div>
-           <button type="button" class="waitlist-submit" style="margin-top:0.5rem; width:100%;" onclick="showQuoteStep(2)">Next</button>
-          </div>
-          <div class="quote-step" id="quote-step-2" style="min-width:120px; display:none;">
-            <label for="quote-size">Lawn Size (sqft)</label>
-            <input id="quote-size" name="lawn_size" class="form-field" type="number" min="100" step="10" placeholder="e.g. 2500" required autocomplete="off" inputmode="numeric" style="padding:16px; border-radius:12px; font-size:1.15rem; min-height:48px;" />
-            <button type="button" class="waitlist-submit" style="margin-top:0.5rem; width:100%;" onclick="showQuoteStep(3)">Next</button>
-          </div>
-          <div class="quote-step" id="quote-step-3" style="min-width:180px; display:none;">
-            <label for="quote-service">Service</label>
-            <select id="quote-service" name="service_type" class="form-select" required style="padding:16px; border-radius:12px; font-size:1.15rem; min-height:48px;">
-              <option value="weekly">Weekly Lawn Maintenance</option>
-              <option value="flower-bed">Flower Bed Clean Out</option>
-              <option value="spring-cleaning">Spring Cleaning</option>
-              <option value="leaf-debris">Leaf & Debris Removal</option>
-              <option value="tractor">Tractor / Bush Hog</option>
-            </select>
-            <button type="submit" class="waitlist-submit" style="margin-top:0.5rem; width:100%;">Get Estimate</button>
+            <button
+              type="submit"
+              class="waitlist-submit"
+              style="margin-top: 0.5rem; width: 100%"
+            >
+              Get Estimate
+            </button>
           </div>
         </form>
         <div
@@ -535,27 +619,32 @@
             color: #059669;
           "
         ></div>
-        <div id="service-area-map" style="margin-top:2rem;">
-          <h3 style="font-size:1.1rem; margin-bottom:0.5rem;">Service Area: River Parishes</h3>
+        <div id="service-area-map" style="margin-top: 2rem">
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem">
+            Service Area: River Parishes
+          </h3>
           <iframe
             title="River Parishes Service Area"
-            width="100%"
             height="320"
-            style="border:1px solid #ccc; border-radius:12px;"
+            style="border: 1px solid #ccc; border-radius: 12px; width: 100%"
             loading="lazy"
             allowfullscreen
             referrerpolicy="no-referrer-when-downgrade"
             src="https://www.google.com/maps/d/embed?mid=1Qn6Qw7Qw7Qw7Qw7Qw7Qw7Qw7Qw7Qw7Q&ehbc=2E312F"
           ></iframe>
-          <div style="font-size:0.95rem; color:#666; margin-top:0.5rem;">Covers St. John the Baptist, St. Charles, and St. James Parishes (LaPlace, Norco, Reserve, Luling, Lutcher, Gramercy, and more).</div>
+          <div style="font-size: 0.95rem; color: #666; margin-top: 0.5rem">
+            Covers St. John the Baptist, St. Charles, and St. James Parishes
+            (LaPlace, Norco, Reserve, Luling, Lutcher, Gramercy, and more).
+          </div>
         </div>
-          <script>
-            function showQuoteStep(step) {
-              for (let i = 1; i <= 3; i++) {
-                document.getElementById('quote-step-' + i).style.display = (i === step) ? '' : 'none';
-              }
+        <script>
+          function showQuoteStep(step) {
+            for (let i = 1; i <= 3; i++) {
+              document.getElementById("quote-step-" + i).style.display =
+                i === step ? "" : "none";
             }
-          </script>
+          }
+        </script>
       </section>
 
       <!-- Financial Summary -->
@@ -641,7 +730,7 @@
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(data),
           });
@@ -653,17 +742,18 @@
             resultDiv.style.display = "block";
             resultDiv.style.color = "#b91c1c";
             resultDiv.innerHTML = `${json.error}<br><button id='collect-lead-btn' class='waitlist-submit' style='margin-top:0.75rem;'>Request Future Service</button>`;
-            document.getElementById('collect-lead-btn').onclick = function() {
-              resultDiv.innerHTML = "Thank you! We'll notify you if we expand to your area.";
+            document.getElementById("collect-lead-btn").onclick = function () {
+              resultDiv.innerHTML =
+                "Thank you! We'll notify you if we expand to your area.";
               // Optionally, send the lead to a /api/leads endpoint for future expansion
-              fetch('/api/leads', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+              fetch("/api/leads", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                   name: data.address,
-                  type: 'future-service',
-                  details: data
-                })
+                  type: "future-service",
+                  details: data,
+                }),
               });
             };
           } else {

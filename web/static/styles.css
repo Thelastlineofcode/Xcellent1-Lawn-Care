@@ -1,3 +1,60 @@
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.service-card {
+  cursor: pointer;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+.service-image {
+  width: 100%;
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+}
+.service-image noscript img,
+.service-image img.fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.service-content {
+  padding: 1rem;
+}
+.bg-service-lawn {
+  background-image:
+    linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)),
+    url("/static/images/lawnservices.jpg");
+}
+.bg-service-flowerbed {
+  background-image:
+    linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)),
+    url("/static/images/flowerbedcleanup.jpg");
+}
+.bg-service-spring {
+  background-image:
+    linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)),
+    url("/static/images/springcleaning.jpg");
+}
+.bg-service-leaf {
+  background-image:
+    linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)),
+    url("/static/images/lawnservices.jpg");
+}
+.bg-service-bushhog {
+  background-image:
+    linear-gradient(135deg, rgba(59, 131, 42, 0.5), rgba(96, 200, 72, 0.5)),
+    url("/static/images/bushhog.jpg");
+}
 :root {
   --color-primary: #10b981;
   --color-primary-dark: #0f766e;
@@ -139,6 +196,70 @@ button.btn {
   .grid-2 {
     grid-template-columns: 1fr;
   }
+}
+/* Shop product styles */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+.product-card {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.product-image {
+  width: 100%;
+  height: 160px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.product-image noscript img,
+.product-image img.fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.product-name {
+  font-weight: 700;
+  color: var(--color-text);
+}
+.product-price {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.buy-button {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+}
+/* per-product background helpers */
+.bg-sprinkler {
+  background-image: url("/static/images/81QwQd6F1GL._AC_SL1500_.jpg");
+}
+.bg-spreader {
+  background-image: url("/static/images/product-fertilizer.jpg");
+}
+.bg-liquid {
+  background-image: url("/static/images/product-weed-feed.jpg");
+}
+.bg-fertilizer {
+  background-image: url("/static/images/product-sod.jpg");
 }
 /* CSS custom properties */
 :root {
@@ -321,6 +442,48 @@ a:focus {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+}
+
+/* Navbar logo background (used on pages that don't render the <img>) */
+.navbar {
+  /* ensure navbar defaults are present for pages that don't include embedded CSS */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.navbar .logo-bg {
+  width: 48px;
+  height: 48px;
+  background-image: url("/static/images/logo-nobg.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex: 0 0 48px;
+}
+
+/* Larger logo variants for headers and hero sections */
+.logo-bg-header {
+  width: 50px;
+  height: 50px;
+  background-image: url("/static/images/logo-nobg.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.logo-bg-hero {
+  width: 120px;
+  height: 120px;
+  background-image: url("/static/images/logo-nobg.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 1rem;
 }
 
 .btn-secondary {

@@ -1,14 +1,13 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
       name="description"
-      content="Complete guide to watering your Louisiana lawn. Learn the best times, frequency, and techniques for healthy grass in the River Parishes."
-    />
+      content="Complete guide to watering your Louisiana lawn. Learn the best times, frequency, and techniques for healthy grass in the River Parishes.">
     <title>Louisiana Lawn Watering Guide | Xcellent1 Lawn Care Blog</title>
-    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="stylesheet" href="/static/styles.css">
     <style>
       * {
         margin: 0;
@@ -51,7 +50,7 @@
       .hero-image {
         width: 100%;
         height: 400px;
-        background: url("https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80")
+        background: url("https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&amp;q=80")
           center/cover no-repeat;
       }
 
@@ -155,12 +154,27 @@
     </style>
   </head>
   <body>
+    <nav class="navbar" style="position: sticky; top: 0; z-index: 100">
+      <div class="navbar-brand">
+        <div class="logo-bg" aria-hidden="true"></div>
+        <div class="navbar-title">
+          <span class="navbar-name">XCELLENT1</span>
+          <span class="navbar-tagline">LAWN CARE</span>
+        </div>
+      </div>
+      <div class="navbar-links">
+        <a href="/static/home.html" class="navbar-link">Home</a>
+        <a href="/static/shop.html" class="navbar-link">Shop</a>
+        <a href="/static/careers.html" class="navbar-link">Careers</a>
+        <button onclick="openLoginModal()" class="navbar-login">Login</button>
+      </div>
+    </nav>
     <div class="header">
-      <img
-        src="/static/images/logo-nobg.png"
-        alt="Xcellent1 Lawn Care"
-        class="header-logo"
-      />
+      <div class="logo-bg-header" aria-hidden="true">
+        <noscript>
+          <img src="/static/images/logo-nobg.png" alt="Xcellent1 Lawn Care">
+        </noscript>
+      </div>
       <h1>Louisiana Lawn Watering Guide</h1>
       <div class="date">November 2025</div>
     </div>
@@ -226,8 +240,8 @@
         <div class="tip-box">
           <h4>🌸 Spring (March - May)</h4>
           <p>
-            <strong>Frequency:</strong> 1-2 times per week<br />
-            <strong>Amount:</strong> 1 inch total (including rain)<br />
+            <strong>Frequency:</strong> 1-2 times per week<br>
+            <strong>Amount:</strong> 1 inch total (including rain)<br>
             Spring brings frequent rain showers to LaPlace. Monitor rainfall and
             adjust accordingly. St. Augustine grass begins actively growing in
             late March.
@@ -237,8 +251,8 @@
         <div class="tip-box">
           <h4>☀️ Summer (June - August)</h4>
           <p>
-            <strong>Frequency:</strong> 2-3 times per week<br />
-            <strong>Amount:</strong> 1-1.5 inches total<br />
+            <strong>Frequency:</strong> 2-3 times per week<br>
+            <strong>Amount:</strong> 1-1.5 inches total<br>
             Peak growing season with high heat and humidity. Watch for afternoon
             thunderstorms which can provide significant water. Increase
             frequency during dry spells.
@@ -248,8 +262,8 @@
         <div class="tip-box">
           <h4>🍂 Fall (September - November)</h4>
           <p>
-            <strong>Frequency:</strong> 1 time per week<br />
-            <strong>Amount:</strong> 0.75-1 inch<br />
+            <strong>Frequency:</strong> 1 time per week<br>
+            <strong>Amount:</strong> 0.75-1 inch<br>
             Cooler temperatures and occasional rain reduce water needs. Grass
             growth slows but remains active until first frost.
           </p>
@@ -258,8 +272,8 @@
         <div class="tip-box">
           <h4>❄️ Winter (December - February)</h4>
           <p>
-            <strong>Frequency:</strong> Every 2-3 weeks (if needed)<br />
-            <strong>Amount:</strong> 0.5 inch<br />
+            <strong>Frequency:</strong> Every 2-3 weeks (if needed)<br>
+            <strong>Amount:</strong> 0.5 inch<br>
             Warm-season grasses go dormant. Only water if ground is dry and no
             rain for 2+ weeks. Overwatering can promote disease.
           </p>
@@ -354,7 +368,7 @@
               cursor: pointer;
             "
           >
-            Get a Free Quote →
+            Get a Free Quote &rarr;
           </button>
         </div>
         <!-- Quote Modal (copied from home page waitlist for continuity) -->
@@ -406,6 +420,7 @@
             <form
               id="quote-form"
               class="waitlist-form"
+              action="#"
               onsubmit="return handleQuoteSubmit(event)"
             >
               <div class="waitlist-step" id="quote-step-1">
@@ -416,8 +431,7 @@
                   placeholder="Your name"
                   required
                   autocomplete="name"
-                  inputmode="text"
-                />
+                  inputmode="text">
                 <button
                   type="button"
                   class="waitlist-submit"
@@ -439,8 +453,7 @@
                   placeholder="Email address"
                   required
                   autocomplete="email"
-                  inputmode="email"
-                />
+                  inputmode="email">
                 <button
                   type="button"
                   class="waitlist-submit"
@@ -507,31 +520,31 @@
 
             const formData = new FormData(event.target);
             const payload = {
-              name: formData.get('name'),
-              email: formData.get('email'),
-              service: formData.get('service'),
-              source: 'blog-watering-guide'
+              name: formData.get("name"),
+              email: formData.get("email"),
+              service: formData.get("service"),
+              source: "blog-watering-guide",
             };
 
             try {
-              const res = await fetch('/api/service-inquiry', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+              const res = await fetch("/api/service-inquiry", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
               });
 
               if (res.ok) {
-                document.getElementById('quote-form').style.display = 'none';
-                document.getElementById('quote-success').style.display = '';
+                document.getElementById("quote-form").style.display = "none";
+                document.getElementById("quote-success").style.display = "";
                 setTimeout(closeQuoteModal, 2500);
               } else {
-                throw new Error('Submission failed');
+                throw new Error("Submission failed");
               }
             } catch (error) {
-              console.error('Quote submission error:', error);
+              console.error("Quote submission error:", error);
               // Show success message anyway for better UX (graceful degradation)
-              document.getElementById('quote-form').style.display = 'none';
-              document.getElementById('quote-success').style.display = '';
+              document.getElementById("quote-form").style.display = "none";
+              document.getElementById("quote-success").style.display = "";
               setTimeout(closeQuoteModal, 2500);
             }
             return false;

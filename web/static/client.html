@@ -1,609 +1,799 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Xcellent1 Lawn Care customer portal - view service history, job photos, and manage account">
-  <meta name="theme-color" content="#10b981">
-  <title>My Account | Xcellent1 Lawn Care</title>
-  <link rel="stylesheet" href="/static/styles.css">
-  <style>
-    /* Client Portal Specific Styles */
-    .client-header {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: white;
-      padding: 2rem 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .client-name {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .client-property {
-      font-size: 0.875rem;
-      opacity: 0.9;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .photo-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .photo-card {
-      position: relative;
-      aspect-ratio: 1;
-      border-radius: 12px;
-      overflow: hidden;
-      background: var(--color-bg);
-      border: 2px solid var(--color-border);
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .photo-card:hover {
-      transform: scale(1.05);
-      box-shadow: var(--shadow-lg);
-    }
-    .photo-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .photo-badge {
-      position: absolute;
-      top: 0.5rem;
-      left: 0.5rem;
-      background: rgba(0,0,0,0.7);
-      color: white;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    .photo-badge.before { background: rgba(239, 68, 68, 0.9); }
-    .photo-badge.after { background: rgba(34, 197, 94, 0.9); }
-    
-    /* Photo Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.95);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-    }
-    .modal.active { display: flex; }
-    .modal-content {
-      max-width: 90vw;
-      max-height: 90vh;
-      position: relative;
-    }
-    .modal-image {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-    }
-    .modal-info {
-      position: absolute;
-      bottom: 1rem;
-      left: 1rem;
-      right: 1rem;
-      background: rgba(0,0,0,0.8);
-      color: white;
-      padding: 0.75rem;
-      border-radius: 6px;
-      font-size: 0.875rem;
-    }
-    .modal-close {
-      position: absolute;
-      top: -2.5rem;
-      right: 0;
-      background: white;
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255,255,255,0.9);
-      border: none;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-prev { left: -3rem; }
-    .modal-next { right: -3rem; }
-    
-    .job-history-card {
-      border-left: 4px solid var(--color-primary);
-    }
-    .service-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      background: var(--color-primary);
-      color: white;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-right: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .invoice-summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    .invoice-stat {
-      text-align: center;
-      padding: 1rem;
-      background: var(--color-bg);
-      border-radius: 8px;
-      border: 1px solid var(--color-border);
-    }
-    .invoice-stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--color-primary);
-    }
-    .invoice-stat-label {
-      font-size: 0.875rem;
-      color: var(--color-text-secondary);
-      margin-top: 0.25rem;
-    }
-    
-    /* Payment Options Grid */
-    .payment-options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 1rem;
-      margin: 1.5rem 0;
-    }
-    .payment-option {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem 1rem;
-      border: 2px solid var(--color-border);
-      border-radius: 12px;
-      background: white;
-      cursor: pointer;
-      transition: all 0.2s;
-      min-height: 120px;
-      text-decoration: none;
-      color: inherit;
-    }
-    .payment-option:hover {
-      border-color: var(--color-primary);
-      background: var(--color-bg);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-    .payment-icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .payment-label {
-      font-weight: 600;
-      font-size: 0.875rem;
-      text-align: center;
-    }
-    .payment-handle {
-      font-size: 0.75rem;
-      color: var(--color-text-secondary);
-      margin-top: 0.25rem;
-    }
-    
-    @media (max-width: 768px) {
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="Xcellent1 Lawn Care customer portal - view service history, job photos, and manage account">
+    <meta name="theme-color" content="#10b981">
+    <title>My Account | Xcellent1 Lawn Care</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+      /* Client Portal Specific Styles */
+      .client-header {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 2rem 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .client-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+      .client-property {
+        font-size: 0.875rem;
+        opacity: 0.9;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
       .photo-gallery {
-        grid-template-columns: repeat(2, 1fr);
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
       }
-      .modal-prev, .modal-next {
+      .photo-card {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--color-bg);
+        border: 2px solid var(--color-border);
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .photo-card:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-lg);
+      }
+      .photo-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .photo-badge {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .photo-badge.before {
+        background: rgba(239, 68, 68, 0.9);
+      }
+      .photo-badge.after {
+        background: rgba(34, 197, 94, 0.9);
+      }
+
+      /* Photo Modal */
+      .modal {
         display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
       }
+      .modal.active {
+        display: flex;
+      }
+      .modal-content {
+        max-width: 90vw;
+        max-height: 90vh;
+        position: relative;
+      }
+      .modal-image {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+      }
+      .modal-info {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+      }
+      .modal-close {
+        position: absolute;
+        top: -2.5rem;
+        right: 0;
+        background: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-prev {
+        left: -3rem;
+      }
+      .modal-next {
+        right: -3rem;
+      }
+
+      .job-history-card {
+        border-left: 4px solid var(--color-primary);
+      }
+      .service-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: var(--color-primary);
+        color: white;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      .invoice-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .invoice-stat {
+        text-align: center;
+        padding: 1rem;
+        background: var(--color-bg);
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
+      }
+      .invoice-stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-primary);
+      }
+      .invoice-stat-label {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        margin-top: 0.25rem;
+      }
+
+      /* Payment Options Grid */
       .payment-options {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
       }
-    }
-  </style>
-</head>
-<body>
-  <!-- Header -->
-  <header class="header">
-    <div class="header-content">
-      <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
-      <nav>
-        <a href="/static/dashboard.html" class="nav-link">Dashboard</a>
-        <button onclick="logout()" style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; cursor: pointer; margin-left: 1rem;">Logout</button>
-      </nav>
+      .payment-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem 1rem;
+        border: 2px solid var(--color-border);
+        border-radius: 12px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+        min-height: 120px;
+        text-decoration: none;
+        color: inherit;
+      }
+      .payment-option:hover {
+        border-color: var(--color-primary);
+        background: var(--color-bg);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+      .payment-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .payment-label {
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-align: center;
+      }
+      .payment-handle {
+        font-size: 0.75rem;
+        color: var(--color-text-secondary);
+        margin-top: 0.25rem;
+      }
+
+      @media (max-width: 768px) {
+        .photo-gallery {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .modal-prev,
+        .modal-next {
+          display: none;
+        }
+        .payment-options {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar" style="position: sticky; top: 0; z-index: 100">
+      <div class="navbar-brand">
+        <div class="logo-bg" aria-hidden="true"></div>
+        <div class="navbar-title">
+          <span class="navbar-name">XCELLENT1</span>
+          <span class="navbar-tagline">LAWN CARE</span>
+        </div>
+      </div>
+      <div class="navbar-links">
+        <a href="/static/home.html" class="navbar-link">Home</a>
+        <a href="/static/shop.html" class="navbar-link">Shop</a>
+        <a href="/static/careers.html" class="navbar-link">Careers</a>
+        <button onclick="openLoginModal()" class="navbar-login">Login</button>
+      </div>
+    </nav>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
+        <nav>
+          <a href="/static/dashboard.html" class="nav-link">Dashboard</a>
+          <button
+            onclick="logout()"
+            style="
+              background: transparent;
+              border: 1px solid rgba(255, 255, 255, 0.3);
+              color: white;
+              padding: 0.5rem 1rem;
+              border-radius: 8px;
+              font-size: 0.875rem;
+              cursor: pointer;
+              margin-left: 1rem;
+            "
+          >
+            Logout
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Client Header -->
+    <div class="client-header">
+      <div class="container">
+        <div class="client-name" id="client-name">Loading...</div>
+        <div class="client-property">
+          <span>📍</span>
+          <span id="client-address">Loading...</span>
+        </div>
+      </div>
     </div>
-  </header>
 
-  <!-- Client Header -->
-  <div class="client-header">
-    <div class="container">
-      <div class="client-name" id="client-name">Loading...</div>
-      <div class="client-property">
-        <span>📍</span>
-        <span id="client-address">Loading...</span>
-      </div>
-    </div>
-  </div>
+    <!-- Main Content -->
+    <main class="container">
+      <!-- Account Status Messages -->
+      <div id="client-status" role="alert" aria-live="polite"></div>
 
-  <!-- Main Content -->
-  <main class="container">
-    
-    <!-- Account Status Messages -->
-    <div id="client-status" role="alert" aria-live="polite"></div>
-
-    <!-- Invoice Summary -->
-    <section class="mb-lg">
-      <h2>Account Summary</h2>
-      <div class="invoice-summary">
-        <div class="invoice-stat">
-          <div class="invoice-stat-value" id="stat-balance">$0</div>
-          <div class="invoice-stat-label">Current Balance</div>
+      <!-- Invoice Summary -->
+      <section class="mb-lg">
+        <h2>Account Summary</h2>
+        <div class="invoice-summary">
+          <div class="invoice-stat">
+            <div class="invoice-stat-value" id="stat-balance">$0</div>
+            <div class="invoice-stat-label">Current Balance</div>
+          </div>
+          <div class="invoice-stat">
+            <div class="invoice-stat-value" id="stat-services">0</div>
+            <div class="invoice-stat-label">Services This Month</div>
+          </div>
+          <div class="invoice-stat">
+            <div class="invoice-stat-value" id="stat-photos">0</div>
+            <div class="invoice-stat-label">Photos Available</div>
+          </div>
         </div>
-        <div class="invoice-stat">
-          <div class="invoice-stat-value" id="stat-services">0</div>
-          <div class="invoice-stat-label">Services This Month</div>
+      </section>
+
+      <!-- Recent Job Photos -->
+      <section class="mb-lg">
+        <div class="card-header">
+          <h2>📸 Before & After Photos</h2>
+          <p class="text-muted">
+            See the results from your recent lawn services. Tap any photo to
+            view full size.
+          </p>
         </div>
-        <div class="invoice-stat">
-          <div class="invoice-stat-value" id="stat-photos">0</div>
-          <div class="invoice-stat-label">Photos Available</div>
+        <div id="photo-gallery" class="photo-gallery">
+          <div class="loading-container">
+            <span class="spinner"></span>
+            <span>Loading photos...</span>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Recent Job Photos -->
-    <section class="mb-lg">
-      <div class="card-header">
-        <h2>📸 Before & After Photos</h2>
-        <p class="text-muted">See the results from your recent lawn services. Tap any photo to view full size.</p>
-      </div>
-      <div id="photo-gallery" class="photo-gallery">
-        <div class="loading-container">
-          <span class="spinner"></span>
-          <span>Loading photos...</span>
+      <!-- Service History -->
+      <section class="mb-lg">
+        <h2>Service History</h2>
+        <div id="service-history">
+          <div class="loading-container">
+            <span class="spinner"></span>
+            <span>Loading history...</span>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Service History -->
-    <section class="mb-lg">
-      <h2>Service History</h2>
-      <div id="service-history">
-        <div class="loading-container">
-          <span class="spinner"></span>
-          <span>Loading history...</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Payment Section -->
-    <section class="card">
-      <h2>💳 Make a Payment</h2>
-      <p class="text-muted mb-md">Choose your preferred payment method. Tap to open app or copy payment details.</p>
-      
-      <div id="payment-status" role="alert" aria-live="polite"></div>
-      
-      <!-- Payment Amount Input -->
-      <div class="form-group">
-        <label for="payment-amount">
-          Amount to Pay
-          <span class="required">*</span>
-        </label>
-        <input
-          type="number"
-          id="payment-amount"
-          name="amount"
-          min="0"
-          step="0.01"
-          placeholder="0.00"
-          required
-          readonly
-          style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary);"
-        >
-        <small class="text-muted">Current balance due</small>
-      </div>
-
-      <!-- Payment Options -->
-      <div class="payment-options">
-        <!-- Cash App -->
-        <a href="#" class="payment-option" id="cashapp-btn" onclick="handleCashApp(event)">
-          <div class="payment-icon">💵</div>
-          <div class="payment-label">Cash App</div>
-          <div class="payment-handle">$Xcellent1Lawn</div>
-        </a>
-
-        <!-- Zelle -->
-        <a href="#" class="payment-option" id="zelle-btn" onclick="handleZelle(event)">
-          <div class="payment-icon">🏦</div>
-          <div class="payment-label">Zelle</div>
-          <div class="payment-handle">pay@xcellent1.com</div>
-        </a>
-
-        <!-- PayPal -->
-        <a href="https://www.paypal.com/paypalme/Xcellent1Lawn" target="_blank" class="payment-option" id="paypal-btn">
-          <div class="payment-icon">🔵</div>
-          <div class="payment-label">PayPal</div>
-          <div class="payment-handle">@Xcellent1Lawn</div>
-        </a>
-
-        <!-- Traditional Card (Future) -->
-        <a href="#" class="payment-option" onclick="handleCard(event)" style="opacity: 0.5; cursor: not-allowed;">
-          <div class="payment-icon">💳</div>
-          <div class="payment-label">Credit Card</div>
-          <div class="payment-handle">Coming Soon</div>
-        </a>
-      </div>
-
-      <!-- Payment Instructions -->
-      <div class="card" style="background: var(--color-bg); border: 1px solid var(--color-border);">
-        <h3>Payment Instructions</h3>
-        <ol style="padding-left: 1.5rem; margin: 0.5rem 0;">
-          <li class="mb-sm">Tap your preferred payment method above</li>
-          <li class="mb-sm">Send the amount shown (or your preferred amount)</li>
-          <li class="mb-sm">Include your name in the note/memo: <strong id="payment-memo">Sarah Martinez - 123 Oak St</strong></li>
-          <li>We'll update your balance within 24 hours</li>
-        </ol>
-        <p class="text-muted mt-md">
-          <small>🔒 Secure: We never store payment credentials. All transactions processed through trusted payment providers.</small>
+      <!-- Payment Section -->
+      <section class="card">
+        <h2>💳 Make a Payment</h2>
+        <p class="text-muted mb-md">
+          Choose your preferred payment method. Tap to open app or copy payment
+          details.
         </p>
-      </div>
-    </section>
 
-  </main>
+        <div id="payment-status" role="alert" aria-live="polite"></div>
 
-  <!-- Photo Modal -->
-  <div id="photo-modal" class="modal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closePhotoModal()">×</button>
-      <button class="modal-nav modal-prev" onclick="prevPhoto()">‹</button>
-      <img id="modal-image" class="modal-image" src="" alt="Job photo">
-      <div class="modal-info" id="modal-info">
-        <strong id="modal-title">Before Photo</strong>
-        <div id="modal-date">Nov 5, 2025</div>
+        <!-- Payment Amount Input -->
+        <div class="form-group">
+          <label for="payment-amount">
+            Amount to Pay
+            <span class="required">*</span>
+          </label>
+          <input
+            type="number"
+            id="payment-amount"
+            name="amount"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+            required
+            readonly
+            style="
+              font-size: 1.25rem;
+              font-weight: 700;
+              color: var(--color-primary);
+            ">
+          <small class="text-muted">Current balance due</small>
+        </div>
+
+        <!-- Payment Options -->
+        <div class="payment-options">
+          <!-- Cash App -->
+          <a
+            href="#"
+            class="payment-option"
+            id="cashapp-btn"
+            onclick="handleCashApp(event)"
+          >
+            <div class="payment-icon">💵</div>
+            <div class="payment-label">Cash App</div>
+            <div class="payment-handle">$Xcellent1Lawn</div>
+          </a>
+
+          <!-- Zelle -->
+          <a
+            href="#"
+            class="payment-option"
+            id="zelle-btn"
+            onclick="handleZelle(event)"
+          >
+            <div class="payment-icon">🏦</div>
+            <div class="payment-label">Zelle</div>
+            <div class="payment-handle">pay@xcellent1.com</div>
+          </a>
+
+          <!-- PayPal -->
+          <a
+            href="https://www.paypal.com/paypalme/Xcellent1Lawn"
+            target="_blank"
+            class="payment-option"
+            id="paypal-btn"
+          >
+            <div class="payment-icon">🔵</div>
+            <div class="payment-label">PayPal</div>
+            <div class="payment-handle">@Xcellent1Lawn</div>
+          </a>
+
+          <!-- Traditional Card (Future) -->
+          <a
+            href="#"
+            class="payment-option"
+            onclick="handleCard(event)"
+            style="opacity: 0.5; cursor: not-allowed"
+          >
+            <div class="payment-icon">💳</div>
+            <div class="payment-label">Credit Card</div>
+            <div class="payment-handle">Coming Soon</div>
+          </a>
+        </div>
+
+        <!-- Payment Instructions -->
+        <div
+          class="card"
+          style="
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+          "
+        >
+          <h3>Payment Instructions</h3>
+          <ol style="padding-left: 1.5rem; margin: 0.5rem 0">
+            <li class="mb-sm">Tap your preferred payment method above</li>
+            <li class="mb-sm">
+              Send the amount shown (or your preferred amount)
+            </li>
+            <li class="mb-sm">
+              Include your name in the note/memo:
+              <strong id="payment-memo">Sarah Martinez - 123 Oak St</strong>
+            </li>
+            <li>We'll update your balance within 24 hours</li>
+          </ol>
+          <p class="text-muted mt-md">
+            <small
+              >🔒 Secure: We never store payment credentials. All transactions
+              processed through trusted payment providers.</small
+            >
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Photo Modal -->
+    <div id="photo-modal" class="modal">
+      <div class="modal-content">
+        <button class="modal-close" onclick="closePhotoModal()">&times;</button>
+        <button class="modal-nav modal-prev" onclick="prevPhoto()">‹</button>
+        <img
+          id="modal-image"
+          class="modal-image"
+          src="/static/images/xcellent1-logo-small.png"
+          alt="Job photo">
+        <div class="modal-info" id="modal-info">
+          <strong id="modal-title">Before Photo</strong>
+          <div id="modal-date">Nov 5, 2025</div>
+        </div>
+        <button class="modal-nav modal-next" onclick="nextPhoto()">›</button>
       </div>
-      <button class="modal-nav modal-next" onclick="nextPhoto()">›</button>
     </div>
-  </div>
 
-  <!-- Footer -->
-  <footer class="text-center mt-lg text-muted">
-    <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
-    <p><small>Need help? Call us: (555) 867-5309</small></p>
-  </footer>
+    <!-- Footer -->
+    <footer class="text-center mt-lg text-muted">
+      <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
+      <p><small>Need help? Call us: (555) 867-5309</small></p>
+    </footer>
 
-  <!-- JavaScript -->
-  <script src="/static/app.js"></script>
-  <script type="module">
-    import { requireAuth, logout } from '/static/auth-helper.js';
+    <!-- JavaScript -->
+    <script src="/static/app.js"></script>
+    <script type="module">
+      import { requireAuth, logout } from "/static/auth-helper.js";
 
-    // Require client authentication
-    const userProfile = await requireAuth('client', '#client-name');
+      // Require client authentication
+      const userProfile = await requireAuth("client", "#client-name");
 
-    // Export for use in other scripts
-    window.clientProfile = userProfile;
-  </script>
-  <script>
-    // Client Portal Logic
-    const CLIENT_ID = window.clientProfile?.id || 'demo_client_001'; // Get from auth
-    let allPhotos = [];
-    let currentPhotoIndex = 0;
-    let clientData = null;
+      // Export for use in other scripts
+      window.clientProfile = userProfile;
+    </script>
+    <script>
+      // Client Portal Logic
+      const CLIENT_ID = window.clientProfile?.id || "demo_client_001"; // Get from auth
+      let allPhotos = [];
+      let currentPhotoIndex = 0;
+      let clientData = null;
 
-    // Payment provider handles (replace with your actual accounts)
-    const PAYMENT_CONFIG = {
-      cashapp: '$Xcellent1Lawn',
-      zelle: 'pay@xcellent1.com',
-      paypal: 'Xcellent1Lawn'
-    };
+      // Payment provider handles (replace with your actual accounts)
+      const PAYMENT_CONFIG = {
+        cashapp: "$Xcellent1Lawn",
+        zelle: "pay@xcellent1.com",
+        paypal: "Xcellent1Lawn",
+      };
 
-    // Fetch client data
-    async function loadClientData() {
-      try {
-        // Mock data for demo - replace with: await fetchJSON('/api/client/' + CLIENT_ID)
-        const mockClient = {
-          name: 'Sarah Martinez',
-          address: '123 Oak Street, Austin TX',
-          balance: 125.00,
-          services_this_month: 4,
-          photos: [
-            { id: 1, job_id: 'job-001', type: 'before', date: '2025-11-05', url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400' },
-            { id: 2, job_id: 'job-001', type: 'after', date: '2025-11-05', url: 'https://images.unsplash.com/photo-1558904541-efa843a96f01?w=400' },
-            { id: 3, job_id: 'job-002', type: 'before', date: '2025-10-29', url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400' },
-            { id: 4, job_id: 'job-002', type: 'after', date: '2025-10-29', url: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=400' },
-            { id: 5, job_id: 'job-003', type: 'before', date: '2025-10-22', url: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400' },
-            { id: 6, job_id: 'job-003', type: 'after', date: '2025-10-22', url: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400' },
-          ],
-          service_history: [
-            { date: '2025-11-05', services: ['Mowing', 'Edging', 'Trimming'], status: 'completed', photos: 2 },
-            { date: '2025-10-29', services: ['Mowing', 'Leaf Removal'], status: 'completed', photos: 2 },
-            { date: '2025-10-22', services: ['Mowing', 'Edging'], status: 'completed', photos: 2 },
-            { date: '2025-10-15', services: ['Mowing', 'Aeration'], status: 'completed', photos: 0 },
-          ]
-        };
+      // Fetch client data
+      async function loadClientData() {
+        try {
+          // Mock data for demo - replace with: await fetchJSON('/api/client/' + CLIENT_ID)
+          const mockClient = {
+            name: "Sarah Martinez",
+            address: "123 Oak Street, Austin TX",
+            balance: 125.0,
+            services_this_month: 4,
+            photos: [
+              {
+                id: 1,
+                job_id: "job-001",
+                type: "before",
+                date: "2025-11-05",
+                url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+              },
+              {
+                id: 2,
+                job_id: "job-001",
+                type: "after",
+                date: "2025-11-05",
+                url: "https://images.unsplash.com/photo-1558904541-efa843a96f01?w=400",
+              },
+              {
+                id: 3,
+                job_id: "job-002",
+                type: "before",
+                date: "2025-10-29",
+                url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400",
+              },
+              {
+                id: 4,
+                job_id: "job-002",
+                type: "after",
+                date: "2025-10-29",
+                url: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=400",
+              },
+              {
+                id: 5,
+                job_id: "job-003",
+                type: "before",
+                date: "2025-10-22",
+                url: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400",
+              },
+              {
+                id: 6,
+                job_id: "job-003",
+                type: "after",
+                date: "2025-10-22",
+                url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400",
+              },
+            ],
+            service_history: [
+              {
+                date: "2025-11-05",
+                services: ["Mowing", "Edging", "Trimming"],
+                status: "completed",
+                photos: 2,
+              },
+              {
+                date: "2025-10-29",
+                services: ["Mowing", "Leaf Removal"],
+                status: "completed",
+                photos: 2,
+              },
+              {
+                date: "2025-10-22",
+                services: ["Mowing", "Edging"],
+                status: "completed",
+                photos: 2,
+              },
+              {
+                date: "2025-10-15",
+                services: ["Mowing", "Aeration"],
+                status: "completed",
+                photos: 0,
+              },
+            ],
+          };
 
-        clientData = mockClient;
+          clientData = mockClient;
 
-        // Update UI
-        document.getElementById('client-name').textContent = mockClient.name;
-        document.getElementById('client-address').textContent = mockClient.address;
-        document.getElementById('stat-balance').textContent = '$' + mockClient.balance.toFixed(2);
-        document.getElementById('stat-services').textContent = mockClient.services_this_month;
-        document.getElementById('stat-photos').textContent = mockClient.photos.length;
-        document.getElementById('payment-amount').value = mockClient.balance.toFixed(2);
-        document.getElementById('payment-memo').textContent = mockClient.name + ' - ' + mockClient.address.split(',')[0];
+          // Update UI
+          document.getElementById("client-name").textContent = mockClient.name;
+          document.getElementById("client-address").textContent =
+            mockClient.address;
+          document.getElementById("stat-balance").textContent =
+            "$" + mockClient.balance.toFixed(2);
+          document.getElementById("stat-services").textContent =
+            mockClient.services_this_month;
+          document.getElementById("stat-photos").textContent =
+            mockClient.photos.length;
+          document.getElementById("payment-amount").value =
+            mockClient.balance.toFixed(2);
+          document.getElementById("payment-memo").textContent =
+            mockClient.name + " - " + mockClient.address.split(",")[0];
 
-        allPhotos = mockClient.photos;
-        renderPhotoGallery(mockClient.photos);
-        renderServiceHistory(mockClient.service_history);
-      } catch (err) {
-        console.error('Failed to load client data:', err);
-        showMessage('client-status', 'Failed to load account data. Please refresh.', 'error');
+          allPhotos = mockClient.photos;
+          renderPhotoGallery(mockClient.photos);
+          renderServiceHistory(mockClient.service_history);
+        } catch (err) {
+          console.error("Failed to load client data:", err);
+          showMessage(
+            "client-status",
+            "Failed to load account data. Please refresh.",
+            "error"
+          );
+        }
       }
-    }
 
-    // Render photo gallery
-    function renderPhotoGallery(photos) {
-      const gallery = document.getElementById('photo-gallery');
-      if (photos.length === 0) {
-        gallery.innerHTML = '<div class="empty-state"><p class="text-muted">🏞️ No photos yet. Your crew will upload before/after photos after each service!</p></div>';
-        return;
-      }
+      // Render photo gallery
+      function renderPhotoGallery(photos) {
+        const gallery = document.getElementById("photo-gallery");
+        if (photos.length === 0) {
+          gallery.innerHTML =
+            '<div class="empty-state"><p class="text-muted">🏞️ No photos yet. Your crew will upload before/after photos after each service!</p></div>';
+          return;
+        }
 
-      gallery.innerHTML = photos.map((photo, index) => `
+        gallery.innerHTML = photos
+          .map(
+            (photo, index) => `
         <div class="photo-card" onclick="openPhotoModal(${index})">
           <img src="${photo.url}" alt="${photo.type} photo from ${new Date(photo.date).toLocaleDateString()}" loading="lazy">
           <div class="photo-badge ${photo.type}">${photo.type}</div>
         </div>
-      `).join('');
-    }
-
-    // Render service history
-    function renderServiceHistory(history) {
-      const container = document.getElementById('service-history');
-      if (history.length === 0) {
-        container.innerHTML = '<div class="empty-state"><p class="text-muted">No service history yet.</p></div>';
-        return;
+      `
+          )
+          .join("");
       }
 
-      container.innerHTML = history.map(job => `
+      // Render service history
+      function renderServiceHistory(history) {
+        const container = document.getElementById("service-history");
+        if (history.length === 0) {
+          container.innerHTML =
+            '<div class="empty-state"><p class="text-muted">No service history yet.</p></div>';
+          return;
+        }
+
+        container.innerHTML = history
+          .map(
+            (job) => `
         <div class="card job-history-card mb-md">
           <div class="card-header">
-            <h3 class="card-title">📅 ${new Date(job.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</h3>
+            <h3 class="card-title">📅 ${new Date(job.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</h3>
             <span class="badge badge-primary">✓ ${job.status}</span>
           </div>
           <div class="card-body">
             <div>
-              ${job.services.map(s => `<span class="service-badge">${s}</span>`).join('')}
+              ${job.services.map((s) => `<span class="service-badge">${s}</span>`).join("")}
             </div>
             ${job.photos > 0 ? `<p class="text-muted mt-sm"><small>📸 ${job.photos} photos - <a href="#" onclick="scrollToPhotos(event)">View Gallery ↑</a></small></p>` : '<p class="text-muted mt-sm"><small>⚠️ No photos for this service</small></p>'}
           </div>
         </div>
-      `).join('');
-    }
+      `
+          )
+          .join("");
+      }
 
-    // Photo modal functions
-    function openPhotoModal(index) {
-      currentPhotoIndex = index;
-      updateModalPhoto();
-      document.getElementById('photo-modal').classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
+      // Photo modal functions
+      function openPhotoModal(index) {
+        currentPhotoIndex = index;
+        updateModalPhoto();
+        document.getElementById("photo-modal").classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
 
-    function updateModalPhoto() {
-      const photo = allPhotos[currentPhotoIndex];
-      document.getElementById('modal-image').src = photo.url;
-      document.getElementById('modal-title').textContent = photo.type.charAt(0).toUpperCase() + photo.type.slice(1) + ' Photo';
-      document.getElementById('modal-date').textContent = new Date(photo.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    }
+      function updateModalPhoto() {
+        const photo = allPhotos[currentPhotoIndex];
+        document.getElementById("modal-image").src = photo.url;
+        document.getElementById("modal-title").textContent =
+          photo.type.charAt(0).toUpperCase() + photo.type.slice(1) + " Photo";
+        document.getElementById("modal-date").textContent = new Date(
+          photo.date
+        ).toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
 
-    function closePhotoModal() {
-      document.getElementById('photo-modal').classList.remove('active');
-      document.body.style.overflow = '';
-    }
+      function closePhotoModal() {
+        document.getElementById("photo-modal").classList.remove("active");
+        document.body.style.overflow = "";
+      }
 
-    function prevPhoto() {
-      currentPhotoIndex = (currentPhotoIndex - 1 + allPhotos.length) % allPhotos.length;
-      updateModalPhoto();
-    }
+      function prevPhoto() {
+        currentPhotoIndex =
+          (currentPhotoIndex - 1 + allPhotos.length) % allPhotos.length;
+        updateModalPhoto();
+      }
 
-    function nextPhoto() {
-      currentPhotoIndex = (currentPhotoIndex + 1) % allPhotos.length;
-      updateModalPhoto();
-    }
+      function nextPhoto() {
+        currentPhotoIndex = (currentPhotoIndex + 1) % allPhotos.length;
+        updateModalPhoto();
+      }
 
-    function scrollToPhotos(e) {
-      e.preventDefault();
-      document.getElementById('photo-gallery').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+      function scrollToPhotos(e) {
+        e.preventDefault();
+        document
+          .getElementById("photo-gallery")
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+      }
 
-    // Close modal on escape or click outside
-    document.getElementById('photo-modal').addEventListener('click', (e) => {
-      if (e.target.id === 'photo-modal') closePhotoModal();
-    });
-    document.addEventListener('keydown', (e) => {
-      const modal = document.getElementById('photo-modal');
-      if (!modal.classList.contains('active')) return;
-      if (e.key === 'Escape') closePhotoModal();
-      if (e.key === 'ArrowLeft') prevPhoto();
-      if (e.key === 'ArrowRight') nextPhoto();
-    });
-
-    // Payment handlers
-    function handleCashApp(e) {
-      e.preventDefault();
-      const amount = document.getElementById('payment-amount').value;
-      const memo = encodeURIComponent(clientData.name + ' - Lawn Care');
-      
-      // Try to open Cash App with deep link
-      const cashAppUrl = `https://cash.app/${PAYMENT_CONFIG.cashapp}/${amount}?note=${memo}`;
-      window.location.href = cashAppUrl;
-      
-      showMessage('payment-status', `💵 Opening Cash App...<br><small>Send <strong>$${amount}</strong> to <strong>${PAYMENT_CONFIG.cashapp}</strong></small>`, 'info', 8000);
-      
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(PAYMENT_CONFIG.cashapp).then(() => {
-        console.log('Cash App handle copied to clipboard');
+      // Close modal on escape or click outside
+      document.getElementById("photo-modal").addEventListener("click", (e) => {
+        if (e.target.id === "photo-modal") closePhotoModal();
       });
-    }
+      document.addEventListener("keydown", (e) => {
+        const modal = document.getElementById("photo-modal");
+        if (!modal.classList.contains("active")) return;
+        if (e.key === "Escape") closePhotoModal();
+        if (e.key === "ArrowLeft") prevPhoto();
+        if (e.key === "ArrowRight") nextPhoto();
+      });
 
-    function handleZelle(e) {
-      e.preventDefault();
-      const amount = document.getElementById('payment-amount').value;
-      
-      // Zelle doesn't have deep links - show instructions
-      showMessage(
-        'payment-status',
-        `🏦 <strong>Pay with Zelle:</strong><br><br>
+      // Payment handlers
+      function handleCashApp(e) {
+        e.preventDefault();
+        const amount = document.getElementById("payment-amount").value;
+        const memo = encodeURIComponent(clientData.name + " - Lawn Care");
+
+        // Try to open Cash App with deep link
+        const cashAppUrl = `https://cash.app/${PAYMENT_CONFIG.cashapp}/${amount}?note=${memo}`;
+        window.location.href = cashAppUrl;
+
+        showMessage(
+          "payment-status",
+          `💵 Opening Cash App...<br><small>Send <strong>$${amount}</strong> to <strong>${PAYMENT_CONFIG.cashapp}</strong></small>`,
+          "info",
+          8000
+        );
+
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(PAYMENT_CONFIG.cashapp).then(() => {
+          console.log("Cash App handle copied to clipboard");
+        });
+      }
+
+      function handleZelle(e) {
+        e.preventDefault();
+        const amount = document.getElementById("payment-amount").value;
+
+        // Zelle doesn't have deep links - show instructions
+        showMessage(
+          "payment-status",
+          `🏦 <strong>Pay with Zelle:</strong><br><br>
         1. Open your banking app<br>
         2. Select Zelle<br>
         3. Send <strong>$${amount}</strong> to: <strong>${PAYMENT_CONFIG.zelle}</strong><br>
         4. Add note: "${clientData.name} - Lawn Care"<br><br>
         <button class="btn btn-sm" onclick="copyZelle()">📋 Copy Email</button>`,
-        'info',
-        0
-      );
-    }
+          "info",
+          0
+        );
+      }
 
-    function copyZelle() {
-      navigator.clipboard.writeText(PAYMENT_CONFIG.zelle).then(() => {
-        showMessage('payment-status', '✓ Zelle email copied to clipboard!', 'success', 3000);
-      });
-    }
+      function copyZelle() {
+        navigator.clipboard.writeText(PAYMENT_CONFIG.zelle).then(() => {
+          showMessage(
+            "payment-status",
+            "✓ Zelle email copied to clipboard!",
+            "success",
+            3000
+          );
+        });
+      }
 
-    function handleCard(e) {
-      e.preventDefault();
-      showMessage('payment-status', 'Credit card payments coming soon! Please use Cash App, Zelle, or PayPal.', 'warning', 5000);
-    }
+      function handleCard(e) {
+        e.preventDefault();
+        showMessage(
+          "payment-status",
+          "Credit card payments coming soon! Please use Cash App, Zelle, or PayPal.",
+          "warning",
+          5000
+        );
+      }
 
-    // Initial load
-    loadClientData();
-  </script>
-</body>
+      // Initial load
+      loadClientData();
+    </script>
+  </body>
 </html>

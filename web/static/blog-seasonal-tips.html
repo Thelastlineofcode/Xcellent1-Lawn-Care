@@ -1,16 +1,15 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
       name="description"
-      content="Complete seasonal lawn care guide for Louisiana. Learn what your lawn needs in spring, summer, fall, and winter."
-    />
+      content="Complete seasonal lawn care guide for Louisiana. Learn what your lawn needs in spring, summer, fall, and winter.">
     <title>
       Seasonal Lawn Care Tips for Louisiana | Xcellent1 Lawn Care Blog
     </title>
-    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="stylesheet" href="/static/styles.css">
     <style>
       * {
         margin: 0;
@@ -53,7 +52,7 @@
       .hero-image {
         width: 100%;
         height: 400px;
-        background: url("https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=1200&q=80")
+        background: url("https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=1200&amp;q=80")
           center/cover no-repeat;
       }
 
@@ -159,12 +158,27 @@
     </style>
   </head>
   <body>
+    <nav class="navbar" style="position: sticky; top: 0; z-index: 100">
+      <div class="navbar-brand">
+        <div class="logo-bg" aria-hidden="true"></div>
+        <div class="navbar-title">
+          <span class="navbar-name">XCELLENT1</span>
+          <span class="navbar-tagline">LAWN CARE</span>
+        </div>
+      </div>
+      <div class="navbar-links">
+        <a href="/static/home.html" class="navbar-link">Home</a>
+        <a href="/static/shop.html" class="navbar-link">Shop</a>
+        <a href="/static/careers.html" class="navbar-link">Careers</a>
+        <button onclick="openLoginModal()" class="navbar-login">Login</button>
+      </div>
+    </nav>
     <div class="header">
-      <img
-        src="/static/images/logo-nobg.png"
-        alt="Xcellent1 Lawn Care"
-        class="header-logo"
-      />
+      <div class="logo-bg-header" aria-hidden="true">
+        <noscript>
+          <img src="/static/images/logo-nobg.png" alt="Xcellent1 Lawn Care">
+        </noscript>
+      </div>
       <h1>Seasonal Lawn Care Tips for Louisiana</h1>
       <div class="date">November 2025</div>
     </div>
@@ -283,7 +297,7 @@
           <div class="checklist">
             <h4>Summer Stress Management</h4>
             <ul>
-              <li>Avoid fertilizing during extreme heat (95°F+)</li>
+              <li>Avoid fertilizing during extreme heat (95&deg;F+)</li>
               <li>Water stressed areas more frequently</li>
               <li>Limit foot traffic on heat-stressed grass</li>
               <li>Watch for brown patch fungus after heavy rains</li>
@@ -443,7 +457,7 @@
               cursor: pointer;
             "
           >
-            Get a Free Quote →
+            Get a Free Quote &rarr;
           </button>
         </div>
         <!-- Quote Modal (copied from home page waitlist for continuity) -->
@@ -495,6 +509,7 @@
             <form
               id="quote-form"
               class="waitlist-form"
+              action="#"
               onsubmit="return handleQuoteSubmit(event)"
             >
               <div class="waitlist-step" id="quote-step-1">
@@ -505,8 +520,7 @@
                   placeholder="Your name"
                   required
                   autocomplete="name"
-                  inputmode="text"
-                />
+                  inputmode="text">
                 <button
                   type="button"
                   class="waitlist-submit"
@@ -528,8 +542,7 @@
                   placeholder="Email address"
                   required
                   autocomplete="email"
-                  inputmode="email"
-                />
+                  inputmode="email">
                 <button
                   type="button"
                   class="waitlist-submit"
@@ -596,31 +609,31 @@
 
             const formData = new FormData(event.target);
             const payload = {
-              name: formData.get('name'),
-              email: formData.get('email'),
-              service: formData.get('service'),
-              source: 'blog-seasonal-tips'
+              name: formData.get("name"),
+              email: formData.get("email"),
+              service: formData.get("service"),
+              source: "blog-seasonal-tips",
             };
 
             try {
-              const res = await fetch('/api/service-inquiry', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+              const res = await fetch("/api/service-inquiry", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
               });
 
               if (res.ok) {
-                document.getElementById('quote-form').style.display = 'none';
-                document.getElementById('quote-success').style.display = '';
+                document.getElementById("quote-form").style.display = "none";
+                document.getElementById("quote-success").style.display = "";
                 setTimeout(closeQuoteModal, 2500);
               } else {
-                throw new Error('Submission failed');
+                throw new Error("Submission failed");
               }
             } catch (error) {
-              console.error('Quote submission error:', error);
+              console.error("Quote submission error:", error);
               // Show success message anyway for better UX (graceful degradation)
-              document.getElementById('quote-form').style.display = 'none';
-              document.getElementById('quote-success').style.display = '';
+              document.getElementById("quote-form").style.display = "none";
+              document.getElementById("quote-success").style.display = "";
               setTimeout(closeQuoteModal, 2500);
             }
             return false;

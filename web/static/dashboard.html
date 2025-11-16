@@ -1,218 +1,292 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Hiring manager dashboard - review worker applications, track crew jobs, upload photos">
-  <meta name="theme-color" content="#10b981">
-  <title>Hiring Dashboard | Xcellent1 Lawn Care</title>
-  <link rel="stylesheet" href="/static/styles.css">
-  <link rel="manifest" href="/static/manifest.json">
-  <style>
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--spacing-lg);
-      flex-wrap: wrap;
-      gap: var(--spacing-sm);
-    }
-    .dashboard-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--spacing-md);
-      margin-bottom: var(--spacing-lg);
-    }
-    .stat-card {
-      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-      color: white;
-      padding: var(--spacing-md);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
-    }
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 0;
-    }
-    .stat-label {
-      font-size: 0.875rem;
-      opacity: 0.9;
-      margin-top: var(--spacing-xs);
-    }
-    .status-indicator {
-      display: inline-block;
-      width: 0.5rem;
-      height: 0.5rem;
-      border-radius: 50%;
-      margin-right: 0.5rem;
-    }
-    .status-active { background: var(--color-success); }
-    .status-pending { background: var(--color-warning); }
-    .status-complete { background: var(--color-secondary); }
-    .lead-card {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: start;
-      gap: var(--spacing-md);
-    }
-    .lead-info h3 { margin-bottom: var(--spacing-xs); }
-    .lead-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--spacing-sm);
-      margin-top: var(--spacing-xs);
-      font-size: 0.875rem;
-      color: var(--color-text-secondary);
-    }
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: var(--spacing-sm);
-      margin-top: var(--spacing-sm);
-    }
-    .photo-item {
-      position: relative;
-      aspect-ratio: 1;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      background: var(--color-bg);
-      border: 2px solid var(--color-border);
-    }
-    .photo-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform var(--transition);
-    }
-    .photo-item:hover img { transform: scale(1.1); }
-    .refresh-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.875rem;
-      color: var(--color-text-secondary);
-    }
-    .refresh-indicator .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--color-success);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    @media (max-width: 768px) {
-      .dashboard-stats { grid-template-columns: repeat(2, 1fr); }
-      .lead-card { grid-template-columns: 1fr; }
-    }
-  </style>
-</head>
-<body>
-  <header class="header">
-    <div class="header-content">
-      <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
-      <nav>
-        <a href="/static/index.html" class="nav-link">💼 Careers Page</a>
-        <button onclick="logout()" style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; cursor: pointer; margin-left: 1rem;">Logout</button>
-      </nav>
-    </div>
-  </header>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="Hiring manager dashboard - review worker applications, track crew jobs, upload photos">
+    <meta name="theme-color" content="#10b981">
+    <title>Hiring Dashboard | Xcellent1 Lawn Care</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="manifest" href="/static/manifest.json">
+    <style>
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+      }
+      .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+      }
+      .stat-card {
+        background: linear-gradient(
+          135deg,
+          var(--color-primary) 0%,
+          var(--color-primary-dark) 100%
+        );
+        color: white;
+        padding: var(--spacing-md);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+      }
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+      }
+      .stat-label {
+        font-size: 0.875rem;
+        opacity: 0.9;
+        margin-top: var(--spacing-xs);
+      }
+      .status-indicator {
+        display: inline-block;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+      }
+      .status-active {
+        background: var(--color-success);
+      }
+      .status-pending {
+        background: var(--color-warning);
+      }
+      .status-complete {
+        background: var(--color-secondary);
+      }
+      .lead-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: start;
+        gap: var(--spacing-md);
+      }
+      .lead-info h3 {
+        margin-bottom: var(--spacing-xs);
+      }
+      .lead-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-xs);
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+      }
+      .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-sm);
+      }
+      .photo-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        background: var(--color-bg);
+        border: 2px solid var(--color-border);
+      }
+      .photo-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform var(--transition);
+      }
+      .photo-item:hover img {
+        transform: scale(1.1);
+      }
+      .refresh-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+      }
+      .refresh-indicator .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--color-success);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      @media (max-width: 768px) {
+        .dashboard-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .lead-card {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar" style="position: sticky; top: 0; z-index: 100">
+      <div class="navbar-brand">
+        <div class="logo-bg" aria-hidden="true"></div>
+        <div class="navbar-title">
+          <span class="navbar-name">XCELLENT1</span>
+          <span class="navbar-tagline">LAWN CARE</span>
+        </div>
+      </div>
+      <div class="navbar-links">
+        <a href="/static/home.html" class="navbar-link">Home</a>
+        <a href="/static/shop.html" class="navbar-link">Shop</a>
+        <a href="/static/careers.html" class="navbar-link">Careers</a>
+        <button onclick="openLoginModal()" class="navbar-login">Login</button>
+      </div>
+    </nav>
+    <header class="header">
+      <div class="header-content">
+        <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
+        <nav>
+          <a href="/static/index.html" class="nav-link">💼 Careers Page</a>
+          <button
+            onclick="logout()"
+            style="
+              background: transparent;
+              border: 1px solid rgba(255, 255, 255, 0.3);
+              color: white;
+              padding: 0.5rem 1rem;
+              border-radius: 8px;
+              font-size: 0.875rem;
+              cursor: pointer;
+              margin-left: 1rem;
+            "
+          >
+            Logout
+          </button>
+        </nav>
+      </div>
+    </header>
 
-  <main class="container" id="dashboard">
-    <div class="dashboard-header">
-      <div>
-        <h1>📄 Hiring Manager Dashboard</h1>
-        <p class="refresh-indicator">
-          <span class="dot"></span>
-          Auto-refreshing every 20s
+    <main class="container" id="dashboard">
+      <div class="dashboard-header">
+        <div>
+          <h1>📄 Hiring Manager Dashboard</h1>
+          <p class="refresh-indicator">
+            <span class="dot"></span>
+            Auto-refreshing every 20s
+          </p>
+        </div>
+      </div>
+
+      <!-- KPI Stats -->
+      <div class="dashboard-stats" id="stats">
+        <div class="stat-card">
+          <p class="stat-value" id="stat-leads">0</p>
+          <p class="stat-label">Applications Received</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-value" id="stat-events">0</p>
+          <p class="stat-label">Pending Events</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-value" id="stat-photos">0</p>
+          <p class="stat-label">Job Photos</p>
+        </div>
+      </div>
+
+      <div id="dashboard-status" role="alert" aria-live="polite"></div>
+
+      <!-- Applications Section -->
+      <section class="mb-lg">
+        <div class="card-header">
+          <h2>💼 Worker Applications</h2>
+          <p class="text-muted">
+            Review applicants from the <a href="/">careers page</a>
+          </p>
+        </div>
+        <div id="leads-list">
+          <div class="loading-container">
+            <span class="spinner"></span>
+            <span>Loading applications...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Outbox Events -->
+      <section class="mb-lg">
+        <div class="card-header">
+          <h2>📋 Work Queue</h2>
+        </div>
+        <div id="outbox-list">
+          <div class="loading-container">
+            <span class="spinner"></span>
+            <span>Loading events...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Photo Upload (Crew Use) -->
+      <section class="card">
+        <h2>📸 Crew: Upload Job Photo</h2>
+        <p class="text-muted mb-md">
+          Field crews can upload before/after photos for completed jobs.
         </p>
-      </div>
-    </div>
+        <div id="upload-status" role="alert" aria-live="polite"></div>
+        <form id="upload-form" class="mt-md" action="#">
+          <div class="form-group">
+            <label for="jobId">Job ID <span class="required">*</span></label>
+            <input
+              type="text"
+              id="jobId"
+              name="jobId"
+              required
+              placeholder="e.g., job-001">
+            <small class="text-muted">From work order or route sheet</small>
+          </div>
+          <div class="form-group">
+            <label for="photo-file"
+              >Photo <span class="required">*</span>
+              <span class="text-muted">(max 5MB)</span></label
+            >
+            <input
+              type="file"
+              id="photo-file"
+              name="photo"
+              accept="image/*"
+              capture="environment"
+              required>
+            <small class="text-muted">Take photo or choose from gallery</small>
+          </div>
+          <div id="photo-preview"></div>
+          <button type="submit" id="upload-btn" class="btn">
+            📤 Upload Photo
+          </button>
+        </form>
+      </section>
+    </main>
 
-    <!-- KPI Stats -->
-    <div class="dashboard-stats" id="stats">
-      <div class="stat-card">
-        <p class="stat-value" id="stat-leads">0</p>
-        <p class="stat-label">Applications Received</p>
-      </div>
-      <div class="stat-card">
-        <p class="stat-value" id="stat-events">0</p>
-        <p class="stat-label">Pending Events</p>
-      </div>
-      <div class="stat-card">
-        <p class="stat-value" id="stat-photos">0</p>
-        <p class="stat-label">Job Photos</p>
-      </div>
-    </div>
+    <footer class="text-center mt-lg text-muted">
+      <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
+      <p><small>Powered by BMAD Recruitment Platform</small></p>
+    </footer>
 
-    <div id="dashboard-status" role="alert" aria-live="polite"></div>
+    <script src="/static/app.js"></script>
+    <script type="module">
+      import { requireAuth, logout } from "/static/auth-helper.js";
 
-    <!-- Applications Section -->
-    <section class="mb-lg">
-      <div class="card-header">
-        <h2>💼 Worker Applications</h2>
-        <p class="text-muted">Review applicants from the <a href="/">careers page</a></p>
-      </div>
-      <div id="leads-list">
-        <div class="loading-container">
-          <span class="spinner"></span>
-          <span>Loading applications...</span>
-        </div>
-      </div>
-    </section>
+      // Require owner authentication for hiring dashboard
+      const userProfile = await requireAuth("owner");
 
-    <!-- Outbox Events -->
-    <section class="mb-lg">
-      <div class="card-header">
-        <h2>📋 Work Queue</h2>
-      </div>
-      <div id="outbox-list">
-        <div class="loading-container">
-          <span class="spinner"></span>
-          <span>Loading events...</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Photo Upload (Crew Use) -->
-    <section class="card">
-      <h2>📸 Crew: Upload Job Photo</h2>
-      <p class="text-muted mb-md">Field crews can upload before/after photos for completed jobs.</p>
-      <div id="upload-status" role="alert" aria-live="polite"></div>
-      <form id="upload-form" class="mt-md">
-        <div class="form-group">
-          <label for="jobId">Job ID <span class="required">*</span></label>
-          <input type="text" id="jobId" name="jobId" required placeholder="e.g., job-001">
-          <small class="text-muted">From work order or route sheet</small>
-        </div>
-        <div class="form-group">
-          <label for="photo-file">Photo <span class="required">*</span> <span class="text-muted">(max 5MB)</span></label>
-          <input type="file" id="photo-file" name="photo" accept="image/*" capture="environment" required>
-          <small class="text-muted">Take photo or choose from gallery</small>
-        </div>
-        <div id="photo-preview"></div>
-        <button type="submit" id="upload-btn" class="btn">📤 Upload Photo</button>
-      </form>
-    </section>
-  </main>
-
-  <footer class="text-center mt-lg text-muted">
-    <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
-    <p><small>Powered by BMAD Recruitment Platform</small></p>
-  </footer>
-
-  <script src="/static/app.js"></script>
-  <script type="module">
-    import { requireAuth, logout } from '/static/auth-helper.js';
-
-    // Require owner authentication for hiring dashboard
-    const userProfile = await requireAuth('owner');
-
-    // Export for use in other scripts
-    window.ownerProfile = userProfile;
-  </script>
-</body>
+      // Export for use in other scripts
+      window.ownerProfile = userProfile;
+    </script>
+  </body>
 </html>
