@@ -6,10 +6,39 @@ import {
 
 const _encoder = new TextEncoder();
 
+// MIME type mapping for static assets
+const MIME_TYPES: Record<string, string> = {
+  ".html": "text/html; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".js": "application/javascript; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+  ".ttf": "font/ttf",
+};
+
+function getMimeType(filepath: string): string {
+  const ext = filepath.toLowerCase().substring(filepath.lastIndexOf("."));
+  return MIME_TYPES[ext] || "application/octet-stream";
+}
+
 async function serveFile(path: string) {
   try {
     const data = await Deno.readFile(path);
-    return new Response(data, { status: 200 });
+    const mimeType = getMimeType(path);
+    return new Response(data, {
+      status: 200,
+      headers: {
+        "content-type": mimeType,
+        "cache-control": "public, max-age=3600",
+      },
+    });
   } catch (err) {
     return new Response("Not found", { status: 404 });
   }
@@ -18,11 +47,14 @@ async function serveFile(path: string) {
 function jsonResponse(obj: unknown, status = 200) {
   return new Response(JSON.stringify(obj), {
     status,
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json; charset=utf-8" },
   });
 }
 
-console.log("Starting lightweight web server on http://localhost:8000");
+const PORT = Number(Deno.env.get("PORT") || "8000");
+const HOST = Deno.env.get("HOST") || "0.0.0.0";
+
+console.log(`Starting lightweight web server on http://${HOST}:${PORT}`);
 
 serve(
   async (req) => {
@@ -187,5 +219,5 @@ serve(
 
     return new Response("Not found", { status: 404 });
   },
-  { port: 8000 }
+  { port: PORT, hostname: HOST }
 );
