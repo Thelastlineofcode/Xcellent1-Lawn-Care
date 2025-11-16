@@ -951,7 +951,7 @@ a:focus {
     padding: 8rem 2rem 6rem;
     text-align: center;
     position: relative;
-    min-height: 600px;
+    min-height: 72vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -978,6 +978,14 @@ a:focus {
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
     letter-spacing: -0.5px;
     color: #ecfff3;
+  }
+  /* ensure .hero-title (used in markup) has explicit sizing */
+  .hero-title {
+    font-size: 3.5rem;
+    line-height: 1.05;
+    margin: 0.2rem 0 1rem 0;
+    color: inherit;
+    font-weight: 700;
   }
   .subtitle {
     font-size: 1.5rem;
