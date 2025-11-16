@@ -231,6 +231,32 @@ async function handler(req: Request): Promise<Response> {
     return response;
   }
 
+  // Health check for Supabase connectivity/configuration
+  if (url.pathname === "/health") {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") || Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") || "";
+    const supabaseAnon = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") || "";
+    let reachable = false;
+    if (supabaseUrl) {
+      try {
+        const res = await fetch(supabaseUrl, { method: "HEAD" });
+        reachable = res.ok;
+      } catch (e) {
+        reachable = false;
+      }
+    }
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        supabase: {
+          configured: !!(supabaseUrl && supabaseAnon),
+          url: supabaseUrl ? supabaseUrl.replace(/:\/\/([^@]+@)?/, "https://") : "",
+          reachable,
+        },
+      }),
+      { status: 200, headers }
+    );
+  }
+
   // Serve uploads
   if (url.pathname.startsWith("/uploads/")) {
     return serveDir(req, { fsRoot: "./web", urlRoot: "" });
