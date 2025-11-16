@@ -271,6 +271,30 @@ async function handler(req: Request): Promise<Response> {
     );
   }
 
+  // Runtime config JS for client-side (inject NEXT_PUBLIC_* values)
+  if (url.pathname === "/config.js") {
+    const publicUrl =
+      Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") ||
+      Deno.env.get("SUPABASE_URL") ||
+      "";
+    const publicAnon =
+      Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
+      Deno.env.get("SUPABASE_ANON_KEY") ||
+      "";
+
+    const js = `window.__ENV = { NEXT_PUBLIC_SUPABASE_URL: ${JSON.stringify(
+      publicUrl
+    )}, NEXT_PUBLIC_SUPABASE_ANON_KEY: ${JSON.stringify(publicAnon)} };`;
+
+    return new Response(js, {
+      status: 200,
+      headers: new Headers({
+        "Content-Type": "application/javascript",
+        "Access-Control-Allow-Origin": "*",
+      }),
+    });
+  }
+
   // Serve uploads
   if (url.pathname.startsWith("/uploads/")) {
     return serveDir(req, { fsRoot: "./web", urlRoot: "" });

@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Xcellent1 Lawn Care</title>
     <style>
       * {
@@ -194,7 +194,8 @@
             name="email"
             placeholder="you@example.com"
             required
-            autocomplete="email">
+            autocomplete="email"
+          />
         </div>
 
         <div class="form-group">
@@ -205,7 +206,8 @@
             name="password"
             placeholder="Enter your password"
             required
-            autocomplete="current-password">
+            autocomplete="current-password"
+          />
         </div>
 
         <button type="submit" class="btn" id="login-btn">Sign In</button>
@@ -218,13 +220,19 @@
       <div class="footer-text">Secure login powered by Supabase</div>
     </div>
 
+    <!-- Runtime config for client-side (injected by server at /config.js) -->
+    <script src="/config.js"></script>
     <!-- Supabase Client -->
     <script type="module">
       import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
-      // Initialize Supabase client
-      const SUPABASE_URL = "https://utivthfrwgtjatsusopw.supabase.co";
+      // Initialize Supabase client using runtime values when available
+      const _env = typeof window !== "undefined" ? window.__ENV || {} : {};
+      const SUPABASE_URL =
+        _env.NEXT_PUBLIC_SUPABASE_URL ||
+        "https://utivthfrwgtjatsusopw.supabase.co";
       const SUPABASE_ANON_KEY =
+        _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0aXZ0aGZyd2d0amF0c3Vzb3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1NTA4NDEsImV4cCI6MjA3ODEyNjg0MX0.hcIzoqBwYSMC-571NRBAd_WMQZumuxavJ282nCNQ7QM";
 
       const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
