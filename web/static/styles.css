@@ -965,11 +965,27 @@ a:focus {
     right: 0;
     bottom: 0;
     background: rgba(1, 39, 20, 0.13);
-    z-index: 0;
+    z-index: 1;
   }
   .hero-home > * {
     position: relative;
-    z-index: 1;
+    z-index: 2;
+  }
+
+  /* Fallback hero background image element (in case CSS background is blocked/cached)
+     Placed as the first child of .hero-home and sits behind the overlay (::before)
+  */
+  .hero-home .hero-bg-fallback {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-select: none;
   }
   .hero-home h1 {
     font-size: 3.5rem;
