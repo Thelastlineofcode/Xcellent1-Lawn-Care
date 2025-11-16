@@ -16,25 +16,20 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="/static/images/favicon.ico"
-    />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
     <link
       rel="icon"
       type="image/png"
       sizes="192x192"
-      href="/static/images/xcellent1-icon-192.png"
+      href="images/xcellent1-icon-192.png"
     />
     <link
       rel="apple-touch-icon"
       sizes="192x192"
-      href="/static/images/xcellent1-icon-192.png"
+      href="images/xcellent1-icon-192.png"
     />
     <meta name="theme-color" content="#3b832a" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="/static/styles.css" />
     <style>
       * {
         margin: 0;
@@ -59,7 +54,7 @@
             rgba(1, 39, 20, 0.28),
             rgba(59, 131, 42, 0.32)
           ),
-          url("/static/images/CoverPhoto.png") center/cover no-repeat;
+          url("images/CoverPhoto.png") center/cover no-repeat;
         color: white;
         padding: 8rem 2rem 6rem;
         text-align: center;
@@ -560,7 +555,7 @@
       <div class="navbar-brand">
         <div class="logo-bg" aria-hidden="true"></div>
         <img
-          src="/static/images/xcellent1-logo-small.png"
+          src="images/xcellent1-logo-small.png"
           alt="Xcellent1 logo"
           class="navbar-logo"
         />
@@ -584,7 +579,7 @@
       <div class="logo-container">
         <div class="brand-logo" aria-hidden="true">
           <img
-            src="/static/images/xcellent1-logo-large.png"
+            src="images/xcellent1-logo-large.png"
             alt="Xcellent1"
             class="logo-icon"
           />
@@ -710,7 +705,7 @@
           >
             <noscript>
               <img
-                src="/static/images/lawnservices.jpg"
+                src="images/lawnservices.jpg"
                 alt="Weekly Lawn Maintenance"
               />
             </noscript>
@@ -749,7 +744,7 @@
           >
             <noscript>
               <img
-                src="/static/images/flowerbedcleanup.jpg"
+                src="images/flowerbedcleanup.jpg"
                 alt="Flower Bed Clean Out & Weed Removal"
               />
             </noscript>
@@ -787,10 +782,7 @@
             aria-label="Spring Cleaning"
           >
             <noscript>
-              <img
-                src="/static/images/springcleaning.jpg"
-                alt="Spring Cleaning"
-              />
+              <img src="images/springcleaning.jpg" alt="Spring Cleaning" />
             </noscript>
           </div>
           <div class="service-content">
@@ -826,10 +818,7 @@
             aria-label="Leaf & Debris Removal"
           >
             <noscript>
-              <img
-                src="/static/images/lawnservices.jpg"
-                alt="Leaf & Debris Removal"
-              />
+              <img src="images/lawnservices.jpg" alt="Leaf & Debris Removal" />
             </noscript>
           </div>
           <div class="service-content">
@@ -865,10 +854,7 @@
             aria-label="Tractor / Bush Hog Services"
           >
             <noscript>
-              <img
-                src="/static/images/bushhog.jpg"
-                alt="Tractor / Bush Hog Services"
-              />
+              <img src="images/bushhog.jpg" alt="Tractor / Bush Hog Services" />
             </noscript>
           </div>
           <div class="service-content">
@@ -916,21 +902,46 @@
               St. Augustine, Bermuda, Zoysia, and Centipede grass thrive in
               LaPlace's humid climate.
             </p>
-            <a href="/static/blog-grass-types.html" class="read-more"
-              >Read More &rarr;</a
-            >
-          </div>
-        </article>
-        <article class="blog-card">
-          <div
-            class="blog-image"
-            style="
-              background-image: url(&quot;https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&amp;q=80&quot;);
-            "
-          ></div>
-          <div class="blog-content">
-            <div class="blog-date">November 2025</div>
-            <h3 class="blog-title">Louisiana Lawn Watering Guide</h3>
+            <nav class="navbar" role="navigation" aria-label="Main navigation">
+              <div class="navbar-brand">
+                <a
+                  href="/static/home.html"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    text-decoration: none;
+                    color: inherit;
+                  "
+                >
+                  <img
+                    src="images/xcellent1-logo-small.png"
+                    alt="Xcellent1 logo"
+                    class="navbar-logo"
+                  />
+                </a>
+                <div class="navbar-title">
+                  <a
+                    href="/static/home.html"
+                    style="text-decoration: none; color: inherit"
+                  >
+                    <span class="navbar-name">XCELLENT1</span>
+                    <span class="navbar-tagline">LAWN CARE</span>
+                  </a>
+                </div>
+              </div>
+              <div class="navbar-links">
+                <a href="/static/home.html" class="navbar-link">Home</a>
+                <a href="#services" class="navbar-link">Services</a>
+                <a href="/static/shop.html" class="navbar-link">Shop</a>
+                <a href="/static/careers.html" class="navbar-link">Careers</a>
+                <a
+                  href="/static/login.html"
+                  class="navbar-login"
+                  aria-label="Login"
+                  >Login</a
+                >
+              </div>
+            </nav>
             <p class="blog-excerpt">
               Deep watering 1-2x/week beats daily sprinkling. Water early
               morning.
