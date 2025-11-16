@@ -948,7 +948,7 @@ a:focus {
       ),
       url("images/CoverPhoto.png") center/cover no-repeat;
     color: white;
-    padding: 8rem 2rem 6rem;
+    padding: 10rem 2rem 6rem;
     text-align: center;
     position: relative;
     min-height: 72vh;
@@ -1010,6 +1010,15 @@ a:focus {
     font-weight: 400;
     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
     color: rgba(236, 255, 243, 0.95);
+  }
+  @media (max-width: 800px) {
+    .hero-home {
+      padding: 6rem 1.25rem 3rem;
+      min-height: 50vh;
+    }
+    .hero-title {
+      font-size: 2rem;
+    }
   }
   .hero-buttons {
     display: flex;
