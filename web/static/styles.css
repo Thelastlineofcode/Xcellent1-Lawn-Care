@@ -918,6 +918,131 @@ a:focus {
     display: none;
   }
 
+
+/* ========================================
+   HOME PAGE HERO (home.html)
+   ======================================== */
+.hero-home {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(1, 39, 20, 0.28),
+      rgba(59, 131, 42, 0.32)
+    ),
+    url("images/CoverPhoto.png") center/cover no-repeat;
+  color: #ffffff;
+  padding: 8rem 2rem 6rem;
+  text-align: center;
+  position: relative;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Hide the temporary fallback image in markup */
+.hero-home .hero-bg-fallback {
+  display: none !important;
+}
+
+/* Dark overlay for contrast */
+.hero-home::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(1, 39, 20, 0.13);
+  z-index: 0;
+}
+
+/* Ensure hero content renders above overlay */
+.hero-home > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Typography restored */
+.hero-home .hero-title {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #ecfff3;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.hero-home .subtitle {
+  font-size: 1.5rem;
+  opacity: 0.95;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  color: rgba(236, 255, 243, 0.95);
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Buttons */
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2.5rem;
+}
+
+.hero-button {
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hero-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-button.btn-primary {
+  background: #f23d00;
+  color: #ffffff;
+}
+
+.hero-button.btn-primary:hover {
+  background: #bc2800;
+}
+
+.hero-button.btn-secondary {
+  background: rgba(255, 255, 255, 0.95);
+  color: #3b832a;
+  border: 2px solid #ffffff;
+}
+
+.hero-button.btn-secondary:hover {
+  background: #ffffff;
+  color: #012714;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .hero-home .hero-title {
+    font-size: 2.4rem;
+  }
+  .hero-home .subtitle {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-buttons {
+    gap: 0.75rem;
+  }
+  .hero-button {
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+}
   /* --------------------------------------------------
    Home page styles extracted from web/static/home.html
    (moved here to centralize CSS and improve caching)
