@@ -32,7 +32,7 @@ export async function requireAuth(requiredRoles, greetingSelector = null) {
 
   if (!session) {
     // Not logged in, redirect to login
-    window.location.href = "/static/login.html";
+    window.location.href = "login.html";
     throw new Error("Not authenticated");
   }
 
@@ -47,7 +47,7 @@ export async function requireAuth(requiredRoles, greetingSelector = null) {
     // No profile found, logout and redirect
     await supabase.auth.signOut();
     alert("User profile not found. Please contact support.");
-    window.location.href = "/static/login.html";
+    window.location.href = "login.html";
     throw new Error("Profile not found");
   }
 
@@ -55,14 +55,14 @@ export async function requireAuth(requiredRoles, greetingSelector = null) {
     // Invalid role, logout and redirect
     await supabase.auth.signOut();
     alert(`Access denied. This page is only for ${roles.join(" or ")}s.`);
-    window.location.href = "/static/login.html";
+    window.location.href = "login.html";
     throw new Error("Invalid role");
   }
 
   if (profile.status !== "active") {
     await supabase.auth.signOut();
     alert("Your account is not active. Please contact support.");
-    window.location.href = "/static/login.html";
+    window.location.href = "login.html";
     throw new Error("Account not active");
   }
 
@@ -89,7 +89,7 @@ export async function logout() {
   await supabase.auth.signOut();
   // Clear local storage
   localStorage.removeItem("user_profile");
-  window.location.href = "/static/login.html";
+  window.location.href = "login.html";
 }
 
 /**

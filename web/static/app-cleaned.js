@@ -1,22 +1,53 @@
 // Xcellent1 Lawn Care - Worker Recruitment & Field Management
 // Designed for hiring lawn care workers and managing field operations
+// VERSION: 2.0 - Cleaned and improved
 
 const API_BASE = "";
-const POLL_INTERVAL = 20000; // 20 seconds
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const CONFIG = {
+  pollInterval:
+    window.config?.pollInterval ||
+    parseInt(document.body.dataset.pollInterval || "20000"),
+  maxFileSize: 5 * 1024 * 1024, // 5MB
+  validation: {
+    nameMinLength: 2,
+    emailPattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // Improved regex
+    phoneMinLength: 7,
+  },
+  csrfTokenSelector: 'input[name="csrf_token"]',
+};
+
+let pollTimer = null;
 
 // ========================================
-// Helper Functions
+// UTILITIES
 // ========================================
 
+/**
+ * Fetch JSON with proper error handling
+ * @param {string} url - API endpoint
+ * @param {object} options - Fetch options
+ * @returns {Promise<object>} Response data
+ */
 async function fetchJSON(url, options = {}) {
   try {
+    // Include CSRF token if present
+    const csrfToken = document.querySelector(CONFIG.csrfTokenSelector);
+    const headers = {
+      "Content-Type": "application/json",
+      ...options.headers,
+    };
+    if (
+      csrfToken &&
+      (options.method === "POST" ||
+        options.method === "PUT" ||
+        options.method === "DELETE")
+    ) {
+      headers["X-CSRF-Token"] = csrfToken.value;
+    }
+
     const res = await fetch(url, {
       ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
+      headers,
     });
     const data = await res.json();
     if (!res.ok) {
@@ -29,6 +60,13 @@ async function fetchJSON(url, options = {}) {
   }
 }
 
+/**
+ * Show message with auto-hide
+ * @param {string} containerId - Target element ID
+ * @param {string} message - Message text (HTML allowed)
+ * @param {string} type - Message type: 'info', 'success', 'error', 'warning'
+ * @param {number} duration - Auto-hide after ms (0 = no auto-hide)
+ */
 function showMessage(containerId, message, type = "info", duration = 5000) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -41,15 +79,47 @@ function showMessage(containerId, message, type = "info", duration = 5000) {
   }
 }
 
+/**
+ * Clear messages
+ * @param {string} containerId - Target element ID
+ */
 function clearMessage(containerId) {
   const container = document.getElementById(containerId);
   if (container) container.innerHTML = "";
 }
 
+/**
+ * Validate email format
+ * @param {string} email - Email to validate
+ * @returns {boolean}
+ */
 function isValidEmail(email) {
-  return /^\S+@\S+\.\S+$/.test(email);
+  return CONFIG.validation.emailPattern.test(email);
 }
 
+/**
+ * Debounce function for input events
+ * @param {function} func - Function to debounce
+ * @param {number} wait - Wait time in ms
+ * @returns {function}
+ */
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+/**
+ * Format date as relative time (e.g., "5m ago")
+ * @param {string} isoString - ISO date string
+ * @returns {string}
+ */
 function formatDate(isoString) {
   if (!isoString) return "N/A";
   const date = new Date(isoString);
@@ -65,6 +135,11 @@ function formatDate(isoString) {
   );
 }
 
+/**
+ * Escape HTML special characters for safe rendering
+ * @param {string} str - String to escape
+ * @returns {string}
+ */
 function escapeHTML(str) {
   if (!str) return "";
   const div = document.createElement("div");
@@ -72,6 +147,11 @@ function escapeHTML(str) {
   return div.innerHTML;
 }
 
+/**
+ * Animate counter with smooth increment/decrement
+ * @param {string} elementId - Element ID containing number
+ * @param {number} target - Target number
+ */
 function animateCounter(elementId, target) {
   const el = document.getElementById(elementId);
   if (!el) return;
@@ -96,13 +176,53 @@ function animateCounter(elementId, target) {
 }
 
 // ========================================
-// Worker Application Form (index.html)
+// WAITLIST FORM (home.html)
 // ========================================
 
 if (document.getElementById("lead-form")) {
   const form = document.getElementById("lead-form");
   const submitBtn = document.getElementById("submit-btn");
   const statusDiv = document.getElementById("form-status");
+  let submitTimeout = null;
+
+  /**
+   * Validate and show next step
+   * @param {number} step - Target step (1, 2, or 3)
+   */
+  window.showWaitlistStep = function (step) {
+    // Validate current step before advancing
+    if (step > 1) {
+      const nameField = form.name;
+      if (!nameField.value.trim() || nameField.value.trim().length < 2) {
+        showMessage(
+          "form-status",
+          "⚠️ Please enter your full name (at least 2 characters)",
+          "warning",
+          3000
+        );
+        return;
+      }
+    }
+    if (step > 2) {
+      const emailField = form.email;
+      if (!emailField.value.trim() || !isValidEmail(emailField.value.trim())) {
+        showMessage(
+          "form-status",
+          "⚠️ Please enter a valid email address",
+          "warning",
+          3000
+        );
+        return;
+      }
+    }
+    // Show the requested step
+    for (let i = 1; i <= 3; i++) {
+      const stepEl = document.getElementById(`waitlist-step-${i}`);
+      if (stepEl) {
+        stepEl.style.display = i === step ? "" : "none";
+      }
+    }
+  };
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -114,20 +234,24 @@ if (document.getElementById("lead-form")) {
     const notes = form.notes.value.trim();
 
     // Validation
-    if (name.length < 2) {
+    if (name.length < CONFIG.validation.nameMinLength) {
       return showMessage(
         "form-status",
-        "Name must be at least 2 characters",
+        `⚠️ Name must be at least ${CONFIG.validation.nameMinLength} characters`,
         "error"
       );
     }
-    if (!phone) {
-      return showMessage("form-status", "Phone number is required", "error");
+    if (!phone || phone.length < CONFIG.validation.phoneMinLength) {
+      return showMessage(
+        "form-status",
+        "⚠️ Please enter a valid phone number",
+        "error"
+      );
     }
     if (!email || !isValidEmail(email)) {
       return showMessage(
         "form-status",
-        "Please enter a valid email address",
+        "⚠️ Please enter a valid email address",
         "error"
       );
     }
@@ -135,6 +259,17 @@ if (document.getElementById("lead-form")) {
     submitBtn.disabled = true;
     submitBtn.innerHTML =
       '<span class="spinner"></span> Submitting Application...';
+
+    // Add timeout to prevent indefinite loading
+    submitTimeout = setTimeout(() => {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = "📨 Submit Application";
+      showMessage(
+        "form-status",
+        "✗ Request timed out. Please try again.",
+        "error"
+      );
+    }, 30000); // 30 second timeout
 
     try {
       const data = await fetchJSON(`${API_BASE}/api/leads`, {
@@ -148,16 +283,20 @@ if (document.getElementById("lead-form")) {
         }),
       });
 
+      clearTimeout(submitTimeout);
       showMessage(
         "form-status",
-        `✓ <strong>Application Received!</strong><br><br>🎯 Application ID: <strong>${data.id}</strong><br><br>📞 <strong>What's Next?</strong><br>Our hiring manager will review your application and call you within <strong>48 hours</strong> to schedule an interview.<br><br>📧 Check your email (including spam folder) for confirmation.<br><br>👍 <strong>Pro Tip:</strong> Save our number so you don't miss the call!`,
+        `✓ <strong>Application Received!</strong><br><br>🎯 Application ID: <strong>${escapeHTML(data.id)}</strong><br><br>📞 <strong>What's Next?</strong><br>Our hiring manager will review your application and call you within <strong>48 hours</strong> to schedule an interview.<br><br>📧 Check your email (including spam folder) for confirmation.<br><br>👍 <strong>Pro Tip:</strong> Save our number so you don't miss the call!`,
         "success",
         0
       );
 
       form.reset();
+      // Reset form visibility
+      window.showWaitlistStep(1);
       statusDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (err) {
+      clearTimeout(submitTimeout);
       showMessage(
         "form-status",
         `✗ <strong>Submission Error:</strong> ${err.message}<br><br>Please try again or call our hiring line: <strong>(555) 867-5309</strong>`,
@@ -169,31 +308,38 @@ if (document.getElementById("lead-form")) {
     }
   });
 
-  form.email.addEventListener("blur", (e) => {
-    const email = e.target.value.trim();
+  // Email validation on blur with debounce
+  const validateEmail = debounce((email) => {
     if (email && !isValidEmail(email)) {
-      e.target.setAttribute("aria-invalid", "true");
+      form.email.setAttribute("aria-invalid", "true");
       showMessage(
         "form-status",
-        "Please enter a valid email address",
+        "⚠️ This email format looks invalid",
         "warning",
         3000
       );
     } else {
-      e.target.removeAttribute("aria-invalid");
+      form.email.removeAttribute("aria-invalid");
     }
+  }, 500);
+
+  form.email.addEventListener("blur", (e) => {
+    validateEmail(e.target.value.trim());
   });
 }
 
 // ========================================
-// Dashboard (dashboard.html)
+// DASHBOARD (dashboard.html)
 // ========================================
 
 if (document.getElementById("dashboard")) {
   const leadsContainer = document.getElementById("leads-list");
   const outboxContainer = document.getElementById("outbox-list");
-  let pollTimer = null;
 
+  /**
+   * Update statistics display
+   * @param {object} data - Data from API
+   */
   function updateStats(data) {
     const leads = data.leads || [];
     const events = data.pending || [];
@@ -205,6 +351,10 @@ if (document.getElementById("dashboard")) {
     animateCounter("stat-photos", photos);
   }
 
+  /**
+   * Render leads list
+   * @param {array} leads - Array of lead objects
+   */
   function renderLeads(leads) {
     if (leads.length === 0) {
       leadsContainer.innerHTML =
@@ -264,6 +414,10 @@ if (document.getElementById("dashboard")) {
     leadsContainer.innerHTML = html;
   }
 
+  /**
+   * Render outbox/pending work queue
+   * @param {array} events - Array of event objects
+   */
   function renderOutbox(events) {
     if (events.length === 0) {
       outboxContainer.innerHTML =
@@ -289,6 +443,9 @@ if (document.getElementById("dashboard")) {
     outboxContainer.innerHTML = html;
   }
 
+  /**
+   * Refresh dashboard data from API
+   */
   window.refreshDashboard = async function () {
     try {
       const data = await fetchJSON(`${API_BASE}/api/status`);
@@ -300,29 +457,33 @@ if (document.getElementById("dashboard")) {
       console.error("[dashboard] Refresh error:", err);
       showMessage(
         "dashboard-status",
-        `⚠ Unable to load data: ${err.message}. Retrying in 20 seconds...`,
+        `⚠ Unable to load  ${err.message}. Retrying in ${CONFIG.pollInterval / 1000} seconds...`,
         "error",
         0
       );
     }
   };
 
+  // Initial load
   refreshDashboard();
-  if (pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(refreshDashboard, POLL_INTERVAL);
 
+  // Setup polling with configurable interval
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(refreshDashboard, CONFIG.pollInterval);
+
+  // Stop polling when tab is hidden, resume when visible
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       if (pollTimer) clearInterval(pollTimer);
     } else {
       refreshDashboard();
-      pollTimer = setInterval(refreshDashboard, POLL_INTERVAL);
+      pollTimer = setInterval(refreshDashboard, CONFIG.pollInterval);
     }
   });
 }
 
 // ========================================
-// Photo Upload (dashboard.html)
+// FILE UPLOAD (dashboard.html)
 // ========================================
 
 if (document.getElementById("upload-form")) {
@@ -338,15 +499,19 @@ if (document.getElementById("upload-form")) {
       return;
     }
     if (!file.type.startsWith("image/")) {
-      showMessage("upload-status", "Please select an image file", "error");
+      showMessage(
+        "upload-status",
+        "⚠️ Please select an image file (JPG, PNG, etc.)",
+        "error"
+      );
       fileInput.value = "";
       preview.innerHTML = "";
       return;
     }
-    if (file.size > MAX_FILE_SIZE) {
+    if (file.size > CONFIG.maxFileSize) {
       showMessage(
         "upload-status",
-        `File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max 5MB.`,
+        `⚠️ File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max ${CONFIG.maxFileSize / 1024 / 1024}MB.`,
         "error"
       );
       fileInput.value = "";
@@ -367,9 +532,9 @@ if (document.getElementById("upload-form")) {
     const jobId = uploadForm.jobId.value.trim();
     const file = fileInput.files[0];
     if (!jobId)
-      return showMessage("upload-status", "Job ID is required", "error");
+      return showMessage("upload-status", "⚠️ Job ID is required", "error");
     if (!file)
-      return showMessage("upload-status", "Please select a photo", "error");
+      return showMessage("upload-status", "⚠️ Please select a photo", "error");
 
     uploadBtn.disabled = true;
     uploadBtn.innerHTML = '<span class="spinner"></span> Uploading...';
@@ -408,14 +573,20 @@ if (document.getElementById("upload-form")) {
 }
 
 // ========================================
-// Service Worker (PWA)
+// SERVICE WORKER REGISTRATION (PWA)
 // ========================================
 
-if ("serviceWorker" in navigator && location.protocol === "https:") {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("sw.js")
-      .then((reg) => console.log("[SW] Registered:", reg.scope))
-      .catch((err) => console.warn("[SW] Failed:", err));
-  });
+if ("serviceWorker" in navigator) {
+  // Allow localhost for development, production uses HTTPS
+  const shouldRegister =
+    location.protocol === "https:" || location.hostname === "localhost";
+
+  if (shouldRegister) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("sw.js")
+        .then((reg) => console.log("[SW] Registered:", reg.scope))
+        .catch((err) => console.warn("[SW] Failed:", err));
+    });
+  }
 }
