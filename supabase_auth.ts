@@ -1,12 +1,21 @@
 // supabase_auth.ts
 // Supabase JWT validation for Deno (server-side)
 
-import { verify, decode as decodeJwt } from "https://deno.land/x/djwt@v2.8/mod.ts";
+import {
+  verify,
+  decode as decodeJwt,
+} from "https://deno.land/x/djwt@v2.8/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
 // Prefer explicit server-side env vars but fall back to NEXT_PUBLIC_* if present
-export const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") || "";
-export const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") || "";
+export const SUPABASE_URL =
+  Deno.env.get("SUPABASE_URL") ||
+  Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") ||
+  "";
+export const SUPABASE_ANON_KEY =
+  Deno.env.get("SUPABASE_ANON_KEY") ||
+  Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
+  "";
 export const SUPABASE_JWT_SECRET = Deno.env.get("SUPABASE_JWT_SECRET") || "";
 
 let _supabase: any = null;
@@ -22,7 +31,9 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY) {
     _supabaseConfigured = false;
   }
 } else {
-  console.warn("[supabase_auth] Supabase env vars not provided - running without Supabase client");
+  console.warn(
+    "[supabase_auth] Supabase env vars not provided - running without Supabase client"
+  );
 }
 
 export function getSupabaseClient() {
@@ -46,7 +57,9 @@ export interface AuthUser {
  * @param authHeader Authorization header value (e.g., "Bearer <token>")
  * @returns User payload if valid, null otherwise
  */
-export async function verifySupabaseJWT(authHeader: string): Promise<AuthUser | null> {
+export async function verifySupabaseJWT(
+  authHeader: string
+): Promise<AuthUser | null> {
   if (!authHeader?.startsWith("Bearer ")) return null;
 
   const token = authHeader.slice(7);
@@ -54,16 +67,18 @@ export async function verifySupabaseJWT(authHeader: string): Promise<AuthUser | 
   try {
     // Verify JWT signature with Supabase JWT secret
     if (SUPABASE_JWT_SECRET) {
-      const payload = await verify(
+      const payload = (await verify(
         token,
         new TextEncoder().encode(SUPABASE_JWT_SECRET),
         "HS256"
-      ) as AuthUser;
+      )) as AuthUser;
 
       return payload;
     } else {
       // Fallback: decode without verification (DEV ONLY - not secure!)
-      console.warn("WARNING: SUPABASE_JWT_SECRET not set, using insecure JWT decode");
+      console.warn(
+        "WARNING: SUPABASE_JWT_SECRET not set, using insecure JWT decode"
+      );
       const payload = decodeJwt(token)[1] as AuthUser;
       return payload;
     }
@@ -80,7 +95,9 @@ export async function verifySupabaseJWT(authHeader: string): Promise<AuthUser | 
  */
 export async function getUserProfile(authUserId: string) {
   if (!_supabaseConfigured || !_supabase) {
-    console.warn("[supabase_auth] getUserProfile called but Supabase not configured");
+    console.warn(
+      "[supabase_auth] getUserProfile called but Supabase not configured"
+    );
     return null;
   }
 
@@ -108,9 +125,13 @@ export async function getUserProfile(authUserId: string) {
  * @param req Request object
  * @returns User profile or null
  */
-export async function authenticateRequest(req: Request): Promise<{ authUser: AuthUser, profile: any } | null> {
+export async function authenticateRequest(
+  req: Request
+): Promise<{ authUser: AuthUser; profile: any } | null> {
   if (!_supabaseConfigured) {
-    console.warn("[supabase_auth] authenticateRequest called but Supabase not configured");
+    console.warn(
+      "[supabase_auth] authenticateRequest called but Supabase not configured"
+    );
     return null;
   }
 

@@ -41,7 +41,10 @@ let leadCounter = 1;
 let eventCounter = 1;
 
 // Authentication middleware helper
-async function requireAuth(req: Request, allowedRoles?: string[]): Promise<
+async function requireAuth(
+  req: Request,
+  allowedRoles?: string[]
+): Promise<
   { authorized: false; response: Response } | { authorized: true; auth: any }
 > {
   const auth = await authenticateRequest(req);
@@ -56,7 +59,7 @@ async function requireAuth(req: Request, allowedRoles?: string[]): Promise<
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
-          }
+          },
         }
       ),
     };
@@ -67,13 +70,16 @@ async function requireAuth(req: Request, allowedRoles?: string[]): Promise<
     return {
       authorized: false,
       response: new Response(
-        JSON.stringify({ ok: false, error: "Forbidden - insufficient permissions" }),
+        JSON.stringify({
+          ok: false,
+          error: "Forbidden - insufficient permissions",
+        }),
         {
           status: 403,
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
-          }
+          },
         }
       ),
     };
@@ -233,8 +239,14 @@ async function handler(req: Request): Promise<Response> {
 
   // Health check for Supabase connectivity/configuration
   if (url.pathname === "/health") {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL") || Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") || "";
-    const supabaseAnon = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") || "";
+    const supabaseUrl =
+      Deno.env.get("SUPABASE_URL") ||
+      Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") ||
+      "";
+    const supabaseAnon =
+      Deno.env.get("SUPABASE_ANON_KEY") ||
+      Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
+      "";
     let reachable = false;
     if (supabaseUrl) {
       try {
@@ -249,7 +261,9 @@ async function handler(req: Request): Promise<Response> {
         ok: true,
         supabase: {
           configured: !!(supabaseUrl && supabaseAnon),
-          url: supabaseUrl ? supabaseUrl.replace(/:\/\/([^@]+@)?/, "https://") : "",
+          url: supabaseUrl
+            ? supabaseUrl.replace(/:\/\/([^@]+@)?/, "https://")
+            : "",
           reachable,
         },
       }),
@@ -444,15 +458,21 @@ async function handler(req: Request): Promise<Response> {
       const crewId = url.pathname.split("/")[3];
 
       // Ensure crew can only access their own jobs (unless they're an owner)
-      if (authCheck.auth.profile.role === "crew" && authCheck.auth.profile.id !== crewId) {
+      if (
+        authCheck.auth.profile.role === "crew" &&
+        authCheck.auth.profile.id !== crewId
+      ) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Forbidden - can only access own jobs" }),
+          JSON.stringify({
+            ok: false,
+            error: "Forbidden - can only access own jobs",
+          }),
           {
             status: 403,
             headers: {
               "Content-Type": "application/json",
               "Access-Control-Allow-Origin": "*",
-            }
+            },
           }
         );
       }
@@ -558,15 +578,21 @@ async function handler(req: Request): Promise<Response> {
             [authCheck.auth.profile.id]
           );
 
-          if (clientResult.rows.length === 0 || (clientResult.rows[0] as any).id !== clientId) {
+          if (
+            clientResult.rows.length === 0 ||
+            (clientResult.rows[0] as any).id !== clientId
+          ) {
             return new Response(
-              JSON.stringify({ ok: false, error: "Forbidden - can only access own dashboard" }),
+              JSON.stringify({
+                ok: false,
+                error: "Forbidden - can only access own dashboard",
+              }),
               {
                 status: 403,
                 headers: {
                   "Content-Type": "application/json",
                   "Access-Control-Allow-Origin": "*",
-                }
+                },
               }
             );
           }
