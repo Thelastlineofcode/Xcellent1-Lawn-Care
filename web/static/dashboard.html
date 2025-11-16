@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#10b981" />
     <title>Hiring Dashboard | Xcellent1 Lawn Care</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="manifest" href="/static/manifest.json" />
+    <link rel="manifest" href="manifest.json" />
     <style>
       .dashboard-header {
         display: flex;
@@ -139,24 +139,23 @@
   <body>
     <nav class="navbar" style="position: sticky; top: 0; z-index: 100">
       <div class="navbar-brand">
-        <div class="logo-bg" aria-hidden="true"></div>
         <div class="navbar-title">
           <span class="navbar-name">XCELLENT1</span>
           <span class="navbar-tagline">LAWN CARE</span>
         </div>
       </div>
       <div class="navbar-links">
-        <a href="/static/home.html" class="navbar-link">Home</a>
-        <a href="/static/shop.html" class="navbar-link">Shop</a>
-        <a href="/static/careers.html" class="navbar-link">Careers</a>
-        <button onclick="openLoginModal()" class="navbar-login">Login</button>
+        <a href="home.html" class="navbar-link">Home</a>
+        <a href="shop.html" class="navbar-link">Shop</a>
+        <a href="careers.html" class="navbar-link">Careers</a>
+        <a href="login.html" class="navbar-login">Login</a>
       </div>
     </nav>
     <header class="header">
       <div class="header-content">
         <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
         <nav>
-          <a href="/static/index.html" class="nav-link">💼 Careers Page</a>
+          <a href="index.html" class="nav-link">💼 Careers Page</a>
           <button
             onclick="logout()"
             style="
@@ -281,9 +280,9 @@
       <p><small>Powered by BMAD Recruitment Platform</small></p>
     </footer>
 
-    <script src="/static/app.js"></script>
+    <script src="app.js"></script>
     <script type="module">
-      import { requireAuth, logout } from "/static/auth-helper.js";
+      import { requireAuth, logout } from "auth-helper.js";
 
       // Require owner authentication for hiring dashboard
       const userProfile = await requireAuth("owner");

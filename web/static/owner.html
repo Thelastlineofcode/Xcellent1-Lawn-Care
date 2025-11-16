@@ -179,17 +179,16 @@
   <body>
     <nav class="navbar" style="position: sticky; top: 0; z-index: 100">
       <div class="navbar-brand">
-        <div class="logo-bg" aria-hidden="true"></div>
         <div class="navbar-title">
           <span class="navbar-name">XCELLENT1</span>
           <span class="navbar-tagline">LAWN CARE</span>
         </div>
       </div>
       <div class="navbar-links">
-        <a href="/static/home.html" class="navbar-link">Home</a>
-        <a href="/static/shop.html" class="navbar-link">Shop</a>
-        <a href="/static/careers.html" class="navbar-link">Careers</a>
-        <button onclick="openLoginModal()" class="navbar-login">Login</button>
+        <a href="home.html" class="navbar-link">Home</a>
+        <a href="shop.html" class="navbar-link">Shop</a>
+        <a href="careers.html" class="navbar-link">Careers</a>
+        <a href="login.html" class="navbar-login">Login</a>
       </div>
     </nav>
     <!-- Authentication Check -->
@@ -210,7 +209,7 @@
 
         if (!session) {
           // Not logged in, redirect to login
-          window.location.href = "/static/login.html";
+          window.location.href = "login.html";
           return;
         }
 
@@ -225,14 +224,14 @@
           // Invalid role or no profile, logout and redirect
           await supabase.auth.signOut();
           alert("Access denied. This page is only for owners.");
-          window.location.href = "/static/login.html";
+          window.location.href = "login.html";
           return;
         }
 
         if (profile.status !== "active") {
           await supabase.auth.signOut();
           alert("Your account is not active. Please contact support.");
-          window.location.href = "/static/login.html";
+          window.location.href = "login.html";
           return;
         }
 
@@ -254,7 +253,7 @@
       // Add logout handler
       window.logout = async function () {
         await supabase.auth.signOut();
-        window.location.href = "/static/login.html";
+        window.location.href = "login.html";
       };
     </script>
 
@@ -263,9 +262,9 @@
       <div class="header-content">
         <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
         <nav>
-          <a href="/static/crew.html" class="nav-link">Crew</a>
-          <a href="/static/client.html" class="nav-link">Clients</a>
-          <a href="/static/dashboard.html" class="nav-link">Hiring</a>
+          <a href="crew.html" class="nav-link">Crew</a>
+          <a href="client.html" class="nav-link">Clients</a>
+          <a href="dashboard.html" class="nav-link">Hiring</a>
           <a
             href="javascript:void(0)"
             onclick="window.logout()"
@@ -347,25 +346,25 @@
       <section class="mb-lg">
         <h2>Quick Actions</h2>
         <div class="action-grid">
-          <a href="/static/dashboard.html" class="action-card">
+          <a href="dashboard.html" class="action-card">
             <div class="action-icon">💼</div>
             <div class="action-label">Review Applications</div>
             <div class="action-count" id="action-apps">0 pending</div>
           </a>
 
-          <a href="/static/crew.html" class="action-card">
+          <a href="crew.html" class="action-card">
             <div class="action-icon">🚩</div>
             <div class="action-label">Crew Routes</div>
             <div class="action-count" id="action-routes">0 active</div>
           </a>
 
-          <a href="/static/client.html" class="action-card">
+          <a href="client.html" class="action-card">
             <div class="action-icon">👥</div>
             <div class="action-label">Client Portal</div>
             <div class="action-count" id="action-clients">0 accounts</div>
           </a>
 
-          <a href="/static/index.html" class="action-card">
+          <a href="index.html" class="action-card">
             <div class="action-icon">📢</div>
             <div class="action-label">Careers Page</div>
             <div class="action-count">Share to recruit</div>
@@ -463,7 +462,7 @@
           </div>
           <button
             class="btn mt-md"
-            onclick="window.location.href='/static/dashboard.html'"
+            onclick="window.location.href='dashboard.html'"
           >
             📄 View All Applications
           </button>
@@ -715,7 +714,7 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="/static/app.js"></script>
+    <script src="app.js"></script>
     <script>
       // Quote Calculator logic
       document.getElementById("quote-form").onsubmit = async function (e) {
@@ -793,7 +792,7 @@
             icon: "⚠️",
             message: "Need 2 more crew members to handle growth",
             action: "Review Applications",
-            link: "/static/dashboard.html",
+            link: "dashboard.html",
           },
           {
             type: "success",

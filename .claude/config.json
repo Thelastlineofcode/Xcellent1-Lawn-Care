@@ -1,0 +1,63 @@
+{
+  "project": {
+    "name": "Xcellent1 Lawn Care",
+    "framework": "bmad",
+    "version": "1.0.0",
+    "type": "event-driven-crm"
+  },
+  "context": {
+    "framework": "BMAD (Business Management and Development)",
+    "architecture": "event-driven",
+    "patterns": ["outbox", "multi-agent", "rls", "authentication"],
+    "testing": "deno-test",
+    "runtime": "Deno",
+    "database": "PostgreSQL with Supabase",
+    "auth": "Supabase Auth + JWT"
+  },
+  "auto_instructions": [
+    "Use BMAD framework patterns for all new code",
+    "Implement Outbox pattern for events and side effects",
+    "Create role-based agents (Owner, Crew, Client)",
+    "Write tests in bmad/agents/tests/ for all agents",
+    "Use RLS policies for all data access",
+    "Protect API endpoints with authentication middleware",
+    "Follow TypeScript strict mode conventions",
+    "Use authenticateRequest() from supabase_auth.ts"
+  ],
+  "code_style": {
+    "language": "TypeScript",
+    "runtime": "Deno",
+    "database": "PostgreSQL with Supabase",
+    "auth": "Supabase Auth + JWT",
+    "indent": 2,
+    "quotes": "single",
+    "semicolons": true,
+    "trailingComma": "es5"
+  },
+  "directories": {
+    "agents": "bmad/agents/",
+    "outbox": "bmad/outbox/",
+    "services": "bmad/services/",
+    "tests": "bmad/agents/tests/",
+    "database": "db/",
+    "frontend": "web/static/"
+  },
+  "features": {
+    "authentication": {
+      "provider": "Supabase",
+      "method": "JWT",
+      "roles": ["owner", "crew", "client", "applicant"]
+    },
+    "events": {
+      "pattern": "outbox",
+      "storage": "postgresql",
+      "processing": "async-worker"
+    },
+    "agents": {
+      "owner": "Business management and oversight",
+      "crew": "Job execution and field operations",
+      "client": "Customer portal and self-service",
+      "applicant": "Job application and hiring"
+    }
+  }
+}

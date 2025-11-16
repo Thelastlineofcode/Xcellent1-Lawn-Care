@@ -1,14 +1,15 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Xcellent1 Lawn Care crew dashboard - today's jobs, navigation, photo upload">
-    <meta name="theme-color" content="#10b981">
+      content="Xcellent1 Lawn Care crew dashboard - today's jobs, navigation, photo upload"
+    />
+    <meta name="theme-color" content="#10b981" />
     <title>Today's Route | Xcellent1 Crew</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <style>
       /* Crew Dashboard Mobile-First Styles */
       body {
@@ -270,17 +271,16 @@
   <body>
     <nav class="navbar" style="position: sticky; top: 0; z-index: 100">
       <div class="navbar-brand">
-        <div class="logo-bg" aria-hidden="true"></div>
         <div class="navbar-title">
           <span class="navbar-name">XCELLENT1</span>
           <span class="navbar-tagline">LAWN CARE</span>
         </div>
       </div>
       <div class="navbar-links">
-        <a href="/static/home.html" class="navbar-link">Home</a>
-        <a href="/static/shop.html" class="navbar-link">Shop</a>
-        <a href="/static/careers.html" class="navbar-link">Careers</a>
-        <button onclick="openLoginModal()" class="navbar-login">Login</button>
+        <a href="home.html" class="navbar-link">Home</a>
+        <a href="shop.html" class="navbar-link">Shop</a>
+        <a href="careers.html" class="navbar-link">Careers</a>
+        <a href="login.html" class="navbar-login">Login</a>
       </div>
     </nav>
     <!-- Crew Header -->
@@ -375,7 +375,8 @@
           id="photo-input"
           accept="image/*"
           capture="environment"
-          style="display: none">
+          style="display: none"
+        />
         <div
           id="photo-preview"
           class="camera-preview"
@@ -421,9 +422,9 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="/static/app.js"></script>
+    <script src="app.js"></script>
     <script type="module">
-      import { requireAuth, logout } from "/static/auth-helper.js";
+      import { requireAuth, logout } from "auth-helper.js";
 
       // Require crew authentication
       const userProfile = await requireAuth("crew", ".greeting");

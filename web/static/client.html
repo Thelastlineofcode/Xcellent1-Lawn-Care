@@ -247,19 +247,19 @@
     </style>
   </head>
   <body>
-    <nav class="navbar" style="position: sticky; top: 0; z-index: 100">
+    <nav class="navbar">
       <div class="navbar-brand">
-        <div class="logo-bg" aria-hidden="true"></div>
+        <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
         <div class="navbar-title">
           <span class="navbar-name">XCELLENT1</span>
           <span class="navbar-tagline">LAWN CARE</span>
         </div>
       </div>
       <div class="navbar-links">
-        <a href="/static/home.html" class="navbar-link">Home</a>
-        <a href="/static/shop.html" class="navbar-link">Shop</a>
-        <a href="/static/careers.html" class="navbar-link">Careers</a>
-        <button onclick="openLoginModal()" class="navbar-login">Login</button>
+        <a href="home.html" class="navbar-link">Home</a>
+        <a href="shop.html" class="navbar-link">Shop</a>
+        <a href="careers.html" class="navbar-link">Careers</a>
+        <a href="login.html" class="navbar-login">Login</a>
       </div>
     </nav>
     <!-- Header -->
@@ -267,7 +267,7 @@
       <div class="header-content">
         <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
         <nav>
-          <a href="/static/dashboard.html" class="nav-link">Dashboard</a>
+          <a href="dashboard.html" class="nav-link">Dashboard</a>
           <button
             onclick="logout()"
             style="
@@ -473,7 +473,7 @@
         <img
           id="modal-image"
           class="modal-image"
-          src="/static/images/xcellent1-logo-small.png"
+          src="images/xcellent1-logo-small.png"
           alt="Job photo"
         />
         <div class="modal-info" id="modal-info">
@@ -491,9 +491,9 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="/static/app.js"></script>
+    <script src="app.js"></script>
     <script type="module">
-      import { requireAuth, logout } from "/static/auth-helper.js";
+      import { requireAuth, logout } from "auth-helper.js";
 
       // Require client authentication
       const userProfile = await requireAuth("client", "#client-name");
