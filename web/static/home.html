@@ -422,130 +422,7 @@
           min-width: 0;
         }
       }
-      /* Modern fixed navbar styles */
-      .navbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: rgba(1, 39, 20, 0.98);
-        color: #fff;
-        z-index: 100;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.5rem 2rem;
-        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
-      }
-      .navbar .navbar-brand {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-      .navbar .navbar-logo {
-        height: 48px;
-        width: auto;
-        filter: drop-shadow(0 2px 4px rgba(59, 131, 42, 0.3));
-      }
-      .navbar .navbar-title {
-        display: flex;
-        flex-direction: column;
-        line-height: 1;
-        align-items: center;
-        text-align: center;
-      }
-      .navbar .navbar-name {
-        font-size: 1.6rem;
-        font-weight: 800;
-        letter-spacing: -1px;
-        color: #fff;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
-      }
-      .navbar .navbar-tagline {
-        font-size: 0.85rem;
-        font-weight: 600;
-        letter-spacing: 2px;
-        color: #b6f7c2;
-        text-transform: uppercase;
-      }
-      .navbar .navbar-links {
-        display: flex;
-        gap: 1.5rem;
-      }
-      .navbar .navbar-link {
-        color: #fff;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1.05rem;
-        transition: color 0.2s;
-      }
-      .navbar .navbar-link:hover {
-        color: #f23d00;
-      }
-      .navbar .navbar-login {
-        background: #f23d00;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1.05rem;
-        transition: all 0.2s;
-        cursor: pointer;
-      }
-      .navbar .navbar-login:hover {
-        background: #bc2800;
-        transform: translateY(-1px);
-      }
-      .navbar .navbar-link {
-        color: #fff;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1.05rem;
-        transition: color 0.2s;
-      }
-      .navbar .navbar-link:hover {
-        color: #f23d00;
-      }
-      .navbar .navbar-login {
-        background: #f23d00;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1.05rem;
-        transition: all 0.2s;
-        cursor: pointer;
-      }
-      .navbar .navbar-login:hover {
-        background: #bc2800;
-        transform: translateY(-1px);
-      }
-      @media (max-width: 768px) {
-        .navbar {
-          flex-direction: column;
-          align-items: flex-start;
-          padding: 0.5rem 1rem;
-        }
-        .navbar .navbar-links {
-          gap: 1rem;
-          margin-top: 0.5rem;
-        }
-        .navbar .navbar-logo {
-          height: 36px;
-        }
-        .navbar .navbar-name {
-          font-size: 1.1rem;
-        }
-        .navbar .navbar-tagline {
-          font-size: 0.7rem;
-        }
-        .navbar .navbar-login {
-          padding: 6px 12px;
-          font-size: 0.95rem;
-        }
-      }
+      /* navbar styles moved to /static/styles.css - keep global CSS single source */
     </style>
   </head>
   <body>
@@ -553,10 +430,10 @@
       <div class="navbar-brand">
         <div class="logo-bg" aria-hidden="true"></div>
         <img
-            src="images/xcellent1-logo-transparent.png"
-            alt="Xcellent1 logo"
-            class="navbar-logo"
-          />
+          src="images/xcellent1-logo-transparent.png"
+          alt="Xcellent1 logo"
+          class="navbar-logo"
+        />
         <div class="navbar-title">
           <span class="navbar-name">XCELLENT1</span>
           <span class="navbar-tagline">LAWN CARE</span>
@@ -900,46 +777,7 @@
               St. Augustine, Bermuda, Zoysia, and Centipede grass thrive in
               LaPlace's humid climate.
             </p>
-            <nav class="navbar" role="navigation" aria-label="Main navigation">
-              <div class="navbar-brand">
-                <a
-                  href="/static/home.html"
-                  style="
-                    display: inline-flex;
-                    align-items: center;
-                    text-decoration: none;
-                    color: inherit;
-                  "
-                >
-                  <img
-                    src="images/xcellent1-logo-small.png"
-                    alt="Xcellent1 logo"
-                    class="navbar-logo"
-                  />
-                </a>
-                <div class="navbar-title">
-                  <a
-                    href="/static/home.html"
-                    style="text-decoration: none; color: inherit"
-                  >
-                    <span class="navbar-name">XCELLENT1</span>
-                    <span class="navbar-tagline">LAWN CARE</span>
-                  </a>
-                </div>
-              </div>
-              <div class="navbar-links">
-                <a href="/static/home.html" class="navbar-link">Home</a>
-                <a href="#services" class="navbar-link">Services</a>
-                <a href="/static/shop.html" class="navbar-link">Shop</a>
-                <a href="/static/careers.html" class="navbar-link">Careers</a>
-                <a
-                  href="/static/login.html"
-                  class="navbar-login"
-                  aria-label="Login"
-                  >Login</a
-                >
-              </div>
-            </nav>
+            <!-- removed nested navbar; global navbar at page top is authoritative -->
             <p class="blog-excerpt">
               Deep watering 1-2x/week beats daily sprinkling. Water early
               morning.
