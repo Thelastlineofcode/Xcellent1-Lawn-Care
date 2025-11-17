@@ -758,71 +758,72 @@
 
       // Owner Dashboard Logic
 
-      // Mock business data - replace with API call to /api/owner/metrics
-      const mockBusinessData = {
-        revenue_this_month: 8400,
-        revenue_last_month: 7200,
-        active_crew: 3,
-        jobs_this_week: 24,
-        jobs_last_week: 22,
-        new_applications: 3,
-        interviews_scheduled: 1,
-        open_positions: 2,
-        retention_90day: 100,
-        profit_margin: 48,
-        accounts_receivable: 650,
-        photos_today: 12,
-        alerts: [
-          {
-            type: "warning",
-            icon: "⚠️",
-            message: "Need 2 more crew members to handle growth",
-            action: "Review Applications",
-            link: "dashboard.html",
-          },
-          {
-            type: "success",
-            icon: "✅",
-            message: "1 interview scheduled this week",
-            action: "View Calendar",
-            link: "#",
-          },
-          {
-            type: "success",
-            icon: "💰",
-            message: "Revenue up 17% vs last month",
-            action: "View Details",
-            link: "#",
-          },
-        ],
-        crew_performance: [
-          {
-            name: "Worker 1",
-            role: "Field Worker",
-            jobs: 10,
-            rating: 4.8,
-            photos: 20,
-          },
-          {
-            name: "Worker 2",
-            role: "Field Worker",
-            jobs: 8,
-            rating: 4.7,
-            photos: 16,
-          },
-          {
-            name: "Worker 3",
-            role: "Field Worker",
-            jobs: 6,
-            rating: 4.9,
-            photos: 12,
-          },
-        ],
-      };
+      // Fetch owner metrics from API
+      async function fetchOwnerMetrics() {
+        try {
+          const token = window.supabaseSession?.access_token;
+          if (!token) {
+            throw new Error("No authentication token");
+          }
+
+          const response = await fetch("/api/owner/metrics", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (!data.ok) {
+            throw new Error(data.error || "Failed to fetch metrics");
+          }
+
+          return data;
+        } catch (err) {
+          console.error("Failed to fetch owner metrics:", err);
+          showMessage(
+            "owner-status",
+            "⚠️ Unable to load live metrics. Showing cached data.",
+            "warning",
+            5000
+          );
+          // Return fallback data
+          return {
+            ok: true,
+            active_crew: 0,
+            new_applications: 0,
+            jobs_this_week: 0,
+            photos_today: 0,
+            total_clients: 0,
+          };
+        }
+      }
 
       // Load owner dashboard
-      function loadOwnerDashboard() {
-        const data = mockBusinessData;
+      async function loadOwnerDashboard() {
+        const apiData = await fetchOwnerMetrics();
+
+        // Merge API data with defaults for fields not yet in database
+        const data = {
+          revenue_this_month: 0, // TODO: Add to database
+          revenue_last_month: 0, // TODO: Add to database
+          active_crew: apiData.active_crew || 0,
+          jobs_this_week: apiData.jobs_this_week || 0,
+          jobs_last_week: 0, // TODO: Add to database
+          new_applications: apiData.new_applications || 0,
+          interviews_scheduled: 0, // TODO: Add to database
+          open_positions: 0, // TODO: Add to database
+          retention_90day: 100, // TODO: Add to database
+          profit_margin: 0, // TODO: Add to database
+          accounts_receivable: 0, // TODO: Add to database
+          photos_today: apiData.photos_today || 0,
+          total_clients: apiData.total_clients || 0,
+          alerts: [], // Will generate dynamically based on data
+          crew_performance: [], // TODO: Add endpoint for crew performance
+        };
 
         // Revenue KPI
         document.getElementById("kpi-revenue").textContent =
@@ -878,8 +879,9 @@
         document.getElementById("action-apps").textContent =
           data.new_applications + " pending";
         document.getElementById("action-routes").textContent =
-          data.active_crew + " crews";
-        document.getElementById("action-clients").textContent = "24 accounts"; // Mock
+          data.active_crew + " crew";
+        document.getElementById("action-clients").textContent =
+          data.total_clients + " accounts";
 
         // Financial
         document.getElementById("fin-ar").textContent =
@@ -899,10 +901,40 @@
         document.getElementById("hiring-retention").textContent =
           data.retention_90day + "%";
 
-        // Render alerts
-        renderAlerts(data.alerts);
+        // Generate dynamic alerts based on data
+        const alerts = [];
+        if (data.new_applications > 0) {
+          alerts.push({
+            type: "success",
+            icon: "✅",
+            message: `${data.new_applications} new application${data.new_applications > 1 ? "s" : ""} to review`,
+            action: "View Applications",
+            link: "dashboard.html",
+          });
+        }
+        if (data.jobs_this_week > 0) {
+          alerts.push({
+            type: "success",
+            icon: "🚩",
+            message: `${data.jobs_this_week} jobs scheduled this week`,
+            action: "View Schedule",
+            link: "#",
+          });
+        }
+        if (data.total_clients > 0) {
+          alerts.push({
+            type: "success",
+            icon: "👥",
+            message: `Serving ${data.total_clients} active clients`,
+            action: "View Clients",
+            link: "#",
+          });
+        }
 
-        // Render crew performance
+        // Render alerts
+        renderAlerts(alerts);
+
+        // Render crew performance (empty for now until we add the endpoint)
         renderCrewPerformance(data.crew_performance);
       }
 
