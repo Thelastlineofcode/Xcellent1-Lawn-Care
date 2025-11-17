@@ -7,3 +7,6 @@
 # Deno cache and lock
 /.deno
 deno.lock
+# Supabase CLI binary (downloaded)
+supabase
+LICENSE
