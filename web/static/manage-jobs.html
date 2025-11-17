@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Manage jobs and scheduling - Xcellent1 Lawn Care" />
+    <title>Job Management | Xcellent1</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .management-header {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        color: white;
+        padding: 2rem 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .management-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+      .filter-bar {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+      .filter-select {
+        padding: 0.75rem;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+      .jobs-grid {
+        display: grid;
+        gap: 1rem;
+      }
+      .job-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-left: 4px solid var(--color-primary);
+      }
+      .job-card.pending {
+        border-left-color: #f59e0b;
+      }
+      .job-card.active {
+        border-left-color: #10b981;
+      }
+      .job-card.completed {
+        border-left-color: #6b7280;
+      }
+      .job-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+      }
+      .job-date {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--color-primary);
+      }
+      .job-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .job-status.pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .job-status.active {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .job-status.completed {
+        background: #e5e7eb;
+        color: #374151;
+      }
+      .job-info {
+        margin-bottom: 1rem;
+      }
+      .job-info-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0.5rem 0;
+        font-size: 0.875rem;
+      }
+      .services-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0.5rem 0;
+      }
+      .service-tag {
+        background: var(--color-bg);
+        padding: 0.25rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .modal.active {
+        display: flex;
+      }
+      .modal-content {
+        background: white;
+        border-radius: 16px;
+        max-width: 600px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--color-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .modal-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--color-text-secondary);
+      }
+      .modal-body {
+        padding: 1.5rem;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .form-group-full {
+        grid-column: 1 / -1;
+      }
+      .checkbox-group {
+        display: grid;
+        gap: 0.5rem;
+      }
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+        <div class="navbar-title">
+          <span class="navbar-name">XCELLENT1</span>
+          <span class="navbar-tagline">LAWN CARE</span>
+        </div>
+      </div>
+      <div class="navbar-links">
+        <a href="owner.html" class="navbar-link">Dashboard</a>
+        <a href="manage-clients.html" class="navbar-link">Clients</a>
+        <a href="manage-jobs.html" class="navbar-link active">Jobs</a>
+        <a href="manage-invoices.html" class="navbar-link">Invoices</a>
+        <button onclick="logout()" class="btn btn-sm">Logout</button>
+      </div>
+    </nav>
+
+    <div class="management-header">
+      <div class="management-title">Job Management</div>
+      <p style="opacity: 0.9; margin: 0;">Schedule and assign lawn care services</p>
+    </div>
+
+    <main class="container">
+      <div class="filter-bar">
+        <input type="date" class="filter-select" id="date-filter" />
+        <select class="filter-select" id="status-filter">
+          <option value="">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="active">Active</option>
+          <option value="completed">Completed</option>
+        </select>
+        <select class="filter-select" id="crew-filter">
+          <option value="">All Crew</option>
+        </select>
+        <select class="filter-select" id="client-filter">
+          <option value="">All Clients</option>
+        </select>
+        <button class="btn" onclick="openAddJobModal()" style="margin-left: auto;">+ Schedule Job</button>
+      </div>
+
+      <div id="status-message" role="alert" aria-live="polite"></div>
+
+      <div id="jobs-grid" class="jobs-grid">
+        <div style="text-align: center; padding: 3rem;">
+          <div class="spinner"></div>
+          <div style="margin-top: 1rem;">Loading jobs...</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Add/Edit Job Modal -->
+    <div id="job-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-title">Schedule New Job</h2>
+          <button class="modal-close" onclick="closeJobModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="job-form" onsubmit="saveJob(event)">
+            <input type="hidden" id="job-id" />
+
+            <div class="form-group-full">
+              <label for="client-select">Client *</label>
+              <select id="client-select" required class="form-control">
+                <option value="">Select client...</option>
+              </select>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="scheduled-date">Date *</label>
+                <input type="date" id="scheduled-date" required class="form-control" />
+              </div>
+              <div class="form-group">
+                <label for="scheduled-time">Time</label>
+                <input type="time" id="scheduled-time" class="form-control" value="09:00" />
+              </div>
+            </div>
+
+            <div class="form-group-full">
+              <label for="crew-select">Assign to Crew *</label>
+              <select id="crew-select" required class="form-control">
+                <option value="">Select crew member...</option>
+              </select>
+            </div>
+
+            <div class="form-group-full">
+              <label>Services *</label>
+              <div class="checkbox-group" id="services-checkboxes">
+                <label class="checkbox-label">
+                  <input type="checkbox" name="service" value="Mowing" />
+                  <span>Mowing</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="service" value="Edging" />
+                  <span>Edging</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="service" value="Blowing" />
+                  <span>Blowing</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="service" value="Trimming" />
+                  <span>Trimming</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="service" value="Fertilizer" />
+                  <span>Fertilizer</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="service" value="Weed Control" />
+                  <span>Weed Control</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group-full">
+              <label for="job-notes">Notes</label>
+              <textarea id="job-notes" class="form-control" rows="3" placeholder="Special instructions, gate code, etc."></textarea>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="estimated-duration">Est. Duration (min)</label>
+                <input type="number" id="estimated-duration" class="form-control" value="60" />
+              </div>
+              <div class="form-group">
+                <label for="job-status">Status</label>
+                <select id="job-status" class="form-control">
+                  <option value="pending">Pending</option>
+                  <option value="active">Active</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
+              <button type="button" class="btn btn-secondary" onclick="closeJobModal()">Cancel</button>
+              <button type="submit" class="btn">Save Job</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script type="module">
+      import { requireAuth, logout } from './auth-helper.js';
+
+      // Require owner authentication
+      const userProfile = await requireAuth('owner');
+      window.ownerProfile = userProfile;
+    </script>
+    <script>
+      let jobsData = [];
+      let clientsData = [];
+      let crewData = [];
+      let editingJobId = null;
+
+      // Load jobs from API
+      async function loadJobs() {
+        try {
+          const token = window.supabaseSession?.access_token;
+          if (!token) {
+            throw new Error('No authentication token');
+          }
+
+          const response = await fetch('/api/owner/jobs', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (!data.ok) {
+            throw new Error(data.error || 'Failed to fetch jobs');
+          }
+
+          jobsData = data.jobs || [];
+          renderJobs(jobsData);
+        } catch (err) {
+          console.error('Failed to load jobs:', err);
+          showMessage('⚠️ Unable to load jobs. Please refresh the page.', 'warning');
+          document.getElementById('jobs-grid').innerHTML = `
+            <div style="text-align: center; padding: 3rem; color: var(--color-text-secondary);">
+              No jobs scheduled. Click "Schedule Job" to get started.
+            </div>
+          `;
+        }
+      }
+
+      // Load clients for dropdown
+      async function loadClients() {
+        try {
+          const token = window.supabaseSession?.access_token;
+          const response = await fetch('/api/owner/clients', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          const data = await response.json();
+          if (data.ok) {
+            clientsData = data.clients || [];
+            populateClientDropdowns();
+          }
+        } catch (err) {
+          console.error('Failed to load clients:', err);
+        }
+      }
+
+      // Load crew for dropdown
+      async function loadCrew() {
+        try {
+          const token = window.supabaseSession?.access_token;
+          const response = await fetch('/api/owner/crew', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          const data = await response.json();
+          if (data.ok) {
+            crewData = data.crew || [];
+            populateCrewDropdowns();
+          }
+        } catch (err) {
+          console.error('Failed to load crew:', err);
+        }
+      }
+
+      function populateClientDropdowns() {
+        const clientSelect = document.getElementById('client-select');
+        const clientFilter = document.getElementById('client-filter');
+
+        const options = clientsData.map(c =>
+          `<option value="${c.id}">${c.name} - ${c.property_address}</option>`
+        ).join('');
+
+        clientSelect.innerHTML = '<option value="">Select client...</option>' + options;
+        clientFilter.innerHTML = '<option value="">All Clients</option>' + options;
+      }
+
+      function populateCrewDropdowns() {
+        const crewSelect = document.getElementById('crew-select');
+        const crewFilter = document.getElementById('crew-filter');
+
+        const options = crewData.map(c =>
+          `<option value="${c.id}">${c.name}</option>`
+        ).join('');
+
+        crewSelect.innerHTML = '<option value="">Select crew member...</option>' + options;
+        crewFilter.innerHTML = '<option value="">All Crew</option>' + options;
+      }
+
+      // Render jobs
+      function renderJobs(jobs) {
+        const grid = document.getElementById('jobs-grid');
+
+        if (jobs.length === 0) {
+          grid.innerHTML = `
+            <div style="text-align: center; padding: 3rem; color: var(--color-text-secondary);">
+              No jobs scheduled. Click "Schedule Job" to get started.
+            </div>
+          `;
+          return;
+        }
+
+        // Sort by date
+        const sorted = [...jobs].sort((a, b) =>
+          new Date(a.scheduled_date) - new Date(b.scheduled_date)
+        );
+
+        grid.innerHTML = sorted.map(job => {
+          const date = new Date(job.scheduled_date);
+          const dateStr = date.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
+          });
+
+          const services = Array.isArray(job.services)
+            ? job.services
+            : (job.services || '').split(',').filter(Boolean);
+
+          return `
+            <div class="job-card ${job.status}" onclick="editJob('${job.id}')">
+              <div class="job-header">
+                <div class="job-date">${dateStr} ${job.scheduled_time || ''}</div>
+                <span class="job-status ${job.status}">${job.status}</span>
+              </div>
+              <div class="job-info">
+                <div class="job-info-row">
+                  <strong>👤 Client:</strong> ${job.client_name || 'Unknown'}
+                </div>
+                <div class="job-info-row">
+                  <strong>📍 Address:</strong> ${job.property_address || 'N/A'}
+                </div>
+                <div class="job-info-row">
+                  <strong>👷 Crew:</strong> ${job.crew_name || 'Unassigned'}
+                </div>
+                <div class="job-info-row">
+                  <strong>🛠️ Services:</strong>
+                  <div class="services-list">
+                    ${services.map(s => `<span class="service-tag">${s.trim()}</span>`).join('')}
+                  </div>
+                </div>
+                ${job.notes ? `
+                  <div class="job-info-row" style="background: #fef3c7; padding: 0.5rem; border-radius: 8px; margin-top: 0.5rem;">
+                    <strong>⚠️ Note:</strong> ${job.notes}
+                  </div>
+                ` : ''}
+              </div>
+              <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); editJob('${job.id}')">Edit</button>
+                ${job.status !== 'completed' ? `
+                  <button class="btn btn-sm" onclick="event.stopPropagation(); markComplete('${job.id}')">Mark Complete</button>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Filter functions
+      document.getElementById('date-filter').addEventListener('change', filterJobs);
+      document.getElementById('status-filter').addEventListener('change', filterJobs);
+      document.getElementById('crew-filter').addEventListener('change', filterJobs);
+      document.getElementById('client-filter').addEventListener('change', filterJobs);
+
+      function filterJobs() {
+        const dateFilter = document.getElementById('date-filter').value;
+        const statusFilter = document.getElementById('status-filter').value;
+        const crewFilter = document.getElementById('crew-filter').value;
+        const clientFilter = document.getElementById('client-filter').value;
+
+        const filtered = jobsData.filter(job => {
+          const matchesDate = !dateFilter || job.scheduled_date === dateFilter;
+          const matchesStatus = !statusFilter || job.status === statusFilter;
+          const matchesCrew = !crewFilter || job.crew_id === crewFilter;
+          const matchesClient = !clientFilter || job.client_id === clientFilter;
+
+          return matchesDate && matchesStatus && matchesCrew && matchesClient;
+        });
+
+        renderJobs(filtered);
+      }
+
+      // Modal functions
+      function openAddJobModal() {
+        editingJobId = null;
+        document.getElementById('modal-title').textContent = 'Schedule New Job';
+        document.getElementById('job-form').reset();
+        document.getElementById('job-id').value = '';
+
+        // Set default date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('scheduled-date').value = tomorrow.toISOString().split('T')[0];
+
+        document.getElementById('job-modal').classList.add('active');
+      }
+
+      function closeJobModal() {
+        document.getElementById('job-modal').classList.remove('active');
+        editingJobId = null;
+      }
+
+      function editJob(jobId) {
+        const job = jobsData.find(j => j.id === jobId);
+        if (!job) return;
+
+        editingJobId = jobId;
+        document.getElementById('modal-title').textContent = 'Edit Job';
+        document.getElementById('job-id').value = jobId;
+        document.getElementById('client-select').value = job.client_id || '';
+        document.getElementById('scheduled-date').value = job.scheduled_date || '';
+        document.getElementById('scheduled-time').value = job.scheduled_time || '';
+        document.getElementById('crew-select').value = job.crew_id || '';
+        document.getElementById('job-notes').value = job.notes || '';
+        document.getElementById('estimated-duration').value = job.estimated_duration || 60;
+        document.getElementById('job-status').value = job.status || 'pending';
+
+        // Check services
+        const services = Array.isArray(job.services)
+          ? job.services
+          : (job.services || '').split(',').map(s => s.trim());
+
+        document.querySelectorAll('input[name="service"]').forEach(checkbox => {
+          checkbox.checked = services.includes(checkbox.value);
+        });
+
+        document.getElementById('job-modal').classList.add('active');
+      }
+
+      // Save job
+      async function saveJob(event) {
+        event.preventDefault();
+
+        const selectedServices = Array.from(document.querySelectorAll('input[name="service"]:checked'))
+          .map(cb => cb.value);
+
+        if (selectedServices.length === 0) {
+          showMessage('⚠️ Please select at least one service', 'warning');
+          return;
+        }
+
+        const jobData = {
+          client_id: document.getElementById('client-select').value,
+          scheduled_date: document.getElementById('scheduled-date').value,
+          scheduled_time: document.getElementById('scheduled-time').value,
+          crew_id: document.getElementById('crew-select').value,
+          services: selectedServices,
+          notes: document.getElementById('job-notes').value,
+          estimated_duration: document.getElementById('estimated-duration').value,
+          status: document.getElementById('job-status').value
+        };
+
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span> Saving...';
+
+        try {
+          const token = window.supabaseSession?.access_token;
+          const method = editingJobId ? 'PATCH' : 'POST';
+          const url = editingJobId
+            ? `/api/owner/jobs/${editingJobId}`
+            : '/api/owner/jobs';
+
+          const response = await fetch(url, {
+            method,
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jobData)
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || !data.ok) {
+            throw new Error(data.error || 'Failed to save job');
+          }
+
+          showMessage(`✓ Job ${editingJobId ? 'updated' : 'scheduled'} successfully!`, 'success');
+          closeJobModal();
+          await loadJobs();
+        } catch (err) {
+          console.error('Failed to save job:', err);
+          showMessage(`✗ ${err.message}`, 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Save Job';
+        }
+      }
+
+      async function markComplete(jobId) {
+        if (!confirm('Mark this job as completed?')) return;
+
+        try {
+          const token = window.supabaseSession?.access_token;
+          const response = await fetch(`/api/jobs/${jobId}/complete`, {
+            method: 'PATCH',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          const data = await response.json();
+          if (data.ok) {
+            showMessage('✓ Job marked as complete!', 'success');
+            await loadJobs();
+          }
+        } catch (err) {
+          console.error('Failed to mark job complete:', err);
+          showMessage('✗ Failed to update job', 'error');
+        }
+      }
+
+      function showMessage(message, type = 'info') {
+        const container = document.getElementById('status-message');
+        container.className = `message message-${type}`;
+        container.textContent = message;
+        container.style.display = 'block';
+
+        setTimeout(() => {
+          container.style.display = 'none';
+        }, 5000);
+      }
+
+      // Initial load
+      Promise.all([loadJobs(), loadClients(), loadCrew()]);
+    </script>
+  </body>
+</html>

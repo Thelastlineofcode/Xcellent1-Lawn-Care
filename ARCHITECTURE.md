@@ -188,10 +188,15 @@ const { auth } = authResult;
 - `blog-*.html` - Educational content
 
 **Protected Pages:**
-- `owner.html` - Business dashboard (KPIs, metrics, quotes)
-- `crew.html` - Daily job list with navigation
+- `owner.html` - Business dashboard (KPIs, metrics, quick actions)
+- `crew.html` - Daily job list with navigation and photo upload
 - `client.html` - Client portal (jobs, photos, invoices)
 - `dashboard.html` - Hiring manager dashboard
+
+**Management Pages (Owner Only):**
+- `manage-clients.html` - Client management (CRUD operations)
+- `manage-jobs.html` - Job scheduling and assignment
+- `manage-invoices.html` - Invoice creation and payment tracking
 
 ### Dashboard Data Flow
 
@@ -199,11 +204,17 @@ const { auth } = authResult;
 
 | Dashboard | Fetch Implemented | Backend Ready | Status |
 |-----------|-------------------|---------------|--------|
-| Owner | ⚠️ Calls `/api/status` instead of `/api/owner/metrics` | ✅ Yes | Needs fix |
-| Crew | ❌ Uses mock data | ✅ Endpoint exists | Needs implementation |
-| Client | ❌ Uses mock data | ✅ Endpoint exists | Needs implementation |
+| Owner | ✅ Calls `/api/owner/metrics` | ✅ Yes | Complete |
+| Crew | ✅ Calls `/api/crew/:id/jobs` | ✅ Endpoint exists | Complete |
+| Client | ✅ Calls `/api/client/:id/dashboard` | ✅ Endpoint exists | Complete |
 
-**TODO**: Connect crew.html and client.html to their respective API endpoints.
+**Management Pages:**
+
+| Page | Purpose | Status |
+|------|---------|--------|
+| manage-clients.html | Add/edit/list clients | ✅ Complete |
+| manage-jobs.html | Schedule & assign jobs | ✅ Complete |
+| manage-invoices.html | Create & manage invoices | ✅ Complete |
 
 ---
 
@@ -335,16 +346,21 @@ See deployment guides:
 
 ### High Priority
 
-1. **Connect frontend to backend**
-   - crew.html needs to fetch from `/api/crew/:id/jobs`
-   - client.html needs to fetch from `/api/client/:id/dashboard`
-   - owner.html should use `/api/owner/metrics` instead of `/api/status`
+1. ✅ **Connect frontend to backend** - COMPLETED
+   - ✅ crew.html fetches from `/api/crew/:id/jobs`
+   - ✅ client.html fetches from `/api/client/:id/dashboard`
+   - ✅ owner.html uses `/api/owner/metrics`
 
-2. **Photo storage**
+2. ✅ **Management UIs Built** - COMPLETED
+   - ✅ Client management page (add/edit/list)
+   - ✅ Job scheduling and assignment page
+   - ✅ Invoice creation and management page
+
+3. **Photo storage**
    - Backend accepts uploads but doesn't store to Supabase Storage
    - TODO: Implement Supabase Storage integration
 
-3. **Email/SMS notifications**
+4. **Email/SMS notifications**
    - Placeholder TODOs in code
    - Need SendGrid/Twilio integration
 

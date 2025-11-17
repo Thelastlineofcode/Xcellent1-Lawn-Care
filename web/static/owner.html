@@ -190,10 +190,11 @@
         </div>
       </div>
       <div class="navbar-links">
-        <a href="home.html" class="navbar-link">Home</a>
-        <a href="shop.html" class="navbar-link">Shop</a>
-        <a href="careers.html" class="navbar-link">Careers</a>
-        <a href="login.html" class="navbar-login">Login</a>
+        <a href="owner.html" class="navbar-link active">Dashboard</a>
+        <a href="manage-clients.html" class="navbar-link">Clients</a>
+        <a href="manage-jobs.html" class="navbar-link">Jobs</a>
+        <a href="manage-invoices.html" class="navbar-link">Invoices</a>
+        <button onclick="logout()" class="btn btn-sm" style="margin-left: 1rem;">Logout</button>
       </div>
     </nav>
     <!-- Authentication Check -->
@@ -332,28 +333,28 @@
       <section class="mb-lg">
         <h2>Quick Actions</h2>
         <div class="action-grid">
+          <a href="manage-clients.html" class="action-card">
+            <div class="action-icon">👥</div>
+            <div class="action-label">Manage Clients</div>
+            <div class="action-count" id="action-clients">View all clients</div>
+          </a>
+
+          <a href="manage-jobs.html" class="action-card">
+            <div class="action-icon">📅</div>
+            <div class="action-label">Schedule Jobs</div>
+            <div class="action-count" id="action-jobs">Create & assign</div>
+          </a>
+
+          <a href="manage-invoices.html" class="action-card">
+            <div class="action-icon">💰</div>
+            <div class="action-label">Create Invoice</div>
+            <div class="action-count" id="action-invoices">Billing & payments</div>
+          </a>
+
           <a href="dashboard.html" class="action-card">
             <div class="action-icon">💼</div>
             <div class="action-label">Review Applications</div>
-            <div class="action-count" id="action-apps">0 pending</div>
-          </a>
-
-          <a href="crew.html" class="action-card">
-            <div class="action-icon">🚩</div>
-            <div class="action-label">Crew Routes</div>
-            <div class="action-count" id="action-routes">0 active</div>
-          </a>
-
-          <a href="client.html" class="action-card">
-            <div class="action-icon">👥</div>
-            <div class="action-label">Client Portal</div>
-            <div class="action-count" id="action-clients">0 accounts</div>
-          </a>
-
-          <a href="index.html" class="action-card">
-            <div class="action-icon">📢</div>
-            <div class="action-label">Careers Page</div>
-            <div class="action-count">Share to recruit</div>
+            <div class="action-count" id="action-apps">Hiring dashboard</div>
           </a>
         </div>
       </section>
