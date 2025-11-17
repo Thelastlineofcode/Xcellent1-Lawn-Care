@@ -26,6 +26,9 @@ build/
 # Deno cache and lock
 .deno/
 
+# Supabase CLI binary (downloaded)
+supabase
+
 # Logs
 *.log
 npm-debug.log*
@@ -33,3 +36,6 @@ npm-debug.log*
 # OS generated files
 Thumbs.db
 ehthumbs.db
+
+# License files
+LICENSE

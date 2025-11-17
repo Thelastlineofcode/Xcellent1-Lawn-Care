@@ -269,8 +269,13 @@
     </style>
   </head>
   <body>
-    <nav class="navbar" style="position: sticky; top: 0; z-index: 100">
+    <nav class="navbar">
       <div class="navbar-brand">
+        <img
+          src="images/xcellent1-logo-transparent.png"
+          alt="Xcellent1 logo"
+          class="navbar-logo"
+        />
         <div class="navbar-title">
           <span class="navbar-name">XCELLENT1</span>
           <span class="navbar-tagline">LAWN CARE</span>
@@ -438,46 +443,66 @@
       let currentJob = null;
       let photoType = "before";
       let capturedPhoto = null;
+      let jobsData = [];
 
-      // Mock jobs data - replace with API call
-      const mockJobs = [
-        {
-          id: "job-001",
-          time: "8:00 AM",
-          client: "Sarah Martinez",
-          address: "123 Oak Street",
-          city: "Austin, TX 78701",
-          services: ["Mowing", "Edging", "Trimming"],
-          notes: "Gate code: 1234. Dog friendly.",
-          duration: 45,
-          status: "active",
-        },
-        {
-          id: "job-002",
-          time: "9:30 AM",
-          client: "John Wilson",
-          address: "456 Maple Drive",
-          city: "Austin, TX 78702",
-          services: ["Mowing", "Leaf Removal"],
-          notes: "",
-          duration: 60,
-          status: "pending",
-        },
-        {
-          id: "job-003",
-          time: "11:00 AM",
-          client: "Lisa Chen",
-          address: "789 Elm Boulevard",
-          city: "Austin, TX 78703",
-          services: ["Mowing", "Edging", "Blowing"],
-          notes: "Front yard only",
-          duration: 30,
-          status: "pending",
-        },
-      ];
+      // Fetch crew jobs from API
+      async function fetchCrewJobs() {
+        try {
+          const token = window.supabaseSession?.access_token;
+          if (!token) {
+            throw new Error("No authentication token");
+          }
+
+          const response = await fetch(`/api/crew/${CREW_ID}/jobs`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (!data.ok) {
+            throw new Error(data.error || "Failed to fetch jobs");
+          }
+
+          return data.jobs || [];
+        } catch (err) {
+          console.error("Failed to fetch crew jobs:", err);
+          showMessage(
+            "crew-status",
+            "⚠️ Unable to load jobs. Please refresh the page.",
+            "warning",
+            5000
+          );
+          return [];
+        }
+      }
 
       // Load crew jobs
-      function loadCrewJobs() {
+      async function loadCrewJobs() {
+        // Fetch jobs from API
+        const apiJobs = await fetchCrewJobs();
+
+        // Transform API data to match expected format
+        jobsData = apiJobs.map((job) => ({
+          id: job.id,
+          time: job.scheduled_time || "TBD",
+          client: job.client_name || "Unknown Client",
+          address: job.property_address?.split(",")[0] || "",
+          city: job.property_address?.split(",").slice(1).join(",") || "",
+          services:
+            typeof job.services === "string"
+              ? job.services.split(",")
+              : Array.isArray(job.services)
+                ? job.services
+                : [],
+          notes: job.notes || "",
+          duration: job.estimated_duration || 60,
+          status: job.status || "pending",
+        }));
         const now = new Date();
         const hour = now.getHours();
         const greeting =
@@ -497,14 +522,12 @@
         document.getElementById("route-date").textContent = dateStr;
 
         // Calculate stats
-        const completed = mockJobs.filter(
-          (j) => j.status === "completed"
-        ).length;
+        const completed = jobsData.filter((j) => j.status === "completed").length;
         document.getElementById("jobs-completed").textContent = completed;
-        document.getElementById("jobs-total").textContent = mockJobs.length;
-        document.getElementById("route-miles").textContent = "12 mi"; // Mock
+        document.getElementById("jobs-total").textContent = jobsData.length;
+        document.getElementById("route-miles").textContent = "0 mi"; // TODO: Calculate route distance
 
-        renderJobs(mockJobs);
+        renderJobs(jobsData);
       }
 
       // Render job list
@@ -647,10 +670,10 @@
           await new Promise((resolve) => setTimeout(resolve, 1500));
 
           // Mark job as completed
-          const job = mockJobs.find((j) => j.id === currentJob);
+          const job = jobsData.find((j) => j.id === currentJob);
           if (job) job.status = "completed";
 
-          renderJobs(mockJobs);
+          renderJobs(jobsData);
           closePhotoUpload();
 
           showMessage(

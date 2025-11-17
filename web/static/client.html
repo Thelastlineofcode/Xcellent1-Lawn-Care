@@ -262,30 +262,6 @@
         <a href="login.html" class="navbar-login">Login</a>
       </div>
     </nav>
-    <!-- Header -->
-    <header class="header">
-      <div class="header-content">
-        <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
-        <nav>
-          <a href="dashboard.html" class="nav-link">Dashboard</a>
-          <button
-            onclick="logout()"
-            style="
-              background: transparent;
-              border: 1px solid rgba(255, 255, 255, 0.3);
-              color: white;
-              padding: 0.5rem 1rem;
-              border-radius: 8px;
-              font-size: 0.875rem;
-              cursor: pointer;
-              margin-left: 1rem;
-            "
-          >
-            Logout
-          </button>
-        </nav>
-      </div>
-    </header>
 
     <!-- Client Header -->
     <div class="client-header">
@@ -503,7 +479,7 @@
     </script>
     <script>
       // Client Portal Logic
-      const CLIENT_ID = window.clientProfile?.id || "demo_client_001"; // Get from auth
+      let CLIENT_ID = null; // Will be fetched from database
       let allPhotos = [];
       let currentPhotoIndex = 0;
       let clientData = null;
@@ -515,107 +491,139 @@
         paypal: "Xcellent1Lawn",
       };
 
+      // Get client_id for the authenticated user
+      async function getClientId() {
+        try {
+          const token = window.supabaseSession?.access_token;
+          const userId = window.clientProfile?.id;
+
+          if (!token || !userId) {
+            throw new Error("No authentication");
+          }
+
+          // Query clients table to get client_id for this user
+          const { data, error } = await window.supabaseClient
+            .from("clients")
+            .select("id")
+            .eq("user_id", userId)
+            .single();
+
+          if (error || !data) {
+            throw new Error("Client profile not found");
+          }
+
+          return data.id;
+        } catch (err) {
+          console.error("Failed to get client ID:", err);
+          showMessage(
+            "client-status",
+            "⚠️ Unable to load your client profile. Please contact support.",
+            "error",
+            0
+          );
+          return null;
+        }
+      }
+
+      // Fetch client dashboard data from API
+      async function fetchClientDashboard(clientId) {
+        try {
+          const token = window.supabaseSession?.access_token;
+          if (!token) {
+            throw new Error("No authentication token");
+          }
+
+          const response = await fetch(`/api/client/${clientId}/dashboard`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (!data.ok) {
+            throw new Error(data.error || "Failed to fetch dashboard");
+          }
+
+          return data;
+        } catch (err) {
+          console.error("Failed to fetch client dashboard:", err);
+          showMessage(
+            "client-status",
+            "⚠️ Unable to load dashboard data. Please refresh the page.",
+            "warning",
+            5000
+          );
+          // Return empty data as fallback
+          return {
+            ok: true,
+            client: { name: "Client", address: "" },
+            balance_due: 0,
+            recent_jobs: [],
+            photos: [],
+          };
+        }
+      }
+
       // Fetch client data
       async function loadClientData() {
         try {
-          // Mock data for demo - replace with: await fetchJSON('/api/client/' + CLIENT_ID)
-          const mockClient = {
-            name: "Sarah Martinez",
-            address: "123 Oak Street, Austin TX",
-            balance: 125.0,
-            services_this_month: 4,
-            photos: [
-              {
-                id: 1,
-                job_id: "job-001",
-                type: "before",
-                date: "2025-11-05",
-                url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
-              },
-              {
-                id: 2,
-                job_id: "job-001",
-                type: "after",
-                date: "2025-11-05",
-                url: "https://images.unsplash.com/photo-1558904541-efa843a96f01?w=400",
-              },
-              {
-                id: 3,
-                job_id: "job-002",
-                type: "before",
-                date: "2025-10-29",
-                url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400",
-              },
-              {
-                id: 4,
-                job_id: "job-002",
-                type: "after",
-                date: "2025-10-29",
-                url: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=400",
-              },
-              {
-                id: 5,
-                job_id: "job-003",
-                type: "before",
-                date: "2025-10-22",
-                url: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400",
-              },
-              {
-                id: 6,
-                job_id: "job-003",
-                type: "after",
-                date: "2025-10-22",
-                url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400",
-              },
-            ],
-            service_history: [
-              {
-                date: "2025-11-05",
-                services: ["Mowing", "Edging", "Trimming"],
-                status: "completed",
-                photos: 2,
-              },
-              {
-                date: "2025-10-29",
-                services: ["Mowing", "Leaf Removal"],
-                status: "completed",
-                photos: 2,
-              },
-              {
-                date: "2025-10-22",
-                services: ["Mowing", "Edging"],
-                status: "completed",
-                photos: 2,
-              },
-              {
-                date: "2025-10-15",
-                services: ["Mowing", "Aeration"],
-                status: "completed",
-                photos: 0,
-              },
-            ],
+          // Get client_id first
+          CLIENT_ID = await getClientId();
+          if (!CLIENT_ID) {
+            return; // Error already shown
+          }
+
+          // Fetch dashboard data
+          const apiData = await fetchClientDashboard(CLIENT_ID);
+
+          // Transform API data to match UI expectations
+          clientData = {
+            name: apiData.client?.name || "Client",
+            address: apiData.client?.address || "",
+            balance: apiData.balance_due || 0,
+            services_this_month: apiData.recent_jobs?.length || 0,
+            photos: (apiData.photos || []).map((photo) => ({
+              id: photo.id,
+              job_id: photo.job_id || "",
+              type: photo.photo_type || "before",
+              date: photo.job_date || new Date().toISOString(),
+              url: photo.photo_url || "",
+            })),
+            service_history: (apiData.recent_jobs || []).map((job) => ({
+              date: job.scheduled_date,
+              services:
+                typeof job.services === "string"
+                  ? job.services.split(",")
+                  : Array.isArray(job.services)
+                    ? job.services
+                    : [],
+              status: job.status || "completed",
+              photos: 0, // TODO: Count photos for this job
+            })),
           };
 
-          clientData = mockClient;
-
           // Update UI
-          document.getElementById("client-name").textContent = mockClient.name;
+          document.getElementById("client-name").textContent = clientData.name;
           document.getElementById("client-address").textContent =
-            mockClient.address;
+            clientData.address;
           document.getElementById("stat-balance").textContent =
-            "$" + mockClient.balance.toFixed(2);
+            "$" + clientData.balance.toFixed(2);
           document.getElementById("stat-services").textContent =
-            mockClient.services_this_month;
+            clientData.services_this_month;
           document.getElementById("stat-photos").textContent =
-            mockClient.photos.length;
+            clientData.photos.length;
           document.getElementById("payment-amount").value =
-            mockClient.balance.toFixed(2);
+            clientData.balance.toFixed(2);
           document.getElementById("payment-memo").textContent =
-            mockClient.name + " - " + mockClient.address.split(",")[0];
+            clientData.name + " - " + clientData.address.split(",")[0];
 
-          allPhotos = mockClient.photos;
-          renderPhotoGallery(mockClient.photos);
-          renderServiceHistory(mockClient.service_history);
+          allPhotos = clientData.photos;
+          renderPhotoGallery(clientData.photos);
+          renderServiceHistory(clientData.service_history);
         } catch (err) {
           console.error("Failed to load client data:", err);
           showMessage(
