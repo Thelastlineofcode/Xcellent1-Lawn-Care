@@ -1,5 +1,29 @@
 # Xcellent1 Lawn Care - Architecture Documentation
 
+## Product Philosophy
+
+### Simple Business Management - No AI Needed
+
+This application is designed as a straightforward field service management system. The owner explicitly **does not want AI features** - just practical dashboards for:
+
+1. **Owner**: Manage clients, schedule jobs, create invoices, track payments
+2. **Crew**: View daily job list, mark jobs complete, upload photos
+3. **Clients**: View their services, invoices, and pay bills online
+4. **Waitlist**: Capture and convert website signups
+
+### Explicitly Out of Scope
+
+- ❌ AI-powered scheduling or optimization
+- ❌ Chatbots or virtual assistants
+- ❌ Automated notifications (beyond basic email)
+- ❌ Predictive analytics or forecasting
+- ❌ BMAD agents (experimental AI system in `/bmad/` directory)
+- ❌ Machine learning features
+
+**Focus**: Manual control with simple, reliable tools.
+
+---
+
 ## Server Architecture
 
 ### Active Server Implementation
