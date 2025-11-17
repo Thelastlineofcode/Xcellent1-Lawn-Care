@@ -581,6 +581,63 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // GET /api/owner/crew-performance (crew performance metrics)
+  if (url.pathname === "/api/owner/crew-performance" && req.method === "GET") {
+    // Require owner authentication
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      if (dbConnected) {
+        const result = await db.queryObject(
+          `SELECT * FROM get_crew_performance()`
+        );
+
+        return new Response(
+          JSON.stringify({ ok: true, crew: result.rows }),
+          {
+            status: 200,
+            headers,
+          }
+        );
+      } else {
+        // Mock crew performance data
+        const mockCrew = [
+          {
+            crew_id: "crew-001",
+            crew_name: "Marcus T.",
+            crew_role: "crew",
+            jobs_completed: 42,
+            jobs_this_week: 12,
+            photos_uploaded: 84,
+            avg_rating: 4.8,
+            status: "active",
+          },
+          {
+            crew_id: "crew-002",
+            crew_name: "Priya K.",
+            crew_role: "crew",
+            jobs_completed: 38,
+            jobs_this_week: 10,
+            photos_uploaded: 76,
+            avg_rating: 4.9,
+            status: "active",
+          },
+        ];
+        return new Response(JSON.stringify({ ok: true, crew: mockCrew }), {
+          status: 200,
+          headers,
+        });
+      }
+    } catch (err) {
+      console.error("[server] Error getting crew performance:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
   // GET /api/client/:id/dashboard (client portal data)
   if (
     url.pathname.match(/^\/api\/client\/[^\/]+\/dashboard$/) &&

@@ -802,39 +802,71 @@
         }
       }
 
+      // Fetch crew performance from API
+      async function fetchCrewPerformance() {
+        try {
+          const token = window.supabaseSession?.access_token;
+          if (!token) {
+            return [];
+          }
+
+          const response = await fetch("/api/owner/crew-performance", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          return data.crew || [];
+        } catch (err) {
+          console.error("Failed to fetch crew performance:", err);
+          return [];
+        }
+      }
+
       // Load owner dashboard
       async function loadOwnerDashboard() {
         const apiData = await fetchOwnerMetrics();
+        const crewData = await fetchCrewPerformance();
 
-        // Merge API data with defaults for fields not yet in database
+        // Map API data to dashboard format (all metrics now from database)
         const data = {
-          revenue_this_month: 0, // TODO: Add to database
-          revenue_last_month: 0, // TODO: Add to database
+          revenue_this_month: apiData.revenue_this_month || 0,
+          revenue_last_month: apiData.revenue_last_month || 0,
           active_crew: apiData.active_crew || 0,
           jobs_this_week: apiData.jobs_this_week || 0,
-          jobs_last_week: 0, // TODO: Add to database
+          jobs_last_week: apiData.jobs_last_week || 0,
           new_applications: apiData.new_applications || 0,
-          interviews_scheduled: 0, // TODO: Add to database
-          open_positions: 0, // TODO: Add to database
-          retention_90day: 100, // TODO: Add to database
-          profit_margin: 0, // TODO: Add to database
-          accounts_receivable: 0, // TODO: Add to database
+          interviews_scheduled: apiData.interviews_scheduled || 0,
+          open_positions: apiData.open_positions || 0,
+          retention_90day: apiData.retention_90day || 100,
+          profit_margin: apiData.profit_margin || 0,
+          accounts_receivable: apiData.accounts_receivable || 0,
           photos_today: apiData.photos_today || 0,
           total_clients: apiData.total_clients || 0,
-          alerts: [], // Will generate dynamically based on data
-          crew_performance: [], // TODO: Add endpoint for crew performance
+          revenue_growth_pct: apiData.revenue_growth_pct || 0,
+          jobs_growth_pct: apiData.jobs_growth_pct || 0,
+          crew_performance: crewData.map((c) => ({
+            name: c.crew_name,
+            role: "Field Worker",
+            jobs: c.jobs_completed || 0,
+            rating: c.avg_rating || 0,
+            photos: c.photos_uploaded || 0,
+          })),
         };
 
         // Revenue KPI
         document.getElementById("kpi-revenue").textContent =
           "$" + data.revenue_this_month.toLocaleString();
-        const revGrowth = (
-          ((data.revenue_this_month - data.revenue_last_month) /
-            data.revenue_last_month) *
-          100
-        ).toFixed(0);
+        const revGrowth = data.revenue_growth_pct;
         document.getElementById("revenue-trend").textContent =
           (revGrowth > 0 ? "+" : "") + revGrowth + "%";
+        document.querySelector("#kpi-revenue").parentElement.querySelector(".kpi-trend").className =
+          "kpi-trend " + (revGrowth >= 0 ? "up" : "down");
 
         // Crew KPI
         document.getElementById("kpi-crew").textContent = data.active_crew;
@@ -846,12 +878,11 @@
 
         // Jobs KPI
         document.getElementById("kpi-jobs").textContent = data.jobs_this_week;
-        const jobGrowth = (
-          ((data.jobs_this_week - data.jobs_last_week) / data.jobs_last_week) *
-          100
-        ).toFixed(0);
+        const jobGrowth = data.jobs_growth_pct;
         document.getElementById("jobs-trend").textContent =
           (jobGrowth > 0 ? "+" : "") + jobGrowth + "%";
+        document.querySelector("#kpi-jobs").parentElement.querySelector(".kpi-trend").className =
+          "kpi-trend " + (jobGrowth >= 0 ? "up" : "down");
 
         // Applications KPI
         document.getElementById("kpi-applications").textContent =
@@ -903,6 +934,27 @@
 
         // Generate dynamic alerts based on data
         const alerts = [];
+
+        // Revenue alert
+        if (data.revenue_growth_pct > 0) {
+          alerts.push({
+            type: "success",
+            icon: "💰",
+            message: `Revenue up ${data.revenue_growth_pct}% from last month ($${data.revenue_this_month.toLocaleString()})`,
+            action: "View Details",
+            link: "#",
+          });
+        } else if (data.revenue_growth_pct < -10) {
+          alerts.push({
+            type: "warning",
+            icon: "⚠️",
+            message: `Revenue down ${Math.abs(data.revenue_growth_pct)}% from last month`,
+            action: "Review Metrics",
+            link: "#",
+          });
+        }
+
+        // Applications alert
         if (data.new_applications > 0) {
           alerts.push({
             type: "success",
@@ -912,6 +964,8 @@
             link: "dashboard.html",
           });
         }
+
+        // Jobs alert
         if (data.jobs_this_week > 0) {
           alerts.push({
             type: "success",
@@ -921,6 +975,19 @@
             link: "#",
           });
         }
+
+        // Accounts receivable alert
+        if (data.accounts_receivable > 0) {
+          alerts.push({
+            type: "warning",
+            icon: "💵",
+            message: `$${data.accounts_receivable.toLocaleString()} in outstanding invoices`,
+            action: "Follow Up",
+            link: "#",
+          });
+        }
+
+        // Client growth
         if (data.total_clients > 0) {
           alerts.push({
             type: "success",
