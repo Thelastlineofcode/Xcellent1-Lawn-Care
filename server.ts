@@ -313,6 +313,63 @@ async function handler(req: Request): Promise<Response> {
     });
   }
 
+  // Serve HTML files from root path (e.g., /home.html -> /web/static/home.html)
+  if (url.pathname.endsWith(".html") && !url.pathname.startsWith("/static/")) {
+    try {
+      const filePath = `./web/static${url.pathname}`;
+      const file = await Deno.readFile(filePath);
+      return new Response(file, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/html",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0",
+        },
+      });
+    } catch (_error) {
+      // File not found, will fall through to 404
+    }
+  }
+
+  // Serve other static assets from root (CSS, JS, images, etc.)
+  if (!url.pathname.startsWith("/api/") && !url.pathname.startsWith("/static/")) {
+    const ext = url.pathname.split(".").pop()?.toLowerCase();
+    const staticExtensions = ["css", "js", "png", "jpg", "jpeg", "gif", "svg", "ico", "webp", "woff", "woff2", "ttf", "json"];
+
+    if (ext && staticExtensions.includes(ext)) {
+      try {
+        const filePath = `./web/static${url.pathname}`;
+        const file = await Deno.readFile(filePath);
+        const contentTypes: Record<string, string> = {
+          css: "text/css",
+          js: "application/javascript",
+          png: "image/png",
+          jpg: "image/jpeg",
+          jpeg: "image/jpeg",
+          gif: "image/gif",
+          svg: "image/svg+xml",
+          ico: "image/x-icon",
+          webp: "image/webp",
+          woff: "font/woff",
+          woff2: "font/woff2",
+          ttf: "font/ttf",
+          json: "application/json",
+        };
+
+        return new Response(file, {
+          status: 200,
+          headers: {
+            "Content-Type": contentTypes[ext] || "application/octet-stream",
+            "Cache-Control": ext === "html" ? "no-cache" : "public, max-age=31536000",
+          },
+        });
+      } catch (_error) {
+        // File not found, will fall through to 404
+      }
+    }
+  }
+
   // ==================== API ROUTES ====================
 
   // POST /api/leads (worker applications or inquiries)
