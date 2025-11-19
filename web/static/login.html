@@ -18,9 +18,14 @@
           "Helvetica Neue", Arial, sans-serif;
         background: linear-gradient(135deg, #3b832a 0%, #2d6520 100%);
         min-height: 100vh;
+        margin: 0;
+      }
+
+      .login-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
+        min-height: calc(100vh - 60px);
         padding: 20px;
       }
 
@@ -181,7 +186,8 @@
         <a href="careers.html" class="navbar-link">Careers</a>
       </div>
     </nav>
-    <div class="login-container">
+    <div class="login-wrapper">
+      <div class="login-container">
       <div class="logo">
         <h1>Xcellent1 Lawn Care</h1>
         <p>Sign in to your account</p>
@@ -222,6 +228,7 @@
       </div>
 
       <div class="footer-text">Secure login powered by Supabase</div>
+      </div>
     </div>
 
     <!-- Runtime config for client-side (injected by server at /config.js) -->

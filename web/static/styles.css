@@ -909,6 +909,270 @@ a:focus {
   }
 }
 
+/* --------------------------------------------------
+ Home page styles extracted from web/static/home.html
+ (moved here to centralize CSS and improve caching)
+ -------------------------------------------------- */
+
+.hero-home {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(1, 39, 20, 0.28),
+      rgba(59, 131, 42, 0.32)
+    ),
+    url("images/CoverPhoto.png") center/cover no-repeat;
+  color: white;
+  padding: 10rem 2rem 6rem;
+  text-align: center;
+  position: relative;
+  min-height: 72vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.hero-home::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(1, 39, 20, 0.13);
+  z-index: 1;
+}
+.hero-home > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Fallback hero background image element (in case CSS background is blocked/cached)
+   Placed as the first child of .hero-home and sits behind the overlay (::before)
+*/
+.hero-home .hero-bg-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.hero-home h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  letter-spacing: -0.5px;
+  color: #ecfff3;
+}
+/* ensure .hero-title (used in markup) has explicit sizing */
+.hero-title {
+  font-size: 3.5rem;
+  line-height: 1.05;
+  margin: 0.2rem 0 1rem 0;
+  color: inherit;
+  font-weight: 700;
+}
+.subtitle {
+  font-size: 1.5rem;
+  opacity: 0.95;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  color: rgba(236, 255, 243, 0.95);
+}
+@media (max-width: 800px) {
+  .hero-home {
+    padding: 6rem 1.25rem 3rem;
+    min-height: 50vh;
+  }
+  .hero-title {
+    font-size: 2rem;
+  }
+  .subtitle {
+    font-size: 1.2rem;
+  }
+}
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2.5rem;
+}
+.hero-button {
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.hero-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+.btn-primary {
+  background: #f23d00;
+  color: white;
+}
+.btn-primary:hover {
+  background: #bc2800;
+}
+
+.service-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+.blog-section {
+  background: #f7f6f5;
+  padding: 5rem 2rem;
+}
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.section-header h2 {
+  font-size: 2.5rem;
+  color: #3b832a;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+.section-header p {
+  font-size: 1.1rem;
+  color: #64748b;
+}
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.blog-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
+}
+.blog-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+.blog-image {
+  width: 100%;
+  height: 240px;
+  background: linear-gradient(135deg, #3b832a, #60c848) center/cover no-repeat;
+}
+.blog-image[style*="background-image"] {
+  background-size: cover;
+  background-position: center;
+}
+.blog-content {
+  padding: 1.5rem;
+}
+.blog-date {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+.blog-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.75rem;
+  color: #111827;
+}
+.blog-excerpt {
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+.read-more {
+  color: #10b981;
+  text-decoration: none;
+  font-weight: 600;
+}
+.shop-section {
+  padding: 5rem 2rem;
+  background: white;
+}
+
+/* Waitlist form styles */
+.waitlist-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+.waitlist-step {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.waitlist-form .form-field,
+.waitlist-form .form-select {
+  padding: 16px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #e5e7eb;
+  font-size: 1.15rem;
+  min-width: 160px;
+  min-height: 48px;
+}
+.waitlist-form .form-select {
+  background: white;
+}
+.waitlist-submit {
+  padding: 16px 28px;
+  border-radius: 12px;
+  border: none;
+  background: #111827;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 1.15rem;
+  min-height: 48px;
+  margin-top: 0.5rem;
+}
+.waitlist-submit:hover {
+  background: #0f1724;
+}
+@media (max-width: 600px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .product-card {
+    margin-bottom: 1.5rem;
+  }
+  .waitlist-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .waitlist-step {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .waitlist-form .form-field,
+  .waitlist-form .form-select,
+  .waitlist-submit {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 /* Print Styles */
 @media print {
   .header,
@@ -918,377 +1182,6 @@ a:focus {
     display: none;
   }
 
-  /* --------------------------------------------------
-   Home page styles extracted from web/static/home.html
-   (moved here to centralize CSS and improve caching)
-   -------------------------------------------------- */
-
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  body {
-    font-family:
-      "Montserrat",
-      -apple-system,
-      BlinkMacSystemFont,
-      "Segoe UI",
-      Roboto,
-      sans-serif;
-    line-height: 1.6;
-    color: #222d39;
-  }
-  .hero-home {
-    background:
-      linear-gradient(
-        to bottom,
-        rgba(1, 39, 20, 0.28),
-        rgba(59, 131, 42, 0.32)
-      ),
-      url("images/CoverPhoto.png") center/cover no-repeat;
-    color: white;
-    padding: 10rem 2rem 6rem;
-    text-align: center;
-    position: relative;
-    min-height: 72vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  .hero-home::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(1, 39, 20, 0.13);
-    z-index: 1;
-  }
-  .hero-home > * {
-    position: relative;
-    z-index: 2;
-  }
-
-  /* Fallback hero background image element (in case CSS background is blocked/cached)
-     Placed as the first child of .hero-home and sits behind the overlay (::before)
-  */
-  .hero-home .hero-bg-fallback {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    z-index: 0;
-    pointer-events: none;
-    -webkit-user-drag: none;
-    user-select: none;
-  }
-  .hero-home h1 {
-    font-size: 3.5rem;
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-    letter-spacing: -0.5px;
-    color: #ecfff3;
-  }
-  /* ensure .hero-title (used in markup) has explicit sizing */
-  .hero-title {
-    font-size: 3.5rem;
-    line-height: 1.05;
-    margin: 0.2rem 0 1rem 0;
-    color: inherit;
-    font-weight: 700;
-  }
-  .subtitle {
-    font-size: 1.5rem;
-    opacity: 0.95;
-    margin-bottom: 0.5rem;
-    font-weight: 400;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-    color: rgba(236, 255, 243, 0.95);
-  }
-  @media (max-width: 800px) {
-    .hero-home {
-      padding: 6rem 1.25rem 3rem;
-      min-height: 50vh;
-    }
-    .hero-title {
-      font-size: 2rem;
-    }
-  }
-  .hero-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 2.5rem;
-  }
-  .hero-button {
-    padding: 16px 32px;
-    font-size: 1.1rem;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-  .hero-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  }
-  .btn-primary {
-    background: #f23d00;
-    color: white;
-  }
-  .btn-primary:hover {
-    background: #bc2800;
-  }
-  .btn-secondary {
-    background: rgba(255, 255, 255, 0.95);
-    color: #3b832a;
-    border: 2px solid white;
-  }
-  .btn-secondary:hover {
-    background: white;
-    color: #012714;
-  }
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2.5rem;
-    padding: 5rem 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-  .service-content {
-    padding: 2rem;
-  }
-  .service-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    display: block;
-  }
-  .blog-section {
-    background: #f7f6f5;
-    padding: 5rem 2rem;
-  }
-  .section-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-  .section-header h2 {
-    font-size: 2.5rem;
-    color: #3b832a;
-    margin-bottom: 1rem;
-    font-weight: 700;
-  }
-  .section-header p {
-    font-size: 1.1rem;
-    color: #64748b;
-  }
-  .blog-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2.5rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-  .blog-card {
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-    border: 1px solid #e5e7eb;
-  }
-  .blog-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  }
-  .blog-image {
-    width: 100%;
-    height: 240px;
-    background: linear-gradient(135deg, #3b832a, #60c848) center/cover no-repeat;
-  }
-  .blog-image[style*="background-image"] {
-    background-size: cover;
-    background-position: center;
-  }
-  .blog-content {
-    padding: 1.5rem;
-  }
-  .blog-date {
-    color: #6b7280;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-  }
-  .blog-title {
-    font-size: 1.3rem;
-    margin-bottom: 0.75rem;
-    color: #111827;
-  }
-  .blog-excerpt {
-    color: #4b5563;
-    margin-bottom: 1rem;
-  }
-  .read-more {
-    color: #10b981;
-    text-decoration: none;
-    font-weight: 600;
-  }
-  .shop-section {
-    padding: 5rem 2rem;
-    background: white;
-  }
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 2.5rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-  .product-card {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    margin-bottom: 2.5rem;
-  }
-  .product-card:hover {
-    border-color: #3b832a;
-    transform: translateY(-6px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  }
-  .product-image {
-    width: 100%;
-    height: 220px;
-    background: linear-gradient(135deg, #f7f6f5, #e5e7eb);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .product-info {
-    padding: 2rem;
-  }
-  .product-name {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-    color: #222d39;
-  }
-  .product-price {
-    font-size: 1.8rem;
-    color: #f23d00;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-  }
-  .product-description {
-    color: #64748b;
-    font-size: 0.95rem;
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
-  }
-  .buy-button {
-    width: 100%;
-    padding: 14px;
-    background: #3b832a;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1rem;
-    margin-top: 0.5rem;
-  }
-  .buy-button:hover {
-    background: #60c848;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 131, 42, 0.3);
-  }
-  @media (max-width: 768px) {
-    .subtitle {
-      font-size: 1.2rem;
-    }
-  }
-  /* Waitlist form styles */
-  .waitlist-form {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    justify-content: center;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-  }
-  .waitlist-step {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .waitlist-form .form-field,
-  .waitlist-form .form-select {
-    padding: 16px 16px;
-    border-radius: 12px;
-    border: 1.5px solid #e5e7eb;
-    font-size: 1.15rem;
-    min-width: 160px;
-    min-height: 48px;
-  }
-  .waitlist-form .form-select {
-    background: white;
-  }
-  .waitlist-submit {
-    padding: 16px 28px;
-    border-radius: 12px;
-    border: none;
-    background: #111827;
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 1.15rem;
-    min-height: 48px;
-    margin-top: 0.5rem;
-  }
-  .waitlist-submit:hover {
-    background: #0f1724;
-  }
-  @media (max-width: 600px) {
-    .product-grid {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-    .product-card {
-      margin-bottom: 1.5rem;
-    }
-    .waitlist-form {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 1rem;
-    }
-    .waitlist-step {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 1rem;
-    }
-    .waitlist-form .form-field,
-    .waitlist-form .form-select,
-    .waitlist-submit {
-      width: 100%;
-      min-width: 0;
-    }
-  }
-  /* navbar styles moved to styles.css - keep global CSS single source */
   .card {
     break-inside: avoid;
     box-shadow: none;
