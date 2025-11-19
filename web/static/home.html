@@ -102,7 +102,7 @@
             Next
           </button>
         </div>
-        <div class="waitlist-step" id="waitlist-step-2" style="display: none">
+        <div class="waitlist-step hidden" id="waitlist-step-2">
           <input
             aria-label="Email"
             name="email"
@@ -121,7 +121,7 @@
             Next
           </button>
         </div>
-        <div class="waitlist-step" id="waitlist-step-3" style="display: none">
+        <div class="waitlist-step hidden" id="waitlist-step-3">
           <select
             name="service"
             class="form-select"
@@ -141,22 +141,16 @@
       <script>
         function showWaitlistStep(step) {
           for (let i = 1; i <= 3; i++) {
-            document.getElementById("waitlist-step-" + i).style.display =
-              i === step ? "" : "none";
+            const element = document.getElementById("waitlist-step-" + i);
+            if (i === step) {
+              element.classList.remove('hidden');
+            } else {
+              element.classList.add('hidden');
+            }
           }
         }
       </script>
-      <div
-        id="waitlist-success"
-        style="
-          display: none;
-          margin-top: 1rem;
-          text-align: center;
-          color: #059669;
-          font-weight: 600;
-          font-size: 1.1rem;
-        "
-      >
+      <div id="waitlist-success" class="success-message">
         Thank you for joining the waitlist! We'll be in touch soon.
       </div>
     </section>
@@ -170,7 +164,6 @@
         <div
           class="service-card"
           onclick="openServiceModal('Weekly Lawn Maintenance')"
-          style="cursor: pointer"
         >
           <div
             class="service-image bg-service-lawn"
@@ -185,23 +178,14 @@
             </noscript>
           </div>
           <div class="service-content">
-            <h3
-              style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem"
-            >
+            <h3 class="service-card-title">
               Weekly Lawn Maintenance
             </h3>
-            <p style="color: #64748b; line-height: 1.7">
+            <p class="service-card-text">
               Mowing, edging, trimming, and blowing. Keep your LaPlace lawn
               pristine with scheduled weekly visits.
             </p>
-            <p
-              style="
-                color: #f23d00;
-                font-weight: 700;
-                margin-top: 1.5rem;
-                font-size: 1.2rem;
-              "
-            >
+            <p class="service-card-price">
               Starting at $60/visit
             </p>
           </div>
@@ -209,7 +193,6 @@
         <div
           class="service-card"
           onclick="openServiceModal('Flower Bed Clean Out & Weed Removal')"
-          style="cursor: pointer"
         >
           <div
             class="service-image bg-service-flowerbed"
@@ -224,23 +207,14 @@
             </noscript>
           </div>
           <div class="service-content">
-            <h3
-              style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem"
-            >
+            <h3 class="service-card-title">
               Flower Bed Clean Out &amp; Weed Removal
             </h3>
-            <p style="color: #64748b; line-height: 1.7">
+            <p class="service-card-text">
               Thorough clean-outs, weed removal, and bed preparation using
               Louisiana-native plant recommendations.
             </p>
-            <p
-              style="
-                color: #f23d00;
-                font-weight: 700;
-                margin-top: 1.5rem;
-                font-size: 1.2rem;
-              "
-            >
+            <p class="service-card-price">
               From $150
             </p>
           </div>
@@ -248,7 +222,6 @@
         <div
           class="service-card"
           onclick="openServiceModal('Spring Cleaning')"
-          style="cursor: pointer"
         >
           <div
             class="service-image bg-service-spring"
@@ -260,23 +233,14 @@
             </noscript>
           </div>
           <div class="service-content">
-            <h3
-              style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem"
-            >
+            <h3 class="service-card-title">
               Spring Cleaning
             </h3>
-            <p style="color: #64748b; line-height: 1.7">
+            <p class="service-card-text">
               Full spring refresh: debris removal, edging, mulching, and
               prepping your yard for the growing season.
             </p>
-            <p
-              style="
-                color: #f23d00;
-                font-weight: 700;
-                margin-top: 1.5rem;
-                font-size: 1.2rem;
-              "
-            >
+            <p class="service-card-price">
               Custom quotes
             </p>
           </div>
@@ -284,7 +248,6 @@
         <div
           class="service-card"
           onclick="openServiceModal('Leaf & Debris Removal')"
-          style="cursor: pointer"
         >
           <div
             class="service-image bg-service-leaf"
@@ -296,23 +259,14 @@
             </noscript>
           </div>
           <div class="service-content">
-            <h3
-              style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem"
-            >
+            <h3 class="service-card-title">
               Leaf &amp; Debris Removal
             </h3>
-            <p style="color: #64748b; line-height: 1.7">
+            <p class="service-card-text">
               Seasonal cleanup to remove leaves, branches, and debris to keep
               landscapes healthy and tidy.
             </p>
-            <p
-              style="
-                color: #f23d00;
-                font-weight: 700;
-                margin-top: 1.5rem;
-                font-size: 1.2rem;
-              "
-            >
+            <p class="service-card-price">
               Seasonal pricing
             </p>
           </div>
@@ -320,7 +274,6 @@
         <div
           class="service-card"
           onclick="openServiceModal('Tractor / Bush Hog Services')"
-          style="cursor: pointer"
         >
           <div
             class="service-image bg-service-bushhog"
@@ -332,23 +285,14 @@
             </noscript>
           </div>
           <div class="service-content">
-            <h3
-              style="color: #3b832a; font-size: 1.4rem; margin-bottom: 0.75rem"
-            >
+            <h3 class="service-card-title">
               Tractor / Bush Hog Services
             </h3>
-            <p style="color: #64748b; line-height: 1.7">
+            <p class="service-card-text">
               Heavy-duty land clearing, pasture mowing, and overgrown lot
               maintenance using tractor-mounted bush hogs.
             </p>
-            <p
-              style="
-                color: #f23d00;
-                font-weight: 700;
-                margin-top: 1.5rem;
-                font-size: 1.2rem;
-              "
-            >
+            <p class="service-card-price">
               Call for pricing
             </p>
           </div>
@@ -411,54 +355,13 @@
     <!-- Product catalog moved to shop.html -->
 
     <!-- Service Inquiry Modal -->
-    <div
-      id="service-modal"
-      style="
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-      "
-    >
-      <div
-        style="
-          background: white;
-          border-radius: 12px;
-          padding: 2rem;
-          max-width: 500px;
-          width: 90%;
-          margin: 2rem;
-          max-height: 90vh;
-          overflow-y: auto;
-        "
-      >
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-          "
-        >
-          <h2 style="color: #10b981; margin: 0" id="modal-service-title">
+    <div id="service-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-service-title">
             Request Service
           </h2>
-          <button
-            onclick="closeServiceModal()"
-            style="
-              background: none;
-              border: none;
-              font-size: 2rem;
-              cursor: pointer;
-              color: #6b7280;
-            "
-          >
+          <button onclick="closeServiceModal()" class="modal-close">
             &times;
           </button>
         </div>
@@ -468,151 +371,63 @@
           onsubmit="return handleServiceInquiry(event)"
         >
           <input type="hidden" id="inquiry-service" name="service" />
-          <div style="margin-bottom: 1rem">
-            <label
-              for="firstName"
-              style="
-                display: block;
-                font-weight: 600;
-                margin-bottom: 0.5rem;
-                color: #374151;
-              "
-              >First Name</label
-            >
+          <div class="form-group">
+            <label for="firstName" class="form-label">First Name</label>
             <input
               id="firstName"
               type="text"
               name="firstName"
               required
-              style="
-                width: 100%;
-                padding: 0.75rem;
-                border: 2px solid #e5e7eb;
-                border-radius: 8px;
-                font-size: 1rem;
-              "
+              class="form-input"
               autocomplete="given-name"
             />
           </div>
-          <div style="margin-bottom: 1rem">
-            <label
-              for="lastName"
-              style="
-                display: block;
-                font-weight: 600;
-                margin-bottom: 0.5rem;
-                color: #374151;
-              "
-              >Last Name</label
-            >
+          <div class="form-group">
+            <label for="lastName" class="form-label">Last Name</label>
             <input
               id="lastName"
               type="text"
               name="lastName"
               required
-              style="
-                width: 100%;
-                padding: 0.75rem;
-                border: 2px solid #e5e7eb;
-                border-radius: 8px;
-                font-size: 1rem;
-              "
+              class="form-input"
               autocomplete="family-name"
             />
           </div>
-          <div style="margin-bottom: 1rem">
-            <label
-              for="phone"
-              style="
-                display: block;
-                font-weight: 600;
-                margin-bottom: 0.5rem;
-                color: #374151;
-              "
-              >Phone Number</label
-            >
+          <div class="form-group">
+            <label for="phone" class="form-label">Phone Number</label>
             <input
               id="phone"
               type="tel"
               name="phone"
               required
-              style="
-                width: 100%;
-                padding: 0.75rem;
-                border: 2px solid #e5e7eb;
-                border-radius: 8px;
-                font-size: 1rem;
-              "
+              class="form-input"
               autocomplete="tel"
             />
           </div>
-          <div style="margin-bottom: 1rem">
-            <label
-              for="email"
-              style="
-                display: block;
-                font-weight: 600;
-                margin-bottom: 0.5rem;
-                color: #374151;
-              "
-              >Email Address</label
-            >
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address</label>
             <input
               id="email"
               type="email"
               name="email"
               required
-              style="
-                width: 100%;
-                padding: 0.75rem;
-                border: 2px solid #e5e7eb;
-                border-radius: 8px;
-                font-size: 1rem;
-              "
+              class="form-input"
               autocomplete="email"
             />
           </div>
-          <div style="margin-bottom: 1.5rem">
-            <label
-              for="address"
-              style="
-                display: block;
-                font-weight: 600;
-                margin-bottom: 0.5rem;
-                color: #374151;
-              "
-              >Service Address</label
-            >
+          <div class="form-group">
+            <label for="address" class="form-label">Service Address</label>
             <input
               id="address"
               type="text"
               name="address"
               required
-              style="
-                width: 100%;
-                padding: 0.75rem;
-                border: 2px solid #e5e7eb;
-                border-radius: 8px;
-                font-size: 1rem;
-              "
+              class="form-input"
               autocomplete="address-line1"
               placeholder="Street address, City, State, ZIP"
             />
           </div>
-          <button
-            type="submit"
-            style="
-              width: 100%;
-              padding: 1rem;
-              background: #10b981;
-              color: white;
-              border: none;
-              border-radius: 8px;
-              font-size: 1.1rem;
-              font-weight: 700;
-              cursor: pointer;
-            "
-          >
+          <button type="submit" class="form-submit">
             Submit Request
           </button>
         </form>
@@ -620,59 +435,18 @@
     </div>
 
     <!-- Login Modal -->
-    <div
-      id="login-modal"
-      style="
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-      "
-    >
-      <div
-        style="
-          background: white;
-          border-radius: 12px;
-          padding: 2rem;
-          max-width: 400px;
-          width: 90%;
-          margin: 2rem;
-          max-height: 90vh;
-          overflow-y: auto;
-        "
-      >
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-          "
-        >
-          <h2 style="color: #3b832a; margin: 0">Dashboard Access</h2>
-          <button
-            onclick="closeLoginModal()"
-            style="
-              background: none;
-              border: none;
-              font-size: 2rem;
-              cursor: pointer;
-              color: #6b7280;
-            "
-          >
+    <div id="login-modal" class="modal">
+      <div class="login-modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Dashboard Access</h2>
+          <button onclick="closeLoginModal()" class="modal-close">
             &times;
           </button>
         </div>
 
         <!-- Login Step 1: Role Selection -->
         <div id="login-step-1">
-          <p style="margin-bottom: 1rem; color: #64748b">
+          <p class="login-description">
             Select your dashboard to access.
           </p>
           <form
@@ -680,113 +454,48 @@
             action="#"
             onsubmit="return handleRoleSelection(event)"
           >
-            <div style="margin-bottom: 1.5rem">
-              <div style="margin-bottom: 1rem">
-                <label
-                  style="
-                    display: flex;
-                    align-items: center;
-                    cursor: pointer;
-                    padding: 1rem;
-                    border: 2px solid #e5e7eb;
-                    border-radius: 8px;
-                    transition: all 0.2s;
-                  "
-                >
-                  <input
-                    type="radio"
-                    name="role"
-                    value="owner"
-                    required
-                    style="margin-right: 0.75rem; width: 18px; height: 18px"
-                  />
-                  <span>
-                    <span
-                      style="
-                        font-weight: 600;
-                        color: #374151;
-                        margin-bottom: 0.25rem;
-                        display: block;
-                      "
-                    >
-                      Owner Dashboard
-                    </span>
-                    <span
-                      style="
-                        font-size: 0.875rem;
-                        color: #64748b;
-                        display: block;
-                      "
-                    >
-                      Business KPIs, crew management, revenue tracking
-                    </span>
+            <div class="mb-lg">
+              <label class="role-option">
+                <input
+                  type="radio"
+                  name="role"
+                  value="owner"
+                  required
+                />
+                <span>
+                  <span class="role-title">
+                    Owner Dashboard
                   </span>
-                </label>
-              </div>
-              <div style="margin-bottom: 1rem">
-                <label
-                  style="
-                    display: flex;
-                    align-items: center;
-                    cursor: pointer;
-                    padding: 1rem;
-                    border: 2px solid #e5e7eb;
-                    border-radius: 8px;
-                    transition: all 0.2s;
-                  "
-                >
-                  <input
-                    type="radio"
-                    name="role"
-                    value="crew"
-                    style="margin-right: 0.75rem; width: 18px; height: 18px"
-                  />
-                  <span>
-                    <span
-                      style="
-                        font-weight: 600;
-                        color: #374151;
-                        margin-bottom: 0.25rem;
-                        display: block;
-                      "
-                    >
-                      Crew Dashboard
-                    </span>
-                    <span
-                      style="
-                        font-size: 0.875rem;
-                        color: #64748b;
-                        display: block;
-                      "
-                    >
-                      Today's jobs, navigation, photo uploads
-                    </span>
+                  <span class="role-description">
+                    Business KPIs, crew management, revenue tracking
                   </span>
-                </label>
-              </div>
+                </span>
+              </label>
+              <label class="role-option">
+                <input
+                  type="radio"
+                  name="role"
+                  value="crew"
+                />
+                <span>
+                  <span class="role-title">
+                    Crew Dashboard
+                  </span>
+                  <span class="role-description">
+                    Today's jobs, navigation, photo uploads
+                  </span>
+                </span>
+              </label>
             </div>
-            <button
-              type="submit"
-              style="
-                width: 100%;
-                padding: 1rem;
-                background: #3b832a;
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-size: 1.1rem;
-                font-weight: 700;
-                cursor: pointer;
-              "
-            >
+            <button type="submit" class="form-submit">
               Access Dashboard
             </button>
           </form>
         </div>
 
         <!-- Login Step 2: Owner Authentication -->
-        <div id="login-step-2" style="display: none">
-          <p style="margin-bottom: 1rem; color: #64748b">
+        <div id="login-step-2" class="hidden">
+          <p class="login-description">
             Enter your credentials to access the owner dashboard.
           </p>
           <form
@@ -794,152 +503,77 @@
             action="#"
             onsubmit="return handleOwnerLogin(event)"
           >
-            <div style="margin-bottom: 1rem">
-              <label
-                for="login-username"
-                style="
-                  display: block;
-                  font-weight: 600;
-                  margin-bottom: 0.5rem;
-                  color: #374151;
-                "
-                >Username</label
-              >
+            <div class="form-group">
+              <label for="login-username" class="form-label">Username</label>
               <input
                 id="login-username"
                 type="text"
                 name="username"
                 required
-                style="
-                  width: 100%;
-                  padding: 0.75rem;
-                  border: 2px solid #e5e7eb;
-                  border-radius: 8px;
-                  font-size: 1rem;
-                "
+                class="form-input"
                 autocomplete="username"
                 placeholder="Enter username"
               />
             </div>
-            <div style="margin-bottom: 1.5rem">
-              <label
-                for="login-password"
-                style="
-                  display: block;
-                  font-weight: 600;
-                  margin-bottom: 0.5rem;
-                  color: #374151;
-                "
-                >Password</label
-              >
+            <div class="form-group">
+              <label for="login-password" class="form-label">Password</label>
               <input
                 id="login-password"
                 type="password"
                 name="password"
                 required
-                style="
-                  width: 100%;
-                  padding: 0.75rem;
-                  border: 2px solid #e5e7eb;
-                  border-radius: 8px;
-                  font-size: 1rem;
-                "
+                class="form-input"
                 autocomplete="current-password"
                 placeholder="Enter password"
               />
             </div>
-            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem">
+            <div class="button-group">
               <button
                 type="button"
                 onclick="showLoginStep(1)"
-                style="
-                  flex: 1;
-                  padding: 1rem;
-                  background: #6b7280;
-                  color: white;
-                  border: none;
-                  border-radius: 8px;
-                  font-size: 1rem;
-                  font-weight: 600;
-                  cursor: pointer;
-                "
+                class="btn-back"
               >
                 Back
               </button>
-              <button
-                type="submit"
-                style="
-                  flex: 1;
-                  padding: 1rem;
-                  background: #3b832a;
-                  color: white;
-                  border: none;
-                  border-radius: 8px;
-                  font-size: 1rem;
-                  font-weight: 700;
-                  cursor: pointer;
-                "
-              >
+              <button type="submit" class="form-submit">
                 Login
               </button>
             </div>
           </form>
         </div>
 
-        <div
-          id="login-message"
-          style="margin-top: 1rem; text-align: center"
-        ></div>
+        <div id="login-message" class="login-message"></div>
       </div>
     </div>
 
-    <footer
-      style="
-        background: #222d39;
-        color: white;
-        padding: 4rem 2rem 2rem;
-        text-align: center;
-      "
-    >
-      <h3 style="font-size: 1.8rem; margin-bottom: 1rem">
+    <footer class="footer">
+      <h3 class="footer-title">
         🌱 Xcellent1 Lawn Care
       </h3>
-      <p style="font-size: 1.1rem; opacity: 0.9">
+      <p class="footer-description">
         Professional lawn services in the River Parishes, Louisiana
       </p>
-      <p style="margin-top: 1.5rem; font-size: 1.1rem">
+      <p class="footer-contact">
         📞
-        <a
-          href="tel:5048758079"
-          style="color: #60c848; text-decoration: none; font-weight: 600"
-        >
+        <a href="tel:5048758079" class="footer-link">
           (504) 875-8079
         </a>
-        <span style="margin: 0 1rem; opacity: 0.5">|</span>
+        <span class="footer-divider">|</span>
         ✉️
-        <a
-          href="mailto:info@xcellent1lawn.com"
-          style="color: #60c848; text-decoration: none; font-weight: 600"
-        >
+        <a href="mailto:info@xcellent1lawn.com" class="footer-link">
           info@xcellent1lawn.com
         </a>
-        <span style="margin: 0 1rem; opacity: 0.5">|</span>
+        <span class="footer-divider">|</span>
         <a
           href="https://share.google/g9NOoUz5MBAFSugF1"
           target="_blank"
           rel="noopener noreferrer"
-          style="color: #60c848; text-decoration: none; font-weight: 600"
+          class="footer-link"
         >
           Google Business Profile
         </a>
       </p>
-      <p
-        style="
-          margin-top: 3rem;
-          color: rgba(255, 255, 255, 0.6);
-          font-size: 0.9rem;
-        "
-      >
+      <p class="footer-copyright">
         &copy; 2025 Xcellent1 Lawn Care. All rights reserved.
       </p>
     </footer>
@@ -992,11 +626,12 @@
           serviceName;
         document.getElementById("inquiry-service").value = serviceName;
         const modal = document.getElementById("service-modal");
-        modal.style.display = "flex";
+        modal.classList.add("active");
       }
 
       function closeServiceModal() {
-        document.getElementById("service-modal").style.display = "none";
+        const modal = document.getElementById("service-modal");
+        modal.classList.remove("active");
         document.getElementById("service-inquiry-form").reset();
       }
 
@@ -1057,23 +692,28 @@
 
       // Login modal functions
       function openLoginModal() {
-        document.getElementById("login-modal").style.display = "flex";
-        document.getElementById("login-step-1").style.display = "block";
-        document.getElementById("login-step-2").style.display = "none";
+        document.getElementById("login-modal").classList.add("active");
+        document.getElementById("login-step-1").classList.remove("hidden");
+        document.getElementById("login-step-2").classList.add("hidden");
         document.getElementById("login-message").textContent = "";
         document.getElementById("login-role-form").reset();
         document.getElementById("login-auth-form").reset();
       }
 
       function closeLoginModal() {
-        document.getElementById("login-modal").style.display = "none";
+        document.getElementById("login-modal").classList.remove("active");
       }
 
       function showLoginStep(step) {
-        document.getElementById("login-step-1").style.display =
-          step === 1 ? "block" : "none";
-        document.getElementById("login-step-2").style.display =
-          step === 2 ? "block" : "none";
+        const step1 = document.getElementById("login-step-1");
+        const step2 = document.getElementById("login-step-2");
+        if (step === 1) {
+          step1.classList.remove("hidden");
+          step2.classList.add("hidden");
+        } else {
+          step1.classList.add("hidden");
+          step2.classList.remove("hidden");
+        }
         document.getElementById("login-message").textContent = "";
       }
 

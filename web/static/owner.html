@@ -194,7 +194,7 @@
         <a href="manage-clients.html" class="navbar-link">Clients</a>
         <a href="manage-jobs.html" class="navbar-link">Jobs</a>
         <a href="manage-invoices.html" class="navbar-link">Invoices</a>
-        <button onclick="logout()" class="btn btn-sm" style="margin-left: 1rem;">Logout</button>
+        <button onclick="logout()" class="btn btn-sm ml-md">Logout</button>
       </div>
     </nav>
     <!-- Authentication Check -->
@@ -376,8 +376,8 @@
             <div class="chart-period">Last 6 Months</div>
           </div>
           <div class="chart-placeholder">
-            <div style="text-align: center">
-              <div style="font-size: 2rem; margin-bottom: 0.5rem">📉</div>
+            <div class="chart-placeholder-content">
+              <div class="chart-placeholder-icon">📉</div>
               <div>Revenue chart loading...</div>
               <small class="text-muted">Chart.js integration coming soon</small>
             </div>
@@ -392,56 +392,28 @@
           <div class="grid grid-2">
             <div>
               <h3>Applications</h3>
-              <div
-                style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-primary);
-                "
-                id="hiring-applications"
-              >
+              <div class="metric-value" id="hiring-applications">
                 0
               </div>
               <p class="text-muted">This week</p>
             </div>
             <div>
               <h3>Interviews</h3>
-              <div
-                style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-primary);
-                "
-                id="hiring-interviews"
-              >
+              <div class="metric-value" id="hiring-interviews">
                 0
               </div>
               <p class="text-muted">Scheduled</p>
             </div>
             <div>
               <h3>Open Roles</h3>
-              <div
-                style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-warning);
-                "
-                id="hiring-openings"
-              >
+              <div class="metric-value-warning" id="hiring-openings">
                 0
               </div>
               <p class="text-muted">To fill</p>
             </div>
             <div>
               <h3>Retention</h3>
-              <div
-                style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-success);
-                "
-                id="hiring-retention"
-              >
+              <div class="metric-value-success" id="hiring-retention">
                 0%
               </div>
               <p class="text-muted">90-day rate</p>
@@ -473,18 +445,11 @@
         <form
           id="quote-form"
           action="#"
-          style="
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: flex-end;
-            margin-bottom: 1rem;
-          "
+          class="quote-form"
         >
           <div
-            class="quote-step"
+            class="quote-step quote-step-flex"
             id="quote-step-1"
-            style="flex: 1; min-width: 180px"
           >
             <label for="quote-address">Address</label>
             <input
@@ -495,7 +460,7 @@
               required
             />
           </div>
-          <div style="min-width: 120px">
+          <div class="min-w-120">
             <label for="quote-size-1">Lawn Size (sqft)</label>
             <input
               id="quote-size-1"
@@ -508,7 +473,7 @@
               required
             />
           </div>
-          <div style="min-width: 180px">
+          <div class="min-w-180">
             <label for="quote-service-1">Service</label>
             <select
               id="quote-service-1"
@@ -527,15 +492,14 @@
           <button
             type="button"
             class="waitlist-submit"
-            style="margin-top: 0.5rem; width: 100%"
+            class="mt-sm w-full"
             onclick="showQuoteStep(2)"
           >
             Next
           </button>
           <div
-            class="quote-step"
+            class="quote-step min-w-120 hidden"
             id="quote-step-2"
-            style="min-width: 120px; display: none"
           >
             <label for="quote-size-2">Lawn Size (sqft)</label>
             <input
@@ -549,39 +513,26 @@
               required
               autocomplete="off"
               inputmode="numeric"
-              style="
-                padding: 16px;
-                border-radius: 12px;
-                font-size: 1.15rem;
-                min-height: 48px;
-              "
+              class="form-field-lg"
             />
             <button
               type="button"
-              class="waitlist-submit"
-              style="margin-top: 0.5rem; width: 100%"
+              class="waitlist-submit mt-sm w-full"
               onclick="showQuoteStep(3)"
             >
               Next
             </button>
           </div>
           <div
-            class="quote-step"
+            class="quote-step min-w-180 hidden"
             id="quote-step-3"
-            style="min-width: 180px; display: none"
           >
             <label for="quote-service-3">Service</label>
             <select
               id="quote-service-3"
               name="service_type"
-              class="form-select"
+              class="form-select form-field-lg"
               required
-              style="
-                padding: 16px;
-                border-radius: 12px;
-                font-size: 1.15rem;
-                min-height: 48px;
-              "
             >
               <option value="" disabled selected>Select a service</option>
               <option value="weekly">Weekly Lawn Maintenance</option>
@@ -593,35 +544,27 @@
             <button
               type="submit"
               class="waitlist-submit"
-              style="margin-top: 0.5rem; width: 100%"
+              class="mt-sm w-full"
             >
               Get Estimate
             </button>
           </div>
         </form>
-        <div
-          id="quote-result"
-          style="
-            display: none;
-            margin-top: 1rem;
-            font-weight: 600;
-            color: #059669;
-          "
-        ></div>
-        <div id="service-area-map" style="margin-top: 2rem">
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem">
+        <div id="quote-result" class="quote-result"></div>
+        <div id="service-area-map" class="mt-lg">
+          <h3 class="service-area-title">
             Service Area: River Parishes
           </h3>
           <iframe
             title="River Parishes Service Area"
             height="320"
-            style="border: 1px solid #ccc; border-radius: 12px; width: 100%"
+            class="map-iframe"
             loading="lazy"
             allowfullscreen
             referrerpolicy="no-referrer-when-downgrade"
             src="https://www.google.com/maps/d/embed?mid=1Qn6Qw7Qw7Qw7Qw7Qw7Qw7Qw7Qw7Qw7Q&ehbc=2E312F"
           ></iframe>
-          <div style="font-size: 0.95rem; color: #666; margin-top: 0.5rem">
+          <div class="service-area-description">
             Covers St. John the Baptist, St. Charles, and St. James Parishes
             (LaPlace, Norco, Reserve, Luling, Lutcher, Gramercy, and more).
           </div>
@@ -642,14 +585,7 @@
         <div class="grid grid-2">
           <div class="card">
             <h3>💰 Accounts Receivable</h3>
-            <div
-              style="
-                font-size: 1.75rem;
-                font-weight: 700;
-                color: var(--color-warning);
-              "
-              id="fin-ar"
-            >
+            <div class="financial-value-warning" id="fin-ar">
               $0
             </div>
             <p class="text-muted">Outstanding invoices</p>
@@ -658,36 +594,12 @@
 
           <div class="card">
             <h3>📊 Profit Margin</h3>
-            <div
-              style="
-                font-size: 1.75rem;
-                font-weight: 700;
-                color: var(--color-success);
-              "
-              id="fin-margin"
-            >
+            <div class="financial-value-success" id="fin-margin">
               0%
             </div>
             <p class="text-muted">This month (target: 50%)</p>
-            <div
-              class="progress-bar"
-              style="
-                height: 8px;
-                background: var(--color-bg);
-                border-radius: 4px;
-                overflow: hidden;
-                margin-top: 0.5rem;
-              "
-            >
-              <div
-                id="margin-bar"
-                style="
-                  height: 100%;
-                  background: var(--color-success);
-                  width: 0%;
-                  transition: width 0.5s;
-                "
-              ></div>
+            <div class="progress-bar-container">
+              <div id="margin-bar" class="progress-bar-fill"></div>
             </div>
           </div>
         </div>
