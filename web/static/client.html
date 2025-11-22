@@ -438,6 +438,21 @@
             >
           </p>
         </div>
+
+        <!-- Mark as Paid Button -->
+        <div id="mark-paid-container" style="margin-top: 20px; display: none;">
+          <button
+            id="mark-paid-btn"
+            class="btn btn-primary"
+            onclick="showMarkPaidModal()"
+            style="width: 100%; padding: 15px; font-size: 16px; font-weight: 600;"
+          >
+            ✓ I've Sent Payment - Mark as Paid
+          </button>
+          <p class="text-muted mt-sm" style="text-align: center; font-size: 13px;">
+            Click after sending payment to update your balance
+          </p>
+        </div>
       </section>
     </main>
 
@@ -457,6 +472,78 @@
           <div id="modal-date">Nov 5, 2025</div>
         </div>
         <button class="modal-nav modal-next" onclick="nextPhoto()">›</button>
+      </div>
+    </div>
+
+    <!-- Mark as Paid Modal -->
+    <div id="mark-paid-modal" class="modal" style="display: none;">
+      <div class="modal-content" style="max-width: 500px; background: white; border-radius: 12px; padding: 0;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="margin: 0; font-size: 20px;">Mark Payment as Sent</h2>
+          <button onclick="closeMarkPaidModal()" style="background: none; border: none; color: white; font-size: 28px; cursor: pointer; line-height: 1; padding: 0;">&times;</button>
+        </div>
+        <div style="padding: 30px;">
+          <p style="margin-bottom: 20px; color: #666;">
+            Confirm the details of your payment so we can update your balance.
+          </p>
+          <form id="mark-paid-form">
+            <div class="form-group">
+              <label for="paid-payment-method" style="display: block; margin-bottom: 8px; font-weight: 600;">
+                Payment Method <span style="color: #dc3545;">*</span>
+              </label>
+              <select id="paid-payment-method" required style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                <option value="">Select payment method...</option>
+                <option value="cash_app">Cash App</option>
+                <option value="zelle">Zelle</option>
+                <option value="paypal">PayPal</option>
+                <option value="cash">Cash</option>
+                <option value="check">Check</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-top: 20px;">
+              <label for="paid-transaction-id" style="display: block; margin-bottom: 8px; font-weight: 600;">
+                Transaction ID / Confirmation Number
+              </label>
+              <input
+                type="text"
+                id="paid-transaction-id"
+                placeholder="Optional - e.g., #123ABC456"
+                style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;"
+              />
+              <small style="color: #999; font-size: 12px;">
+                Include if you have a confirmation number from your payment app
+              </small>
+            </div>
+            <div class="form-group" style="margin-top: 20px;">
+              <label for="paid-notes" style="display: block; margin-bottom: 8px; font-weight: 600;">
+                Notes (Optional)
+              </label>
+              <textarea
+                id="paid-notes"
+                rows="3"
+                placeholder="Any additional information..."
+                style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical;"
+              ></textarea>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 25px;">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                style="flex: 1; padding: 12px; font-size: 16px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;"
+              >
+                Confirm Payment
+              </button>
+              <button
+                type="button"
+                onclick="closeMarkPaidModal()"
+                class="btn btn-secondary"
+                style="flex: 1; padding: 12px; font-size: 16px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; background: #6c757d; color: white;"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
@@ -624,6 +711,16 @@
           allPhotos = clientData.photos;
           renderPhotoGallery(clientData.photos);
           renderServiceHistory(clientData.service_history);
+
+          // Show/hide mark as paid button based on balance
+          const markPaidContainer = document.getElementById("mark-paid-container");
+          if (clientData.balance > 0) {
+            markPaidContainer.style.display = "block";
+            // Fetch invoices for this client
+            await fetchClientInvoices();
+          } else {
+            markPaidContainer.style.display = "none";
+          }
         } catch (err) {
           console.error("Failed to load client data:", err);
           showMessage(
@@ -631,6 +728,25 @@
             "Failed to load account data. Please refresh.",
             "error"
           );
+        }
+      }
+
+      // Fetch client invoices
+      async function fetchClientInvoices() {
+        try {
+          const response = await fetch(`${API_BASE}/api/client/invoices`, {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            currentInvoices = data.invoices || [];
+          }
+        } catch (error) {
+          console.error("Error fetching invoices:", error);
+          // Non-critical error, don't show to user
         }
       }
 
@@ -802,6 +918,103 @@
           5000
         );
       }
+
+      // Mark as Paid handlers
+      let currentInvoices = [];
+
+      function showMarkPaidModal() {
+        const balance = parseFloat(document.getElementById("payment-amount").value);
+        if (balance <= 0) {
+          showMessage("payment-status", "No balance due", "warning", 3000);
+          return;
+        }
+        document.getElementById("mark-paid-modal").style.display = "flex";
+      }
+
+      function closeMarkPaidModal() {
+        document.getElementById("mark-paid-modal").style.display = "none";
+        document.getElementById("mark-paid-form").reset();
+      }
+
+      // Handle mark as paid form submission
+      document.getElementById("mark-paid-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const paymentMethod = document.getElementById("paid-payment-method").value;
+        const transactionId = document.getElementById("paid-transaction-id").value.trim();
+        const notes = document.getElementById("paid-notes").value.trim();
+
+        if (!paymentMethod) {
+          showMessage("payment-status", "Please select a payment method", "error", 3000);
+          return;
+        }
+
+        // Get the first unpaid invoice (or create one if needed)
+        // For now, we'll need to track invoices. Let's get them from the dashboard data
+        if (!currentInvoices || currentInvoices.length === 0) {
+          showMessage(
+            "payment-status",
+            "No invoices found. Please contact support.",
+            "error",
+            5000
+          );
+          return;
+        }
+
+        // Find first unpaid invoice
+        const unpaidInvoice = currentInvoices.find((inv) => inv.status === "unpaid");
+        if (!unpaidInvoice) {
+          showMessage("payment-status", "No unpaid invoices found", "warning", 3000);
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/api/client/invoices/${unpaidInvoice.id}/mark-payment`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({
+                payment_method: paymentMethod,
+                transaction_id: transactionId,
+                notes: notes,
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "Failed to mark payment");
+          }
+
+          const data = await response.json();
+          closeMarkPaidModal();
+          showMessage(
+            "payment-status",
+            "✓ Payment marked successfully! We'll verify it shortly.",
+            "success",
+            5000
+          );
+
+          // Reload client data to update balance
+          setTimeout(() => {
+            loadClientData();
+          }, 1000);
+        } catch (error) {
+          console.error("Error marking payment:", error);
+          showMessage("payment-status", `Error: ${error.message}`, "error", 5000);
+        }
+      });
+
+      // Close modal on background click
+      document.getElementById("mark-paid-modal").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("mark-paid-modal")) {
+          closeMarkPaidModal();
+        }
+      });
 
       // Initial load
       loadClientData();
