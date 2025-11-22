@@ -259,7 +259,7 @@
         <a href="client.html" class="navbar-link active">My Services</a>
         <a href="#" class="navbar-link">History</a>
         <a href="#" class="navbar-link">Profile</a>
-        <button onclick="logout()" class="navbar-login" style="border: none; cursor: pointer;">Logout</button>
+        <button onclick="logout()" class="navbar-login navbar-button">Logout</button>
       </div>
     </nav>
 
@@ -351,11 +351,7 @@
             placeholder="0.00"
             required
             readonly
-            style="
-              font-size: 1.25rem;
-              font-weight: 700;
-              color: var(--color-primary);
-            "
+            class="balance-amount"
           />
           <small class="text-muted">Current balance due</small>
         </div>
@@ -401,9 +397,8 @@
           <!-- Traditional Card (Future) -->
           <a
             href="#"
-            class="payment-option"
+            class="payment-option payment-option-disabled"
             onclick="handleCard(event)"
-            style="opacity: 0.5; cursor: not-allowed"
           >
             <div class="payment-icon">💳</div>
             <div class="payment-label">Credit Card</div>
@@ -412,15 +407,9 @@
         </div>
 
         <!-- Payment Instructions -->
-        <div
-          class="card"
-          style="
-            background: var(--color-bg);
-            border: 1px solid var(--color-border);
-          "
-        >
+        <div class="card">
           <h3>Payment Instructions</h3>
-          <ol style="padding-left: 1.5rem; margin: 0.5rem 0">
+          <ol class="ol-padded">
             <li class="mb-sm">Tap your preferred payment method above</li>
             <li class="mb-sm">
               Send the amount shown (or your preferred amount)

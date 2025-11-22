@@ -1590,8 +1590,42 @@ a:focus {
 .mt-lg {
   margin-top: 2rem;
 }
+.mt-xl {
+  margin-top: 2.5rem;
+}
 .mb-sm {
   margin-bottom: 0.5rem;
+}
+
+/* Section header color variant */
+.section-header-dark h3 {
+  color: var(--color-primary-darker);
+}
+
+/* Footer note text */
+.footer-note {
+  margin-top: 2rem;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+/* Balance amount display */
+.balance-amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* Disabled payment option */
+.payment-option-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Ordered list with padding */
+.ol-padded {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
 }
 
 /* Quote result */
