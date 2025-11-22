@@ -1740,6 +1740,418 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // ==================== JOB MANAGEMENT API ====================
+
+  // POST /api/owner/jobs - Create new job
+  if (url.pathname === "/api/owner/jobs" && req.method === "POST") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const body = await req.json();
+
+      // Validation
+      if (!body.client_id) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Client ID is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.scheduled_date) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Scheduled date is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.services || !Array.isArray(body.services) || body.services.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "At least one service is required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Create job
+      const result = await db.queryObject(
+        `INSERT INTO jobs (
+          client_id,
+          crew_id,
+          scheduled_date,
+          scheduled_time,
+          services,
+          notes,
+          status
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, 'assigned')
+        RETURNING id`,
+        [
+          body.client_id,
+          body.crew_id || null,
+          body.scheduled_date,
+          body.scheduled_time || null,
+          body.services,
+          body.notes?.trim() || "",
+        ]
+      );
+
+      const jobId = (result.rows[0] as any).id;
+
+      console.log(`[server] Job created: ${jobId}`);
+
+      return new Response(
+        JSON.stringify({ ok: true, job_id: jobId }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error creating job:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // GET /api/owner/jobs - List all jobs
+  if (url.pathname === "/api/owner/jobs" && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get query parameters
+      const searchParams = url.searchParams;
+      const client_id = searchParams.get("client_id") || "";
+      const crew_id = searchParams.get("crew_id") || "";
+      const status = searchParams.get("status") || "";
+      const date_from = searchParams.get("date_from") || "";
+      const date_to = searchParams.get("date_to") || "";
+
+      let query = `
+        SELECT
+          j.id,
+          j.client_id,
+          j.crew_id,
+          j.scheduled_date,
+          j.scheduled_time,
+          j.services,
+          j.notes,
+          j.status,
+          j.completed_at,
+          j.created_at,
+          c_user.name as client_name,
+          c_client.property_address,
+          crew.name as crew_name
+        FROM jobs j
+        LEFT JOIN clients c_client ON j.client_id = c_client.id
+        LEFT JOIN users c_user ON c_client.user_id = c_user.id
+        LEFT JOIN users crew ON j.crew_id = crew.id
+        WHERE 1=1
+      `;
+
+      const params: any[] = [];
+      let paramCount = 0;
+
+      if (client_id) {
+        paramCount++;
+        query += ` AND j.client_id = $${paramCount}`;
+        params.push(client_id);
+      }
+
+      if (crew_id) {
+        paramCount++;
+        query += ` AND j.crew_id = $${paramCount}`;
+        params.push(crew_id);
+      }
+
+      if (status) {
+        paramCount++;
+        query += ` AND j.status = $${paramCount}`;
+        params.push(status);
+      }
+
+      if (date_from) {
+        paramCount++;
+        query += ` AND j.scheduled_date >= $${paramCount}`;
+        params.push(date_from);
+      }
+
+      if (date_to) {
+        paramCount++;
+        query += ` AND j.scheduled_date <= $${paramCount}`;
+        params.push(date_to);
+      }
+
+      query += ` ORDER BY j.scheduled_date DESC, j.scheduled_time ASC NULLS LAST`;
+
+      const result = await db.queryObject(query, params);
+
+      return new Response(
+        JSON.stringify({ ok: true, jobs: result.rows }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error listing jobs:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // GET /api/owner/jobs/:id - Get job details
+  if (url.pathname.match(/^\/api\/owner\/jobs\/[^\/]+$/) && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const jobId = url.pathname.split("/")[4];
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const jobResult = await db.queryObject(
+        `SELECT
+          j.*,
+          c_user.name as client_name,
+          c_user.email as client_email,
+          c_user.phone as client_phone,
+          c_client.property_address,
+          c_client.property_city,
+          c_client.property_state,
+          c_client.property_zip,
+          crew.name as crew_name,
+          crew.email as crew_email
+        FROM jobs j
+        LEFT JOIN clients c_client ON j.client_id = c_client.id
+        LEFT JOIN users c_user ON c_client.user_id = c_user.id
+        LEFT JOIN users crew ON j.crew_id = crew.id
+        WHERE j.id = $1`,
+        [jobId]
+      );
+
+      if (jobResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Job not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      const job = jobResult.rows[0];
+
+      // Get photos for this job
+      const photosResult = await db.queryObject(
+        `SELECT
+          jp.id,
+          jp.photo_type,
+          jp.photo_url,
+          jp.created_at,
+          u.name as uploaded_by_name
+        FROM job_photos jp
+        LEFT JOIN users u ON jp.uploaded_by = u.id
+        WHERE jp.job_id = $1
+        ORDER BY jp.created_at DESC`,
+        [jobId]
+      );
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          job,
+          photos: photosResult.rows,
+        }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error getting job details:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // PATCH /api/owner/jobs/:id - Update job
+  if (url.pathname.match(/^\/api\/owner\/jobs\/[^\/]+$/) && req.method === "PATCH") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const jobId = url.pathname.split("/")[4];
+      const body = await req.json();
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Build dynamic update query
+      const updates: string[] = [];
+      const params: any[] = [];
+      let paramCount = 0;
+
+      if (body.client_id !== undefined) {
+        paramCount++;
+        updates.push(`client_id = $${paramCount}`);
+        params.push(body.client_id);
+      }
+
+      if (body.crew_id !== undefined) {
+        paramCount++;
+        updates.push(`crew_id = $${paramCount}`);
+        params.push(body.crew_id || null);
+      }
+
+      if (body.scheduled_date !== undefined) {
+        paramCount++;
+        updates.push(`scheduled_date = $${paramCount}`);
+        params.push(body.scheduled_date);
+      }
+
+      if (body.scheduled_time !== undefined) {
+        paramCount++;
+        updates.push(`scheduled_time = $${paramCount}`);
+        params.push(body.scheduled_time || null);
+      }
+
+      if (body.services !== undefined) {
+        paramCount++;
+        updates.push(`services = $${paramCount}`);
+        params.push(body.services);
+      }
+
+      if (body.notes !== undefined) {
+        paramCount++;
+        updates.push(`notes = $${paramCount}`);
+        params.push(body.notes);
+      }
+
+      if (body.status !== undefined) {
+        paramCount++;
+        updates.push(`status = $${paramCount}`);
+        params.push(body.status);
+      }
+
+      if (updates.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "No fields to update" }),
+          { status: 400, headers }
+        );
+      }
+
+      paramCount++;
+      params.push(jobId);
+
+      await db.queryObject(
+        `UPDATE jobs SET ${updates.join(", ")} WHERE id = $${paramCount}`,
+        params
+      );
+
+      console.log(`[server] Job updated: ${jobId}`);
+
+      return new Response(
+        JSON.stringify({ ok: true, job_id: jobId }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error updating job:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // PATCH /api/jobs/:id/start - Start job (crew or owner)
+  if (url.pathname.match(/^\/api\/jobs\/[^\/]+\/start$/) && req.method === "PATCH") {
+    const authCheck = await requireAuth(req, ["crew", "owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const jobId = url.pathname.split("/")[3];
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      await db.queryObject(
+        `UPDATE jobs SET status = 'in_progress', updated_at = NOW() WHERE id = $1`,
+        [jobId]
+      );
+
+      console.log(`[server] Job started: ${jobId}`);
+
+      return new Response(
+        JSON.stringify({ ok: true, job_id: jobId }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error starting job:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // GET /api/owner/crew - List all crew members (for job assignment)
+  if (url.pathname === "/api/owner/crew" && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const result = await db.queryObject(
+        `SELECT
+          id,
+          name,
+          email,
+          phone,
+          status
+        FROM users
+        WHERE role = 'crew'
+        ORDER BY name ASC`
+      );
+
+      return new Response(
+        JSON.stringify({ ok: true, crew: result.rows }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error listing crew:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
   // 404 for unknown routes
   return new Response(JSON.stringify({ ok: false, error: "Not found" }), {
     status: 404,
