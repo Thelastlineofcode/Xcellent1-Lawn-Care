@@ -2152,6 +2152,252 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // ==================== INVOICE MANAGEMENT API ====================
+
+  // POST /api/owner/invoices - Create new invoice
+  if (url.pathname === "/api/owner/invoices" && req.method === "POST") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const body = await req.json();
+
+      if (!body.client_id) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Client ID is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.amount || parseFloat(body.amount) <= 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Valid amount is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.due_date) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Due date is required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Generate invoice number
+      const invoiceCount = await db.queryObject(
+        `SELECT COUNT(*) as count FROM invoices`
+      );
+      const count = (invoiceCount.rows[0] as any).count;
+      const invoiceNumber = `INV-${String(parseInt(count) + 1).padStart(5, "0")}`;
+
+      // Create invoice
+      const result = await db.queryObject(
+        `INSERT INTO invoices (
+          client_id,
+          invoice_number,
+          amount,
+          due_date,
+          line_items,
+          status
+        )
+        VALUES ($1, $2, $3, $4, $5, 'unpaid')
+        RETURNING id`,
+        [
+          body.client_id,
+          invoiceNumber,
+          parseFloat(body.amount),
+          body.due_date,
+          JSON.stringify(body.line_items || []),
+        ]
+      );
+
+      const invoiceId = (result.rows[0] as any).id;
+
+      // Update client balance
+      await db.queryObject(
+        `UPDATE clients SET balance_due = balance_due + $1 WHERE id = $2`,
+        [parseFloat(body.amount), body.client_id]
+      );
+
+      console.log(`[server] Invoice created: ${invoiceNumber}`);
+
+      return new Response(
+        JSON.stringify({ ok: true, invoice_id: invoiceId, invoice_number: invoiceNumber }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error creating invoice:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // GET /api/owner/invoices - List all invoices
+  if (url.pathname === "/api/owner/invoices" && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const searchParams = url.searchParams;
+      const client_id = searchParams.get("client_id") || "";
+      const status = searchParams.get("status") || "";
+
+      let query = `
+        SELECT
+          i.*,
+          u.name as client_name,
+          c.property_address
+        FROM invoices i
+        JOIN clients c ON i.client_id = c.id
+        JOIN users u ON c.user_id = u.id
+        WHERE 1=1
+      `;
+
+      const params: any[] = [];
+      let paramCount = 0;
+
+      if (client_id) {
+        paramCount++;
+        query += ` AND i.client_id = $${paramCount}`;
+        params.push(client_id);
+      }
+
+      if (status) {
+        paramCount++;
+        query += ` AND i.status = $${paramCount}`;
+        params.push(status);
+      }
+
+      query += ` ORDER BY i.created_at DESC`;
+
+      const result = await db.queryObject(query, params);
+
+      return new Response(
+        JSON.stringify({ ok: true, invoices: result.rows }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error listing invoices:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // ==================== PAYMENT RECORDING API ====================
+
+  // POST /api/owner/invoices/:id/payment - Record payment
+  if (url.pathname.match(/^\/api\/owner\/invoices\/[^\/]+\/payment$/) && req.method === "POST") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const invoiceId = url.pathname.split("/")[4];
+      const body = await req.json();
+
+      if (!body.amount || parseFloat(body.amount) <= 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Valid payment amount is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.payment_method) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Payment method is required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get invoice details
+      const invoiceResult = await db.queryObject(
+        `SELECT client_id, amount, status FROM invoices WHERE id = $1`,
+        [invoiceId]
+      );
+
+      if (invoiceResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Invoice not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      const invoice = invoiceResult.rows[0] as any;
+      const paymentAmount = parseFloat(body.amount);
+
+      // Create payment record
+      const paymentResult = await db.queryObject(
+        `INSERT INTO payments (
+          invoice_id,
+          client_id,
+          amount,
+          payment_method,
+          transaction_id,
+          notes
+        )
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id`,
+        [
+          invoiceId,
+          invoice.client_id,
+          paymentAmount,
+          body.payment_method,
+          body.transaction_id || "",
+          body.notes || "",
+        ]
+      );
+
+      const paymentId = (paymentResult.rows[0] as any).id;
+
+      // Update invoice status
+      const newStatus = paymentAmount >= parseFloat(invoice.amount) ? "paid" : "unpaid";
+      await db.queryObject(
+        `UPDATE invoices SET status = $1, paid_at = CASE WHEN $1 = 'paid' THEN NOW() ELSE NULL END WHERE id = $2`,
+        [newStatus, invoiceId]
+      );
+
+      // Update client balance
+      await db.queryObject(
+        `UPDATE clients SET balance_due = balance_due - $1 WHERE id = $2`,
+        [paymentAmount, invoice.client_id]
+      );
+
+      console.log(`[server] Payment recorded: ${paymentId} for invoice ${invoiceId}`);
+
+      return new Response(
+        JSON.stringify({ ok: true, payment_id: paymentId }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error recording payment:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
   // 404 for unknown routes
   return new Response(JSON.stringify({ ok: false, error: "Not found" }), {
     status: 404,
