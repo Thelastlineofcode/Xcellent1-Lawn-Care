@@ -931,11 +931,11 @@
           .map(
             (alert) => `
         <div class="card alert-card ${alert.type} mb-md">
-          <div style="display: flex; justify-content: space-between; align-items: start; gap: 1rem;">
-            <div style="flex: 1;">
-              <div style="font-weight: 600; margin-bottom: 0.5rem;">${alert.icon} ${alert.message}</div>
+          <div class="alert-card-layout">
+            <div class="alert-card-content">
+              <div class="alert-card-title">${alert.icon} ${alert.message}</div>
             </div>
-            <a href="${alert.link}" class="btn-secondary" style="white-space: nowrap;">${alert.action}</a>
+            <a href="${alert.link}" class="btn-secondary btn-nowrap">${alert.action}</a>
           </div>
         </div>
       `
@@ -956,11 +956,11 @@
           .map(
             (member) => `
         <div class="card mb-md">
-          <div style="display: flex; justify-content: space-between; align-items: start;">
+          <div class="team-member-layout">
             <div>
               <h3>👤 ${member.name}</h3>
-              <p class="text-muted" style="font-size: 0.875rem; margin: 0.25rem 0;">${member.role}</p>
-              <div style="display: flex; gap: 1rem; margin-top: 0.75rem; font-size: 0.875rem;">
+              <p class="text-muted team-member-role">${member.role}</p>
+              <div class="team-member-stats">
                 <span>🚩 ${member.jobs} jobs</span>
                 <span>⭐ ${member.rating}/5.0</span>
                 <span>📸 ${member.photos} photos</span>
