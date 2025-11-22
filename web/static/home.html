@@ -49,7 +49,7 @@
         <a href="#services" class="navbar-link">Services</a>
         <a href="shop.html" class="navbar-link">Shop</a>
         <a href="careers.html" class="navbar-link">Careers</a>
-        <a href="login.html" class="navbar-login" aria-label="Login">Login</a>
+        <a href="login.html" class="navbar-link" aria-label="Login">Login</a>
       </div>
     </nav>
 
@@ -884,6 +884,36 @@
               </button>
             </div>
           </form>
+          <div style="text-align: center; margin: 1rem 0; color: #64748b;">
+            <hr style="border-top: 1px solid #e5e7eb; margin-bottom: 1rem;">
+            <span>OR</span>
+          </div>
+          <button
+            id="google-signin-btn"
+            type="button"
+            style="
+              width: 100%;
+              padding: 1rem;
+              background: #4285F4;
+              color: white;
+              border: none;
+              border-radius: 8px;
+              font-size: 1.1rem;
+              font-weight: 700;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <svg style="margin-right: 0.5rem;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19.98 10.19C19.98 9.53 19.93 8.9 19.82 8.29H10.2V12.03H15.71C15.48 13.21 14.83 14.21 13.88 14.86V17.58H16.89C18.66 16.02 19.98 13.35 19.98 10.19Z" fill="white"/>
+              <path d="M10.2 20C12.95 20 15.26 19.09 16.89 17.58L13.88 14.86C12.99 15.45 11.75 15.82 10.2 15.82C7.51 15.82 5.23 14.01 4.39 11.66H1.28V14.47C2.92 17.76 6.3 20 10.2 20Z" fill="white"/>
+              <path d="M4.39 11.66C4.19 11.05 4.09 10.42 4.09 9.77C4.09 9.12 4.2 8.5 4.39 7.88V5.07H1.28C0.47 6.64 0 8.16 0 9.77C0 11.38 0.47 12.9 1.28 14.47L4.39 11.66Z" fill="white"/>
+              <path d="M10.2 3.72C11.56 3.72 12.79 4.2 13.71 5.08L16.96 1.83C15.25 0.35 12.94 0 10.2 0C6.3 0 2.92 2.24 1.28 5.53L4.39 7.88C5.23 5.53 7.51 3.72 10.2 3.72Z" fill="white"/>
+            </svg>
+            Sign in with Google
+          </button>
         </div>
 
         <div
@@ -943,6 +973,7 @@
         &copy; 2025 Xcellent1 Lawn Care. All rights reserved.
       </p>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
       async function handleWaitlistSubmit(e) {
         e.preventDefault();
@@ -1137,14 +1168,51 @@
         return false;
       }
 
-      // Close login modal when clicking outside
-      document
-        .getElementById("login-modal")
-        ?.addEventListener("click", function (e) {
-          if (e.target === this) {
-            closeLoginModal();
-          }
+      async function handleGoogleSignIn() {
+        const messageDiv = document.getElementById("login-message");
+        messageDiv.textContent = "Redirecting to Google...";
+        messageDiv.style.color = "#059669";
+        
+        const supabaseUrl = "https://utivthfrwgtjatsusopw.supabase.co";
+        const supabaseKey = "sb_publishable_nX8IeSiT3FJ3iL2GJbf_vA_Jj90PMvt";
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin,
+            },
         });
+
+        if (error) {
+            console.error('Error signing in with Google:', error);
+            messageDiv.textContent = "Error with Google Sign-In. See console for details.";
+            messageDiv.style.color = "#dc2626";
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const googleSignInButton = document.getElementById('google-signin-btn');
+        if (googleSignInButton) {
+            googleSignInButton.addEventListener('click', handleGoogleSignIn);
+        }
+
+        const supabaseUrl = "https://utivthfrwgtjatsusopw.supabase.co";
+        const supabaseKey = "sb_publishable_nX8IeSiT3FJ3iL2GJbf_vA_Jj90PMvt";
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_IN' && session?.provider_token) {
+                if (session.user.email !== 'lacardiofrancis@gmail.com') {
+                    await supabase.auth.signOut();
+                    alert('Access denied. This service is restricted.');
+                    window.location.href = '/';
+                } else {
+                     window.location.href = 'owner.html'; 
+                }
+            }
+        });
+      });
     </script>
   </body>
 </html>

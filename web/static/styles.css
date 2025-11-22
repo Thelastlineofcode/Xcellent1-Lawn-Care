@@ -499,6 +499,85 @@ a:focus {
   transform: translateY(0);
 }
 
+.hero-home {
+  position: relative;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/CoverPhoto.png');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  padding: 5rem 1rem;
+}
+
+.hero-home .hero-title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-home .subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.hero-home .hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.hero-home .hero-button {
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.hero-home .btn-primary {
+  background-color: #f23d00;
+}
+
+.hero-home .btn-primary:hover {
+  background-color: #bc2800;
+}
+
+.hero-home .btn-secondary {
+  background-color: transparent;
+  border: 2px solid white;
+}
+
+.hero-home .btn-secondary:hover {
+  background-color: white;
+  color: #3b832a;
+}
+
+.waitlist-form {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.waitlist-form .form-field,
+.waitlist-form .form-select {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  width: 250px;
+}
+
+.waitlist-form .waitlist-submit {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  background-color: #f23d00;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+
 .btn:focus {
   outline: 3px solid rgba(16, 185, 129, 0.3);
   outline-offset: 2px;
