@@ -1326,6 +1326,420 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // ==================== CLIENT MANAGEMENT API ====================
+
+  // POST /api/owner/clients - Create new client
+  if (url.pathname === "/api/owner/clients" && req.method === "POST") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const body = await req.json();
+
+      // Validation
+      if (!body.name || body.name.trim().length < 2) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Name must be at least 2 characters" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.email || !/^\S+@\S+\.\S+$/.test(body.email)) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Valid email is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.property_address || body.property_address.trim().length < 5) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Property address is required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Check if email already exists
+      const emailCheck = await db.queryObject(
+        `SELECT id FROM users WHERE email = $1`,
+        [body.email.trim()]
+      );
+
+      if (emailCheck.rows.length > 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Email already exists" }),
+          { status: 409, headers }
+        );
+      }
+
+      // Create user record first
+      const userResult = await db.queryObject(
+        `INSERT INTO users (email, phone, name, role, status)
+         VALUES ($1, $2, $3, 'client', 'active')
+         RETURNING id`,
+        [
+          body.email.trim(),
+          body.phone?.trim() || "",
+          body.name.trim(),
+        ]
+      );
+
+      const userId = (userResult.rows[0] as any).id;
+
+      // Create client record
+      const clientResult = await db.queryObject(
+        `INSERT INTO clients (
+          user_id,
+          property_address,
+          property_city,
+          property_state,
+          property_zip,
+          service_plan,
+          status
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, 'active')
+        RETURNING id`,
+        [
+          userId,
+          body.property_address.trim(),
+          body.property_city?.trim() || "",
+          body.property_state?.trim() || "",
+          body.property_zip?.trim() || "",
+          body.service_plan || "weekly",
+        ]
+      );
+
+      const clientId = (clientResult.rows[0] as any).id;
+
+      console.log(`[server] Client created: ${clientId} (${body.name})`);
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          client_id: clientId,
+          user_id: userId
+        }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error creating client:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // GET /api/owner/clients - List all clients
+  if (url.pathname === "/api/owner/clients" && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get query parameters for search/filter
+      const searchParams = url.searchParams;
+      const search = searchParams.get("search") || "";
+      const status = searchParams.get("status") || "";
+
+      let query = `
+        SELECT
+          c.id,
+          c.user_id,
+          u.name,
+          u.email,
+          u.phone,
+          c.property_address,
+          c.property_city,
+          c.property_state,
+          c.property_zip,
+          c.service_plan,
+          c.balance_due,
+          c.status,
+          c.created_at,
+          (SELECT COUNT(*) FROM jobs WHERE client_id = c.id) as total_jobs,
+          (SELECT COUNT(*) FROM jobs WHERE client_id = c.id AND status = 'completed') as completed_jobs
+        FROM clients c
+        JOIN users u ON c.user_id = u.id
+        WHERE 1=1
+      `;
+
+      const params: any[] = [];
+      let paramCount = 0;
+
+      // Add search filter
+      if (search) {
+        paramCount++;
+        query += ` AND (u.name ILIKE $${paramCount} OR u.email ILIKE $${paramCount} OR c.property_address ILIKE $${paramCount})`;
+        params.push(`%${search}%`);
+      }
+
+      // Add status filter
+      if (status) {
+        paramCount++;
+        query += ` AND c.status = $${paramCount}`;
+        params.push(status);
+      }
+
+      query += ` ORDER BY c.created_at DESC`;
+
+      const result = await db.queryObject(query, params);
+
+      return new Response(
+        JSON.stringify({ ok: true, clients: result.rows }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error listing clients:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // GET /api/owner/clients/:id - Get client details
+  if (url.pathname.match(/^\/api\/owner\/clients\/[^\/]+$/) && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const clientId = url.pathname.split("/")[4];
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get client details with user info
+      const clientResult = await db.queryObject(
+        `SELECT
+          c.*,
+          u.name,
+          u.email,
+          u.phone,
+          u.auth_user_id
+        FROM clients c
+        JOIN users u ON c.user_id = u.id
+        WHERE c.id = $1`,
+        [clientId]
+      );
+
+      if (clientResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Client not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      const client = clientResult.rows[0];
+
+      // Get job history
+      const jobsResult = await db.queryObject(
+        `SELECT
+          j.id,
+          j.scheduled_date,
+          j.scheduled_time,
+          j.services,
+          j.status,
+          j.completed_at,
+          u.name as crew_name
+        FROM jobs j
+        LEFT JOIN users u ON j.crew_id = u.id
+        WHERE j.client_id = $1
+        ORDER BY j.scheduled_date DESC
+        LIMIT 50`,
+        [clientId]
+      );
+
+      // Get invoices
+      const invoicesResult = await db.queryObject(
+        `SELECT
+          i.id,
+          i.invoice_number,
+          i.amount,
+          i.due_date,
+          i.status,
+          i.created_at,
+          i.paid_at
+        FROM invoices i
+        WHERE i.client_id = $1
+        ORDER BY i.created_at DESC
+        LIMIT 50`,
+        [clientId]
+      );
+
+      // Get payments
+      const paymentsResult = await db.queryObject(
+        `SELECT
+          p.id,
+          p.amount,
+          p.payment_method,
+          p.transaction_id,
+          p.created_at,
+          i.invoice_number
+        FROM payments p
+        LEFT JOIN invoices i ON p.invoice_id = i.id
+        WHERE p.client_id = $1
+        ORDER BY p.created_at DESC
+        LIMIT 50`,
+        [clientId]
+      );
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          client,
+          jobs: jobsResult.rows,
+          invoices: invoicesResult.rows,
+          payments: paymentsResult.rows,
+        }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error getting client details:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // PATCH /api/owner/clients/:id - Update client
+  if (url.pathname.match(/^\/api\/owner\/clients\/[^\/]+$/) && req.method === "PATCH") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const clientId = url.pathname.split("/")[4];
+      const body = await req.json();
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get the user_id for this client
+      const clientResult = await db.queryObject(
+        `SELECT user_id FROM clients WHERE id = $1`,
+        [clientId]
+      );
+
+      if (clientResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Client not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      const userId = (clientResult.rows[0] as any).user_id;
+
+      // Update user table if name, email, or phone provided
+      if (body.name || body.email || body.phone) {
+        const userUpdates: string[] = [];
+        const userParams: any[] = [];
+        let paramCount = 0;
+
+        if (body.name) {
+          paramCount++;
+          userUpdates.push(`name = $${paramCount}`);
+          userParams.push(body.name.trim());
+        }
+        if (body.email) {
+          paramCount++;
+          userUpdates.push(`email = $${paramCount}`);
+          userParams.push(body.email.trim());
+        }
+        if (body.phone !== undefined) {
+          paramCount++;
+          userUpdates.push(`phone = $${paramCount}`);
+          userParams.push(body.phone.trim());
+        }
+
+        if (userUpdates.length > 0) {
+          paramCount++;
+          userParams.push(userId);
+          await db.queryObject(
+            `UPDATE users SET ${userUpdates.join(", ")} WHERE id = $${paramCount}`,
+            userParams
+          );
+        }
+      }
+
+      // Update clients table
+      const clientUpdates: string[] = [];
+      const clientParams: any[] = [];
+      let paramCount = 0;
+
+      if (body.property_address) {
+        paramCount++;
+        clientUpdates.push(`property_address = $${paramCount}`);
+        clientParams.push(body.property_address.trim());
+      }
+      if (body.property_city !== undefined) {
+        paramCount++;
+        clientUpdates.push(`property_city = $${paramCount}`);
+        clientParams.push(body.property_city.trim());
+      }
+      if (body.property_state !== undefined) {
+        paramCount++;
+        clientUpdates.push(`property_state = $${paramCount}`);
+        clientParams.push(body.property_state.trim());
+      }
+      if (body.property_zip !== undefined) {
+        paramCount++;
+        clientUpdates.push(`property_zip = $${paramCount}`);
+        clientParams.push(body.property_zip.trim());
+      }
+      if (body.service_plan) {
+        paramCount++;
+        clientUpdates.push(`service_plan = $${paramCount}`);
+        clientParams.push(body.service_plan);
+      }
+      if (body.status) {
+        paramCount++;
+        clientUpdates.push(`status = $${paramCount}`);
+        clientParams.push(body.status);
+      }
+
+      if (clientUpdates.length > 0) {
+        paramCount++;
+        clientParams.push(clientId);
+        await db.queryObject(
+          `UPDATE clients SET ${clientUpdates.join(", ")} WHERE id = $${paramCount}`,
+          clientParams
+        );
+      }
+
+      console.log(`[server] Client updated: ${clientId}`);
+
+      return new Response(
+        JSON.stringify({ ok: true, client_id: clientId }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error updating client:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
   // 404 for unknown routes
   return new Response(JSON.stringify({ ok: false, error: "Not found" }), {
     status: 404,
