@@ -9,14 +9,15 @@
     "options": {}
   },
   "lint": {
+    "include": [
+      "server.ts",
+      "supabase_auth.ts",
+      "api-endpoints.ts",
+      "src/**/*.ts"
+    ],
     "exclude": [
-      "web/static/**",
-      "web/tests/**",
-      "bmad/agents/langchain-integration/**",
-      "bmad/agents/langchain_integration/**",
-      "bmad/bmb/**",
-      "bmad/**/workflows/**",
-      "bmad/**/installer-templates/**",
+      "web/**",
+      "bmad/**",
       ".venv/**",
       "**/*.py"
     ],
