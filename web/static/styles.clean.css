@@ -1,0 +1,41 @@
+/* Minimal cleaned stylesheet for Xcellent1 Lawn Care
+   - Compact baseline, non-destructive: leaves original file intact
+   - Use this file in pages to test the refactor: replace reference to styles.css with styles.clean.css
+*/
+
+:root{
+  --p:#10b981;--p-dark:#059669;--accent:#f23d00;--accent-dark:#bc2800;
+  --sec:#64748b;--bg:#f8fafc;--surface:#fff;--text:#1e293b;--muted:#64748b;
+  --border:#e2e8f0;--radius:0.5rem;--gap:1rem;--transition:0.2s ease;--shadow:0 4px 12px rgba(0,0,0,0.08);
+  --font: -apple-system,BlinkMacSystemFont,"Segoe UI","Roboto",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.6}
+
+.container{max-width:1100px;margin:0 auto;padding:var(--gap)}
+
+/* Navbar */
+.navbar{position:sticky;top:0;width:100%;background:rgba(1,39,20,0.98);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1rem;z-index:100}
+.navbar a{color:inherit;text-decoration:none}
+.navbar .brand{display:flex;align-items:center;gap:.75rem}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:.6rem 1rem;border-radius:.5rem;background:var(--p);color:#fff;border:none;cursor:pointer;transition:all var(--transition)}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--accent)}.btn.secondary{background:var(--sec)}
+
+/* Hero */
+.hero-home{display:flex;align-items:center;justify-content:center;text-align:center;padding:5rem 1rem;background:linear-gradient(180deg,rgba(1,39,20,0.28),rgba(59,131,42,0.32)),url('images/CoverPhoto.png') center/cover no-repeat;color:#fff}
+.hero-title{font-size:2.5rem;font-weight:700}
+
+/* Cards & grids */
+.grid{display:grid;gap:1.25rem}
+.services-grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.product-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;box-shadow:var(--shadow)}
+
+/* Utilities */
+.text-center{text-align:center}.hidden{display:none}.mt-1{margin-top:1rem}
+
+@media (max-width:768px){.container{padding:.75rem}.hero-title{font-size:1.6rem}.services-grid,.product-grid{grid-template-columns:1fr}}
