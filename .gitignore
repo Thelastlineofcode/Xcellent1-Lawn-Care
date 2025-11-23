@@ -6,6 +6,7 @@
 # Dependencies
 node_modules/
 venv/
+.venv/
 __pycache__/
 *.pyc
 
@@ -38,4 +39,7 @@ Thumbs.db
 ehthumbs.db
 
 # License files
-LICENSEmcp-server/
+LICENSE
+
+# MCP Server
+mcp-server/
