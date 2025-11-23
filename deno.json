@@ -9,19 +9,17 @@
     "options": {}
   },
   "lint": {
-    "files": {
-      "exclude": [
-        "web/static/**",
-        "web/tests/**",
-        "bmad/agents/langchain-integration/**",
-        "bmad/agents/langchain_integration/**",
-        "bmad/bmb/**",
-        "bmad/**/workflows/**",
-        "bmad/**/installer-templates/**",
-        ".venv/**",
-        "**/*.py"
-      ]
-    },
+    "exclude": [
+      "web/static/**",
+      "web/tests/**",
+      "bmad/agents/langchain-integration/**",
+      "bmad/agents/langchain_integration/**",
+      "bmad/bmb/**",
+      "bmad/**/workflows/**",
+      "bmad/**/installer-templates/**",
+      ".venv/**",
+      "**/*.py"
+    ],
     "rules": {
       "exclude": [
         "no-import-prefix",
