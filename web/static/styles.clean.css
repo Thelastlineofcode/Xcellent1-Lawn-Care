@@ -1,3 +1,44 @@
+/* Additional layout & component rules to restore homepage layout */
+/* Navbar specifics (match original sizes and horizontal layout) */
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1rem;gap:1rem}
+.navbar .navbar-brand{display:flex;align-items:center;gap:.75rem}
+.navbar-logo{height:40px;width:auto;display:block}
+.navbar-title{display:flex;flex-direction:column;line-height:1}
+.navbar-name{font-weight:800;font-size:1.05rem}
+.navbar-tagline{font-size:.65rem;color:rgba(182,247,194,0.95);letter-spacing:1px;text-transform:uppercase}
+.navbar-links{display:flex;gap:1rem;align-items:center}
+.navbar-link{color:inherit;text-decoration:none;font-weight:600}
+.navbar-login{background:var(--accent);color:#fff;padding:6px 12px;border-radius:6px;text-decoration:none;font-weight:700}
+.navbar-login:hover{background:var(--accent-dark)}
+
+/* Hero adjustments */
+.hero-home{padding:6rem 1rem;min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.hero-title{font-size:3rem;line-height:1.05;margin:0 0 0.5rem 0}
+.subtitle{font-size:1.2rem;opacity:0.95;margin-bottom:0.5rem}
+.hero-buttons{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem}
+.hero-button{padding:.75rem 1.25rem;border-radius:.5rem;color:#fff;text-decoration:none}
+.btn-primary,.hero-button.btn-primary{background:var(--accent)}
+.btn-secondary,.hero-button.btn-secondary{background:rgba(255,255,255,0.95);color:#3b832a;border:2px solid white}
+
+/* Services grid + cards */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;padding:2rem 1rem;max-width:1200px;margin:0 auto}
+.service-card{cursor:pointer;border-radius:10px;overflow:hidden;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;flex-direction:column}
+.service-image{width:100%;height:180px;background-size:cover;background-position:center}
+.service-content{padding:1rem}
+.service-content h3{color:#3b832a;margin-bottom:.5rem}
+.service-content p{color:var(--muted);line-height:1.6}
+
+/* Waitlist form compact */
+.waitlist-form{display:flex;gap:.5rem;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:1rem}
+.waitlist-form .form-field,.waitlist-form .form-select{padding:.75rem;border-radius:.5rem;border:1px solid #e5e7eb;min-width:180px}
+.waitlist-submit{padding:.75rem 1.25rem;border-radius:.5rem;background:#111827;color:#fff;border:none;cursor:pointer;font-weight:700}
+
+/* Responsive tweaks */
+@media (max-width:768px){
+  .hero-title{font-size:2rem}
+  .navbar-logo{height:36px}
+  .services-grid{padding:1rem}
+}
 /* Minimal cleaned stylesheet for Xcellent1 Lawn Care
    - Compact baseline, non-destructive: leaves original file intact
    - Use this file in pages to test the refactor: replace reference to styles.css with styles.clean.css
