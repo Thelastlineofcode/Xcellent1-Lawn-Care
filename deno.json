@@ -29,7 +29,8 @@
         "require-await",
         "no-unused-vars",
         "no-redeclare",
-        "adjacent-overload-signatures"
+        "adjacent-overload-signatures",
+        "no-console"
       ]
     }
   }
