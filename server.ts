@@ -2,7 +2,7 @@
 import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
-import { authenticateRequest } from "./supabase_auth.ts";
+import { authenticateRequest, getSupabaseClient } from "./supabase_auth.ts";
 
 // Database connection
 // Prefer using an environment variable for DATABASE_URL. Avoid hardcoding
@@ -813,49 +813,91 @@ async function handler(req: Request): Promise<Response> {
         );
       }
 
-      const filename = `${jobId}-${Date.now()}.jpg`;
-      await saveBase64Image(body.dataUrl, filename);
-      const path = `/uploads/${filename}`;
+      // Convert base64 to Blob for Supabase Storage
+      const base64Data = body.dataUrl.split(",")[1];
+      const mimeType = body.dataUrl.match(/data:([^;]+);/)?.[1] || "image/jpeg";
+      const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+      const blob = new Blob([binaryData], { type: mimeType });
+
+      // Determine file extension from mime type
+      const ext = mimeType.split("/")[1] || "jpg";
+      const photoType = body.type || "after";
+      const timestamp = Date.now();
+      const storagePath = `jobs/${jobId}/${photoType}-${timestamp}.${ext}`;
+
+      // Upload to Supabase Storage
+      const supabase = getSupabaseClient();
+      if (!supabase) {
+        // Fallback to local storage if Supabase not configured
+        const filename = `${jobId}-${timestamp}.${ext}`;
+        await saveBase64Image(body.dataUrl, filename);
+        const localPath = `/uploads/${filename}`;
+
+        if (dbConnected) {
+          await db.queryObject(
+            `INSERT INTO job_photos (job_id, uploaded_by, photo_type, photo_url, photo_storage_path)
+             VALUES ($1, $2, $3, $4, $5)`,
+            [jobId, authCheck.userId, photoType, localPath, filename]
+          );
+        }
+
+        console.log(`[server] Photo uploaded locally for job ${jobId}: ${localPath}`);
+        return new Response(JSON.stringify({ ok: true, id: jobId, path: localPath }), {
+          status: 200,
+          headers,
+        });
+      }
+
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("job-photos")
+        .upload(storagePath, blob, {
+          contentType: mimeType,
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error("[server] Supabase upload error:", uploadError);
+        return new Response(
+          JSON.stringify({ ok: false, error: `Upload failed: ${uploadError.message}` }),
+          { status: 500, headers }
+        );
+      }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from("job-photos")
+        .getPublicUrl(storagePath);
+
+      const publicUrl = urlData.publicUrl;
 
       if (dbConnected) {
         // Save to database
         await db.queryObject(
-          `
-          INSERT INTO job_photos (job_id, photo_type, photo_url, photo_storage_path)
-          VALUES ($1, $2, $3, $4)
-        `,
-          [jobId, body.type || "after", path, filename]
+          `INSERT INTO job_photos (job_id, uploaded_by, photo_type, photo_url, photo_storage_path)
+           VALUES ($1, $2, $3, $4, $5)
+           RETURNING id`,
+          [jobId, authCheck.userId, photoType, publicUrl, storagePath]
         );
 
         // Add event
         await db.queryObject(
-          `
-          INSERT INTO outbox_events (event_type, ref_id, payload, status)
-          VALUES ('PHOTO_UPLOADED', $1, $2, 'pending')
-        `,
+          `INSERT INTO outbox_events (event_type, ref_id, payload, status)
+           VALUES ('PHOTO_UPLOADED', $1, $2, 'pending')`,
           [
             jobId,
             JSON.stringify({
-              photo_path: path,
+              photo_url: publicUrl,
+              photo_path: storagePath,
               job_id: jobId,
-              type: body.type,
+              type: photoType,
             }),
           ]
         );
-      } else {
-        // Fallback to outbox
-        const eventId = `event-${eventCounter++}`;
-        outbox.set(eventId, {
-          id: eventId,
-          type: "PHOTO_UPLOADED",
-          ref_id: jobId,
-          payload: { photo_path: path, job_id: jobId },
-          created_at: new Date().toISOString(),
-        });
       }
 
-      console.log(`[server] Photo uploaded for job ${jobId}: ${path}`);
-      return new Response(JSON.stringify({ ok: true, id: jobId, path }), {
+      console.log(`[server] Photo uploaded to Supabase for job ${jobId}: ${publicUrl}`);
+      return new Response(JSON.stringify({ ok: true, id: jobId, url: publicUrl, path: storagePath }), {
         status: 200,
         headers,
       });
@@ -2391,6 +2433,650 @@ async function handler(req: Request): Promise<Response> {
       );
     } catch (err) {
       console.error("[server] Error recording payment:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // ==================== WAITLIST API ====================
+
+  // POST /api/waitlist - Public endpoint for prospective clients to join waitlist
+  if (url.pathname === "/api/waitlist" && req.method === "POST") {
+    try {
+      const body = await req.json();
+
+      // Validation
+      if (!body.name || body.name.trim() === "") {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Name is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.email || body.email.trim() === "") {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Email is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.phone || body.phone.trim() === "") {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Phone is required" }),
+          { status: 400, headers }
+        );
+      }
+      if (!body.property_address || body.property_address.trim() === "") {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Property address is required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Check if email already exists in waitlist or clients
+      const emailCheck = await db.queryObject(
+        `SELECT 1 FROM waitlist WHERE email = $1 AND status IN ('pending', 'contacted')
+         UNION
+         SELECT 1 FROM users WHERE email = $1 AND role = 'client'`,
+        [body.email.trim()]
+      );
+
+      if (emailCheck.rows.length > 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "This email is already registered or on the waitlist" }),
+          { status: 409, headers }
+        );
+      }
+
+      // Insert into waitlist
+      const result = await db.queryObject(
+        `INSERT INTO waitlist (
+          name,
+          email,
+          phone,
+          property_address,
+          property_city,
+          property_state,
+          property_zip,
+          preferred_service_plan,
+          notes,
+          source
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING id`,
+        [
+          body.name.trim(),
+          body.email.trim(),
+          body.phone.trim(),
+          body.property_address.trim(),
+          body.property_city?.trim() || "",
+          body.property_state?.trim() || "",
+          body.property_zip?.trim() || "",
+          body.preferred_service_plan || "weekly",
+          body.notes?.trim() || "",
+          body.source || "website",
+        ]
+      );
+
+      const waitlistId = (result.rows[0] as any).id;
+      console.log(`[server] New waitlist entry: ${waitlistId} - ${body.name}`);
+
+      return new Response(
+        JSON.stringify({ ok: true, id: waitlistId, message: "Successfully added to waitlist!" }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error adding to waitlist:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // GET /api/owner/waitlist - Owner views waitlist
+  if (url.pathname === "/api/owner/waitlist" && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const status = url.searchParams.get("status") || "";
+      const search = url.searchParams.get("search") || "";
+
+      let query = `
+        SELECT
+          id,
+          name,
+          email,
+          phone,
+          property_address,
+          property_city,
+          property_state,
+          property_zip,
+          preferred_service_plan,
+          notes,
+          source,
+          status,
+          created_at,
+          updated_at
+        FROM waitlist
+        WHERE 1=1
+      `;
+      const params: any[] = [];
+      let paramCount = 0;
+
+      if (status) {
+        paramCount++;
+        query += ` AND status = $${paramCount}`;
+        params.push(status);
+      }
+
+      if (search) {
+        paramCount++;
+        query += ` AND (name ILIKE $${paramCount} OR email ILIKE $${paramCount} OR phone ILIKE $${paramCount} OR property_address ILIKE $${paramCount})`;
+        params.push(`%${search}%`);
+      }
+
+      query += ` ORDER BY created_at DESC`;
+
+      const result = await db.queryObject(query, params);
+
+      console.log(`[server] Retrieved ${result.rows.length} waitlist entries`);
+
+      return new Response(
+        JSON.stringify({ ok: true, waitlist: result.rows }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error fetching waitlist:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // PATCH /api/owner/waitlist/:id - Update waitlist entry
+  if (url.pathname.match(/^\/api\/owner\/waitlist\/[^\/]+$/) && req.method === "PATCH") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const waitlistId = url.pathname.split("/")[4];
+      const body = await req.json();
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Build dynamic update query
+      const updates: string[] = [];
+      const params: any[] = [];
+      let paramCount = 0;
+
+      if (body.status) {
+        paramCount++;
+        updates.push(`status = $${paramCount}`);
+        params.push(body.status);
+      }
+      if (body.notes !== undefined) {
+        paramCount++;
+        updates.push(`notes = $${paramCount}`);
+        params.push(body.notes);
+      }
+
+      if (updates.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "No fields to update" }),
+          { status: 400, headers }
+        );
+      }
+
+      paramCount++;
+      params.push(waitlistId);
+
+      const query = `UPDATE waitlist SET ${updates.join(", ")} WHERE id = $${paramCount} RETURNING id`;
+      const result = await db.queryObject(query, params);
+
+      if (result.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Waitlist entry not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      console.log(`[server] Updated waitlist entry: ${waitlistId}`);
+
+      return new Response(
+        JSON.stringify({ ok: true, message: "Waitlist entry updated successfully" }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error updating waitlist entry:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // POST /api/owner/waitlist/:id/convert - Convert waitlist entry to client
+  if (url.pathname.match(/^\/api\/owner\/waitlist\/[^\/]+\/convert$/) && req.method === "POST") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const waitlistId = url.pathname.split("/")[4];
+      const body = await req.json();
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get waitlist entry
+      const waitlistResult = await db.queryObject(
+        `SELECT * FROM waitlist WHERE id = $1`,
+        [waitlistId]
+      );
+
+      if (waitlistResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Waitlist entry not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      const waitlistEntry = waitlistResult.rows[0] as any;
+
+      // Check if email already exists as a client
+      const userCheck = await db.queryObject(
+        `SELECT id FROM users WHERE email = $1`,
+        [waitlistEntry.email]
+      );
+
+      if (userCheck.rows.length > 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "A user with this email already exists" }),
+          { status: 409, headers }
+        );
+      }
+
+      // Create user record
+      const userResult = await db.queryObject(
+        `INSERT INTO users (email, phone, name, role, status)
+         VALUES ($1, $2, $3, 'client', 'active')
+         RETURNING id`,
+        [waitlistEntry.email, waitlistEntry.phone, waitlistEntry.name]
+      );
+
+      const userId = (userResult.rows[0] as any).id;
+
+      // Create client record
+      const clientResult = await db.queryObject(
+        `INSERT INTO clients (
+          user_id,
+          property_address,
+          property_city,
+          property_state,
+          property_zip,
+          service_plan,
+          status
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, 'active')
+        RETURNING id`,
+        [
+          userId,
+          waitlistEntry.property_address,
+          waitlistEntry.property_city || "",
+          waitlistEntry.property_state || "",
+          waitlistEntry.property_zip || "",
+          body.service_plan || waitlistEntry.preferred_service_plan || "weekly",
+        ]
+      );
+
+      const clientId = (clientResult.rows[0] as any).id;
+
+      // Update waitlist entry to mark as converted
+      await db.queryObject(
+        `UPDATE waitlist SET status = 'converted', converted_client_id = $1 WHERE id = $2`,
+        [clientId, waitlistId]
+      );
+
+      console.log(`[server] Converted waitlist entry ${waitlistId} to client ${clientId}`);
+
+      return new Response(
+        JSON.stringify({ ok: true, client_id: clientId, message: "Successfully converted to client!" }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error converting waitlist entry:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // ==================== PAYMENT VERIFICATION API ====================
+
+  // GET /api/owner/payments/pending - List payments pending verification
+  if (url.pathname === "/api/owner/payments/pending" && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get payments that were self-reported by clients (with "Self-reported" in notes)
+      const result = await db.queryObject(
+        `SELECT
+          p.id,
+          p.invoice_id,
+          p.client_id,
+          p.amount,
+          p.payment_method,
+          p.transaction_id,
+          p.notes,
+          p.created_at,
+          i.invoice_number,
+          i.status as invoice_status,
+          u.name as client_name,
+          u.email as client_email,
+          c.property_address
+        FROM payments p
+        JOIN invoices i ON p.invoice_id = i.id
+        JOIN clients c ON p.client_id = c.id
+        JOIN users u ON c.user_id = u.id
+        WHERE p.notes LIKE '%Self-reported%'
+        ORDER BY p.created_at DESC`,
+        []
+      );
+
+      console.log(`[server] Retrieved ${result.rows.length} pending payments`);
+
+      return new Response(
+        JSON.stringify({ ok: true, payments: result.rows }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error fetching pending payments:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // PATCH /api/owner/payments/:id/verify - Verify or reject payment
+  if (url.pathname.match(/^\/api\/owner\/payments\/[^\/]+\/verify$/) && req.method === "PATCH") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const paymentId = url.pathname.split("/")[4];
+      const body = await req.json();
+
+      if (!body.action || !["approve", "reject"].includes(body.action)) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Action must be 'approve' or 'reject'" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get payment details
+      const paymentResult = await db.queryObject(
+        `SELECT p.*, i.client_id, i.amount as invoice_amount
+         FROM payments p
+         JOIN invoices i ON p.invoice_id = i.id
+         WHERE p.id = $1`,
+        [paymentId]
+      );
+
+      if (paymentResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Payment not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      const payment = paymentResult.rows[0] as any;
+
+      if (body.action === "approve") {
+        // Payment is already recorded, just update notes to mark as verified
+        await db.queryObject(
+          `UPDATE payments
+           SET notes = REPLACE(notes, 'Self-reported by client', 'Verified by owner')
+           WHERE id = $1`,
+          [paymentId]
+        );
+
+        console.log(`[server] Payment ${paymentId} verified`);
+
+        return new Response(
+          JSON.stringify({ ok: true, message: "Payment verified successfully" }),
+          { status: 200, headers }
+        );
+      } else {
+        // Reject payment - reverse the balance update and mark invoice as unpaid
+        await db.queryObject(
+          `UPDATE clients SET balance_due = balance_due + $1 WHERE id = $2`,
+          [parseFloat(payment.amount), payment.client_id]
+        );
+
+        await db.queryObject(
+          `UPDATE invoices SET status = 'unpaid', paid_at = NULL WHERE id = $1`,
+          [payment.invoice_id]
+        );
+
+        await db.queryObject(
+          `DELETE FROM payments WHERE id = $1`,
+          [paymentId]
+        );
+
+        console.log(`[server] Payment ${paymentId} rejected and reversed`);
+
+        return new Response(
+          JSON.stringify({ ok: true, message: "Payment rejected and balance restored" }),
+          { status: 200, headers }
+        );
+      }
+    } catch (err) {
+      console.error("[server] Error verifying payment:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // ==================== CLIENT SELF-SERVICE API ====================
+
+  // GET /api/client/invoices - Get client's invoices
+  if (url.pathname === "/api/client/invoices" && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["client"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get client record for authenticated user
+      const clientResult = await db.queryObject(
+        `SELECT id FROM clients WHERE user_id = $1`,
+        [authCheck.userId]
+      );
+
+      if (clientResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Client not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      const clientId = (clientResult.rows[0] as any).id;
+
+      // Get invoices
+      const invoicesResult = await db.queryObject(
+        `SELECT id, invoice_number, amount, due_date, status, created_at
+         FROM invoices
+         WHERE client_id = $1
+         ORDER BY created_at DESC`,
+        [clientId]
+      );
+
+      return new Response(
+        JSON.stringify({ ok: true, invoices: invoicesResult.rows }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error fetching client invoices:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // POST /api/client/invoices/:id/mark-payment - Client reports payment sent
+  if (url.pathname.match(/^\/api\/client\/invoices\/[^\/]+\/mark-payment$/) && req.method === "POST") {
+    const authCheck = await requireAuth(req, ["client"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const invoiceId = url.pathname.split("/")[4];
+      const body = await req.json();
+
+      if (!body.payment_method) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Payment method is required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get invoice and verify it belongs to the authenticated client
+      const invoiceResult = await db.queryObject(
+        `SELECT i.id, i.client_id, i.amount, i.status, c.user_id
+         FROM invoices i
+         JOIN clients c ON i.client_id = c.id
+         WHERE i.id = $1`,
+        [invoiceId]
+      );
+
+      if (invoiceResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Invoice not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      const invoice = invoiceResult.rows[0] as any;
+
+      // Verify the invoice belongs to the authenticated user
+      if (invoice.user_id !== authCheck.userId) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Unauthorized" }),
+          { status: 403, headers }
+        );
+      }
+
+      if (invoice.status === "paid") {
+        return new Response(
+          JSON.stringify({ ok: false, error: "This invoice is already marked as paid" }),
+          { status: 400, headers }
+        );
+      }
+
+      // Create a pending payment record (to be verified by owner)
+      const paymentResult = await db.queryObject(
+        `INSERT INTO payments (
+          invoice_id,
+          client_id,
+          amount,
+          payment_method,
+          transaction_id,
+          notes
+        )
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id`,
+        [
+          invoiceId,
+          invoice.client_id,
+          parseFloat(invoice.amount),
+          body.payment_method,
+          body.transaction_id || "",
+          `Self-reported by client. ${body.notes || ""}`.trim(),
+        ]
+      );
+
+      const paymentId = (paymentResult.rows[0] as any).id;
+
+      // Update invoice status to indicate payment is pending verification
+      await db.queryObject(
+        `UPDATE invoices SET status = 'paid', paid_at = NOW() WHERE id = $1`,
+        [invoiceId]
+      );
+
+      // Update client balance
+      await db.queryObject(
+        `UPDATE clients SET balance_due = balance_due - $1 WHERE id = $2`,
+        [parseFloat(invoice.amount), invoice.client_id]
+      );
+
+      console.log(`[server] Client marked payment for invoice ${invoiceId}: ${paymentId}`);
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          payment_id: paymentId,
+          message: "Payment marked successfully! We'll verify it shortly."
+        }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error marking payment:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
         { status: 500, headers }
