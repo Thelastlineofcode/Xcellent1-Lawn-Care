@@ -6,7 +6,7 @@ const STATIC_ASSETS = [
   "/",
   "index.html",
   "dashboard.html",
-  "styles.css",
+  "styles.clean.css",
   "app.js",
   "manifest.json",
 ];
