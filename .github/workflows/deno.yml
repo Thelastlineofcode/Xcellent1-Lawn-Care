@@ -19,7 +19,7 @@ jobs:
         with:
           deno-version: v2.x
       - name: Run deno lint
-        run: deno lint --ignore=web/,bmad/ server.ts supabase_auth.ts api-endpoints.ts
+        run: deno lint --ignore=web/,bmad/ server.ts supabase_auth.ts api-endpoints.ts src/skills/perplexity/skill.ts
 
   python-tests:
     runs-on: ubuntu-latest
