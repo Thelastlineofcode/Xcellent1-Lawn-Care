@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for xcellent1-lawn-care-rpneaa on 2025-11-08T02:15:27Z
+# fly.toml app configuration file generated for xcellent1-lawn-care on 2025-11-24T01:41:20Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'xcellent1-lawn-care-rpneaa'
+app = 'xcellent1-lawn-care'
 primary_region = 'dfw'
 
 [build]
