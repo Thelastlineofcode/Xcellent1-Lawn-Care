@@ -28,7 +28,7 @@
 
     <div class="management-header">
       <div class="management-title">Job Management</div>
-      <p style="opacity: 0.9; margin: 0;">Schedule and assign lawn care services</p>
+      <p>Schedule and assign lawn care services</p>
     </div>
 
     <main class="container">
@@ -46,15 +46,15 @@
         <select class="filter-select" id="client-filter">
           <option value="">All Clients</option>
         </select>
-        <button class="btn" onclick="openAddJobModal()" style="margin-left: auto;">+ Schedule Job</button>
+        <button class="btn" onclick="openAddJobModal()">+ Schedule Job</button>
       </div>
 
       <div id="status-message" role="alert" aria-live="polite"></div>
 
       <div id="jobs-grid" class="jobs-grid">
-        <div style="text-align: center; padding: 3rem;">
+        <div class="loading-container">
           <div class="spinner"></div>
-          <div style="margin-top: 1rem;">Loading jobs...</div>
+          <div>Loading jobs...</div>
         </div>
       </div>
     </main>
@@ -145,7 +145,7 @@
               </div>
             </div>
 
-            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
+            <div class="modal-actions">
               <button type="button" class="btn btn-secondary" onclick="closeJobModal()">Cancel</button>
               <button type="submit" class="btn">Save Job</button>
             </div>

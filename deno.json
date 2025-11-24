@@ -5,6 +5,9 @@
     "check": "deno check server.ts",
     "test": "deno test --allow-net --allow-read --allow-env"
   },
+  "imports": {
+    "$dotenv/": "https://deno.land/std@0.210.0/dotenv/"
+  },
   "fmt": {
     "options": {}
   },

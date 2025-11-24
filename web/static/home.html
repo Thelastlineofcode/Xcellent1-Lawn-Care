@@ -30,7 +30,6 @@
       href="images/xcellent1-icon-192.png"
     />
     <meta name="theme-color" content="#3b832a" />
-    <link rel="stylesheet" href="styles.clean.css" />
     <!-- Home styles moved to `styles.css` to centralize CSS and improve caching -->
   </head>
   <body>
@@ -97,7 +96,7 @@
             Next
           </button>
         </div>
-        <div class="waitlist-step" id="waitlist-step-2" style="display: none">
+        <div class="waitlist-step" id="waitlist-step-2" class="hidden">
           <input
             aria-label="Email"
             name="email"
@@ -116,7 +115,7 @@
             Next
           </button>
         </div>
-        <div class="waitlist-step" id="waitlist-step-3" style="display: none">
+        <div class="waitlist-step" id="waitlist-step-3" class="hidden">
           <select
             name="service"
             class="form-select"
@@ -143,14 +142,7 @@
       </script>
       <div
         id="waitlist-success"
-        style="
-          display: none;
-          margin-top: 1rem;
-          text-align: center;
-          color: #059669;
-          font-weight: 600;
-          font-size: 1.1rem;
-        "
+        class="waitlist-success hidden"
       >
         Thank you for joining the waitlist! We'll be in touch soon.
       </div>

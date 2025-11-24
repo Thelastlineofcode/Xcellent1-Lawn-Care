@@ -6,7 +6,6 @@
     <meta name="description" content="Manage invoices and payments - Xcellent1 Lawn Care" />
     <title>Invoice Management | Xcellent1</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="admin.css" />
   </head>
   <body>
     <nav class="navbar">
@@ -28,7 +27,7 @@
 
     <div class="management-header">
       <div class="management-title">Invoice Management</div>
-      <p style="opacity: 0.9; margin: 0;">Create and manage customer invoices</p>
+      <p>Create and manage customer invoices</p>
     </div>
 
     <main class="container">
@@ -43,7 +42,7 @@
         <select class="filter-select" id="client-filter">
           <option value="">All Clients</option>
         </select>
-        <button class="btn" onclick="openAddInvoiceModal()" style="margin-left: auto;">+ New Invoice</button>
+        <button class="btn" onclick="openAddInvoiceModal()">+ New Invoice</button>
       </div>
 
       <div id="status-message" role="alert" aria-live="polite"></div>
@@ -63,9 +62,9 @@
           </thead>
           <tbody id="invoices-tbody">
             <tr>
-              <td colspan="7" style="text-align: center; padding: 3rem;">
+              <td colspan="7">
                 <div class="spinner"></div>
-                <div style="margin-top: 1rem;">Loading invoices...</div>
+                <div>Loading invoices...</div>
               </td>
             </tr>
           </tbody>
@@ -84,7 +83,7 @@
           <form id="invoice-form" onsubmit="saveInvoice(event)">
             <input type="hidden" id="invoice-id" />
 
-            <div class="form-grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-grid">
               <div class="form-group">
                 <label for="client-select">Client *</label>
                 <select id="client-select" required class="form-control">
@@ -101,7 +100,7 @@
               </div>
             </div>
 
-            <div class="form-grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-grid">
               <div class="form-group">
                 <label for="invoice-date">Invoice Date *</label>
                 <input type="date" id="invoice-date" required class="form-control" />
@@ -112,20 +111,20 @@
               </div>
             </div>
 
-            <div style="margin: 1.5rem 0;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <label style="font-weight: 600;">Line Items</label>
+            <div>
+              <div class="line-items-header">
+                <label>Line Items</label>
                 <button type="button" class="btn btn-sm" onclick="addLineItem()">+ Add Item</button>
               </div>
 
               <table class="line-items-table">
                 <thead>
                   <tr>
-                    <th style="width: 50%;">Description</th>
-                    <th style="width: 15%;">Qty</th>
-                    <th style="width: 20%;">Price</th>
-                    <th style="width: 15%;">Total</th>
-                    <th style="width: 5%;"></th>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody id="line-items-tbody">
@@ -134,7 +133,7 @@
                     <td><input type="number" class="item-quantity" value="1" min="1" onchange="calculateTotal()" required /></td>
                     <td><input type="number" class="item-price" step="0.01" placeholder="0.00" onchange="calculateTotal()" required /></td>
                     <td class="item-total">$0.00</td>
-                    <td><button type="button" onclick="removeLineItem(this)" style="background: none; border: none; color: var(--color-error); cursor: pointer; font-size: 1.2rem;">&times;</button></td>
+                    <td><button type="button" onclick="removeLineItem(this)" class="btn-remove-item">&times;</button></td>
                   </tr>
                 </tbody>
               </table>
@@ -155,12 +154,12 @@
               </div>
             </div>
 
-            <div class="form-group" style="margin-top: 1rem;">
+            <div class="form-group">
               <label for="invoice-notes">Notes</label>
               <textarea id="invoice-notes" class="form-control" rows="3" placeholder="Payment terms, thank you message, etc."></textarea>
             </div>
 
-            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
+            <div class="modal-actions">
               <button type="button" class="btn btn-secondary" onclick="closeInvoiceModal()">Cancel</button>
               <button type="submit" class="btn">Save Invoice</button>
             </div>

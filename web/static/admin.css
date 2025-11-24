@@ -651,3 +651,248 @@ tbody tr:hover {
 .cursor-pointer {
   cursor: pointer;
 }
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+      }
+      .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+      }
+      .stat-card {
+        background: linear-gradient(
+          135deg,
+          var(--color-primary) 0%,
+          var(--color-primary-dark) 100%
+        );
+        color: white;
+        padding: var(--spacing-md);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+      }
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+      }
+      .stat-label {
+        font-size: 0.875rem;
+        opacity: 0.9;
+        margin-top: var(--spacing-xs);
+      }
+      .status-indicator {
+        display: inline-block;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+      }
+      .status-active {
+        background: var(--color-success);
+      }
+      .status-pending {
+        background: var(--color-warning);
+      }
+      .status-complete {
+        background: var(--color-secondary);
+      }
+      .lead-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: start;
+        gap: var(--spacing-md);
+      }
+      .lead-info h3 {
+        margin-bottom: var(--spacing-xs);
+      }
+      .lead-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-xs);
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+      }
+      .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-sm);
+      }
+      .photo-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        background: var(--color-bg);
+        border: 2px solid var(--color-border);
+      }
+      .photo-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform var(--transition);
+      }
+      .photo-item:hover img {
+        transform: scale(1.1);
+      }
+      .refresh-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+      }
+      .refresh-indicator .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--color-success);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      @media (max-width: 768px) {
+        .dashboard-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .lead-card {
+          grid-template-columns: 1fr;
+        }
+      }
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+      }
+      .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+      }
+      .stat-card {
+        background: linear-gradient(
+          135deg,
+          var(--color-primary) 0%,
+          var(--color-primary-dark) 100%
+        );
+        color: white;
+        padding: var(--spacing-md);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+      }
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+      }
+      .stat-label {
+        font-size: 0.875rem;
+        opacity: 0.9;
+        margin-top: var(--spacing-xs);
+      }
+      .status-indicator {
+        display: inline-block;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+      }
+      .status-active {
+        background: var(--color-success);
+      }
+      .status-pending {
+        background: var(--color-warning);
+      }
+      .status-complete {
+        background: var(--color-secondary);
+      }
+      .lead-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: start;
+        gap: var(--spacing-md);
+      }
+      .lead-info h3 {
+        margin-bottom: var(--spacing-xs);
+      }
+      .lead-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-xs);
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+      }
+      .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-sm);
+      }
+      .photo-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        background: var(--color-bg);
+        border: 2px solid var(--color-border);
+      }
+      .photo-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform var(--transition);
+      }
+      .photo-item:hover img {
+        transform: scale(1.1);
+      }
+      .refresh-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+      }
+      .refresh-indicator .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--color-success);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      @media (max-width: 768px) {
+        .dashboard-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .lead-card {
+          grid-template-columns: 1fr;
+        }
+      }
+.hidden { display: none; }
