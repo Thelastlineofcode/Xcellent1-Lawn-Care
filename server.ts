@@ -1037,16 +1037,19 @@ async function handler(req: Request): Promise<Response> {
       };
 
       if (dbConnected) {
-        // Save to applications table with source=waitlist if available
+        // Save to waitlist table
         try {
           const result = await db.queryObject(
-            `INSERT INTO applications (name, phone, email, notes, source, status) VALUES ($1, $2, $3, $4, $5, 'pending') RETURNING id`,
+            `INSERT INTO waitlist (name, email, phone, property_address, preferred_service_plan, notes, source, status) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, 'pending') RETURNING id`,
             [
               record.name,
-              "",
               record.email,
-              `waitlist:${record.service} ${record.notes}`,
-              "waitlist",
+              "",  // phone - not collected in simple form
+              "",  // property_address - not collected in simple form
+              record.service,
+              record.notes || "",
+              "website",
             ]
           );
           const id = (result.rows[0] as any).id;
