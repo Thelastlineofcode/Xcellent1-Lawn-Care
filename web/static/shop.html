@@ -3,14 +3,224 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Shop quality lawn care products and landscaping supplies. Fertilizers, seeds, tools, and equipment delivered in the River Parishes, Louisiana." />
+    <meta name="description" content="Shop professional lawn care equipment, fertilizers, mowers, and tools. Recommended products for Louisiana lawns from Xcellent1 Lawn Care experts." />
     <meta name="theme-color" content="#3b832a" />
-    <meta property="og:title" content="Shop | Xcellent1 Lawn Care" />
-    <meta property="og:description" content="Quality lawn care products and landscaping supplies delivered to your door." />
+    <meta property="og:title" content="Shop Lawn Care Products | Xcellent1 Lawn Care" />
+    <meta property="og:description" content="Professional-grade lawn care equipment and supplies recommended by experts." />
     <meta property="og:type" content="website" />
-    <title>Shop | Xcellent1 Lawn Care</title>
+    <meta property="og:url" content="https://xcellent1-lawn-care-rpneaa.fly.dev/static/shop.html" />
+    <link rel="canonical" href="https://xcellent1-lawn-care-rpneaa.fly.dev/static/shop.html" />
+    <title>Shop Lawn Care Products | Xcellent1 Lawn Care</title>
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
     <link rel="stylesheet" href="styles.clean.css" />
+    <style>
+      .shop-hero {
+        background: linear-gradient(135deg, #1b4d2f 0%, #2d6520 50%, #3b832a 100%);
+        color: #fff;
+        padding: 3rem 1rem;
+        text-align: center;
+      }
+      .shop-hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .shop-hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .affiliate-notice {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1.5rem auto;
+        max-width: 800px;
+        font-size: 0.9rem;
+        color: #92400e;
+      }
+      .affiliate-notice strong {
+        color: #78350f;
+      }
+      .shop-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+      .category-section {
+        margin-bottom: 3rem;
+      }
+      .category-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #10b981;
+      }
+      .category-icon {
+        font-size: 1.75rem;
+      }
+      .category-header h2 {
+        color: #1b4d2f;
+        font-size: 1.5rem;
+        margin: 0;
+      }
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+      .product-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+      }
+      .product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      }
+      .product-image {
+        width: 100%;
+        height: 200px;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .product-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .product-placeholder {
+        font-size: 4rem;
+        opacity: 0.3;
+      }
+      .product-body {
+        padding: 1.25rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .product-brand {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.25rem;
+      }
+      .product-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+      }
+      .product-desc {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 1rem;
+        flex: 1;
+      }
+      .product-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .product-price {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #059669;
+      }
+      .btn-amazon {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #ff9900;
+        color: #111;
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-decoration: none;
+        transition: background 0.2s;
+      }
+      .btn-amazon:hover {
+        background: #e68a00;
+      }
+      .btn-amazon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .best-seller {
+        position: relative;
+      }
+      .best-seller::before {
+        content: "⭐ Best Seller";
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: #fbbf24;
+        color: #78350f;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        z-index: 1;
+      }
+      .pro-pick {
+        position: relative;
+      }
+      .pro-pick::before {
+        content: "🏆 Pro Pick";
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: #10b981;
+        color: #fff;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        z-index: 1;
+      }
+      .filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: #f9fafb;
+        border-radius: 8px;
+      }
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 20px;
+        background: #fff;
+        color: #374151;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+      }
+      .filter-btn:hover, .filter-btn.active {
+        background: #10b981;
+        color: #fff;
+        border-color: #10b981;
+      }
+      @media (max-width: 768px) {
+        .shop-hero h1 { font-size: 1.75rem; }
+        .products-grid { grid-template-columns: 1fr; }
+      }
+    </style>
   </head>
   <body>
     <nav class="navbar">
@@ -23,161 +233,546 @@
       </div>
       <div class="navbar-links">
         <a href="home.html" class="navbar-link">Home</a>
-        <a href="shop.html" class="navbar-link">Shop</a>
+        <a href="shop.html" class="navbar-link active">Shop</a>
         <a href="careers.html" class="navbar-link">Careers</a>
         <a href="login.html" class="navbar-login">Login</a>
       </div>
     </nav>
 
-    <main class="container">
-      <div class="section-header">
-        <h2>Landscaping Supply Shop</h2>
-        <p>Products and recommended tools we trust for River Parishes lawns</p>
+    <!-- Hero Section -->
+    <section class="shop-hero">
+      <h1>🌿 Lawn Care Equipment Shop</h1>
+      <p>Professional-grade tools and supplies we use and recommend for Louisiana lawns. Curated by the Xcellent1 team.</p>
+    </section>
+
+    <div class="shop-container">
+      <!-- Affiliate Disclosure -->
+      <div class="affiliate-notice">
+        <strong>Affiliate Disclosure:</strong> As an Amazon Associate, we earn from qualifying purchases. This helps support our business at no extra cost to you. We only recommend products we actually use and trust.
       </div>
 
-      <!-- Watering & Irrigation -->
-      <section>
-        <div class="section-header">
-          <h3 style="color: #1b4d2f">Watering &amp; Irrigation Equipment</h3>
-          <p>Keep your River Parishes lawn hydrated</p>
+      <!-- Category Filters -->
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterProducts('all')">All Products</button>
+        <button class="filter-btn" onclick="filterProducts('mowers')">🚜 Mowers</button>
+        <button class="filter-btn" onclick="filterProducts('trimmers')">✂️ Trimmers</button>
+        <button class="filter-btn" onclick="filterProducts('fertilizers')">🌱 Fertilizers</button>
+        <button class="filter-btn" onclick="filterProducts('tools')">🔧 Tools</button>
+        <button class="filter-btn" onclick="filterProducts('watering')">💧 Watering</button>
+      </div>
+
+      <!-- MOWERS & EQUIPMENT -->
+      <section class="category-section" data-category="mowers">
+        <div class="category-header">
+          <span class="category-icon">🚜</span>
+          <h2>Lawn Mowers & Equipment</h2>
         </div>
-        <div class="product-grid">
-          <div class="product-card">
-            <div
-              class="product-image bg-sprinkler"
-              role="img"
-              aria-label="Eden 96213 Oscillating Sprinkler"
-            >
-              <noscript>
-                <img
-                  src="images/81QwQd6F1GL._AC_SL1500_.jpg"
-                  alt="Eden 96213 Oscillating Sprinkler"
-                />
-              </noscript>
+        <div class="products-grid">
+          <!-- EGO Power+ Mower -->
+          <div class="product-card pro-pick">
+            <div class="product-image">
+              <div class="product-placeholder">🚜</div>
             </div>
-            <div class="product-info">
-              <div class="product-name">Eden 96213 Oscillating Sprinkler</div>
-              <div class="product-price">$20.98</div>
-              <p class="product-description">
-                Heavy-duty oscillating sprinkler covers up to 3,600 sq ft.
-              </p>
-              <a
-                href="https://amzn.to/47W8ekL"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="buy-button"
-                >Buy on Amazon</a
-              >
+            <div class="product-body">
+              <span class="product-brand">EGO Power+</span>
+              <h3 class="product-name">21" Self-Propelled Lawn Mower</h3>
+              <p class="product-desc">56V lithium-ion battery powered. Up to 60 min runtime. What we use on most residential lawns.</p>
+              <div class="product-footer">
+                <span class="product-price">$599</span>
+                <a href="https://www.amazon.com/dp/B09MG2NQVJ?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Greenworks Push Mower -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">🚜</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Greenworks</span>
+              <h3 class="product-name">40V 17" Cordless Push Mower</h3>
+              <p class="product-desc">Perfect for small to medium yards. Lightweight and easy to maneuver. Great starter mower.</p>
+              <div class="product-footer">
+                <span class="product-price">$259</span>
+                <a href="https://www.amazon.com/dp/B00BQPKCV8?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Honda Gas Mower -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">🚜</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Honda</span>
+              <h3 class="product-name">HRN216VKA Self-Propelled Gas Mower</h3>
+              <p class="product-desc">Honda reliability. Twin blade MicroCut system for superior mulching. Commercial-grade quality.</p>
+              <div class="product-footer">
+                <span class="product-price">$549</span>
+                <a href="https://www.amazon.com/dp/B08C2QLY9K?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Lawn Tools -->
-      <section style="margin-top: 2.5rem">
-        <div class="section-header">
-          <h3 style="color: #1b4d2f">Lawn Tools &amp; Equipment</h3>
-          <p>Recommended tools for River Parishes lawns</p>
+      <!-- STRING TRIMMERS & EDGERS -->
+      <section class="category-section" data-category="trimmers">
+        <div class="category-header">
+          <span class="category-icon">✂️</span>
+          <h2>String Trimmers & Edgers</h2>
         </div>
-        <div class="product-grid">
-          <div class="product-card">
-            <div
-              class="product-image bg-spreader"
-              role="img"
-              aria-label="Scotts Turf Builder EdgeGuard DLX Spreader"
-            >
-              <noscript>
-                <img
-                  src="images/product-fertilizer.jpg"
-                  alt="Scotts Turf Builder EdgeGuard DLX Spreader"
-                />
-              </noscript>
+        <div class="products-grid">
+          <!-- EGO String Trimmer -->
+          <div class="product-card pro-pick">
+            <div class="product-image">
+              <div class="product-placeholder">✂️</div>
             </div>
-            <div class="product-info">
-              <div class="product-name">
-                Scotts Turf Builder EdgeGuard DLX Spreader
+            <div class="product-body">
+              <span class="product-brand">EGO Power+</span>
+              <h3 class="product-name">15" String Trimmer with Rapid Reload</h3>
+              <p class="product-desc">Our go-to trimmer. Powerload technology reloads line in seconds. Carbon fiber shaft.</p>
+              <div class="product-footer">
+                <span class="product-price">$249</span>
+                <a href="https://www.amazon.com/dp/B086K9V3MT?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
               </div>
-              <div class="product-price">$99.97</div>
-              <p class="product-description">
-                Professional-grade broadcast spreader for fertilizer, seed, and
-                salt.
-              </p>
-              <a
-                href="https://amzn.to/3LvEnZ3"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="buy-button"
-                >Buy on Amazon</a
-              >
             </div>
           </div>
 
-          <div class="product-card">
-            <div
-              class="product-image bg-liquid"
-              role="img"
-              aria-label="Scotts Liquid Green Max"
-            >
-              <noscript>
-                <img
-                  src="images/product-weed-feed.jpg"
-                  alt="Scotts Liquid Green Max"
-                />
-              </noscript>
+          <!-- DEWALT Trimmer -->
+          <div class="product-card best-seller">
+            <div class="product-image">
+              <div class="product-placeholder">✂️</div>
             </div>
-            <div class="product-info">
-              <div class="product-name">Scotts Liquid Green Max</div>
-              <div class="product-price">$49.99</div>
-              <p class="product-description">
-                Liquid lawn food for quick greening.
-              </p>
-              <a
-                href="https://amzn.to/4qUz8Cc"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="buy-button"
-                >Buy on Amazon</a
-              >
+            <div class="product-body">
+              <span class="product-brand">DEWALT</span>
+              <h3 class="product-name">20V MAX String Trimmer</h3>
+              <p class="product-desc">Compact and powerful. Uses same batteries as DEWALT power tools. Great for homeowners.</p>
+              <div class="product-footer">
+                <span class="product-price">$169</span>
+                <a href="https://www.amazon.com/dp/B07P7BL7SQ?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
             </div>
           </div>
 
+          <!-- BLACK+DECKER Edger -->
           <div class="product-card">
-            <div
-              class="product-image bg-fertilizer"
-              role="img"
-              aria-label="Scotts Turf Builder WinterGuard Fertilizer"
-            >
-              <noscript>
-                <img
-                  src="images/product-sod.jpg"
-                  alt="Scotts Turf Builder WinterGuard Fertilizer"
-                />
-              </noscript>
+            <div class="product-image">
+              <div class="product-placeholder">✂️</div>
             </div>
-            <div class="product-info">
-              <div class="product-name">
-                Scotts Turf Builder WinterGuard Fertilizer
+            <div class="product-body">
+              <span class="product-brand">BLACK+DECKER</span>
+              <h3 class="product-name">2-in-1 Trimmer/Edger 20V</h3>
+              <p class="product-desc">Converts from trimmer to edger in seconds. Perfect for clean sidewalk edges.</p>
+              <div class="product-footer">
+                <span class="product-price">$89</span>
+                <a href="https://www.amazon.com/dp/B00HH5H6VM?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
               </div>
-              <div class="product-price">$28.47</div>
-              <p class="product-description">
-                Fall fertilizer for stronger spring green-up.
-              </p>
-              <a
-                href="https://amzn.to/47WizgH"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="buy-button"
-                >Buy on Amazon</a
-              >
             </div>
           </div>
         </div>
       </section>
 
-      <p style="margin-top: 2rem; font-size: 0.95rem; color: #6b7280">
-        Note: These product links are affiliate links to Amazon. Images are
-        locally hosted for reliability.
-      </p>
-    </main>
+      <!-- LEAF BLOWERS -->
+      <section class="category-section" data-category="tools">
+        <div class="category-header">
+          <span class="category-icon">🍂</span>
+          <h2>Leaf Blowers</h2>
+        </div>
+        <div class="products-grid">
+          <!-- EGO Blower -->
+          <div class="product-card pro-pick">
+            <div class="product-image">
+              <div class="product-placeholder">🍂</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">EGO Power+</span>
+              <h3 class="product-name">650 CFM Handheld Blower</h3>
+              <p class="product-desc">Variable speed turbo. Moves leaves and debris fast. We use this daily.</p>
+              <div class="product-footer">
+                <span class="product-price">$219</span>
+                <a href="https://www.amazon.com/dp/B086K51W6F?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Greenworks Blower -->
+          <div class="product-card best-seller">
+            <div class="product-image">
+              <div class="product-placeholder">🍂</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Greenworks</span>
+              <h3 class="product-name">40V Cordless Jet Blower</h3>
+              <p class="product-desc">Budget-friendly option. Lightweight at just 5.5 lbs. Great for homeowners.</p>
+              <div class="product-footer">
+                <span class="product-price">$99</span>
+                <a href="https://www.amazon.com/dp/B00DRBC7QG?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Backpack Blower -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">🍂</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">EGO Power+</span>
+              <h3 class="product-name">Backpack Blower 600 CFM</h3>
+              <p class="product-desc">For larger properties. Padded straps for comfort. Commercial-grade power.</p>
+              <div class="product-footer">
+                <span class="product-price">$349</span>
+                <a href="https://www.amazon.com/dp/B07DNLXJYC?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FERTILIZERS & LAWN FOOD -->
+      <section class="category-section" data-category="fertilizers">
+        <div class="category-header">
+          <span class="category-icon">🌱</span>
+          <h2>Fertilizers & Lawn Food</h2>
+        </div>
+        <div class="products-grid">
+          <!-- Scotts Turf Builder -->
+          <div class="product-card best-seller">
+            <div class="product-image">
+              <div class="product-placeholder">🌱</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Scotts</span>
+              <h3 class="product-name">Turf Builder Southern Triple Action</h3>
+              <p class="product-desc">Kills weeds, prevents fire ants, and feeds your lawn. Made for Southern lawns like ours.</p>
+              <div class="product-footer">
+                <span class="product-price">$34</span>
+                <a href="https://www.amazon.com/dp/B07N4GD2QK?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Milorganite -->
+          <div class="product-card pro-pick">
+            <div class="product-image">
+              <div class="product-placeholder">🌱</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Milorganite</span>
+              <h3 class="product-name">Organic Nitrogen Fertilizer 32 lb</h3>
+              <p class="product-desc">Slow-release organic. Won't burn your lawn. We recommend this for St. Augustine grass.</p>
+              <div class="product-footer">
+                <span class="product-price">$18</span>
+                <a href="https://www.amazon.com/dp/B002Y0AKK6?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scotts WinterGuard -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">🌱</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Scotts</span>
+              <h3 class="product-name">Turf Builder WinterGuard Fall Fertilizer</h3>
+              <p class="product-desc">Fall application for stronger roots. Prepares your lawn for winter dormancy.</p>
+              <div class="product-footer">
+                <span class="product-price">$28</span>
+                <a href="https://amzn.to/47WizgH" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Liquid Lawn Food -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">🌱</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Simple Lawn Solutions</span>
+              <h3 class="product-name">Liquid Lawn Food 16-4-8</h3>
+              <p class="product-desc">Spray-on liquid fertilizer. Fast results. Easy hose-end applicator included.</p>
+              <div class="product-footer">
+                <span class="product-price">$26</span>
+                <a href="https://www.amazon.com/dp/B078H3BQRH?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WATERING & IRRIGATION -->
+      <section class="category-section" data-category="watering">
+        <div class="category-header">
+          <span class="category-icon">💧</span>
+          <h2>Watering & Irrigation</h2>
+        </div>
+        <div class="products-grid">
+          <!-- Oscillating Sprinkler -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">💧</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Eden</span>
+              <h3 class="product-name">96213 Oscillating Sprinkler</h3>
+              <p class="product-desc">Heavy-duty oscillating sprinkler. Covers up to 3,600 sq ft. Built to last.</p>
+              <div class="product-footer">
+                <span class="product-price">$21</span>
+                <a href="https://amzn.to/47W8ekL" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hose -->
+          <div class="product-card best-seller">
+            <div class="product-image">
+              <div class="product-placeholder">💧</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Flexzilla</span>
+              <h3 class="product-name">Garden Hose 50 ft</h3>
+              <p class="product-desc">Kink-free, lightweight, and flexible. The best hose we've ever used. Lifetime warranty.</p>
+              <div class="product-footer">
+                <span class="product-price">$40</span>
+                <a href="https://www.amazon.com/dp/B00TH3N2QW?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timer -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">💧</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Orbit</span>
+              <h3 class="product-name">Digital Hose Watering Timer</h3>
+              <p class="product-desc">Set it and forget it. Programs up to 4 times per day. Great for vacation watering.</p>
+              <div class="product-footer">
+                <span class="product-price">$32</span>
+                <a href="https://www.amazon.com/dp/B004INGS8S?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SPREADERS & SPRAYERS -->
+      <section class="category-section" data-category="tools">
+        <div class="category-header">
+          <span class="category-icon">🔧</span>
+          <h2>Spreaders & Sprayers</h2>
+        </div>
+        <div class="products-grid">
+          <!-- Broadcast Spreader -->
+          <div class="product-card pro-pick">
+            <div class="product-image">
+              <div class="product-placeholder">🔧</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Scotts</span>
+              <h3 class="product-name">Turf Builder EdgeGuard DLX Spreader</h3>
+              <p class="product-desc">Professional-grade broadcast spreader. EdgeGuard keeps product off driveways. Covers 15,000 sq ft.</p>
+              <div class="product-footer">
+                <span class="product-price">$100</span>
+                <a href="https://amzn.to/3LvEnZ3" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pump Sprayer -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">🔧</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Chapin</span>
+              <h3 class="product-name">2-Gallon Lawn & Garden Sprayer</h3>
+              <p class="product-desc">For weed killers and liquid fertilizers. Adjustable nozzle. Comfortable shoulder strap.</p>
+              <div class="product-footer">
+                <span class="product-price">$25</span>
+                <a href="https://www.amazon.com/dp/B000E28UQU?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hand Spreader -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">🔧</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Scotts</span>
+              <h3 class="product-name">Wizz Hand-Held Spreader</h3>
+              <p class="product-desc">Battery-powered hand spreader. Perfect for small yards and spot treatments.</p>
+              <div class="product-footer">
+                <span class="product-price">$25</span>
+                <a href="https://www.amazon.com/dp/B00005QEJN?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SAFETY & ACCESSORIES -->
+      <section class="category-section" data-category="tools">
+        <div class="category-header">
+          <span class="category-icon">🧤</span>
+          <h2>Safety Gear & Accessories</h2>
+        </div>
+        <div class="products-grid">
+          <!-- Work Gloves -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">🧤</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">Mechanix Wear</span>
+              <h3 class="product-name">Landscaper Work Gloves</h3>
+              <p class="product-desc">Synthetic leather palm. Breathable back. Durable and comfortable for all-day use.</p>
+              <div class="product-footer">
+                <span class="product-price">$18</span>
+                <a href="https://www.amazon.com/dp/B0001VNZUA?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Safety Glasses -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">🥽</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">3M</span>
+              <h3 class="product-name">Safety Glasses with Anti-Fog</h3>
+              <p class="product-desc">Protect your eyes from debris. Anti-fog coating for Louisiana humidity.</p>
+              <div class="product-footer">
+                <span class="product-price">$12</span>
+                <a href="https://www.amazon.com/dp/B00AEXKR4C?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ear Protection -->
+          <div class="product-card">
+            <div class="product-image">
+              <div class="product-placeholder">🎧</div>
+            </div>
+            <div class="product-body">
+              <span class="product-brand">3M</span>
+              <h3 class="product-name">WorkTunes Hearing Protector with Bluetooth</h3>
+              <p class="product-desc">Protect your hearing while listening to music. Noise reduction rating 24dB.</p>
+              <div class="product-footer">
+                <span class="product-price">$55</span>
+                <a href="https://www.amazon.com/dp/B0723CYHPZ?tag=YOUR-TAG-20" target="_blank" rel="noopener sponsored" class="btn-amazon">
+                  View on Amazon
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.586 5H13V3h8z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <h3>Xcellent1 Lawn Care</h3>
+        <p>Professional lawn care services in the River Parishes, Louisiana</p>
+        <p><a href="home.html">Back to Home</a> | <a href="careers.html">Join Our Team</a></p>
+        <p class="copyright">© 2025 Xcellent1 Lawn Care. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      // Filter products by category
+      function filterProducts(category) {
+        // Update active button
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        // Show/hide sections
+        document.querySelectorAll('.category-section').forEach(section => {
+          if (category === 'all') {
+            section.style.display = 'block';
+          } else {
+            const sectionCategory = section.dataset.category;
+            section.style.display = (sectionCategory === category) ? 'block' : 'none';
+          }
+        });
+      }
+    </script>
   </body>
 </html>
