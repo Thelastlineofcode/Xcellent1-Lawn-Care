@@ -8,10 +8,28 @@
   <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+      <div class="navbar-title">
+        <span class="navbar-name">XCELLENT1</span>
+        <span class="navbar-tagline">LAWN CARE</span>
+      </div>
+    </div>
+    <div class="navbar-links">
+      <a href="owner.html" class="navbar-link">Dashboard</a>
+      <a href="manage-clients.html" class="navbar-link">Clients</a>
+      <a href="manage-jobs.html" class="navbar-link">Jobs</a>
+      <a href="manage-invoices.html" class="navbar-link">Invoices</a>
+      <button onclick="logout()" class="btn btn-sm">Logout</button>
+    </div>
+  </nav>
+
   <div class="container">
     <div class="header">
       <h1>⏳ Pending Payments</h1>
-      <a href="/static/owner.html" class="back-btn">← Back to Dashboard</a>
+      <a href="owner.html" class="back-btn">← Back to Dashboard</a>
     </div>
 
     <div class="content">
@@ -40,6 +58,18 @@
   </div>
 
   <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
+    
+    const SUPABASE_URL = "https://utivthfrwgtjatsusopw.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0aXZ0aGZyd2d0amF0c3Vzb3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1NTA4NDEsImV4cCI6MjA3ODEyNjg0MX0.hcIzoqBwYSMC-571NRBAd_WMQZumuxavJ282nCNQ7QM";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    // Logout function
+    window.logout = async function() {
+      await supabase.auth.signOut();
+      window.location.href = "login.html";
+    };
+    
     const API_BASE = window.location.origin;
     let allPayments = [];
 
@@ -48,7 +78,7 @@
 
     if (!session || !session.access_token) {
       alert("Please log in first");
-      window.location.href = "/static/owner.html";
+      window.location.href = "login.html";
     }
 
     // Load pending payments
