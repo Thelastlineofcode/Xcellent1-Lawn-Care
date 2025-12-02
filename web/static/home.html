@@ -966,5 +966,65 @@
         });
       });
     </script>
+    <!-- Mobile Menu & GSAP Animations -->
+    <script>
+      // Mobile menu toggle
+      function toggleMobileMenu() {
+        document.getElementById('navbar-links').classList.toggle('active');
+      }
+      
+      // Close mobile menu when clicking a link
+      document.querySelectorAll('.navbar-link').forEach(link => {
+        link.addEventListener('click', () => {
+          document.getElementById('navbar-links').classList.remove('active');
+        });
+      });
+
+      // GSAP Animations
+      document.addEventListener('DOMContentLoaded', () => {
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Hero animations
+        gsap.from('.hero-title', { duration: 1, y: 30, opacity: 0, ease: 'power3.out' });
+        gsap.from('.hero-home .subtitle', { duration: 1, y: 20, opacity: 0, delay: 0.2, ease: 'power3.out' });
+        gsap.from('.hero-buttons', { duration: 1, y: 20, opacity: 0, delay: 0.4, ease: 'power3.out' });
+        gsap.from('.waitlist-form', { duration: 1, y: 20, opacity: 0, delay: 0.6, ease: 'power3.out' });
+        
+        // Service cards - animate on scroll
+        gsap.utils.toArray('.service-card').forEach((card, i) => {
+          gsap.from(card, {
+            scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none none' },
+            duration: 0.6,
+            y: 40,
+            opacity: 0,
+            delay: i * 0.1,
+            ease: 'power2.out'
+          });
+        });
+        
+        // Blog cards - animate on scroll
+        gsap.utils.toArray('.blog-card').forEach((card, i) => {
+          gsap.from(card, {
+            scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none none' },
+            duration: 0.6,
+            y: 40,
+            opacity: 0,
+            delay: i * 0.15,
+            ease: 'power2.out'
+          });
+        });
+        
+        // Section headers
+        gsap.utils.toArray('.section-header').forEach(header => {
+          gsap.from(header, {
+            scrollTrigger: { trigger: header, start: 'top 85%', toggleActions: 'play none none none' },
+            duration: 0.8,
+            y: 30,
+            opacity: 0,
+            ease: 'power2.out'
+          });
+        });
+      });
+    </script>
   </body>
 </html>
