@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Complete your Xcellent1 Lawn Care owner account setup"
+    />
+    <meta name="theme-color" content="#3b832a" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Owner Account Setup | Xcellent1 Lawn Care</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
+    <link rel="stylesheet" href="styles.clean.css" />
+    <style>
+      .setup-container {
+        background: linear-gradient(135deg, #3b832a 0%, #2d6520 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+
+      .setup-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 480px;
+        width: 100%;
+        padding: 48px 40px;
+      }
+
+      .setup-logo {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .setup-logo h1 {
+        color: #3b832a;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 16px 0 8px 0;
+      }
+
+      .setup-logo p {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .setup-info {
+        background: #f0fdf4;
+        border-left: 4px solid #3b832a;
+        padding: 16px;
+        margin-bottom: 24px;
+        border-radius: 6px;
+        color: #2d6520;
+        font-size: 14px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        color: #333;
+        font-weight: 500;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        box-sizing: border-box;
+        transition: border-color 0.2s;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #3b832a;
+        box-shadow: 0 0 0 3px rgba(59, 131, 42, 0.1);
+      }
+
+      .form-group input:disabled {
+        background-color: #f5f5f5;
+        color: #999;
+        cursor: not-allowed;
+      }
+
+      .password-requirements {
+        font-size: 12px;
+        color: #666;
+        margin-top: 8px;
+        padding: 12px;
+        background: #f9f9f9;
+        border-radius: 4px;
+      }
+
+      .requirement {
+        margin: 4px 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .requirement.met {
+        color: #22c55e;
+      }
+
+      .requirement.unmet {
+        color: #999;
+      }
+
+      .requirement::before {
+        content: "✓";
+        display: inline-block;
+        width: 16px;
+        margin-right: 8px;
+        font-weight: bold;
+      }
+
+      .requirement.unmet::before {
+        content: "✗";
+      }
+
+      .btn-submit {
+        width: 100%;
+        padding: 12px 24px;
+        background: #3b832a;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        margin-top: 24px;
+      }
+
+      .btn-submit:hover:not(:disabled) {
+        background: #2d6520;
+      }
+
+      .btn-submit:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .error-message {
+        background: #fef2f2;
+        border-left: 4px solid #ef4444;
+        color: #991b1b;
+        padding: 12px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        display: none;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      .success-message {
+        background: #f0fdf4;
+        border-left: 4px solid #22c55e;
+        color: #166534;
+        padding: 12px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        display: none;
+      }
+
+      .success-message.show {
+        display: block;
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid #3b832a;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .form-section-title {
+        color: #2d6520;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 24px;
+        margin-bottom: 16px;
+        padding-top: 12px;
+        border-top: 1px solid #e5e5e5;
+      }
+
+      .form-section-title:first-child {
+        margin-top: 0;
+        border-top: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="setup-container">
+      <div class="setup-card">
+        <div class="setup-logo">
+          <img
+            src="images/xcellent1-logo-transparent.png"
+            alt="Xcellent1 logo"
+            style="width: 60px; height: auto; margin-bottom: 8px"
+          />
+          <h1>Complete Your Setup</h1>
+          <p>Create your owner account to get started</p>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <div class="setup-info" id="invitationInfo" style="display: none">
+          <strong>Welcome!</strong> This invitation is valid for 7 days. After
+          that, you'll need to request a new one.
+        </div>
+
+        <form id="setupForm" style="display: none">
+          <div class="form-section-title">Account Information</div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" disabled />
+            <small style="color: #999">Cannot be changed</small>
+          </div>
+
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" disabled />
+            <small style="color: #999">Cannot be changed</small>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" disabled />
+            <small style="color: #999">Cannot be changed</small>
+          </div>
+
+          <div class="form-section-title">Create Your Password</div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter a strong password"
+              required
+            />
+            <div class="password-requirements">
+              <div class="requirement unmet" id="req-length">
+                At least 8 characters
+              </div>
+              <div class="requirement unmet" id="req-upper">
+                One uppercase letter
+              </div>
+              <div class="requirement unmet" id="req-lower">
+                One lowercase letter
+              </div>
+              <div class="requirement unmet" id="req-number">
+                One number
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="passwordConfirm">Confirm Password</label>
+            <input
+              type="password"
+              id="passwordConfirm"
+              name="passwordConfirm"
+              placeholder="Re-enter your password"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn-submit" id="submitBtn">
+            Create Account
+          </button>
+        </form>
+
+        <div id="invalidForm" style="display: none; text-align: center">
+          <p style="color: #666; margin-bottom: 16px">
+            This invitation is invalid or has expired.
+          </p>
+          <p style="font-size: 14px; color: #999">
+            If you believe this is an error, please contact support at
+            <strong>info@xcellent1lawn.com</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const setupForm = document.getElementById("setupForm");
+      const invalidForm = document.getElementById("invalidForm");
+      const invitationInfo = document.getElementById("invitationInfo");
+      const errorMessage = document.getElementById("errorMessage");
+      const successMessage = document.getElementById("successMessage");
+      const passwordInput = document.getElementById("password");
+      const passwordConfirmInput = document.getElementById("passwordConfirm");
+      const submitBtn = document.getElementById("submitBtn");
+
+      const requirements = {
+        length: document.getElementById("req-length"),
+        upper: document.getElementById("req-upper"),
+        lower: document.getElementById("req-lower"),
+        number: document.getElementById("req-number"),
+      };
+
+      // Get token from URL
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+
+      if (!token) {
+        setupForm.style.display = "none";
+        invalidForm.style.display = "block";
+      } else {
+        // Validate invitation
+        validateInvitation(token);
+      }
+
+      async function validateInvitation(token) {
+        try {
+          const response = await fetch(`/api/owner/invite/${token}`);
+          const data = await response.json();
+
+          if (!data.ok) {
+            setupForm.style.display = "none";
+            invalidForm.style.display = "block";
+            return;
+          }
+
+          // Populate form with invitation data
+          document.getElementById("email").value = data.email;
+          document.getElementById("name").value = data.name;
+          document.getElementById("phone").value = data.phone || "";
+          invitationInfo.style.display = "block";
+          setupForm.style.display = "block";
+        } catch (err) {
+          console.error("Error validating invitation:", err);
+          setupForm.style.display = "none";
+          invalidForm.style.display = "block";
+        }
+      }
+
+      // Password validation
+      passwordInput.addEventListener("input", validatePasswordRequirements);
+
+      function validatePasswordRequirements() {
+        const password = passwordInput.value;
+
+        const hasLength = password.length >= 8;
+        const hasUpper = /[A-Z]/.test(password);
+        const hasLower = /[a-z]/.test(password);
+        const hasNumber = /\d/.test(password);
+
+        updateRequirement("length", hasLength);
+        updateRequirement("upper", hasUpper);
+        updateRequirement("lower", hasLower);
+        updateRequirement("number", hasNumber);
+
+        const allMet = hasLength && hasUpper && hasLower && hasNumber;
+        const passwordsMatch =
+          password === passwordConfirmInput.value && password !== "";
+        submitBtn.disabled = !(allMet && passwordsMatch);
+      }
+
+      function updateRequirement(key, met) {
+        const elem = requirements[key];
+        if (met) {
+          elem.classList.add("met");
+          elem.classList.remove("unmet");
+        } else {
+          elem.classList.add("unmet");
+          elem.classList.remove("met");
+        }
+      }
+
+      passwordConfirmInput.addEventListener("input", () => {
+        validatePasswordRequirements();
+      });
+
+      // Form submission
+      setupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const password = document.getElementById("password").value;
+        const passwordConfirm = document.getElementById("passwordConfirm").value;
+
+        if (password !== passwordConfirm) {
+          showError("Passwords do not match");
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<span class="loading-spinner"></span>Creating account...';
+
+        try {
+          const response = await fetch(`/api/owner/invite/${token}/accept`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              password: password,
+              password_confirm: passwordConfirm,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!data.ok) {
+            showError(data.error || "Failed to create account");
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "Create Account";
+            return;
+          }
+
+          showSuccess(
+            "Account created successfully! Redirecting to login..."
+          );
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 2000);
+        } catch (err) {
+          console.error("Error creating account:", err);
+          showError("An error occurred. Please try again.");
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = "Create Account";
+        }
+      });
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.classList.add("show");
+        successMessage.classList.remove("show");
+      }
+
+      function showSuccess(message) {
+        successMessage.textContent = message;
+        successMessage.classList.add("show");
+        errorMessage.classList.remove("show");
+      }
+    </script>
+  </body>
+</html>

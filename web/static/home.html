@@ -3,23 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Xcellent1 Lawn Care | River Parishes Professional Lawn Services</title>
+    <title>Xcellent1 Lawn Care | Professional Lawn Services in LaPlace & River Parishes, LA</title>
     <meta
       name="description"
-      content="Professional lawn care services in the River Parishes, Louisiana. Expert tips, seasonal guides, and quality landscaping supplies delivered to your door."
+      content="Xcellent1 Lawn Care offers professional lawn mowing, edging, trimming & landscaping in LaPlace, Reserve, Garyville & the River Parishes, Louisiana. Licensed & insured. Free quotes. Call (504) 875-8079."
     />
+    <meta name="keywords" content="lawn care LaPlace, lawn service River Parishes, lawn mowing Louisiana, landscaping Reserve LA, yard maintenance Garyville, bush hogging Louisiana, lawn care near me" />
+    <meta name="author" content="Xcellent1 Lawn Care" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://xcellent1-lawn-care-rpneaa.fly.dev/" />
-    <meta property="og:title" content="Xcellent1 Lawn Care | River Parishes Professional Lawn Services" />
-    <meta property="og:description" content="Professional lawn care services in the River Parishes, Louisiana. Weekly, bi-weekly, and seasonal lawn maintenance." />
-    <meta property="og:image" content="https://xcellent1-lawn-care-rpneaa.fly.dev/static/images/xcellent1-logo-transparent.png" />
+    <meta property="og:site_name" content="Xcellent1 Lawn Care" />
+    <meta property="og:url" content="https://xcellent1lawncare.com/" />
+    <meta property="og:title" content="Xcellent1 Lawn Care | LaPlace & River Parishes Lawn Services" />
+    <meta property="og:description" content="Professional lawn mowing, edging, trimming & landscaping in LaPlace, Reserve, Garyville & the River Parishes. Licensed & insured. Free quotes!" />
+    <meta property="og:image" content="https://xcellent1lawncare.com/static/images/xcellent1-logo-transparent.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Xcellent1 Lawn Care | River Parishes" />
-    <meta name="twitter:description" content="Professional lawn care services in the River Parishes, Louisiana." />
+    <meta name="twitter:title" content="Xcellent1 Lawn Care | LaPlace & River Parishes" />
+    <meta name="twitter:description" content="Professional lawn care services in LaPlace, Reserve & the River Parishes, Louisiana. Call (504) 875-8079 for a free quote!" />
+    <meta name="twitter:image" content="https://xcellent1lawncare.com/static/images/xcellent1-logo-transparent.png" />
     <!-- Canonical -->
-    <link rel="canonical" href="https://xcellent1-lawn-care-rpneaa.fly.dev/static/home.html" />
+    <link rel="canonical" href="https://xcellent1lawncare.com/" />
+    <!-- Geo Tags for Local SEO -->
+    <meta name="geo.region" content="US-LA" />
+    <meta name="geo.placename" content="LaPlace, Louisiana" />
+    <meta name="geo.position" content="30.0655;-90.4682" />
+    <meta name="ICBM" content="30.0655, -90.4682" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -46,19 +60,48 @@
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
       "name": "Xcellent1 Lawn Care",
-      "description": "Professional lawn care services in the River Parishes, Louisiana",
-      "url": "https://xcellent1-lawn-care-rpneaa.fly.dev/",
-      "telephone": "",
+      "description": "Professional lawn care services in the River Parishes, Louisiana. Serving LaPlace, Reserve, Garyville, Gramercy, Lutcher and surrounding areas.",
+      "url": "https://xcellent1lawncare.com/",
+      "telephone": "+1-504-875-8079",
+      "email": "info@xcellent1lawn.com",
       "address": {
         "@type": "PostalAddress",
+        "addressLocality": "LaPlace",
         "addressRegion": "LA",
+        "postalCode": "70068",
         "addressCountry": "US"
       },
-      "areaServed": {
-        "@type": "Place",
-        "name": "River Parishes, Louisiana"
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 30.0655,
+        "longitude": -90.4682
       },
-      "serviceType": ["Lawn Mowing", "Landscaping", "Yard Cleanup", "Bush Hogging"]
+      "areaServed": [
+        {"@type": "Place", "name": "LaPlace, Louisiana"},
+        {"@type": "Place", "name": "Reserve, Louisiana"},
+        {"@type": "Place", "name": "Garyville, Louisiana"},
+        {"@type": "Place", "name": "Gramercy, Louisiana"},
+        {"@type": "Place", "name": "Lutcher, Louisiana"},
+        {"@type": "Place", "name": "River Parishes, Louisiana"}
+      ],
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "07:00",
+          "closes": "18:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Saturday",
+          "opens": "08:00",
+          "closes": "16:00"
+        }
+      ],
+      "sameAs": [
+        "https://g.page/r/CZbYqiFFQ57SEBM"
+      ],
+      "serviceType": ["Lawn Mowing", "Landscaping", "Yard Cleanup", "Bush Hogging", "Flower Bed Maintenance", "Spring Cleaning"]
     }
     </script>
     <!-- GSAP for smooth animations -->
@@ -121,9 +164,51 @@
       .bg-service-spring { background: url('images/springcleaning.jpg') center/cover; }
       .bg-service-leaf { background: url('images/lawnservices.jpg') center/cover; }
       .bg-service-bushhog { background: url('images/bushhog.jpg') center/cover; }
+      
+      /* Sticky Call Button */
+      .sticky-call-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #10b981;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        animation: pulse 2s infinite;
+      }
+      .sticky-call-btn:hover {
+        background: #059669;
+        transform: scale(1.05);
+      }
+      @keyframes pulse {
+        0%, 100% { box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4); }
+        50% { box-shadow: 0 4px 30px rgba(16, 185, 129, 0.6); }
+      }
+      @media (max-width: 768px) {
+        .sticky-call-btn span { display: none; }
+        .sticky-call-btn { padding: 1rem; border-radius: 50%; }
+      }
+      
+      /* FAQ styling */
+      details summary::-webkit-details-marker { display: none; }
+      details[open] summary span { transform: rotate(45deg); }
+      details summary span { transition: transform 0.2s; display: inline-block; }
     </style>
   </head>
   <body>
+    <!-- Sticky Call Button -->
+    <a href="tel:5048758079" class="sticky-call-btn" aria-label="Call us">
+      📞 <span>Call Now</span>
+    </a>
+
     <nav class="navbar">
       <div class="navbar-brand">
         <img
@@ -139,7 +224,7 @@
       <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">☰</button>
       <div class="navbar-links" id="navbar-links">
         <a href="#services" class="navbar-link">Services</a>
-        <a href="shop.html" class="navbar-link">Shop</a>
+        <a href="#reviews" class="navbar-link">Reviews</a>
         <a href="careers.html" class="navbar-link">Careers</a>
         <a href="login.html" class="navbar-link" aria-label="Login">Login</a>
       </div>
@@ -149,24 +234,16 @@
     <section class="hero-home">
       <h1 class="hero-title">Xcellent1 Lawn Care</h1>
       <p class="subtitle">
-        Professional Lawn Services in the River Parishes, Louisiana
+        Professional Lawn Care for the River Parishes
       </p>
       <p>
-        Expert lawn care, seasonal tips, and quality supplies for beautiful
-        Louisiana lawns
+        Reliable, affordable lawn services for LaPlace, Reserve, Garyville & surrounding areas
       </p>
       <div class="hero-buttons">
-        <a href="#services" class="hero-button btn-primary">Our Services</a>
-        <a href="shop.html" class="hero-button btn-secondary">Shop Supplies</a>
-        <a href="careers.html" class="hero-button btn-secondary"
-          >Join Our Team</a
-        >
-        <a
-          href="login.html"
-          class="hero-button btn-secondary"
-          aria-label="Login to your account"
-          >Login</a
-        >
+        <a href="#services" class="hero-button btn-primary">View Services</a>
+        <a href="tel:5048758079" class="hero-button btn-secondary">📞 (504) 875-8079</a>
+        <a href="#quote" class="hero-button btn-secondary">Free Quote</a>
+        <a href="careers.html" class="hero-button btn-secondary">We're Hiring!</a>
       </div>
       <!-- Waitlist form -->
       <form id="waitlist-form" class="waitlist-form" onsubmit="return handleWaitlistSubmit(event)">
@@ -242,8 +319,8 @@
 
     <section id="services">
       <div class="section-header">
-        <h2>Our Professional Services</h2>
-        <p>Transforming lawns across the River Parishes, Louisiana</p>
+        <h2>Our Services</h2>
+        <p>Quality lawn care you can count on — serving the River Parishes since 2023</p>
       </div>
       <div class="services-grid">
         <div
@@ -390,8 +467,8 @@
 
     <section id="blog" class="blog-section">
       <div class="section-header">
-        <h2>River Parishes Lawn Care Blog</h2>
-        <p>Expert tips for maintaining beautiful lawns in the River Parishes</p>
+        <h2>Lawn Care Tips & Advice</h2>
+        <p>Free tips to keep your Louisiana lawn looking its best</p>
       </div>
       <div class="blog-grid">
         <article class="blog-card">
@@ -466,7 +543,7 @@
         </div>
         
         <a 
-          href="https://g.co/kgs/dYzG27h" 
+          href="https://g.page/r/CZbYqiFFQ57SEBM/review" 
           target="_blank" 
           rel="noopener noreferrer"
           style="display: inline-flex; align-items: center; gap: 0.5rem; background: #4285f4; color: white; padding: 0.875rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; transition: background 0.3s;"
@@ -483,8 +560,133 @@
         </a>
         
         <p style="margin-top: 1.5rem; color: #6b7280; font-size: 0.875rem;">
-          <a href="https://g.co/kgs/dYzG27h" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline;">Leave us a review</a> — We appreciate your feedback!
+          <a href="https://g.page/r/CZbYqiFFQ57SEBM/review" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline;">Leave us a review</a> — We appreciate your feedback!
         </p>
+      </div>
+    </section>
+
+    <!-- Service Areas Section -->
+    <section id="service-areas" style="padding: 3rem 1rem; background: #fff;">
+      <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: 2rem; color: #166534; margin-bottom: 0.5rem;">📍 Areas We Serve</h2>
+        <p style="color: #4b5563; margin-bottom: 2rem;">Proudly serving the River Parishes and surrounding communities</p>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
+          <span style="background: #dcfce7; color: #166534; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 500;">LaPlace</span>
+          <span style="background: #dcfce7; color: #166534; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 500;">Reserve</span>
+          <span style="background: #dcfce7; color: #166534; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 500;">Garyville</span>
+          <span style="background: #dcfce7; color: #166534; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 500;">Gramercy</span>
+          <span style="background: #dcfce7; color: #166534; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 500;">Lutcher</span>
+          <span style="background: #dcfce7; color: #166534; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 500;">Edgard</span>
+          <span style="background: #dcfce7; color: #166534; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 500;">Gonzales</span>
+          <span style="background: #dcfce7; color: #166534; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 500;">Donaldsonville</span>
+          <span style="background: #f3f4f6; color: #6b7280; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 500;">+ Surrounding Areas</span>
+        </div>
+        
+        <p style="color: #6b7280; font-size: 0.9rem;">Not sure if we service your area? <a href="tel:5048758079" style="color: #166534; font-weight: 600;">Give us a call!</a></p>
+      </div>
+    </section>
+
+    <!-- Why Choose Us / Trust Section -->
+    <section id="why-us" style="padding: 3rem 1rem; background: linear-gradient(135deg, #012714 0%, #1b4d2f 100%); color: white;">
+      <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: 2rem; margin-bottom: 2rem;">Why Choose Xcellent1?</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+          <div style="padding: 1.5rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✅</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Licensed & Insured</h3>
+            <p style="opacity: 0.9; font-size: 0.9rem;">Fully covered for your peace of mind</p>
+          </div>
+          <div style="padding: 1.5rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⏰</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">On-Time Guarantee</h3>
+            <p style="opacity: 0.9; font-size: 0.9rem;">We show up when we say we will</p>
+          </div>
+          <div style="padding: 1.5rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💯</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Satisfaction Guaranteed</h3>
+            <p style="opacity: 0.9; font-size: 0.9rem;">Not happy? We'll make it right</p>
+          </div>
+          <div style="padding: 1.5rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏆</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Locally Owned</h3>
+            <p style="opacity: 0.9; font-size: 0.9rem;">Your neighbors, serving neighbors</p>
+          </div>
+        </div>
+        
+        <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 12px; display: inline-block;">
+          <p style="font-size: 1.1rem; margin-bottom: 1rem;">Ready for a beautiful lawn?</p>
+          <a href="tel:5048758079" style="display: inline-block; background: #10b981; color: white; padding: 0.875rem 2rem; border-radius: 8px; font-weight: 600; text-decoration: none; margin-right: 0.5rem;">📞 Call Now</a>
+          <a href="#services" style="display: inline-block; background: rgba(255,255,255,0.2); color: white; padding: 0.875rem 2rem; border-radius: 8px; font-weight: 600; text-decoration: none;">View Services</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" style="padding: 3rem 1rem; background: #f8fafc;">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <h2 style="font-size: 2rem; color: #166534; margin-bottom: 0.5rem; text-align: center;">❓ Frequently Asked Questions</h2>
+        <p style="color: #4b5563; margin-bottom: 2rem; text-align: center;">Quick answers to common questions</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <details style="background: white; border-radius: 8px; padding: 1rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;">
+            <summary style="font-weight: 600; color: #1f2937; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+              How much does lawn care cost?
+              <span style="color: #10b981;">+</span>
+            </summary>
+            <p style="margin-top: 1rem; color: #4b5563; line-height: 1.6;">Our weekly lawn maintenance starts at $60/visit for standard residential yards. Pricing depends on yard size, terrain, and services needed. We offer free estimates — just give us a call!</p>
+          </details>
+          
+          <details style="background: white; border-radius: 8px; padding: 1rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;">
+            <summary style="font-weight: 600; color: #1f2937; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+              Do you offer one-time services?
+              <span style="color: #10b981;">+</span>
+            </summary>
+            <p style="margin-top: 1rem; color: #4b5563; line-height: 1.6;">Yes! While we love our regular customers, we're happy to help with one-time cleanups, spring/fall services, or special projects. Just let us know what you need.</p>
+          </details>
+          
+          <details style="background: white; border-radius: 8px; padding: 1rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;">
+            <summary style="font-weight: 600; color: #1f2937; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+              What's included in weekly lawn maintenance?
+              <span style="color: #10b981;">+</span>
+            </summary>
+            <p style="margin-top: 1rem; color: #4b5563; line-height: 1.6;">Our standard service includes mowing, edging along sidewalks and driveways, string trimming around obstacles, and blowing off all hard surfaces. We leave your yard looking crisp and clean.</p>
+          </details>
+          
+          <details style="background: white; border-radius: 8px; padding: 1rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;">
+            <summary style="font-weight: 600; color: #1f2937; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+              Do I need to be home when you come?
+              <span style="color: #10b981;">+</span>
+            </summary>
+            <p style="margin-top: 1rem; color: #4b5563; line-height: 1.6;">Nope! Most of our customers aren't home during service. As long as we have access to the yard, we'll take care of everything. We'll send before & after photos so you can see the results.</p>
+          </details>
+          
+          <details style="background: white; border-radius: 8px; padding: 1rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;">
+            <summary style="font-weight: 600; color: #1f2937; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+              How do I pay for services?
+              <span style="color: #10b981;">+</span>
+            </summary>
+            <p style="margin-top: 1rem; color: #4b5563; line-height: 1.6;">We accept Cash App, Zelle, PayPal, and cash. We invoice after each service and payment is due within 7 days. Regular customers can also set up automatic payments.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Free Quote CTA Section -->
+    <section id="quote" style="padding: 3rem 1rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); text-align: center;">
+      <div style="max-width: 600px; margin: 0 auto; color: white;">
+        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">🌿 Get Your Free Quote Today</h2>
+        <p style="opacity: 0.95; margin-bottom: 1.5rem; font-size: 1.1rem;">No obligation. No hassle. Just a quick conversation about your lawn care needs.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+          <a href="tel:5048758079" style="display: inline-flex; align-items: center; gap: 0.5rem; background: white; color: #059669; padding: 1rem 2rem; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1.1rem;">
+            📞 (504) 875-8079
+          </a>
+          <a href="mailto:info@xcellent1lawn.com" style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); color: white; padding: 1rem 2rem; border-radius: 8px; font-weight: 600; text-decoration: none;">
+            ✉️ Email Us
+          </a>
+        </div>
+        <p style="margin-top: 1.5rem; font-size: 0.9rem; opacity: 0.9;">Or scroll up and join our waitlist for priority scheduling</p>
       </div>
     </section>
 
@@ -798,7 +1000,7 @@
           <div>
             <h3 style="font-size: 1.25rem; margin-bottom: 1rem;">🔗 Connect With Us</h3>
             <p style="margin-bottom: 0.5rem;">
-              <a href="https://g.co/kgs/dYzG27h" target="_blank" rel="noopener noreferrer" style="color: #10b981; display: inline-flex; align-items: center; gap: 0.25rem;">
+              <a href="https://g.page/r/CZbYqiFFQ57SEBM/review" target="_blank" rel="noopener noreferrer" style="color: #10b981; display: inline-flex; align-items: center; gap: 0.25rem;">
                 ⭐ Google Reviews
               </a>
             </p>
@@ -808,7 +1010,7 @@
               </a>
             </p>
             <p>
-              <a href="https://g.co/kgs/dYzG27h" target="_blank" rel="noopener noreferrer" style="color: #10b981;">
+              <a href="https://g.page/r/CZbYqiFFQ57SEBM/review" target="_blank" rel="noopener noreferrer" style="color: #10b981;">
                 ✍️ Leave a Review
               </a>
             </p>
@@ -818,7 +1020,8 @@
         <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem; text-align: center;">
           <p style="margin-bottom: 0.5rem;">
             <a href="home.html" style="color: #10b981; margin: 0 0.5rem;">Home</a> |
-            <a href="shop.html" style="color: #10b981; margin: 0 0.5rem;">Shop</a> |
+            <a href="#services" style="color: #10b981; margin: 0 0.5rem;">Services</a> |
+            <a href="#reviews" style="color: #10b981; margin: 0 0.5rem;">Reviews</a> |
             <a href="careers.html" style="color: #10b981; margin: 0 0.5rem;">Careers</a> |
             <a href="login.html" style="color: #10b981; margin: 0 0.5rem;">Login</a>
           </p>

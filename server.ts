@@ -3,6 +3,7 @@ import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import { authenticateRequest, getSupabaseClient } from "./supabase_auth.ts";
+import { sendEmail, buildOwnerInvitationEmail } from "./email-service.ts";
 
 // Database connection
 // Prefer using an environment variable for DATABASE_URL. Avoid hardcoding
@@ -2443,6 +2444,356 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // ==================== BUSINESS INSIGHTS API ====================
+
+  // GET /api/owner/applications - View job applications
+  if (url.pathname === "/api/owner/applications" && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Get filter parameters
+      const urlObj = new URL(req.url, `https://${req.headers.get("host") || "localhost"}`);
+      const statusFilter = urlObj.searchParams.get("status");
+      const sourceFilter = urlObj.searchParams.get("source");
+
+      let query = `
+        SELECT id, name, email, phone, source, status, created_at, updated_at, notes
+        FROM applications
+        WHERE 1=1
+      `;
+      const params = [];
+
+      if (statusFilter && statusFilter !== "all") {
+        query += ` AND status = $${params.length + 1}`;
+        params.push(statusFilter);
+      }
+
+      if (sourceFilter && sourceFilter !== "all") {
+        query += ` AND source = $${params.length + 1}`;
+        params.push(sourceFilter);
+      }
+
+      query += ` ORDER BY created_at DESC LIMIT 100`;
+
+      const result = await db.queryObject(query, params);
+
+      console.log(`[server] Retrieved ${result.rows.length} applications`);
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          applications: result.rows,
+          count: result.rows.length,
+        }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error listing applications:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // PATCH /api/owner/applications/:id - Update application status
+  if (
+    url.pathname.match(/^\/api\/owner\/applications\/[^\/]+$/) &&
+    req.method === "PATCH"
+  ) {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const applicationId = url.pathname.split("/")[4];
+      const body = await req.json();
+
+      if (!body.status) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Status is required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!["pending", "screening", "interview", "offer", "hired", "rejected"].includes(body.status)) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Invalid status" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const result = await db.queryObject(
+        `UPDATE applications SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING id`,
+        [body.status, applicationId]
+      );
+
+      if (result.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Application not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      console.log(`[server] Application ${applicationId} status updated to ${body.status}`);
+
+      return new Response(
+        JSON.stringify({ ok: true }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error updating application:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // ==================== PAYMENT ACCOUNTS API ====================
+
+  // GET /api/owner/payment-accounts - List all payment accounts
+  if (url.pathname === "/api/owner/payment-accounts" && req.method === "GET") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const userId = authCheck.userId;
+
+      const result = await db.queryObject(
+        `SELECT 
+          id, user_id, payment_method, account_identifier, account_name,
+          is_primary, is_active, verification_status, connected_at, last_verified_at,
+          created_at, updated_at
+        FROM payment_accounts
+        WHERE user_id = $1 AND is_active = TRUE
+        ORDER BY is_primary DESC, created_at DESC`,
+        [userId]
+      );
+
+      console.log(`[server] Retrieved payment accounts for user ${userId}`);
+
+      return new Response(
+        JSON.stringify({ ok: true, accounts: result.rows }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error listing payment accounts:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // POST /api/owner/payment-accounts - Create new payment account
+  if (url.pathname === "/api/owner/payment-accounts" && req.method === "POST") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const body = await req.json();
+
+      if (!body.payment_method || !body.account_identifier) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Payment method and account identifier are required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!["paypal", "cash_app", "stripe", "square"].includes(body.payment_method)) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Invalid payment method" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const userId = authCheck.userId;
+
+      // If setting as primary, unset other primary accounts
+      if (body.is_primary) {
+        await db.queryObject(
+          `UPDATE payment_accounts SET is_primary = FALSE WHERE user_id = $1 AND payment_method = $2`,
+          [userId, body.payment_method]
+        );
+      }
+
+      const result = await db.queryObject(
+        `INSERT INTO payment_accounts (
+          user_id, payment_method, account_identifier, account_name,
+          is_primary, verification_status
+        )
+        VALUES ($1, $2, $3, $4, $5, 'pending')
+        RETURNING id, user_id, payment_method, account_identifier, account_name,
+                  is_primary, is_active, verification_status, connected_at, created_at`,
+        [
+          userId,
+          body.payment_method,
+          body.account_identifier,
+          body.account_name || null,
+          body.is_primary || false
+        ]
+      );
+
+      const account = (result.rows[0] as any);
+      console.log(
+        `[server] Payment account created: ${account.id} for user ${userId} (${body.payment_method})`
+      );
+
+      return new Response(
+        JSON.stringify({ ok: true, account }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error creating payment account:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // PATCH /api/owner/payment-accounts/:id/primary - Set as primary account
+  if (
+    url.pathname.match(/^\/api\/owner\/payment-accounts\/[^\/]+\/primary$/) &&
+    req.method === "PATCH"
+  ) {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const accountId = url.pathname.split("/")[4];
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const userId = authCheck.userId;
+
+      // Get the account to find its payment method
+      const accountResult = await db.queryObject(
+        `SELECT payment_method FROM payment_accounts WHERE id = $1 AND user_id = $2`,
+        [accountId, userId]
+      );
+
+      if (accountResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Account not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      const paymentMethod = (accountResult.rows[0] as any).payment_method;
+
+      // Unset other primary accounts for this payment method
+      await db.queryObject(
+        `UPDATE payment_accounts SET is_primary = FALSE WHERE user_id = $1 AND payment_method = $2`,
+        [userId, paymentMethod]
+      );
+
+      // Set this account as primary
+      await db.queryObject(
+        `UPDATE payment_accounts SET is_primary = TRUE WHERE id = $1`,
+        [accountId]
+      );
+
+      console.log(`[server] Payment account ${accountId} set as primary`);
+
+      return new Response(
+        JSON.stringify({ ok: true }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error updating payment account:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // DELETE /api/owner/payment-accounts/:id - Delete payment account
+  if (url.pathname.match(/^\/api\/owner\/payment-accounts\/[^\/]+$/) && req.method === "DELETE") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const accountId = url.pathname.split("/")[4];
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const userId = authCheck.userId;
+
+      // Check if account exists and belongs to user
+      const accountResult = await db.queryObject(
+        `SELECT id FROM payment_accounts WHERE id = $1 AND user_id = $2`,
+        [accountId, userId]
+      );
+
+      if (accountResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Account not found" }),
+          { status: 404, headers }
+        );
+      }
+
+      // Soft delete by setting is_active = FALSE
+      await db.queryObject(
+        `UPDATE payment_accounts SET is_active = FALSE WHERE id = $1`,
+        [accountId]
+      );
+
+      console.log(`[server] Payment account ${accountId} deleted (soft delete)`);
+
+      return new Response(
+        JSON.stringify({ ok: true }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error deleting payment account:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
   // ==================== WAITLIST API ====================
 
   // POST /api/waitlist - Public endpoint for prospective clients to join waitlist
@@ -3080,6 +3431,312 @@ async function handler(req: Request): Promise<Response> {
       );
     } catch (err) {
       console.error("[server] Error marking payment:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // ==================== OWNER INVITATION API ====================
+
+  // POST /api/owner/invite - Send owner invitation (admin only)
+  if (url.pathname === "/api/owner/invite" && req.method === "POST") {
+    const authCheck = await requireAuth(req, ["owner"]);
+    if (!authCheck.authorized) return authCheck.response;
+
+    try {
+      const body = await req.json();
+
+      if (!body.email || !body.name) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Email and name required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      // Check if email already exists as a user
+      const existingUser = await db.queryObject(
+        `SELECT id FROM users WHERE email = $1`,
+        [body.email.trim()]
+      );
+
+      if (existingUser.rows.length > 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "This email is already registered" }),
+          { status: 409, headers }
+        );
+      }
+
+      // Check if invitation already exists and is pending
+      const existingInvite = await db.queryObject(
+        `SELECT id FROM owner_invitations WHERE email = $1 AND status = 'pending'`,
+        [body.email.trim()]
+      );
+
+      if (existingInvite.rows.length > 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "An invitation has already been sent to this email" }),
+          { status: 409, headers }
+        );
+      }
+
+      // Generate invitation token (random 32-char string)
+      const invitationToken = crypto.getRandomValues(new Uint8Array(24))
+        .reduce((acc, val) => acc + val.toString(16).padStart(2, '0'), '');
+
+      // Create invitation record
+      const inviteResult = await db.queryObject(
+        `INSERT INTO owner_invitations (email, name, phone, invitation_token, status)
+         VALUES ($1, $2, $3, $4, 'pending')
+         RETURNING id, invitation_token, expires_at`,
+        [body.email.trim(), body.name.trim(), body.phone?.trim() || null, invitationToken]
+      );
+
+      const invite = (inviteResult.rows[0] as any);
+      const setupUrl = `https://xcellent1lawncare.com/owner-setup.html?token=${invite.invitation_token}`;
+
+      console.log(`[server] Owner invitation created for ${body.email}: ${invite.id}`);
+      console.log(`[server] Setup URL: ${setupUrl}`);
+
+      // Send invitation email
+      const emailHtml = buildOwnerInvitationEmail(
+        body.name.trim(),
+        setupUrl,
+        invite.expires_at
+      );
+
+      const emailSent = await sendEmail({
+        to: body.email.trim(),
+        subject: "Complete Your Xcellent1 Owner Account Setup",
+        html: emailHtml,
+      });
+
+      if (!emailSent) {
+        console.warn(`[server] Email send failed for ${body.email}, but invitation still created`);
+      }
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          invitation_id: invite.id,
+          setup_url: setupUrl,
+          expires_at: invite.expires_at,
+          email_sent: emailSent,
+          message: emailSent
+            ? "Invitation email sent successfully"
+            : "Invitation created, but email could not be sent. Please share the setup URL manually."
+        }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error creating owner invitation:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // GET /api/owner/invite/:token - Validate invitation token
+  if (url.pathname.match(/^\/api\/owner\/invite\/[^\/]+$/) && req.method === "GET") {
+    try {
+      const token = url.pathname.split("/")[4];
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const result = await db.queryObject(
+        `SELECT id, email, name, phone, status, expires_at FROM owner_invitations WHERE invitation_token = $1`,
+        [token]
+      );
+
+      if (result.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Invalid invitation token" }),
+          { status: 404, headers }
+        );
+      }
+
+      const invite = result.rows[0] as any;
+
+      if (invite.status !== "pending") {
+        return new Response(
+          JSON.stringify({ ok: false, error: `Invitation is ${invite.status}` }),
+          { status: 400, headers }
+        );
+      }
+
+      if (new Date(invite.expires_at) < new Date()) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Invitation has expired" }),
+          { status: 400, headers }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          email: invite.email,
+          name: invite.name,
+          phone: invite.phone,
+          message: "Invitation is valid"
+        }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error validating invitation:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // POST /api/owner/invite/:token/accept - Accept invitation and complete setup
+  if (url.pathname.match(/^\/api\/owner\/invite\/[^\/]+\/accept$/) && req.method === "POST") {
+    try {
+      const token = url.pathname.split("/")[4];
+      const body = await req.json();
+
+      if (!body.password || !body.password_confirm) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Password is required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (body.password !== body.password_confirm) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Passwords do not match" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (body.password.length < 8) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Password must be at least 8 characters" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!dbConnected) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Database not connected" }),
+          { status: 503, headers }
+        );
+      }
+
+      const inviteResult = await db.queryObject(
+        `SELECT id, email, name, phone, status, expires_at FROM owner_invitations WHERE invitation_token = $1`,
+        [token]
+      );
+
+      if (inviteResult.rows.length === 0) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Invalid invitation token" }),
+          { status: 404, headers }
+        );
+      }
+
+      const invite = inviteResult.rows[0] as any;
+
+      if (invite.status !== "pending") {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Invitation already used or expired" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (new Date(invite.expires_at) < new Date()) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Invitation has expired" }),
+          { status: 400, headers }
+        );
+      }
+
+      // Create Supabase Auth user
+      const supabaseUrl = Deno.env.get("SUPABASE_URL");
+      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+      if (!supabaseUrl || !supabaseKey) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Service configuration error" }),
+          { status: 500, headers }
+        );
+      }
+
+      // Create auth user via Supabase Admin API
+      const createAuthUserResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${supabaseKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: invite.email,
+          password: body.password,
+          email_confirm: true,
+          user_metadata: {
+            name: invite.name,
+            phone: invite.phone,
+            role: "owner"
+          }
+        })
+      });
+
+      if (!createAuthUserResponse.ok) {
+        const error = await createAuthUserResponse.json();
+        console.error("[server] Auth user creation failed:", error);
+        return new Response(
+          JSON.stringify({ ok: false, error: "Failed to create auth account" }),
+          { status: 500, headers }
+        );
+      }
+
+      const authUser = await createAuthUserResponse.json();
+
+      // Create user record in database
+      const userResult = await db.queryObject(
+        `INSERT INTO users (email, phone, name, role, status, auth_user_id)
+         VALUES ($1, $2, $3, 'owner', 'active', $4)
+         RETURNING id`,
+        [invite.email, invite.phone || null, invite.name, authUser.user.id]
+      );
+
+      const userId = (userResult.rows[0] as any).id;
+
+      // Mark invitation as accepted
+      await db.queryObject(
+        `UPDATE owner_invitations 
+         SET status = 'accepted', accepted_at = NOW(), user_id = $1
+         WHERE invitation_token = $2`,
+        [userId, token]
+      );
+
+      console.log(`[server] Owner invitation accepted for ${invite.email}: ${userId}`);
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          user_id: userId,
+          message: "Account created successfully! You can now log in."
+        }),
+        { status: 201, headers }
+      );
+    } catch (err) {
+      console.error("[server] Error accepting invitation:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
         { status: 500, headers }

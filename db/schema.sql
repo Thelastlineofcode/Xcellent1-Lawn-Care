@@ -99,6 +99,38 @@ CREATE TABLE IF NOT EXISTS payments (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Owner invitations table
+CREATE TABLE IF NOT EXISTS owner_invitations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email TEXT UNIQUE NOT NULL,
+  invitation_token TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  phone TEXT,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'expired', 'cancelled')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  accepted_at TIMESTAMPTZ,
+  expires_at TIMESTAMPTZ DEFAULT NOW() + INTERVAL '7 days',
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Payment accounts table (owner's connected payment methods)
+CREATE TABLE IF NOT EXISTS payment_accounts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  payment_method TEXT NOT NULL CHECK (payment_method IN ('paypal', 'cash_app', 'stripe', 'square')),
+  account_identifier TEXT NOT NULL,  -- Email for PayPal, $cashtag for Cash App, etc.
+  account_name TEXT,  -- Display name/nickname for the account
+  is_primary BOOLEAN DEFAULT FALSE,
+  is_active BOOLEAN DEFAULT TRUE,
+  connected_at TIMESTAMPTZ DEFAULT NOW(),
+  last_verified_at TIMESTAMPTZ,
+  verification_status TEXT DEFAULT 'pending' CHECK (verification_status IN ('pending', 'verified', 'failed', 'expired')),
+  metadata JSONB,  -- Store service-specific data
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, payment_method, account_identifier)
+);
+
 -- Outbox events table (event sourcing)
 CREATE TABLE IF NOT EXISTS outbox_events (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -125,6 +157,12 @@ CREATE INDEX IF NOT EXISTS idx_invoices_client ON invoices(client_id);
 CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status);
 CREATE INDEX IF NOT EXISTS idx_payments_invoice ON payments(invoice_id);
 CREATE INDEX IF NOT EXISTS idx_outbox_status ON outbox_events(status);
+CREATE INDEX IF NOT EXISTS idx_owner_invitations_token ON owner_invitations(invitation_token);
+CREATE INDEX IF NOT EXISTS idx_owner_invitations_email ON owner_invitations(email);
+CREATE INDEX IF NOT EXISTS idx_owner_invitations_status ON owner_invitations(status);
+CREATE INDEX IF NOT EXISTS idx_payment_accounts_user ON payment_accounts(user_id);
+CREATE INDEX IF NOT EXISTS idx_payment_accounts_method ON payment_accounts(payment_method);
+CREATE INDEX IF NOT EXISTS idx_payment_accounts_primary ON payment_accounts(user_id, is_primary) WHERE is_primary = TRUE;
 
 -- Row Level Security (RLS) policies
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
@@ -134,6 +172,7 @@ ALTER TABLE jobs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE job_photos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE payment_accounts ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for role-based access
 -- Helper function to get user role from auth.uid()
@@ -190,6 +229,10 @@ CREATE POLICY "Owners can manage payments" ON payments FOR ALL
   USING (auth.user_role() = 'owner');
 CREATE POLICY "Clients can view own payments" ON payments FOR SELECT
   USING (client_id IN (SELECT id FROM clients WHERE user_id IN (SELECT id FROM users WHERE auth_user_id = auth.uid())));
+
+-- Payment accounts policies
+CREATE POLICY "Owners can manage their payment accounts" ON payment_accounts FOR ALL
+  USING (user_id IN (SELECT id FROM users WHERE auth_user_id = auth.uid()));
 
 -- Insert demo data (optional)
 INSERT INTO users (email, phone, name, role) VALUES
@@ -362,4 +405,5 @@ COMMENT ON TABLE jobs IS 'Work assignments with crew, client, and service detail
 COMMENT ON TABLE job_photos IS 'Before/after photos uploaded by crew';
 COMMENT ON TABLE invoices IS 'Customer billing and invoices';
 COMMENT ON TABLE payments IS 'Payment tracking (Cash App, Zelle, PayPal, etc)';
+COMMENT ON TABLE payment_accounts IS 'Owner payment account connections (PayPal, Cash App, Stripe, Square)';
 COMMENT ON TABLE outbox_events IS 'Event sourcing for BMAD agent communication';

@@ -2,6 +2,8 @@
 
 A complete lawn care business management platform built with Deno, Supabase, and vanilla JavaScript.
 
+> NOTE: The documentation in this repo has been cleaned and trimmed for clarity. Large/long reference documents were archived under `docs/archive/` and replaced with short summaries in `docs/` to make onboarding faster. Full originals are retained in `docs/archive/`.
+
 ## 🚀 Features
 
 ### For Business Owners
