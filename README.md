@@ -5,7 +5,6 @@ A complete lawn care business management platform built with Deno, Supabase, and
 > NOTE: The documentation in this repo has been cleaned and trimmed for clarity. Large/long reference documents were archived under `docs/archive/` and replaced with short summaries in `docs/` to make onboarding faster. Full originals are retained in `docs/archive/`.
 
 Core operational playbooks:
-- `docs/COO_KERNEL.md` — Compact operational kernel for AI-assisted development and context-engineering best practices (recommended reading)
 - `docs/LACARDIO_DASHBOARD_GUIDE.md` — User guide for LaCardio
 
 ## 🚀 Features
