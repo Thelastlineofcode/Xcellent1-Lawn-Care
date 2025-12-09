@@ -21,6 +21,20 @@ jobs:
       - name: Run deno lint
         run: deno lint --config=deno.json
 
+  deno-tests:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+      - name: Run Deno tests
+        run: deno test --allow-net --allow-read --allow-env --no-check
+      - name: Run Deno type checking
+        run: deno check server.ts
+
   python-tests:
     runs-on: ubuntu-latest
     needs: lint
