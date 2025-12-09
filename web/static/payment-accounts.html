@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Payment Accounts - Xcellent1 Lawn Care" />
+    <meta name="theme-color" content="#10b981" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Payment Accounts | Xcellent1 Owner</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
+    <link rel="stylesheet" href="styles.clean.css" />
+    <link rel="stylesheet" href="admin.css" />
+    <style>
+      .payment-accounts-container {
+        max-width: 900px;
+        margin: 2rem auto;
+      }
+
+      .accounts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .account-card {
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        position: relative;
+      }
+
+      .account-card.primary {
+        border: 2px solid var(--color-success);
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);
+      }
+
+      .account-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+
+      .account-icon {
+        font-size: 2rem;
+        margin-right: 1rem;
+      }
+
+      .account-title {
+        flex: 1;
+      }
+
+      .account-title h3 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .account-title p {
+        margin: 0.25rem 0 0 0;
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+      }
+
+      .primary-badge {
+        background: var(--color-success);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .account-details {
+        margin: 1rem 0;
+        padding: 1rem;
+        background: var(--color-bg-tertiary);
+        border-radius: 6px;
+        font-size: 0.9rem;
+      }
+
+      .account-details p {
+        margin: 0.5rem 0;
+      }
+
+      .account-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .account-actions button {
+        flex: 1;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--color-text-secondary);
+      }
+
+      .empty-state svg {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1rem;
+        opacity: 0.5;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .status-verified {
+        background: var(--color-success-light);
+        color: var(--color-success-dark);
+      }
+
+      .status-pending {
+        background: var(--color-warning-light);
+        color: var(--color-warning-dark);
+      }
+
+      .status-failed {
+        background: var(--color-error-light);
+        color: var(--color-error-dark);
+      }
+
+      .method-icon {
+        display: inline-block;
+      }
+
+      .connected-at {
+        font-size: 0.85rem;
+        color: var(--color-text-secondary);
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+        <div class="navbar-title">
+          <span class="navbar-name">XCELLENT1</span>
+          <span class="navbar-tagline">LAWN CARE</span>
+        </div>
+      </div>
+      <div class="navbar-links">
+        <a href="owner.html" class="navbar-link">Dashboard</a>
+        <a href="manage-clients.html" class="navbar-link">Clients</a>
+        <a href="manage-jobs.html" class="navbar-link">Jobs</a>
+        <a href="manage-invoices.html" class="navbar-link">Invoices</a>
+        <a href="payment-accounts.html" class="navbar-link active">Payments</a>
+        <button onclick="logout()" class="btn btn-sm">Logout</button>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="container">
+        <div class="page-title">Payment Accounts</div>
+        <div class="page-breadcrumb">
+          <a href="owner.html">Dashboard</a> / Payment Accounts
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container payment-accounts-container">
+      <div id="status-message" role="alert" aria-live="polite"></div>
+
+      <!-- Add Payment Account Section -->
+      <div style="margin-bottom: 2rem;">
+        <button class="btn" onclick="openAddAccountModal()">+ Connect Payment Account</button>
+      </div>
+
+      <!-- Accounts Grid -->
+      <div id="accounts-grid" class="accounts-grid">
+        <div style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">
+          <div class="spinner"></div>
+          <div>Loading payment accounts...</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Add/Edit Payment Account Modal -->
+    <div id="account-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Connect Payment Account</h2>
+          <button class="modal-close" onclick="closeAccountModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="account-form" onsubmit="saveAccount(event)">
+            <div class="form-group">
+              <label for="payment-method-select">Payment Method *</label>
+              <select id="payment-method-select" required class="form-control" onchange="updateMethodInfo()">
+                <option value="">Select payment method...</option>
+                <option value="paypal">PayPal</option>
+                <option value="cash_app">Cash App</option>
+                <option value="stripe">Stripe</option>
+                <option value="square">Square</option>
+              </select>
+              <small id="method-info" style="display: none; margin-top: 0.5rem; color: var(--color-text-secondary);"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="account-identifier">Account Identifier *</label>
+              <input type="text" id="account-identifier" required class="form-control" placeholder="e.g., your-email@paypal.com or $cashtag" />
+              <small style="color: var(--color-text-secondary); margin-top: 0.5rem;">This is how your clients will send payments to you.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="account-name">Account Nickname (Optional)</label>
+              <input type="text" id="account-name" class="form-control" placeholder="e.g., Personal, Business, etc." />
+            </div>
+
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="set-primary" />
+                <span>Set as primary payment method</span>
+              </label>
+            </div>
+
+            <div style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+              <p style="margin: 0 0 0.5rem 0; font-size: 0.9rem;"><strong>Important:</strong></p>
+              <ul style="margin: 0; font-size: 0.9rem; padding-left: 1.25rem;">
+                <li>Your payment accounts are secured and encrypted</li>
+                <li>You can connect multiple accounts per payment method</li>
+                <li>Payments will be directed to your primary account</li>
+              </ul>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" onclick="closeAccountModal()">Cancel</button>
+              <button type="submit" class="btn">Connect Account</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script type="module">
+      import { requireAuth, logout } from './auth-helper.js';
+
+      // Require owner authentication
+      const userProfile = await requireAuth('owner');
+      window.ownerProfile = userProfile;
+    </script>
+    <script>
+      let accountsData = [];
+
+      const methodIcons = {
+        paypal: '🅿️',
+        cash_app: '💵',
+        stripe: '⟨ ⟩',
+        square: '◻️'
+      };
+
+      const methodInfo = {
+        paypal: 'Your PayPal email address',
+        cash_app: 'Your Cash App $cashtag',
+        stripe: 'Your Stripe account email',
+        square: 'Your Square account email'
+      };
+
+      function updateMethodInfo() {
+        const method = document.getElementById('payment-method-select').value;
+        const infoEl = document.getElementById('method-info');
+        if (method && methodInfo[method]) {
+          infoEl.textContent = methodInfo[method];
+          infoEl.style.display = 'block';
+          document.getElementById('account-identifier').placeholder = methodInfo[method];
+        } else {
+          infoEl.style.display = 'none';
+        }
+      }
+
+      async function loadAccounts() {
+        try {
+          const token = window.supabaseSession?.access_token;
+          if (!token) {
+            throw new Error('No authentication token');
+          }
+
+          const response = await fetch('/api/owner/payment-accounts', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (!data.ok) {
+            throw new Error(data.error || 'Failed to fetch payment accounts');
+          }
+
+          accountsData = data.accounts || [];
+          renderAccounts(accountsData);
+        } catch (err) {
+          console.error('Failed to load accounts:', err);
+          showMessage('⚠️ Unable to load payment accounts. Please refresh the page.', 'warning');
+          renderEmptyState();
+        }
+      }
+
+      function renderAccounts(accounts) {
+        const grid = document.getElementById('accounts-grid');
+
+        if (accounts.length === 0) {
+          renderEmptyState();
+          return;
+        }
+
+        grid.innerHTML = accounts.map(account => `
+          <div class="account-card ${account.is_primary ? 'primary' : ''}">
+            <div class="account-header">
+              <div style="display: flex; align-items: center; flex: 1;">
+                <div class="account-icon">${methodIcons[account.payment_method] || '💳'}</div>
+                <div class="account-title">
+                  <h3>${account.account_name || account.payment_method.toUpperCase()}</h3>
+                  <p>${account.payment_method}</p>
+                </div>
+              </div>
+              ${account.is_primary ? '<div class="primary-badge">Primary</div>' : ''}
+            </div>
+
+            <div class="account-details">
+              <p><strong>Account:</strong> ${account.account_identifier}</p>
+              <p><strong>Status:</strong> <span class="status-badge status-${account.verification_status}">${account.verification_status}</span></p>
+              <p class="connected-at">Connected ${new Date(account.connected_at).toLocaleDateString()}</p>
+            </div>
+
+            <div class="account-actions">
+              ${!account.is_primary ? `<button class="btn btn-sm btn-secondary" onclick="setPrimaryAccount('${account.id}')">Set Primary</button>` : ''}
+              <button class="btn btn-sm btn-secondary" onclick="editAccount('${account.id}')">Edit</button>
+              <button class="btn btn-sm btn-error" onclick="deleteAccount('${account.id}')">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function renderEmptyState() {
+        document.getElementById('accounts-grid').innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h3>No payment accounts connected</h3>
+            <p>Connect your PayPal, Cash App, or other payment methods to start accepting payments from clients.</p>
+            <button class="btn" onclick="openAddAccountModal()" style="margin-top: 1rem;">Connect Your First Account</button>
+          </div>
+        `;
+      }
+
+      function openAddAccountModal() {
+        document.getElementById('account-form').reset();
+        document.getElementById('account-modal').classList.add('active');
+      }
+
+      function closeAccountModal() {
+        document.getElementById('account-modal').classList.remove('active');
+      }
+
+      async function saveAccount(event) {
+        event.preventDefault();
+
+        const accountData = {
+          payment_method: document.getElementById('payment-method-select').value,
+          account_identifier: document.getElementById('account-identifier').value,
+          account_name: document.getElementById('account-name').value || null,
+          is_primary: document.getElementById('set-primary').checked
+        };
+
+        if (!accountData.payment_method || !accountData.account_identifier) {
+          showMessage('✗ Please fill in all required fields', 'error');
+          return;
+        }
+
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span> Connecting...';
+
+        try {
+          const token = window.supabaseSession?.access_token;
+          const response = await fetch('/api/owner/payment-accounts', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(accountData)
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || !data.ok) {
+            throw new Error(data.error || 'Failed to connect account');
+          }
+
+          showMessage('✓ Payment account connected successfully!', 'success');
+          closeAccountModal();
+          await loadAccounts();
+        } catch (err) {
+          console.error('Failed to save account:', err);
+          showMessage(`✗ ${err.message}`, 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Connect Account';
+        }
+      }
+
+      async function setPrimaryAccount(accountId) {
+        try {
+          const token = window.supabaseSession?.access_token;
+          const response = await fetch(`/api/owner/payment-accounts/${accountId}/primary`, {
+            method: 'PATCH',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          const data = await response.json();
+          if (data.ok) {
+            showMessage('✓ Primary payment account updated!', 'success');
+            await loadAccounts();
+          } else {
+            throw new Error(data.error || 'Failed to update');
+          }
+        } catch (err) {
+          console.error('Error:', err);
+          showMessage(`✗ ${err.message}`, 'error');
+        }
+      }
+
+      async function editAccount(accountId) {
+        // TODO: Implement edit functionality
+        showMessage('✗ Edit functionality coming soon', 'info');
+      }
+
+      async function deleteAccount(accountId) {
+        if (!confirm('Are you sure you want to delete this payment account?')) return;
+
+        try {
+          const token = window.supabaseSession?.access_token;
+          const response = await fetch(`/api/owner/payment-accounts/${accountId}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          const data = await response.json();
+          if (data.ok) {
+            showMessage('✓ Payment account deleted!', 'success');
+            await loadAccounts();
+          } else {
+            throw new Error(data.error || 'Failed to delete');
+          }
+        } catch (err) {
+          console.error('Error:', err);
+          showMessage(`✗ ${err.message}`, 'error');
+        }
+      }
+
+      function showMessage(message, type = 'info') {
+        const container = document.getElementById('status-message');
+        container.className = `message message-${type}`;
+        container.textContent = message;
+        container.style.display = 'block';
+
+        setTimeout(() => {
+          container.style.display = 'none';
+        }, 5000);
+      }
+
+      // Initial load
+      loadAccounts();
+    </script>
+  </body>
+</html>
