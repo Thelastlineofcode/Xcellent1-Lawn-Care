@@ -36,13 +36,18 @@
         <button onclick="logout()" class="btn btn-sm">Logout</button>
       </div>
     </nav>
+    
+    <!-- Load runtime config from server -->
+    <script src="/config.js"></script>
+    
     <!-- Authentication Check -->
     <script type="module">
       import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
-      const SUPABASE_URL = "https://utivthfrwgtjatsusopw.supabase.co";
-      const SUPABASE_ANON_KEY =
-        "YOUR_SUPABASE_ANON_KEY_HERE";
+      // Use runtime-injected values when available, otherwise fall back to defaults
+      const _env = (typeof window !== "undefined" && window.__ENV) || {};
+      const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL || "https://utivthfrwgtjatsusopw.supabase.co";
+      const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "YOUR_SUPABASE_ANON_KEY_HERE";
 
       const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

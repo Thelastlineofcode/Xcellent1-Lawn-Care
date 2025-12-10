@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,6 +12,7 @@
   <link rel="stylesheet" href="styles.clean.css" />
   <link rel="stylesheet" href="admin.css" />
 </head>
+
 <body>
   <!-- Navigation -->
   <nav class="navbar">
@@ -61,19 +63,23 @@
     </div>
   </div>
 
+  <!-- Load runtime config from server -->
+  <script src="/config.js"></script>
+
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
-    
-    const SUPABASE_URL = "https://utivthfrwgtjatsusopw.supabase.co";
-    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY_HERE";
+
+    const _env = (typeof window !== "undefined" && window.__ENV) || {};
+    const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL || "https://utivthfrwgtjatsusopw.supabase.co";
+    const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "YOUR_SUPABASE_ANON_KEY_HERE";
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
+
     // Logout function
-    window.logout = async function() {
+    window.logout = async function () {
       await supabase.auth.signOut();
       window.location.href = "login.html";
     };
-    
+
     const API_BASE = window.location.origin;
     let allPayments = [];
 
@@ -158,13 +164,12 @@
                 </div>
               </div>
 
-              ${
-                payment.notes
-                  ? `<div style="background: #fff; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; color: #666;">
+              ${payment.notes
+              ? `<div style="background: #fff; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; color: #666;">
                       <strong>Notes:</strong> ${payment.notes}
                      </div>`
-                  : ""
-              }
+              : ""
+            }
 
               <div class="payment-actions">
                 <button class="btn btn-success" onclick="verifyPayment('${payment.id}', 'approve')">
@@ -269,4 +274,5 @@
     setInterval(loadPendingPayments, 30000);
   </script>
 </body>
+
 </html>
