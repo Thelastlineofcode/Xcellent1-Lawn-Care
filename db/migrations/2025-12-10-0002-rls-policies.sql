@@ -10,25 +10,25 @@ ALTER TABLE IF EXISTS outbox_events ENABLE ROW LEVEL SECURITY;
 
 -- Example policy: Owners can access their own clients
 CREATE POLICY IF NOT EXISTS clients_owner_policy ON clients
-  USING (owner_id::text = current_setting('request.jwt.claims.sub', true));
+  USING (user_id::text = current_setting('request.jwt.claims.sub', true));
 
 -- Owners can see jobs belonging to their clients
 CREATE POLICY IF NOT EXISTS jobs_owner_policy ON jobs
   USING (
     EXISTS (
-      SELECT 1 FROM clients c WHERE c.id = jobs.client_id AND c.owner_id::text = current_setting('request.jwt.claims.sub', true)
+      SELECT 1 FROM clients c WHERE c.id = jobs.client_id AND c.user_id::text = current_setting('request.jwt.claims.sub', true)
     )
   );
 
 -- Crew can select jobs assigned to them
 CREATE POLICY IF NOT EXISTS jobs_crew_policy ON jobs
-  USING (assigned_to::text = current_setting('request.jwt.claims.sub', true));
+  USING (crew_id::text = current_setting('request.jwt.claims.sub', true));
 
 -- Owners can see invoices for their clients
 CREATE POLICY IF NOT EXISTS invoices_owner_policy ON invoices
   USING (
     EXISTS (
-      SELECT 1 FROM clients c WHERE c.id = invoices.client_id AND c.owner_id::text = current_setting('request.jwt.claims.sub', true)
+      SELECT 1 FROM clients c WHERE c.id = invoices.client_id AND c.user_id::text = current_setting('request.jwt.claims.sub', true)
     )
   );
 

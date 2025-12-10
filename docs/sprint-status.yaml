@@ -20,16 +20,20 @@ commitments:
     epic: epic-01-foundation
     points: 3
     file: docs/stories/story-01-setup-supabase.md
-    status: in-progress
+    status: done
     assignee: alex
+    done_by: alex
+    done_at: "2025-12-10"
 
   - story_id: story-02-auth-and-roles
     title: "Authentication and Roles (Owner/Manager/Crew)"
     epic: epic-01-foundation
     points: 3
     file: docs/stories/story-02-auth-and-roles.md
-    status: in-progress
+    status: done
     assignee: pat
+    done_by: pat
+    done_at: "2025-12-10"
 
   - story_id: story-03-storage-job-photos
     title: "Configure Storage for Job Photos"
