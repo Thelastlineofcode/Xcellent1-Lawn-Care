@@ -3681,6 +3681,7 @@ async function handler(req: Request): Promise<Response> {
       const createAuthUserResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
         method: "POST",
         headers: {
+          "apikey": supabaseKey,
           "Authorization": `Bearer ${supabaseKey}`,
           "Content-Type": "application/json",
         },
