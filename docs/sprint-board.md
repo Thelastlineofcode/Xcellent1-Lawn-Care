@@ -11,8 +11,8 @@ Deliver core Supabase foundation, auth/roles, storage for job photos, and initia
 
 ## Board (Top-level Stories)
 
-- [In-Progress] story-01-setup-supabase — Assignee: alex — Tasks: create schema/migrations, seed data, CI schema apply
-- [In-Progress] story-02-auth-and-roles — Assignee: pat — Tasks: Supabase Auth setup, RLS policies, role metadata
+- [Done] story-01-setup-supabase — Assignee: alex — Tasks: create schema/migrations, seed data, CI schema apply (done 2025-12-10)
+- [Done] story-02-auth-and-roles — Assignee: pat — Tasks: Supabase Auth setup, RLS policies, role metadata (done 2025-12-10)
 - [In-Progress] story-03-storage-job-photos — Assignee: sam — Tasks: configure storage bucket, signed uploads
 - [In-Progress] story-04-landing-page — Assignee: alex — Tasks: responsive landing page, CTA
 - [In-Progress] story-05-waitlist-form — Assignee: pat — Tasks: form and API integration, confirmation email

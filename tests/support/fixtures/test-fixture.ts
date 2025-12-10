@@ -52,20 +52,21 @@ export class TestFixture {
     return user;
   }
   
-  async createTestClient(ownerId?: string) {
+  async createTestClient(userId?: string) {
     const clientData = createClientData();
     
     if (this.dbClient) {
       // Insert client into database
       const result = await this.dbClient.queryObject(`
-        INSERT INTO clients (name, email, phone, property_address, service_plan, notes)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO clients (user_id, property_address, name, email, phone, service_plan, notes)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id
       `, [
-        clientData.name, 
-        clientData.email, 
-        clientData.phone, 
+        userId || null,
         clientData.property_address,
+        clientData.name,
+        clientData.email,
+        clientData.phone, 
         clientData.service_plan,
         clientData.notes
       ]);
@@ -77,18 +78,23 @@ export class TestFixture {
     this.createdClients.push(clientData.id!);
     return clientData;
   }
+
+  async createTestClientForOwner(userId: string) {
+    return await this.createTestClient(userId);
+  }
   
-  async createTestJob(clientId: string) {
-    const jobData = createJob(clientId);
+  async createTestJob(clientId: string, overrides: Partial<Record<string, unknown>> = {}) {
+    const jobData = createJob(clientId, overrides as any);
     
     if (this.dbClient) {
       // Insert job into database
       const result = await this.dbClient.queryObject(`
-        INSERT INTO jobs (client_id, scheduled_date, services, status, notes)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO jobs (client_id, crew_id, scheduled_date, services, status, notes)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id
       `, [
         jobData.client_id,
+        (jobData as any).crew_id || null,
         jobData.scheduled_date,
         JSON.stringify(jobData.services),
         jobData.status,

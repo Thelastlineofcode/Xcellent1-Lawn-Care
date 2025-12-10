@@ -1036,6 +1036,38 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // POST /api/jobs/:id/photo/upload-target - return a storage target path for client-side upload
+  const photoTargetMatch = url.pathname.match(/^\/api\/jobs\/([^\/]+)\/photo\/upload-target$/);
+  if (photoTargetMatch && req.method === "POST") {
+    const authCheck = await requireAuth(req, ["crew", "owner"]);
+    if (!authCheck.authorized) return (authCheck as any).response;
+
+    try {
+      const jobId = photoTargetMatch[1];
+      const body = await req.json();
+      const mimeType = body.mimeType || "image/jpeg";
+      const ext = (mimeType.split("/")[1] || "jpg").replace(/[^a-z0-9]/gi, "");
+      const photoType = body.type || "after";
+      const timestamp = Date.now();
+      const storagePath = `jobs/${jobId}/${photoType}-${timestamp}.${ext}`;
+
+      const supabase = getSupabaseClient();
+      if (!supabase) {
+        // Provide a local path so client can POST base64 to /api/jobs/:id/photo
+        return new Response(JSON.stringify({ ok: true, storagePath, note: "Local dev fallback. Use POST /api/jobs/:id/photo to upload base64." }), { status: 200, headers });
+      }
+
+      // If Supabase available, return storage path and public URL (clients can then upload using anon key via client SDK)
+      const { data: urlData } = supabase.storage.from("job-photos").getPublicUrl(storagePath);
+      const publicUrl = urlData.publicUrl;
+
+      return new Response(JSON.stringify({ ok: true, storagePath, publicUrl }), { status: 200, headers });
+    } catch (err) {
+      console.error("[server] Error creating upload target:", err);
+      return new Response(JSON.stringify({ ok: false, error: "Failed to create upload target" }), { status: 500, headers });
+    }
+  }
+
   // PATCH /api/jobs/:id/complete (mark job done)
   const completeMatch = url.pathname.match(/^\/api\/jobs\/([^\/]+)\/complete$/);
   if (completeMatch && req.method === "PATCH") {
