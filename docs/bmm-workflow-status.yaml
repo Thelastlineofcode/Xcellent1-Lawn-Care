@@ -33,8 +33,8 @@ workflow_status:
 
   # Solutioning
   create-architecture:
-    status: recommended
-    notes: "Strongly recommended for brownfield work to prevent drift."
+    status: docs/ARCHITECTURE.md
+    notes: "Architecture doc created at docs/ARCHITECTURE.md on 2025-12-10. Review and expand as needed."
   validate-architecture:
     status: optional
   solutioning-gate-check:

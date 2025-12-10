@@ -71,9 +71,105 @@ commitments:
     status: in-progress
     assignee: sam
 
+  - story_id: story-12-recurring-jobs
+    title: "Recurring Jobs & Schedules"
+    epic: epic-06-scheduling
+    points: 5
+    file: docs/stories/story-12-recurring-jobs.md
+    status: planned
+    assignee: alex
+
+  - story_id: story-13-time-slot-management
+    title: "Time Slot Management & Conflicts"
+    epic: epic-06-scheduling
+    points: 3
+    file: docs/stories/story-13-time-slot-management.md
+    status: planned
+    assignee: pat
+
+  - story_id: story-14-rescheduling
+    title: "Rescheduling & Notifications"
+    epic: epic-06-scheduling
+    points: 3
+    file: docs/stories/story-14-rescheduling.md
+    status: planned
+    assignee: pat
+
+  - story_id: story-15-email-integration
+    title: "Email Integration (SendGrid)"
+    epic: epic-07-notifications
+    points: 3
+    file: docs/stories/story-15-email-integration.md
+    status: planned
+    assignee: sam
+
+  - story_id: story-16-sms-integration
+    title: "SMS Integration (Twilio)"
+    epic: epic-07-notifications
+    points: 3
+    file: docs/stories/story-16-sms-integration.md
+    status: planned
+    assignee: alex
+
+  - story_id: story-17-in-app-notifications
+    title: "In-app Notifications"
+    epic: epic-07-notifications
+    points: 3
+    file: docs/stories/story-17-in-app-notifications.md
+    status: planned
+    assignee: pat
+
+  - story_id: story-18-service-worker
+    title: "Service Worker & Asset Caching"
+    epic: epic-08-offline
+    points: 3
+    file: docs/stories/story-18-service-worker.md
+    status: planned
+    assignee: alex
+
+  - story_id: story-19-offline-queue-sync
+    title: "Offline Queue & Sync for Crew Photos"
+    epic: epic-08-offline
+    points: 5
+    file: docs/stories/story-19-offline-queue-sync.md
+    status: planned
+    assignee: sam
+
+  - story_id: story-20-revenue-exports
+    title: "Revenue Export & CSV"
+    epic: epic-09-analytics
+    points: 3
+    file: docs/stories/story-20-revenue-exports.md
+    status: planned
+    assignee: alex
+
+  - story_id: story-21-crew-performance
+    title: "Crew Performance Metrics"
+    epic: epic-09-analytics
+    points: 3
+    file: docs/stories/story-21-crew-performance.md
+    status: planned
+    assignee: pat
+
+  - story_id: story-22-ci-test-migrations
+    title: "CI Test Migrations"
+    epic: epic-10-ci-observability
+    points: 3
+    file: docs/stories/story-22-ci-test-migrations.md
+    status: planned
+    assignee: alex
+
+  - story_id: story-23-logging-monitoring
+    title: "Logging and Monitoring"
+    epic: epic-10-ci-observability
+    points: 3
+    file: docs/stories/story-23-logging-monitoring.md
+    status: planned
+    assignee: pat
+
 metrics:
-  planned_points: 19
-  velocity_forecast: 20
+  planned_points: 55
+  velocity_forecast: 30
 
 notes: |
   - This sprint seeds core work to enable owner onboarding and basic crew mobile flows.
