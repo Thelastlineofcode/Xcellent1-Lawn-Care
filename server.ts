@@ -3713,7 +3713,7 @@ async function handler(req: Request): Promise<Response> {
         `INSERT INTO users (email, phone, name, role, auth_user_id)
          VALUES ($1, $2, $3, 'owner', $4)
          RETURNING id`,
-        [invite.email, invite.phone || null, invite.name, authUser.user.id]
+        [invite.email, invite.phone || null, invite.name, authUser.id]
       );
 
       const userId = (userResult.rows[0] as any).id;
