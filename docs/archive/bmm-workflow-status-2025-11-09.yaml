@@ -1,0 +1,64 @@
+# Archived Workflow Status (original from 2025-11-09)
+# This is a backup of the previous, messy tracking file prior to normalization
+generated: "2025-11-09T00:00:00Z"
+project: "Xcellent1 Lawn Care"
+project_type: "lawncare"
+selected_track: "implementation"
+field_type: "services"
+workflow_path: "bmad/bmm/workflows/workflow-status/workflow.yaml"
+
+workflow_status:
+	landing_page:
+		status: found
+		path: web/static/home.html
+		notes: "Created and committed (feat: add landing page with services, blog, and shop)"
+	logo:
+		status: found
+		path: web/static/images/logo.png
+		notes: "Added and referenced in home.html (feat: add logo to landing page)"
+	server_redirect:
+		status: found
+		file: server.ts
+		notes: "Root now redirects to /static/home.html (feat: redirect root to new landing page)"
+	dockerfile:
+		status: found
+		image: denoland/deno:1.40.4
+		notes: "Updated from 1.38.0 to 1.40.4 and committed"
+	deno_lock:
+		status: present
+		path: deno.lock
+		notes: "Lockfile present — consider regenerating with Deno 1.40.4 or deleting to loosen pinning"
+	deno_lock_notice:
+		status: found
+		path: DENO_LOCK_NOTICE.md
+		notes: "Guidance file present explaining how to handle lockfile issues"
+	mcp_server:
+		status: found
+		path: mcp-server
+		tools:
+			- fetch-domain-info
+			- poem
+		notes: "MCP server present with tools; requires runtime to call sampling tools"
+	bmad_workflows:
+		status: found
+		path: bmad
+		notes: "BMad/BMM workflows and docs present (workflow-status template exists)"
+	deploy_config:
+		status: found
+		files:
+			- fly.toml
+		notes: "Fly config present for deployment"
+	code_review:
+		status: completed
+		type: ad-hoc
+		focus: owner_dashboards
+		outcome: approve
+		report: docs/code-review-2025-12-09.md
+		notes: "Comprehensive review of owner dashboard implementation - APPROVED with minor recommendations. All identified issues have been resolved."
+	tests:
+		status: partial
+		notes: "No top-level unit tests detected; some workflow docs include test guidance"
+	next_steps:
+		- "Optionally regenerate deno.lock with Deno 1.40.4: `deno cache --lock=deno.lock --lock-write server.ts`"
+		- "Redeploy to Fly.io to validate routing and static assets: `flyctl deploy -a xcellent1-lawn-care-rpneaa`"
+		- "Run MCP server locally to validate tools and sampling (requires model provider config)"

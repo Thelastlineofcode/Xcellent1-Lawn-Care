@@ -41,15 +41,10 @@ Deno.test("Owner invitation validation - requires valid format", async () => {
   assertEquals(json.ok, false);
 });
 
+
 Deno.test("Protected endpoint requires authentication", async () => {
-  const res = await fetch(`${BASE_URL}/api/v1/quotes/estimate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      address: "123 Main St, LaPlace, LA",
-      lawn_size: 2500,
-      service_type: "weekly",
-    }),
+  const res = await fetch(`${BASE_URL}/api/owner/metrics`, {
+    method: "GET",
   });
 
   await res.text(); // Consume response body

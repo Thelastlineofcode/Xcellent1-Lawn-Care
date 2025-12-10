@@ -475,6 +475,7 @@
             font-weight: 600;
             color: #059669;
           "
+          aria-live="polite"
         ></div>
         <div id="service-area-map" style="margin-top: 2rem">
           <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem">
@@ -521,7 +522,7 @@
               $0
             </div>
             <p class="text-muted">Outstanding invoices</p>
-            <button class="btn-secondary mt-sm full-width">View Details</button>
+            <button class="btn-secondary mt-sm full-width" aria-label="View accounts receivable details">View Details</button>
           </div>
 
           <div class="card">
@@ -598,10 +599,16 @@
           } else if (json.error && json.error.includes("River Parishes")) {
             resultDiv.style.display = "block";
             resultDiv.style.color = "#b91c1c";
-            resultDiv.innerHTML = `${json.error}<br><button id='collect-lead-btn' class='waitlist-submit' style='margin-top:0.75rem;'>Request Future Service</button>`;
-            document.getElementById("collect-lead-btn").onclick = function () {
-              resultDiv.innerHTML =
-                "Thank you! We'll notify you if we expand to your area.";
+            resultDiv.innerHTML = ""; // Clear any existing content
+            resultDiv.appendChild(document.createTextNode(json.error));
+            resultDiv.appendChild(document.createElement("br"));
+            const leadBtn = document.createElement("button");
+            leadBtn.id = "collect-lead-btn";
+            leadBtn.className = "waitlist-submit";
+            leadBtn.style.marginTop = "0.75rem";
+            leadBtn.textContent = "Request Future Service";
+            leadBtn.onclick = function () {
+              resultDiv.innerHTML = "Thank you! We'll notify you if we expand to your area.";
               // Optionally, send the lead to a /api/leads endpoint for future expansion
               fetch("/api/leads", {
                 method: "POST",
@@ -613,6 +620,7 @@
                 }),
               });
             };
+            resultDiv.appendChild(leadBtn);
           } else {
             resultDiv.style.display = "block";
             resultDiv.style.color = "#b91c1c";

@@ -2,21 +2,21 @@
   "leads": [],
   "events_outbox": [
     {
-      "id": "outbox_1762498704381_6683",
+      "id": "outbox_1765346725987_7571",
       "status": "pending",
       "attempts": 1,
-      "created_at": "2025-11-07T06:58:24.381Z",
+      "created_at": "2025-12-10T06:05:25.987Z",
       "payload": {
         "hello": "world"
       },
       "type": "TEST_EVENT",
-      "next_attempt_at": "2025-11-07T06:59:24.385Z"
+      "next_attempt_at": "2025-12-10T06:06:25.989Z"
     },
     {
-      "id": "outbox_1762498704490_8259",
+      "id": "outbox_1765346726101_673",
       "status": "pending",
       "attempts": 0,
-      "created_at": "2025-11-07T06:58:24.490Z",
+      "created_at": "2025-12-10T06:05:26.101Z",
       "payload": {
         "lead": {
           "service_type": "mowing",
@@ -27,209 +27,13 @@
           "price_high_cents": 1875
         },
         "slots": [
-          "2025-11-10T06:58:24.484Z",
-          "2025-11-14T06:58:24.484Z"
+          "2025-12-13T06:05:26.096Z",
+          "2025-12-17T06:05:26.096Z"
         ],
-        "created_at": "2025-11-07T06:58:24.484Z"
+        "created_at": "2025-12-10T06:05:26.096Z"
       },
       "type": "QUOTE_PROPOSED"
-    },
-    {
-      "id": "lc_outbox_1762499032_2",
-      "type": "QUOTE_PROPOSED",
-      "payload": {
-        "lead_id": "lead_local_1",
-        "quote": {
-          "price_low_cents": 5000,
-          "price_high_cents": 7000,
-          "confidence": 0.85,
-          "notes": "Standard lawn, weekly service recommended.",
-          "slots": [
-            "2025-11-10T09:00:00",
-            "2025-11-12T13:00:00"
-          ]
-        }
-      },
-      "created_at": "synthetic"
-    },
-    {
-      "id": "evt_1765334485864",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-10T02:41:25.864Z",
-      "payload": {
-        "id": "wait_1765334485750",
-        "name": "Test Lead",
-        "email": "lead_1765334485698@test.com",
-        "service": "mowing",
-        "notes": "Interested in weekly service",
-        "created_at": "2025-12-10T02:41:25.751Z"
-      },
-      "status": "pending"
-    },
-    {
-      "id": "evt_1765334660948",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-10T02:44:20.948Z",
-      "payload": {
-        "id": "wait_1765334660874",
-        "name": "Test Lead",
-        "email": "lead_1765334660854@test.com",
-        "service": "mowing",
-        "notes": "Interested in weekly service",
-        "created_at": "2025-12-10T02:44:20.874Z"
-      },
-      "status": "pending"
-    },
-    {
-      "id": "evt_1765334723032",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-10T02:45:23.032Z",
-      "payload": {
-        "id": "wait_1765334722970",
-        "name": "Test Lead",
-        "email": "lead_1765334722944@test.com",
-        "service": "mowing",
-        "notes": "Interested in weekly service",
-        "created_at": "2025-12-10T02:45:22.970Z"
-      },
-      "status": "pending"
-    },
-    {
-      "id": "evt_1765334830833",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-10T02:47:10.833Z",
-      "payload": {
-        "id": "wait_1765334830762",
-        "name": "Test Lead",
-        "email": "lead_1765334830723@test.com",
-        "service": "mowing",
-        "notes": "Interested in weekly service",
-        "created_at": "2025-12-10T02:47:10.762Z"
-      },
-      "status": "pending"
-    },
-    {
-      "id": "evt_1765335184911",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-10T02:53:04.911Z",
-      "payload": {
-        "id": "wait_1765335184843",
-        "name": "Test Lead",
-        "email": "lead_1765335184786@test.com",
-        "service": "mowing",
-        "notes": "Interested in weekly service",
-        "created_at": "2025-12-10T02:53:04.843Z"
-      },
-      "status": "pending"
-    },
-    {
-      "id": "evt_1765335228036",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-10T02:53:48.036Z",
-      "payload": {
-        "id": "wait_1765335227967",
-        "name": "Test Lead",
-        "email": "lead_1765335227950@test.com",
-        "service": "mowing",
-        "notes": "Interested in weekly service",
-        "created_at": "2025-12-10T02:53:47.967Z"
-      },
-      "status": "pending"
-    },
-    {
-      "id": "evt_1765335264099",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-10T02:54:24.099Z",
-      "payload": {
-        "id": "wait_1765335264024",
-        "name": "Test Lead",
-        "email": "lead_1765335264021@test.com",
-        "service": "mowing",
-        "notes": "Interested in weekly service",
-        "created_at": "2025-12-10T02:54:24.024Z"
-      },
-      "status": "pending"
-    },
-    {
-      "id": "evt_1765335457806",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-10T02:57:37.806Z",
-      "payload": {
-        "id": "wait_1765335457741",
-        "name": "Test Lead",
-        "email": "lead_1765335457712@test.com",
-        "service": "mowing",
-        "notes": "Interested in weekly service",
-        "created_at": "2025-12-10T02:57:37.741Z"
-      },
-      "status": "pending"
     }
   ],
-  "invoices": [],
-  "waitlist": [
-    {
-      "id": "wait_1765334485750",
-      "name": "Test Lead",
-      "email": "lead_1765334485698@test.com",
-      "service": "mowing",
-      "notes": "Interested in weekly service",
-      "created_at": "2025-12-10T02:41:25.751Z"
-    },
-    {
-      "id": "wait_1765334660874",
-      "name": "Test Lead",
-      "email": "lead_1765334660854@test.com",
-      "service": "mowing",
-      "notes": "Interested in weekly service",
-      "created_at": "2025-12-10T02:44:20.874Z"
-    },
-    {
-      "id": "wait_1765334722970",
-      "name": "Test Lead",
-      "email": "lead_1765334722944@test.com",
-      "service": "mowing",
-      "notes": "Interested in weekly service",
-      "created_at": "2025-12-10T02:45:22.970Z"
-    },
-    {
-      "id": "wait_1765334830762",
-      "name": "Test Lead",
-      "email": "lead_1765334830723@test.com",
-      "service": "mowing",
-      "notes": "Interested in weekly service",
-      "created_at": "2025-12-10T02:47:10.762Z"
-    },
-    {
-      "id": "wait_1765335184843",
-      "name": "Test Lead",
-      "email": "lead_1765335184786@test.com",
-      "service": "mowing",
-      "notes": "Interested in weekly service",
-      "created_at": "2025-12-10T02:53:04.843Z"
-    },
-    {
-      "id": "wait_1765335227967",
-      "name": "Test Lead",
-      "email": "lead_1765335227950@test.com",
-      "service": "mowing",
-      "notes": "Interested in weekly service",
-      "created_at": "2025-12-10T02:53:47.967Z"
-    },
-    {
-      "id": "wait_1765335264024",
-      "name": "Test Lead",
-      "email": "lead_1765335264021@test.com",
-      "service": "mowing",
-      "notes": "Interested in weekly service",
-      "created_at": "2025-12-10T02:54:24.024Z"
-    },
-    {
-      "id": "wait_1765335457741",
-      "name": "Test Lead",
-      "email": "lead_1765335457712@test.com",
-      "service": "mowing",
-      "notes": "Interested in weekly service",
-      "created_at": "2025-12-10T02:57:37.741Z"
-    }
-  ]
+  "invoices": []
 }

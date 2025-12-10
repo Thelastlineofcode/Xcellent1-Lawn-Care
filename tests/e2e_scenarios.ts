@@ -88,7 +88,7 @@ console.log("🚀 Starting E2E User Flow Tests...");
 
 // 0. Setup: Generate Tokens & Seed DB
 // We need to verify that DATABASE_URL exists to seed.
-const DATABASE_URL = Deno.env.get("DATABASE_URL") || env["DATABASE_URL"];
+const DATABASE_URL = Deno.env.get("DATABASE_URL");
 
 if (DATABASE_URL) {
     try {
