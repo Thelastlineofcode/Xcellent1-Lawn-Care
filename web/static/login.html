@@ -292,16 +292,12 @@
           // Get user profile to determine role
           const { data: profile, error: profileError } = await supabase
             .from("users")
-            .select("id, name, email, role, status, auth_user_id")
+            .select("id, name, email, role, auth_user_id")
             .eq("auth_user_id", data.user.id)
             .single();
 
           if (profileError) {
             throw new Error("Account not found. Please contact support.");
-          }
-
-          if (profile.status !== "active") {
-            throw new Error("Account is not active. Please contact support.");
           }
 
           // Store user info for easy access
