@@ -3710,8 +3710,8 @@ async function handler(req: Request): Promise<Response> {
 
       // Create user record in database
       const userResult = await db.queryObject(
-        `INSERT INTO users (email, phone, name, role, status, auth_user_id)
-         VALUES ($1, $2, $3, 'owner', 'active', $4)
+        `INSERT INTO users (email, phone, name, role, auth_user_id)
+         VALUES ($1, $2, $3, 'owner', $4)
          RETURNING id`,
         [invite.email, invite.phone || null, invite.name, authUser.user.id]
       );
