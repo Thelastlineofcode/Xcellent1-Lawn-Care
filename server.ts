@@ -332,6 +332,89 @@ async function handler(req: Request): Promise<Response> {
     });
   }
 
+  // Admin endpoint to create test owner (development only)
+  if (url.pathname === "/admin/create-test-owner" && req.method === "POST") {
+    try {
+      const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      const supabaseUrl = Deno.env.get("SUPABASE_URL");
+
+      if (!serviceRoleKey || !supabaseUrl) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Missing Supabase credentials" }),
+          { status: 500, headers: getSecurityHeaders(req) }
+        );
+      }
+
+      // Create auth user
+      const createUserRes = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+        method: "POST",
+        headers: {
+          apikey: serviceRoleKey,
+          Authorization: `Bearer ${serviceRoleKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: "test@xcellent1.com",
+          password: "Test123!@#",
+          email_confirm: true,
+          user_metadata: { name: "Test Owner" },
+        }),
+      });
+
+      const authUser = await createUserRes.json();
+
+      if (!createUserRes.ok && !authUser.msg?.includes("already registered")) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Failed to create auth user", details: authUser }),
+          { status: 500, headers: getSecurityHeaders(req) }
+        );
+      }
+
+      const userId = authUser.id || authUser.user?.id;
+
+      // Create or update user profile using Supabase REST API
+      const profileRes = await fetch(`${supabaseUrl}/rest/v1/users`, {
+        method: "POST",
+        headers: {
+          apikey: serviceRoleKey,
+          Authorization: `Bearer ${serviceRoleKey}`,
+          "Content-Type": "application/json",
+          "Prefer": "resolution=merge-duplicates",
+        },
+        body: JSON.stringify({
+          auth_user_id: userId,
+          email: "test@xcellent1.com",
+          name: "Test Owner",
+          role: "owner",
+          status: "active",
+        }),
+      });
+
+      if (!profileRes.ok) {
+        const profileError = await profileRes.text();
+        return new Response(
+          JSON.stringify({ ok: false, error: "Failed to create profile", details: profileError }),
+          { status: 500, headers: getSecurityHeaders(req) }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          message: "Test owner created",
+          email: "test@xcellent1.com",
+          password: "Test123!@#",
+        }),
+        { status: 200, headers: getSecurityHeaders(req) }
+      );
+    } catch (error) {
+      return new Response(
+        JSON.stringify({ ok: false, error: error.message }),
+        { status: 500, headers: getSecurityHeaders(req) }
+      );
+    }
+  }
+
   // Serve uploads
   if (url.pathname.startsWith("/uploads/")) {
     return serveDir(req, { fsRoot: "./web", urlRoot: "" });
