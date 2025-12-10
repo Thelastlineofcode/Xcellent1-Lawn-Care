@@ -4,6 +4,7 @@ id: story-03-storage-job-photos
 epic: epic-01-foundation
 owner: dev
 points: 2
+related_frs: [FR-004]
 ---
 
 Tasks

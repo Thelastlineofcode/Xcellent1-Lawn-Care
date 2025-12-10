@@ -4,6 +4,7 @@ id: story-02-auth-and-roles
 epic: epic-01-foundation
 owner: dev
 points: 3
+related_frs: [FR-001]
 ---
 
 Tasks

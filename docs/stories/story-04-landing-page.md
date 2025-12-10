@@ -4,6 +4,7 @@ id: story-04-landing-page
 epic: epic-02-customer-acquisition
 owner: design
 points: 2
+related_frs: [FR-002]
 ---
 
 Tasks

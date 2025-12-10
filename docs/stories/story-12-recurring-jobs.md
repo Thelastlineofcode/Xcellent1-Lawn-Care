@@ -4,6 +4,7 @@ id: story-12-recurring-jobs
 epic: epic-06-scheduling
 owner: dev
 points: 5
+related_frs: [FR-003]
 ---
 
 Tasks

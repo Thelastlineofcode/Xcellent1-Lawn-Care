@@ -4,6 +4,7 @@ id: story-10-invoice-generation
 epic: epic-05-payments-invoicing
 owner: dev
 points: 3
+related_frs: [FR-005]
 ---
 
 Tasks

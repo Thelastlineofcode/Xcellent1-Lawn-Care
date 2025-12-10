@@ -4,6 +4,7 @@ id: story-08-revenue-summary
 epic: epic-04-owner-dashboard
 owner: product
 points: 3
+related_frs: [FR-006]
 ---
 
 Tasks

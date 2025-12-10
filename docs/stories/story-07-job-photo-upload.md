@@ -4,6 +4,7 @@ id: story-07-job-photo-upload
 epic: epic-03-crew-mobile
 owner: dev
 points: 3
+related_frs: [FR-004]
 ---
 
 Tasks

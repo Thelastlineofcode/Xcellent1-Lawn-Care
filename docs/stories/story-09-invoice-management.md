@@ -4,6 +4,7 @@ id: story-09-invoice-management
 epic: epic-04-owner-dashboard
 owner: dev
 points: 3
+related_frs: [FR-005]
 ---
 
 Tasks

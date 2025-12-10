@@ -4,6 +4,7 @@ id: story-11-stripe-integration
 epic: epic-05-payments-invoicing
 owner: dev
 points: 5
+related_frs: [FR-005]
 ---
 
 Tasks

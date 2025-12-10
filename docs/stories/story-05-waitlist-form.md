@@ -4,6 +4,7 @@ id: story-05-waitlist-form
 epic: epic-02-customer-acquisition
 owner: dev
 points: 3
+related_frs: [FR-002]
 ---
 
 Tasks
