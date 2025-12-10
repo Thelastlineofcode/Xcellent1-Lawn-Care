@@ -2,6 +2,7 @@
 import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 import { authenticateRequest, getSupabaseClient } from "./supabase_auth.ts";
 import { sendEmail, buildOwnerInvitationEmail } from "./email-service.ts";
 
@@ -41,6 +42,33 @@ const outbox: Map<string, any> = new Map();
 let leadCounter = 1;
 let eventCounter = 1;
 
+// Rate Limiting Map
+const rateLimits = new Map<string, { count: number; resetTime: number }>();
+
+function getSecurityHeaders(req: Request) {
+  const origin = req.headers.get("Origin") || "";
+  const allowedOrigins = [
+    "http://localhost:8000",
+    "http://0.0.0.0:8000",
+    "https://xcellent1lawncare.com",
+    "https://www.xcellent1lawncare.com"
+  ];
+  const isAllowed = allowedOrigins.includes(origin) || origin.endsWith(".fly.dev");
+  const corsOrigin = isAllowed ? origin : "null";
+
+  return {
+    "Access-Control-Allow-Origin": corsOrigin,
+    "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, x-client-info, apikey",
+    "Content-Type": "application/json",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+    "Referrer-Policy": "same-origin",
+    "X-XSS-Protection": "1; mode=block"
+  };
+}
+
 // Authentication middleware helper
 async function requireAuth(
   req: Request,
@@ -57,10 +85,7 @@ async function requireAuth(
         JSON.stringify({ ok: false, error: "Unauthorized - please log in" }),
         {
           status: 401,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
+          headers: getSecurityHeaders(req),
         }
       ),
     };
@@ -77,10 +102,7 @@ async function requireAuth(
         }),
         {
           status: 403,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
+          headers: getSecurityHeaders(req),
         }
       ),
     };
@@ -110,19 +132,33 @@ async function saveBase64Image(
 async function handler(req: Request): Promise<Response> {
   const url = new URL(req.url);
 
-  // CORS headers
-  const headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Content-Type": "application/json",
-  };
+  // 1. Rate Limiting Check
+  const ip = (req.headers.get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+  const now = Date.now();
+  let limit = rateLimits.get(ip);
+  if (!limit || now > limit.resetTime) {
+    limit = { count: 0, resetTime: now + 60000 };
+    rateLimits.set(ip, limit);
+  }
+  limit.count++;
+
+  // Allow strict static file access (images/css) to bypass strict limits if needed, 
+  // but 300 req/min is generous for a user.
+  if (limit.count > 300) {
+    return new Response(JSON.stringify({ ok: false, error: "Too Many Requests" }), {
+      status: 429,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
+  // 2. Security Headers & CORS
+  const headers = getSecurityHeaders(req);
 
   // POST /api/v1/quotes/estimate (owner dashboard quote calculator)
   if (url.pathname === "/api/v1/quotes/estimate" && req.method === "POST") {
     // Require owner authentication
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const body = await req.json();
@@ -289,10 +325,10 @@ async function handler(req: Request): Promise<Response> {
 
     return new Response(js, {
       status: 200,
-      headers: new Headers({
+      headers: {
+        ...headers,
         "Content-Type": "application/javascript",
-        "Access-Control-Allow-Origin": "*",
-      }),
+      },
     });
   }
 
@@ -483,7 +519,7 @@ async function handler(req: Request): Promise<Response> {
   if (url.pathname === "/api/status" && req.method === "GET") {
     // Require owner authentication
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (dbConnected) {
@@ -534,7 +570,7 @@ async function handler(req: Request): Promise<Response> {
   ) {
     // Require crew or owner authentication
     const authCheck = await requireAuth(req, ["crew", "owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const crewId = url.pathname.split("/")[3];
@@ -551,10 +587,7 @@ async function handler(req: Request): Promise<Response> {
           }),
           {
             status: 403,
-            headers: {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            },
+            headers,
           }
         );
       }
@@ -602,7 +635,7 @@ async function handler(req: Request): Promise<Response> {
   if (url.pathname === "/api/owner/metrics" && req.method === "GET") {
     // Require owner authentication
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (dbConnected) {
@@ -643,7 +676,7 @@ async function handler(req: Request): Promise<Response> {
   if (url.pathname === "/api/owner/crew-performance" && req.method === "GET") {
     // Require owner authentication
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (dbConnected) {
@@ -703,7 +736,7 @@ async function handler(req: Request): Promise<Response> {
   ) {
     // Require client or owner authentication
     const authCheck = await requireAuth(req, ["client", "owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const clientId = url.pathname.split("/")[3];
@@ -728,10 +761,7 @@ async function handler(req: Request): Promise<Response> {
               }),
               {
                 status: 403,
-                headers: {
-                  "Content-Type": "application/json",
-                  "Access-Control-Allow-Origin": "*",
-                },
+                headers,
               }
             );
           }
@@ -801,7 +831,7 @@ async function handler(req: Request): Promise<Response> {
   if (photoMatch && req.method === "POST") {
     // Require crew or owner authentication
     const authCheck = await requireAuth(req, ["crew", "owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const jobId = photoMatch[1];
@@ -838,7 +868,7 @@ async function handler(req: Request): Promise<Response> {
           await db.queryObject(
             `INSERT INTO job_photos (job_id, uploaded_by, photo_type, photo_url, photo_storage_path)
              VALUES ($1, $2, $3, $4, $5)`,
-            [jobId, authCheck.userId, photoType, localPath, filename]
+            [jobId, authCheck.auth.profile.id, photoType, localPath, filename]
           );
         }
 
@@ -878,7 +908,7 @@ async function handler(req: Request): Promise<Response> {
           `INSERT INTO job_photos (job_id, uploaded_by, photo_type, photo_url, photo_storage_path)
            VALUES ($1, $2, $3, $4, $5)
            RETURNING id`,
-          [jobId, authCheck.userId, photoType, publicUrl, storagePath]
+          [jobId, authCheck.auth.profile.id, photoType, publicUrl, storagePath]
         );
 
         // Add event
@@ -916,7 +946,7 @@ async function handler(req: Request): Promise<Response> {
   if (completeMatch && req.method === "PATCH") {
     // Require crew or owner authentication
     const authCheck = await requireAuth(req, ["crew", "owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const jobId = completeMatch[1];
@@ -1377,7 +1407,7 @@ async function handler(req: Request): Promise<Response> {
   // POST /api/owner/clients - Create new client
   if (url.pathname === "/api/owner/clients" && req.method === "POST") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const body = await req.json();
@@ -1424,8 +1454,8 @@ async function handler(req: Request): Promise<Response> {
 
       // Create user record first
       const userResult = await db.queryObject(
-        `INSERT INTO users (email, phone, name, role, status)
-         VALUES ($1, $2, $3, 'client', 'active')
+        `INSERT INTO users (email, phone, name, role)
+         VALUES ($1, $2, $3, 'client')
          RETURNING id`,
         [
           body.email.trim(),
@@ -1483,7 +1513,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/owner/clients - List all clients
   if (url.pathname === "/api/owner/clients" && req.method === "GET") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (!dbConnected) {
@@ -1557,7 +1587,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/owner/clients/:id - Get client details
   if (url.pathname.match(/^\/api\/owner\/clients\/[^\/]+$/) && req.method === "GET") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const clientId = url.pathname.split("/")[4];
@@ -1666,7 +1696,7 @@ async function handler(req: Request): Promise<Response> {
   // PATCH /api/owner/clients/:id - Update client
   if (url.pathname.match(/^\/api\/owner\/clients\/[^\/]+$/) && req.method === "PATCH") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const clientId = url.pathname.split("/")[4];
@@ -1791,7 +1821,7 @@ async function handler(req: Request): Promise<Response> {
   // POST /api/owner/jobs - Create new job
   if (url.pathname === "/api/owner/jobs" && req.method === "POST") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const body = await req.json();
@@ -1866,7 +1896,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/owner/jobs - List all jobs
   if (url.pathname === "/api/owner/jobs" && req.method === "GET") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (!dbConnected) {
@@ -1959,7 +1989,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/owner/jobs/:id - Get job details
   if (url.pathname.match(/^\/api\/owner\/jobs\/[^\/]+$/) && req.method === "GET") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const jobId = url.pathname.split("/")[4];
@@ -2035,7 +2065,7 @@ async function handler(req: Request): Promise<Response> {
   // PATCH /api/owner/jobs/:id - Update job
   if (url.pathname.match(/^\/api\/owner\/jobs\/[^\/]+$/) && req.method === "PATCH") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const jobId = url.pathname.split("/")[4];
@@ -2128,7 +2158,7 @@ async function handler(req: Request): Promise<Response> {
   // PATCH /api/jobs/:id/start - Start job (crew or owner)
   if (url.pathname.match(/^\/api\/jobs\/[^\/]+\/start$/) && req.method === "PATCH") {
     const authCheck = await requireAuth(req, ["crew", "owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const jobId = url.pathname.split("/")[3];
@@ -2163,7 +2193,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/owner/crew - List all crew members (for job assignment)
   if (url.pathname === "/api/owner/crew" && req.method === "GET") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (!dbConnected) {
@@ -2203,7 +2233,7 @@ async function handler(req: Request): Promise<Response> {
   // POST /api/owner/invoices - Create new invoice
   if (url.pathname === "/api/owner/invoices" && req.method === "POST") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const body = await req.json();
@@ -2288,7 +2318,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/owner/invoices - List all invoices
   if (url.pathname === "/api/owner/invoices" && req.method === "GET") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (!dbConnected) {
@@ -2350,7 +2380,7 @@ async function handler(req: Request): Promise<Response> {
   // POST /api/owner/invoices/:id/payment - Record payment
   if (url.pathname.match(/^\/api\/owner\/invoices\/[^\/]+\/payment$/) && req.method === "POST") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const invoiceId = url.pathname.split("/")[4];
@@ -2449,7 +2479,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/owner/applications - View job applications
   if (url.pathname === "/api/owner/applications" && req.method === "GET") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (!dbConnected) {
@@ -2510,7 +2540,7 @@ async function handler(req: Request): Promise<Response> {
     req.method === "PATCH"
   ) {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const applicationId = url.pathname.split("/")[4];
@@ -2569,7 +2599,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/owner/payment-accounts - List all payment accounts
   if (url.pathname === "/api/owner/payment-accounts" && req.method === "GET") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (!dbConnected) {
@@ -2579,7 +2609,7 @@ async function handler(req: Request): Promise<Response> {
         );
       }
 
-      const userId = authCheck.userId;
+      const userId = authCheck.auth.profile.id;
 
       const result = await db.queryObject(
         `SELECT 
@@ -2610,7 +2640,7 @@ async function handler(req: Request): Promise<Response> {
   // POST /api/owner/payment-accounts - Create new payment account
   if (url.pathname === "/api/owner/payment-accounts" && req.method === "POST") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const body = await req.json();
@@ -2636,7 +2666,7 @@ async function handler(req: Request): Promise<Response> {
         );
       }
 
-      const userId = authCheck.userId;
+      const userId = authCheck.auth.profile.id;
 
       // If setting as primary, unset other primary accounts
       if (body.is_primary) {
@@ -2687,7 +2717,7 @@ async function handler(req: Request): Promise<Response> {
     req.method === "PATCH"
   ) {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const accountId = url.pathname.split("/")[4];
@@ -2699,7 +2729,7 @@ async function handler(req: Request): Promise<Response> {
         );
       }
 
-      const userId = authCheck.userId;
+      const userId = authCheck.auth.profile.id;
 
       // Get the account to find its payment method
       const accountResult = await db.queryObject(
@@ -2746,7 +2776,7 @@ async function handler(req: Request): Promise<Response> {
   // DELETE /api/owner/payment-accounts/:id - Delete payment account
   if (url.pathname.match(/^\/api\/owner\/payment-accounts\/[^\/]+$/) && req.method === "DELETE") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const accountId = url.pathname.split("/")[4];
@@ -2758,7 +2788,7 @@ async function handler(req: Request): Promise<Response> {
         );
       }
 
-      const userId = authCheck.userId;
+      const userId = authCheck.auth.profile.id;
 
       // Check if account exists and belongs to user
       const accountResult = await db.queryObject(
@@ -2898,7 +2928,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/owner/waitlist - Owner views waitlist
   if (url.pathname === "/api/owner/waitlist" && req.method === "GET") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (!dbConnected) {
@@ -2967,7 +2997,7 @@ async function handler(req: Request): Promise<Response> {
   // PATCH /api/owner/waitlist/:id - Update waitlist entry
   if (url.pathname.match(/^\/api\/owner\/waitlist\/[^\/]+$/) && req.method === "PATCH") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const waitlistId = url.pathname.split("/")[4];
@@ -3034,7 +3064,7 @@ async function handler(req: Request): Promise<Response> {
   // POST /api/owner/waitlist/:id/convert - Convert waitlist entry to client
   if (url.pathname.match(/^\/api\/owner\/waitlist\/[^\/]+\/convert$/) && req.method === "POST") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const waitlistId = url.pathname.split("/")[4];
@@ -3136,7 +3166,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/owner/payments/pending - List payments pending verification
   if (url.pathname === "/api/owner/payments/pending" && req.method === "GET") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (!dbConnected) {
@@ -3189,7 +3219,7 @@ async function handler(req: Request): Promise<Response> {
   // PATCH /api/owner/payments/:id/verify - Verify or reject payment
   if (url.pathname.match(/^\/api\/owner\/payments\/[^\/]+\/verify$/) && req.method === "PATCH") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const paymentId = url.pathname.split("/")[4];
@@ -3280,7 +3310,7 @@ async function handler(req: Request): Promise<Response> {
   // GET /api/client/invoices - Get client's invoices
   if (url.pathname === "/api/client/invoices" && req.method === "GET") {
     const authCheck = await requireAuth(req, ["client"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       if (!dbConnected) {
@@ -3293,7 +3323,7 @@ async function handler(req: Request): Promise<Response> {
       // Get client record for authenticated user
       const clientResult = await db.queryObject(
         `SELECT id FROM clients WHERE user_id = $1`,
-        [authCheck.userId]
+        [authCheck.auth.profile.id]
       );
 
       if (clientResult.rows.length === 0) {
@@ -3330,7 +3360,7 @@ async function handler(req: Request): Promise<Response> {
   // POST /api/client/invoices/:id/mark-payment - Client reports payment sent
   if (url.pathname.match(/^\/api\/client\/invoices\/[^\/]+\/mark-payment$/) && req.method === "POST") {
     const authCheck = await requireAuth(req, ["client"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const invoiceId = url.pathname.split("/")[4];
@@ -3369,7 +3399,7 @@ async function handler(req: Request): Promise<Response> {
       const invoice = invoiceResult.rows[0] as any;
 
       // Verify the invoice belongs to the authenticated user
-      if (invoice.user_id !== authCheck.userId) {
+      if (invoice.user_id !== authCheck.auth.profile.id) {
         return new Response(
           JSON.stringify({ ok: false, error: "Unauthorized" }),
           { status: 403, headers }
@@ -3443,7 +3473,7 @@ async function handler(req: Request): Promise<Response> {
   // POST /api/owner/invite - Send owner invitation (admin only)
   if (url.pathname === "/api/owner/invite" && req.method === "POST") {
     const authCheck = await requireAuth(req, ["owner"]);
-    if (!authCheck.authorized) return authCheck.response;
+    if (!authCheck.authorized) return (authCheck as any).response;
 
     try {
       const body = await req.json();
@@ -3666,7 +3696,8 @@ async function handler(req: Request): Promise<Response> {
         );
       }
 
-      // Create Supabase Auth user
+      // Create auth user via Supabase Admin SDK
+      // This handles Opaque keys (sb_secret_...) correctly where raw fetch might fail
       const supabaseUrl = Deno.env.get("SUPABASE_URL");
       const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
@@ -3677,43 +3708,36 @@ async function handler(req: Request): Promise<Response> {
         );
       }
 
-      // Create auth user via Supabase Admin API
-      const createAuthUserResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
-        method: "POST",
-        headers: {
-          "apikey": supabaseKey,
-          "Authorization": `Bearer ${supabaseKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: invite.email,
-          password: body.password,
-          email_confirm: true,
-          user_metadata: {
-            name: invite.name,
-            phone: invite.phone,
-            role: "owner"
-          }
-        })
+      const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
+
+      const { data: authUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
+        email: invite.email,
+        password: body.password,
+        email_confirm: true,
+        user_metadata: {
+          name: invite.name,
+          phone: invite.phone,
+          role: "owner"
+        }
       });
 
-      if (!createAuthUserResponse.ok) {
-        const error = await createAuthUserResponse.json();
-        console.error("[server] Auth user creation failed:", error);
+      if (createError || !authUser) {
+        console.error("[server] Auth user creation failed:", createError);
         return new Response(
-          JSON.stringify({ ok: false, error: "Failed to create auth account" }),
+          JSON.stringify({ ok: false, error: createError?.message || "Failed to create auth account" }),
           { status: 500, headers }
         );
       }
 
-      const authUser = await createAuthUserResponse.json();
+      // authUser is UserResponse, we need authUser.user
+      const createdUser = authUser.user;
 
       // Create user record in database
       const userResult = await db.queryObject(
         `INSERT INTO users (email, phone, name, role, auth_user_id)
          VALUES ($1, $2, $3, 'owner', $4)
          RETURNING id`,
-        [invite.email, invite.phone || null, invite.name, authUser.id]
+        [invite.email, invite.phone || null, invite.name, createdUser.id]
       );
 
       const userId = (userResult.rows[0] as any).id;

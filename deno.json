@@ -8,6 +8,11 @@
   "imports": {
     "$dotenv/": "https://deno.land/std@0.210.0/dotenv/"
   },
+  "compilerOptions": {
+    "strict": false,
+    "strictNullChecks": false,
+    "noImplicitAny": false
+  },
   "fmt": {
     "options": {}
   },

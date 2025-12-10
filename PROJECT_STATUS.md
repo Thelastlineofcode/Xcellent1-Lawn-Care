@@ -2,6 +2,8 @@
 
 **Last Updated**: December 3, 2025  
 **Status**: 🟢 **PRODUCTION READY - ALL SYSTEMS LIVE**
+**QA Audit**: ✅ Passed (Dec 9, 2025)
+**PM Signoff**: ✅ Approved
 
 ---
 
@@ -263,11 +265,11 @@ fly deploy --ha=false
 
 ### Environment Variables
 ```bash
-SUPABASE_URL=https://utivthfrwgtjatsusopw.supabase.co
-SUPABASE_ANON_KEY=sb_publishable_nX8IeSiT3FJ3iL2GJbf_vA_Jj90PMvt
-DATABASE_URL=postgresql://postgres.utivthfrwgtjatsusopw:ZClxGUiiPqKrZ2Ht@aws-1-us-east-2.pooler.supabase.com:5432/postgres
-SUPABASE_JWT_SECRET=FrWAzKKE5Rlk9HGu+SSZRPSJ2R0sPi95JwKqswegH/SIrbfOwcU64Hysuv5vzTQfWOA4lQBsHGsvFEISpcJSpQ==
-SUPABASE_SERVICE_ROLE_KEY=sb_secret_vMrnshSMeCc30DZ47xd8Sg_cxutQORt
+SUPABASE_URL=<your_supabase_url>
+SUPABASE_ANON_KEY=<your_anon_key>
+DATABASE_URL=<your_database_url>
+SUPABASE_JWT_SECRET=<your_jwt_secret>
+SUPABASE_SERVICE_ROLE_KEY=<your_service_role_key>
 ```
 
 ---
