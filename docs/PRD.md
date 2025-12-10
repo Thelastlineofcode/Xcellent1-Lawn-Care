@@ -73,31 +73,72 @@ Turn Xcellent1 into a lightweight local-operations platform that can be configur
    - Crew accounts with limited permissions
    - Authentication via Supabase
 
+_Acceptance Criteria (FR-001)_
+
+- Owners, managers, and crew roles defined with role-based access control in Supabase RLS.
+- Account creation, login, password reset, and email verification implemented.
+- Permissions prevent crew from viewing owner-only data.
+
 2. Landing Page & Waitlist (FR-002)
    - Mobile-responsive landing page
    - Waitlist form storing leads in Supabase
    - Email confirmation for signups
+
+_Acceptance Criteria (FR-002)_
+
+- Landing page captures name, email, phone, address, service requested, and preferred date (optional).
+- Frontend validates required fields and shows inline errors for missing data.
+- Backend `/api/waitlist` accepts submissions and returns 201 with an id; owner outbox event queued.
 
 3. Job Management & Scheduling (FR-003)
    - Create job entries (customer, address, service type, date/time)
    - Assign job to crew
    - Crew can view assigned jobs on mobile
 
+_Acceptance Criteria (FR-003)_
+
+- Jobs can be created/updated via API with customer, address, service type, and date/time.
+- Jobs can be assigned to crew members and updated with status (scheduled, in-progress, completed).
+- Scheduling conflicts flagged, and time slot management API available.
+
 4. Crew Mobile Workflow (FR-004)
    - Job list with details
    - Mark job as in-progress / complete
    - Upload photos tied to job records (Supabase Storage)
+
+_Acceptance Criteria (FR-004)_
+
+- Crew can see assigned jobs, mark them in-progress/complete, and upload photos tied to the job record.
+- Photo uploads stored in Supabase Storage and linked to job records.
+- Offline queued uploads synchronize when online.
 
 5. Invoicing & Payments (FR-005)
    - Generate simple invoice on job completion
    - Stripe Checkout links sent to customers
    - Webhook for payment confirmation to update invoice status
 
+_Acceptance Criteria (FR-005)_
+
+- Invoices auto-generated after job completion with job details and photos.
+- Stripe Checkout links created and sent; webhook updates invoice status to paid when completed.
+- Owner dashboard shows real-time revenue and invoice status updates.
+
 6. Owner Dashboard (FR-006)
    - Revenue summary, jobs completed, crew performance
    - Pending invoices and quick actions (send reminder, mark paid)
 
+_Acceptance Criteria (FR-006)_
+
+- Dashboard displays revenue metrics, completed jobs, crew performance metrics, and pending invoices with filtering.
+- Data exports (CSV) available for revenue reports.
+- Realtime updates via Supabase real-time (if enabled).
+
 7. Notifications (FR-007)
+   _Acceptance Criteria (FR-007)_
+
+   - Waitlist and booking confirmation emails sent to customers (SendGrid/Resend). SMS via Twilio (optional) send on opt-in.
+   - Owner receives notifications for waitlist signup and important events via email/SMS.
+   - Notification templates are branded and traceable.
    - Email confirmations, owner notifications for waitlist and payments
 
 8. Deploy & Operations
