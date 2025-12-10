@@ -1,22 +1,33 @@
 # Xcellent1 Lawn Care Management System
 
-A complete lawn care business management platform built with Deno, Supabase, and vanilla JavaScript.
+A complete lawn care business management platform built with Deno, Supabase, and
+vanilla JavaScript.
 
-> NOTE: The documentation in this repo has been cleaned and trimmed for clarity. Large/long reference documents were archived under `docs/archive/` and replaced with short summaries in `docs/` to make onboarding faster. Full originals are retained in `docs/archive/`.
+> NOTE: The documentation in this repo has been cleaned and trimmed for clarity.
+> Large/long reference documents were archived under `docs/archive/` and
+> replaced with short summaries in `docs/` to make onboarding faster. Full
+> originals are retained in `docs/archive/`.
 
 Core operational playbooks:
+
 - `docs/LACARDIO_DASHBOARD_GUIDE.md` — User guide for LaCardio
 
-AI & Agent Features
--------------------
-- Experimental AI and agent prototypes reside under `bmad/agents/archived/langchain-integration/` and `src/skills/` for research and future implementation.
-- These prototypes are **archived and disabled by default**; they are not part of the active code path or CI runs unless explicitly enabled via CI environment flags (e.g., `ENABLE_AI_TESTS=true`).
-   - For TypeScript/Deno prototype modules, set `ENABLE_AI_PROTOTYPES=true` and pass `--allow-env` to Deno when testing or running them.
-   - Future: a TTS-enabled simple agent is planned but suspended for now.
+## AI & Agent Features
+
+- Experimental AI and agent prototypes reside under
+  `bmad/agents/archived/langchain-integration/` and `src/skills/` for research
+  and future implementation.
+- These prototypes are **archived and disabled by default**; they are not part
+  of the active code path or CI runs unless explicitly enabled via CI
+  environment flags (e.g., `ENABLE_AI_TESTS=true`).
+  - For TypeScript/Deno prototype modules, set `ENABLE_AI_PROTOTYPES=true` and
+    pass `--allow-env` to Deno when testing or running them.
+  - Future: a TTS-enabled simple agent is planned but suspended for now.
 
 ## 🚀 Features
 
 ### For Business Owners
+
 - **Client Management** - Full CRUD operations, search, and filtering
 - **Job Scheduling** - Assign jobs to crew, track status, and completion
 - **Invoicing & Payments** - Create invoices, record payments, track balances
@@ -25,12 +36,14 @@ AI & Agent Features
 - **Business Metrics** - Real-time KPIs and performance tracking
 
 ### For Crew Members
+
 - **Daily Job List** - View assigned jobs with client details
 - **Photo Upload** - Document before/after photos (Supabase Storage)
 - **Job Status Updates** - Mark jobs as started/completed
 - **Navigation Integration** - Quick links to client addresses
 
 ### For Clients
+
 - **Self-Service Portal** - View balance, service history, and photos
 - **Payment Marking** - Report payments sent via Cash App, Zelle, PayPal
 - **Photo Gallery** - See before/after photos from completed jobs
@@ -78,9 +91,11 @@ SUPABASE_JWT_SECRET=[YOUR-JWT-SECRET]
 
 # Server
 PORT=8000
+APP_ENV=development
 ```
 
 **Finding Supabase Credentials**:
+
 1. Go to https://supabase.com/dashboard
 2. Select your project
 3. Click **Settings** → **API**
@@ -129,11 +144,13 @@ psql "$DATABASE_URL" -f db/enhanced_owner_metrics.sql
 ### 3. Supabase Storage Setup
 
 Follow the guide in `db/SETUP_SUPABASE_STORAGE.md` to:
+
 1. Create the `job-photos` storage bucket
 2. Set up public access policies
 3. Configure upload permissions
 
 **Quick Setup** (via Supabase Dashboard):
+
 1. Go to **Storage** → **New Bucket**
 2. Name: `job-photos`
 3. Check ✅ **Public bucket**
@@ -157,10 +174,37 @@ The schema includes sample data for testing. To load it:
 ```
 
 Or create users manually:
+
 1. Go to **Authentication** → **Users** → **Add user**
 2. Create test accounts for owner, crew, and client roles
 
 ---
+
+## 🚢 Production Deployments (Fly.io)
+
+When deploying to production with Fly.io, the app must run in production mode and **cannot** use the local file-backed fallback. Use `APP_ENV=production` and ensure the following secrets are set in Fly or CI:
+
+- `DATABASE_URL` (required)
+- `SUPABASE_URL` (required)
+- `SUPABASE_ANON_KEY` (required)
+- `SUPABASE_JWT_SECRET` (required)
+
+Set Fly secrets before you deploy:
+
+```bash
+flyctl secrets set DATABASE_URL="postgresql://user:pass@..." \
+   SUPABASE_URL="https://<ref>.supabase.co" \
+   SUPABASE_ANON_KEY="<anon>" SUPABASE_JWT_SECRET="<jwt>" \
+   --app <your-fly-app>
+```
+
+Then deploy with our helper (CI or local):
+```bash
+APP_ENV=production FLY_APP_NAME=<your-fly-app> ./scripts/deploy_fly.sh
+```
+
+For CI/CD: Use the `deploy-flyio.yml` GitHub Actions workflow. Ensure these repository secrets are configured: `FLY_API_TOKEN`, `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_JWT_SECRET`, `FLY_APP_NAME`.
+
 
 ## 🏃 Running Locally
 
@@ -188,6 +232,7 @@ deno task start
 ### Available Pages
 
 **Owner**:
+
 - `/static/owner.html` - Main dashboard with metrics
 - `/static/manage-clients.html` - Client management
 - `/static/manage-jobs.html` - Job scheduling
@@ -196,12 +241,15 @@ deno task start
 - `/static/pending-payments.html` - Payment verification
 
 **Crew**:
+
 - `/static/crew.html` - Daily job list
 
 **Client**:
+
 - `/static/client.html` - Self-service portal
 
 **Public**:
+
 - `/` - Careers/job application page
 - `/api/waitlist` - Prospect signup (API endpoint)
 
@@ -306,9 +354,11 @@ Authorization: Bearer <your-supabase-jwt-token>
 ### Endpoint Summary
 
 **Public** (no auth required):
+
 - `POST /api/waitlist` - Join waitlist
 
 **Owner Only**:
+
 - Client Management: `/api/owner/clients`
 - Job Management: `/api/owner/jobs`
 - Invoice Management: `/api/owner/invoices`
@@ -316,10 +366,12 @@ Authorization: Bearer <your-supabase-jwt-token>
 - Payment Verification: `/api/owner/payments`
 
 **Crew Only**:
+
 - Photo Upload: `/api/jobs/:id/photo`
 - Job Updates: `/api/jobs/:id/start`, `/api/jobs/:id/complete`
 
 **Client Only**:
+
 - Invoices: `/api/client/invoices`
 - Payment Marking: `/api/client/invoices/:id/mark-payment`
 
@@ -330,6 +382,7 @@ For complete API documentation, see `PHASES_1-3_COMPLETE.md`.
 ## 🗄️ Database Schema
 
 ### Core Tables
+
 - `users` - All system users (owner, crew, clients, applicants)
 - `clients` - Customer records with property and billing info
 - `jobs` - Work assignments with crew and client details
@@ -341,6 +394,7 @@ For complete API documentation, see `PHASES_1-3_COMPLETE.md`.
 - `outbox_events` - Event sourcing for BMAD integration
 
 ### Key Relationships
+
 ```
 users (1) → (many) clients
 users (1) → (many) jobs (as crew)
@@ -359,6 +413,7 @@ See `db/schema.sql` for complete schema.
 ### Manual Testing Checklist
 
 See `PHASES_1-3_COMPLETE.md` for comprehensive testing checklist covering:
+
 - Phase 1: Client, Job, Invoice management
 - Phase 2: Waitlist, Self-service payments
 - Phase 3: Photo upload, Payment verification
@@ -380,6 +435,7 @@ Then link them in the `users` table with appropriate roles.
 ## 📖 User Guides
 
 ### For Owners
+
 1. **Login**: Navigate to `/static/owner.html`
 2. **View Dashboard**: See KPIs and recent activity
 3. **Manage Clients**: Click "Manage Clients" → Add/Edit/Search
@@ -389,6 +445,7 @@ Then link them in the `users` table with appropriate roles.
 7. **Manage Waitlist**: Click "Manage Waitlist" → Convert prospects
 
 ### For Crew
+
 1. **Login**: Navigate to `/static/crew.html`
 2. **View Jobs**: See today's assigned jobs
 3. **Navigate**: Click address to open in maps
@@ -396,6 +453,7 @@ Then link them in the `users` table with appropriate roles.
 5. **Update Status**: Mark jobs as started/completed
 
 ### For Clients
+
 1. **Login**: Navigate to `/static/client.html`
 2. **View Balance**: See current amount due
 3. **View Photos**: See before/after photos from recent jobs
@@ -407,29 +465,34 @@ Then link them in the `users` table with appropriate roles.
 ## 🔧 Troubleshooting
 
 ### Server won't start
+
 - Check Deno is installed: `deno --version`
 - Verify `.env` file exists with correct variables
 - Check port 8000 is not in use: `lsof -i :8000`
 
 ### Database connection fails
+
 - Verify DATABASE_URL is correct
 - Check Supabase project is active
 - Ensure PostgreSQL port (5432) is accessible
 - Test connection: `psql "$DATABASE_URL" -c "SELECT 1"`
 
 ### Authentication errors
+
 - Verify SUPABASE_JWT_SECRET is set
 - Check JWT token is valid (use jwt.io to decode)
 - Ensure user exists in `users` table with correct role
 - Verify RLS policies are enabled
 
 ### Photos not uploading
+
 - Check Supabase Storage bucket exists: `job-photos`
 - Verify bucket is set to Public
 - Check upload policies are configured
 - See `db/SETUP_SUPABASE_STORAGE.md` for setup
 
 ### Payment verification not working
+
 - Ensure payments have "Self-reported" in notes field
 - Check client-marked payments in database
 - Verify owner has authenticated access
@@ -440,12 +503,14 @@ Then link them in the `users` table with appropriate roles.
 ## 📊 Monitoring
 
 ### Health Check
+
 ```bash
 curl http://localhost:8000/health
 # Should return: {"status":"ok"}
 ```
 
 ### Database Status
+
 ```sql
 -- Check table counts
 SELECT
@@ -457,17 +522,22 @@ SELECT
 ```
 
 ### Storage Usage
+
 Check Supabase Dashboard:
+
 - **Storage** → **job-photos** → View size
 - Free tier: 1 GB limit
 
 ### Logs
+
 **Fly.io**:
+
 ```bash
 fly logs
 ```
 
 **Deno Deploy**:
+
 - View in dashboard: https://dash.deno.com
 
 ---
@@ -475,6 +545,7 @@ fly logs
 ## 🛠️ Development
 
 ### Project Structure
+
 ```
 Xcellent1-Lawn-Care/
 ├── server.ts                 # Main Deno server
@@ -510,6 +581,7 @@ Xcellent1-Lawn-Care/
 5. **Documentation**: Update this README and PHASES document
 
 ### Code Style
+
 - Use TypeScript for server-side code
 - Vanilla JavaScript for frontend (no build step)
 - ES modules for imports
@@ -522,6 +594,7 @@ Xcellent1-Lawn-Care/
 ## 💰 Cost Estimates
 
 ### Free Tier (Current)
+
 - **Supabase**: Free
   - Database: 500 MB
   - Storage: 1 GB
@@ -532,6 +605,7 @@ Xcellent1-Lawn-Care/
 - **Total**: $0/month
 
 ### Small Business (10-20 clients)
+
 - **Supabase Pro**: $25/month
   - 8 GB database
   - 100 GB storage
@@ -540,6 +614,7 @@ Xcellent1-Lawn-Care/
 - **Total**: ~$25/month
 
 ### Growing Business (50+ clients)
+
 - **Supabase Pro**: $25/month
 - **Fly.io Dedicated**: $15-30/month
 - **Total**: ~$40-55/month
@@ -565,6 +640,7 @@ MIT License - see LICENSE file for details
 ## 📧 Support
 
 For issues, questions, or feature requests:
+
 1. Check this README and `PHASES_1-3_COMPLETE.md`
 2. Review `db/SETUP_SUPABASE_STORAGE.md` for storage issues
 3. Open an issue on GitHub
@@ -575,6 +651,7 @@ For issues, questions, or feature requests:
 ## 🎯 Roadmap
 
 ### Phase 4 (In Progress)
+
 - [ ] End-to-end testing
 - [ ] Mobile responsiveness improvements
 - [ ] Performance optimization
@@ -582,6 +659,7 @@ For issues, questions, or feature requests:
 - [ ] User documentation
 
 ### Future Enhancements
+
 - [ ] Email notifications (SendGrid/Resend)
 - [ ] SMS notifications (Twilio)
 - [ ] Direct card payments (Stripe)
@@ -596,6 +674,7 @@ For issues, questions, or feature requests:
 ## 🏆 Acknowledgments
 
 Built with:
+
 - [Deno](https://deno.land) - Modern JavaScript/TypeScript runtime
 - [Supabase](https://supabase.com) - Open source Firebase alternative
 - [PostgreSQL](https://postgresql.org) - Powerful relational database
@@ -603,5 +682,4 @@ Built with:
 
 ---
 
-**Version**: 1.0.0 (Phases 1-3 Complete)
-**Last Updated**: November 2025
+**Version**: 1.0.0 (Phases 1-3 Complete) **Last Updated**: November 2025

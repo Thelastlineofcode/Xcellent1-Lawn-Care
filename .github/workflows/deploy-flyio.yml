@@ -1,0 +1,73 @@
+name: Deploy & Test (Fly.io)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      fly_app_name:
+        description: 'Fly app name' 
+        required: true
+        default: ''
+
+jobs:
+  predeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+      - name: Run linter & tests (unit)
+        env:
+          APP_ENV: staging
+        run: |
+          deno lint --config=deno.json
+          deno test --allow-read --no-check
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: predeploy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Flyctl - Setup
+        uses: superfly/flyctl-action@1.1
+        with:
+          token: ${{ secrets.FLY_API_TOKEN }}
+      - name: Show repo status
+        run: git status --porcelain
+      - name: Run predeploy check (CI)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_JWT_SECRET: ${{ secrets.SUPABASE_JWT_SECRET }}
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          APP_ENV: production
+          FLY_APP_NAME: ${{ github.event.inputs.fly_app_name || secrets.FLY_APP_NAME }}
+        run: |
+          chmod +x ./scripts/predeploy_check.sh
+          ./scripts/predeploy_check.sh
+      - name: Deploy to Fly.io
+        run: |
+          chmod +x ./scripts/deploy_fly.sh
+          FLY_APP_NAME=${{ github.event.inputs.fly_app_name || secrets.FLY_APP_NAME }} ./scripts/deploy_fly.sh
+
+  postdeploy-tests:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+      - name: Integration / E2E tests against deployed host
+        env:
+          TEST_BASE_URL: https://${{ github.event.inputs.fly_app_name || secrets.FLY_APP_NAME }}.fly.dev
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SUPABASE_JWT_SECRET: ${{ secrets.SUPABASE_JWT_SECRET }}
+        run: |
+          deno test web/tests/quote_api_test.ts --allow-net --allow-read --allow-env
+          deno test web/tests/waitlist_e2e_test.ts --allow-net --allow-read --allow-env
