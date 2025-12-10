@@ -39,8 +39,8 @@ workflow_status:
     status: docs/ARCHITECTURE.md
     notes: "Architecture document drafted — review and validation recommended."
   solutioning-gate-check:
-    status: in-progress
-    notes: "Gate check in progress — architecture documented and awaiting review."
+    status: done
+    notes: "Gate check completed — architecture documented and validated as of 2025-12-10."
 
   # Implementation (phase 4) - sprint-status.yaml will control implementation tracking
   sprint-planning:

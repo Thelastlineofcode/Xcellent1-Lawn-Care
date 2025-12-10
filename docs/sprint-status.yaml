@@ -40,8 +40,10 @@ commitments:
     epic: epic-01-foundation
     points: 2
     file: docs/stories/story-03-storage-job-photos.md
-    status: in-progress
+    status: done
     assignee: sam
+    done_by: sam
+    done_at: "2025-12-10"
 
   - story_id: story-04-landing-page
     title: "Landing Page Implementation"
