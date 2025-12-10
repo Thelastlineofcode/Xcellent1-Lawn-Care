@@ -12,7 +12,7 @@ team:
   - role: product
     owner: The Last Line of Code
   - role: dev
-    members: [dev]
+    members: [alex, pat, sam]
 
 commitments:
   - story_id: story-01-setup-supabase
@@ -20,49 +20,56 @@ commitments:
     epic: epic-01-foundation
     points: 3
     file: docs/stories/story-01-setup-supabase.md
-    status: planned
+    status: in-progress
+    assignee: alex
 
   - story_id: story-02-auth-and-roles
     title: "Authentication and Roles (Owner/Manager/Crew)"
     epic: epic-01-foundation
     points: 3
     file: docs/stories/story-02-auth-and-roles.md
-    status: planned
+    status: in-progress
+    assignee: pat
 
   - story_id: story-03-storage-job-photos
     title: "Configure Storage for Job Photos"
     epic: epic-01-foundation
     points: 2
     file: docs/stories/story-03-storage-job-photos.md
-    status: planned
+    status: in-progress
+    assignee: sam
 
   - story_id: story-04-landing-page
     title: "Landing Page Implementation"
     epic: epic-02-customer-acquisition
     points: 2
     file: docs/stories/story-04-landing-page.md
-    status: planned
+    status: in-progress
+    assignee: alex
 
   - story_id: story-05-waitlist-form
     title: "Waitlist & Booking Form"
     epic: epic-02-customer-acquisition
     points: 3
     file: docs/stories/story-05-waitlist-form.md
-    status: planned
+    status: in-progress
+    assignee: pat
 
   - story_id: story-06-crew-job-list
     title: "Crew Job List Screen"
     epic: epic-03-crew-mobile
     points: 3
     file: docs/stories/story-06-crew-job-list.md
-    status: planned
+    status: in-progress
+    assignee: sam
 
   - story_id: story-07-job-photo-upload
     title: "Job Photo Upload and Attachments"
     epic: epic-03-crew-mobile
     points: 3
     file: docs/stories/story-07-job-photo-upload.md
-    status: planned
+    status: in-progress
+    assignee: sam
 
 metrics:
   planned_points: 19
@@ -71,3 +78,5 @@ metrics:
 notes: |
   - This sprint seeds core work to enable owner onboarding and basic crew mobile flows.
   - Update story `status` fields as work progresses. Use `docs/sprint-status.yaml` as the single source of truth for implementation tracking.
+  - Sprint moved to implementation: top priority stories set to `in-progress` and assignees names added.
+  - Update statuses to `done` once story acceptance criteria are met and PRs merged.

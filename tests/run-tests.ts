@@ -22,29 +22,36 @@ async function runTests() {
   console.log("==============================================");
 
   let serverProcess: Deno.ChildProcess | null = null;
+  const externalUrl = Deno.env.get("BASE_URL");
+  const baseUrl = externalUrl || "http://localhost:8000";
 
   try {
     // Global setup
     await setupTestEnvironment();
 
-    // 1. Start Server
-    console.log("Starting server...");
-    const serverCommand = new Deno.Command("deno", {
-      args: ["run", "--allow-net", "--allow-read", "--allow-write", "--allow-env", "server.ts"],
-      stdout: "null", // Pipe to null to avoid clutter, or "inherit" if debugging needed
-      stderr: "inherit",
-    });
-    serverProcess = serverCommand.spawn();
+    if (externalUrl) {
+      console.log(`🌍 Running against external environment: ${externalUrl}`);
+      console.log("ℹ️  Skipping local server startup");
+    } else {
+      // 1. Start Server locally
+      console.log("Starting local server...");
+      const serverCommand = new Deno.Command("deno", {
+        args: ["run", "--allow-net", "--allow-read", "--allow-write", "--allow-env", "server.ts"],
+        stdout: "null",
+        stderr: "inherit",
+      });
+      serverProcess = serverCommand.spawn();
 
-    // 2. Wait for Server
-    const ready = await waitForServer("http://localhost:8000/health");
-    if (!ready) {
-      throw new Error("Server failed to start within timeout.");
+      // 2. Wait for Server
+      const ready = await waitForServer("http://localhost:8000/health");
+      if (!ready) {
+        throw new Error("Server failed to start within timeout.");
+      }
+      console.log("✅ Local server is up!");
     }
-    console.log("✅ Server is up!");
 
     // 3. Run Deno Tests
-    console.log("Running Deno tests...");
+    console.log(`Running Deno tests against ${baseUrl}...`);
     const testCommand = new Deno.Command("deno", {
       args: [
         "test",
@@ -59,7 +66,10 @@ async function runTests() {
       ],
       stdout: "inherit",
       stderr: "inherit",
-      env: { "BASE_URL": "http://localhost:8000" }
+      env: {
+        "BASE_URL": baseUrl,
+        "TEST_BASE_URL": baseUrl // Some tests might use this
+      }
     });
 
     const { code: testCode } = await testCommand.output();
@@ -70,7 +80,7 @@ async function runTests() {
       args: ["run", "--allow-net", "--allow-env", "user_journey_test.js"],
       stdout: "inherit",
       stderr: "inherit",
-      env: { "BASE_URL": "http://localhost:8000" }
+      env: { "BASE_URL": baseUrl }
     });
     const { code: journeyCode } = await journeyCommand.output();
 
@@ -90,7 +100,7 @@ async function runTests() {
   } finally {
     // Teardown
     if (serverProcess) {
-      console.log("Stopping server...");
+      console.log("Stopping local server...");
       try {
         serverProcess.kill();
         await serverProcess.status; // Wait for exit
