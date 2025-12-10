@@ -3720,10 +3720,10 @@ async function handler(req: Request): Promise<Response> {
 
       // Mark invitation as accepted
       await db.queryObject(
-        `UPDATE owner_invitations 
-         SET status = 'accepted', accepted_at = NOW(), user_id = $1
-         WHERE invitation_token = $2`,
-        [userId, token]
+        `UPDATE owner_invitations
+         SET status = 'accepted', accepted_at = NOW()
+         WHERE invitation_token = $1`,
+        [token]
       );
 
       console.log(`[server] Owner invitation accepted for ${invite.email}: ${userId}`);
