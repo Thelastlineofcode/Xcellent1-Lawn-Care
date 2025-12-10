@@ -1,3 +1,46 @@
+# Xcellent1 Lawn Care - Architecture Overview
+
+## Overview
+
+This document provides a high-level architecture overview for the Xcellent1 Lawn Care app (web + Deno backend). The design favors minimal hosting costs and fast iteration: Deno + Supabase for backend/data and simple static frontend deployed on Fly.io.
+
+## Components
+
+- Backend: Deno — `server.ts` implements REST endpoints, job handling, outbox events that are processed for notifications.
+- Database: Supabase/Postgres — stores users, clients, jobs, invoices, and outbox_events. Row Level Security (RLS) ensures owner data isolation.
+- Storage: Supabase Storage or S3-compatible storage for job photos and attachments.
+- Authentication: Supabase Auth for JWT-based authentication and role metadata.
+- Payments: Stripe Checkout for payments and webhooks for reconciliations.
+- Notification providers: SendGrid (email) and Twilio (SMS) — integrated as outbox processors.
+- Frontend: Static HTML/CSS/JS under `web/static/` (mobile-first), progressive enhancement for PWA/offline features.
+
+## Data Model Highlights
+
+- `users` table contains profile and role fields (owner/manager/crew).
+- `clients` are linked to an owner's account and contain contact/address data.
+- `jobs` are scheduled per client; recurring jobs are modeled with recurrence and instance generation.
+- `invoices` and payment records link to jobs for easy reconciliation.
+- `outbox_events` handle async notifications, email, and SMS, and support local stubbing for tests.
+
+## Integrations & Deploy
+
+- Deploy to Fly.io running Deno or an equivalent deployment target.
+- Set required environment variables: SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, STRIPE keys, TWILIO keys.
+- Use CI pipelines to run migrations via scripts and run tests against a migrated test DB.
+
+## Observability
+
+- Health endpoints exist for the server and Supabase reachability.
+- Add structured logs and a lightweight monitoring target to check uptime and background processing.
+
+## Security
+
+- Use Supabase RLS policies and least privilege principle.
+- Handle secrets via environment variables and Fly.io secrets in production.
+
+---
+
+_This doc is an initial summary created 2025-12-10; expand with diagrams and sequence flows in a future pass._
 Here’s a production-ready, lean architecture for Xcellent 1’s web app and agent system, aligned to BMAD standards and excluding the innovation roadmap content.
 
 ## One‑sentence overview
