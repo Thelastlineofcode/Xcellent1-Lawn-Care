@@ -185,6 +185,48 @@ if (document.getElementById("lead-form")) {
   });
 }
 
+// Waitlist Form (home.html) — handle multi-step waitlist form
+if (document.getElementById("waitlist-form")) {
+  const form = document.getElementById("waitlist-form");
+  const statusDivId = "waitlist-status";
+
+  async function handleWaitlist(e) {
+    e.preventDefault();
+    clearMessage(statusDivId);
+      const nameEl = form.querySelector('[name="name"]');
+      const emailEl = form.querySelector('[name="email"]');
+      const serviceEl = form.querySelector('[name="service"]');
+      const phoneEl = form.querySelector('[name="phone"]') || document.getElementById('waitlist-phone');
+      const addressEl = form.querySelector('[name="property_address"]') || document.getElementById('waitlist-address');
+    const name = nameEl ? nameEl.value.trim() : "";
+    const email = emailEl ? emailEl.value.trim() : "";
+    const service = serviceEl ? serviceEl.value : "";
+    const phone = phoneEl ? (phoneEl.value ? phoneEl.value.trim() : "") : "";
+    const property_address = addressEl ? (addressEl.value ? addressEl.value.trim() : "") : "";
+    if (!name || !email) {
+      return showMessage(statusDivId, "Name and email are required", "error");
+    }
+    if (!isValidEmail(email)) {
+      return showMessage(statusDivId, "Please enter a valid email address", "error");
+    }
+    try {
+      const data = await fetchJSON(`${API_BASE}/api/waitlist`, {
+        method: "POST",
+        body: JSON.stringify({ name, email, service, phone, property_address }),
+      });
+      showMessage(statusDivId, `✅ Thanks, ${name}! You're on our waitlist.`, "success", 0);
+      form.reset();
+    } catch (err) {
+      showMessage(statusDivId, `✗ Submission failed: ${err.message}`, "error");
+    }
+  }
+
+  // If an inline onsubmit handler exists (legacy), prefer that to avoid duplicate submits
+  if (!form.getAttribute('onsubmit')) {
+    form.addEventListener('submit', handleWaitlist);
+  }
+}
+
 // ========================================
 // Dashboard (dashboard.html)
 // ========================================

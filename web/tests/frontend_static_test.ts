@@ -18,6 +18,19 @@ Deno.test("index.html contains lead form", async () => {
   assert(txt.includes('id="phone"'));
 });
 
+Deno.test("home.html contains waitlist form", async () => {
+  const txt = await Deno.readTextFile(
+    decodeURIComponent(
+      new URL("../static/home.html", import.meta.url).pathname
+    )
+  );
+  assert(txt.includes('id="waitlist-form"'));
+  assert(txt.includes('name="email"'));
+  assert(txt.includes('name="service"'));
+  assert(txt.includes('name="phone"'));
+  assert(txt.includes('name="property_address"'));
+});
+
 Deno.test("dashboard.html contains upload form", async () => {
   const txt = await Deno.readTextFile(
     decodeURIComponent(

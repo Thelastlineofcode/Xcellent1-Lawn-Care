@@ -2,6 +2,16 @@ import requests
 import os
 from datetime import datetime
 
+"""
+ARCHIVED: Perplexity Research Skill (Python)
+This module is part of experimental AI features that are paused. Do not include this in production code unless re-enabled.
+See docs/AI_SUSPENDED.md for details.
+"""
+
+import os
+if os.environ.get('ENABLE_AI_PROTOTYPES', 'false').lower() != 'true':
+    raise RuntimeError('PerplexityResearch prototypes are archived. Set ENABLE_AI_PROTOTYPES=true to enable.')
+
 def perplexityResearch(query, model='sonar-pro', max_tokens=2000, return_citations=True, 
                        temperature=0.2, search_recency_filter='month'):
     """

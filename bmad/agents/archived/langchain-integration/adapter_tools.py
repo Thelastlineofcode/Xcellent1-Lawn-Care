@@ -1,27 +1,15 @@
-"""ARCHIVED: Tool adapters for LangChain prototype.
-
-These adapters are part of experimental AI features that are currently paused and not used in production.
-If you need to re-enable the prototypes, see `docs/AI_SUSPENDED.md` for guidance and set `ENABLE_AI_PROTOTYPES=true`.
-
-Tool adapters for LangChain prototype.
-These are minimal, local-only tools that operate on the file-backed dev DB
-(`bmad/agents/dev_db.json`) so the Python prototype can be run without
-Supabase or external services.
 """
-import os
-
-if os.environ.get('ENABLE_AI_PROTOTYPES', 'false').lower() != 'true':
-    raise RuntimeError('LangChain adapters are archived. Set ENABLE_AI_PROTOTYPES=true to enable.')
-from __future__ import annotations
-import json
+Archived copy of adapter/tools.py for LangChain prototypes.
+This is a read-only archive copy. Do not import or run in production.
+"""
 from pathlib import Path
+import json
 from typing import Any, Dict
 
 
 def _db_path() -> Path:
-    # repo root is four parents up from this file: adapter -> langchain-integration -> agents -> bmad
     p = Path(__file__).resolve()
-    repo_root = p.parents[4]
+    repo_root = p.parents[6]
     return repo_root / "bmad" / "agents" / "dev_db.json"
 
 

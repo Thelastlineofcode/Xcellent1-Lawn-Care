@@ -1203,14 +1203,30 @@ async function handler(req: Request): Promise<Response> {
             [
               record.name,
               record.email,
-              "",  // phone - not collected in simple form
-              "",  // property_address - not collected in simple form
+              body.phone ? String(body.phone).trim() : "",
+              body.property_address ? String(body.property_address).trim() : "",
               record.service,
               record.notes || "",
               "website",
             ]
           );
           const id = (result.rows[0] as any).id;
+          // Queue outbox event for WAITLIST_SIGNUP so emails and notifications can be processed async
+          try {
+            const outboxResult = await db.queryObject(
+              `INSERT INTO outbox_events (event_type, ref_id, payload, status)
+               VALUES ($1, $2, $3, 'pending') RETURNING id`,
+              [
+                'WAITLIST_SIGNUP',
+                id,
+                JSON.stringify({ id, name: record.name, email: record.email, phone: body.phone || '', property_address: body.property_address || '', service: record.service, notes: record.notes || '' }),
+              ]
+            );
+            const outboxId = (outboxResult.rows[0] as any).id;
+            console.log(`[server] Waitlist outbox event created: ${outboxId}`);
+          } catch (outErr) {
+            console.error('[server] Failed to create waitlist outbox event:', outErr);
+          }
           return new Response(JSON.stringify({ ok: true, id }), {
             status: 201,
             headers,

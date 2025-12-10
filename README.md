@@ -7,6 +7,13 @@ A complete lawn care business management platform built with Deno, Supabase, and
 Core operational playbooks:
 - `docs/LACARDIO_DASHBOARD_GUIDE.md` — User guide for LaCardio
 
+AI & Agent Features
+-------------------
+- Experimental AI and agent prototypes reside under `bmad/agents/archived/langchain-integration/` and `src/skills/` for research and future implementation.
+- These prototypes are **archived and disabled by default**; they are not part of the active code path or CI runs unless explicitly enabled via CI environment flags (e.g., `ENABLE_AI_TESTS=true`).
+   - For TypeScript/Deno prototype modules, set `ENABLE_AI_PROTOTYPES=true` and pass `--allow-env` to Deno when testing or running them.
+   - Future: a TTS-enabled simple agent is planned but suspended for now.
+
 ## 🚀 Features
 
 ### For Business Owners

@@ -246,7 +246,7 @@
         <a href="careers.html" class="hero-button btn-secondary">We're Hiring!</a>
       </div>
       <!-- Waitlist form -->
-      <form id="waitlist-form" class="waitlist-form" onsubmit="return handleWaitlistSubmit(event)">
+      <form id="waitlist-form" class="waitlist-form">
         <div class="waitlist-step" id="waitlist-step-1">
           <input
             aria-label="Name"
@@ -276,6 +276,17 @@
             autocomplete="email"
             inputmode="email"
           />
+          <input
+            aria-label="Phone"
+            id="waitlist-phone"
+            name="phone"
+            type="tel"
+            class="form-field"
+            placeholder="Phone number"
+            required
+            autocomplete="tel"
+            inputmode="tel"
+          />
           <button
             type="button"
             class="waitlist-submit"
@@ -298,6 +309,14 @@
             <option value="leaf-debris">Leaf & Debris Removal</option>
             <option value="tractor">Tractor / Bush Hog Services</option>
           </select>
+          <input
+            aria-label="Service Address"
+            id="waitlist-address"
+            name="property_address"
+            type="text"
+            class="form-field"
+            placeholder="Property address"
+          />
           <button type="submit" class="waitlist-submit">Join Waitlist</button>
         </div>
       </form>
@@ -309,6 +328,7 @@
           }
         }
       </script>
+      <div id="waitlist-status" class="waitlist-status"></div>
       <div
         id="waitlist-success"
         class="waitlist-success hidden"
@@ -1033,48 +1053,10 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-      async function handleWaitlistSubmit(e) {
-        e.preventDefault();
-        const form = document.getElementById("waitlist-form");
-        const data = new FormData(form);
-        const payload = {
-          name: data.get("name"),
-          email: data.get("email"),
-          service: data.get("service"),
-        };
-
-        try {
-          const res = await fetch("/api/waitlist", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-
-          if (res.ok) {
-            const json = await res.json();
-            alert(
-              "Thanks! You have been added to the waitlist. We will email you soon."
-            );
-            form.reset();
-          } else {
-            // Backend returned error status
-            try {
-              const json = await res.json();
-              alert("Error: " + (json.error || "Unable to join waitlist"));
-            } catch {
-              alert("Error: Unable to join waitlist. Please try again later.");
-            }
-          }
-        } catch (err) {
-          console.error("Waitlist submission error:", err);
-          // Graceful degradation - show success even if backend is unavailable
-          alert(
-            "Thanks for your interest! We're experiencing technical difficulties, but we've noted your request. Please email us directly at info@xcellent1lawncare.com"
-          );
-          form.reset();
-        }
-        return false;
-      }
+      // NOTE: Inline waitlist handler removed; `web/static/app.js` handles submission and UX consistently across the app.
+      // If the inline handler is required during a transitional period, re-add a small wrapper that calls the centralized handler from app.js.
+    </script>
+    <script src="app.js"></script>
 
       function openServiceModal(serviceName) {
         document.getElementById("modal-service-title").textContent =

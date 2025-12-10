@@ -1,4 +1,6 @@
-# Perplexity Research Skill
+# Perplexity Research Skill (ARCHIVED - Future Implementation)
+
+> Status: Paused — Research skill for AI agents is archived and not used in production. This folder contains helper code and prototypes that are planned for future agent integration (e.g., LangChain). For now, AI components are on hold; re-enable when AI features are accepted and supported in production.
 
 ## Overview
 Token-efficient research skill for AI agents using Perplexity API. Provides real-time web research capabilities without bloating agent prompts.
@@ -24,6 +26,7 @@ pip install -r src/skills/perplexity/requirements.txt
 Add to your `.env`:
 ```bash
 PERPLEXITY_API_KEY=pplx-your-key-here
+ENABLE_AI_PROTOTYPES=true  # must be set to enable the archived prototype modules
 ```
 
 ## Usage

@@ -1,9 +1,12 @@
-"""Tool adapters for LangChain prototype.
+"""ARCHIVED: Tool adapters for LangChain prototype.
 
-These are minimal, local-only tools that operate on the file-backed dev DB
-(`bmad/agents/dev_db.json`) so the Python prototype can be run without
-Supabase or external services.
+This is an archived stub; LangChain integration is paused. To re-enable, set
+`ENABLE_AI_PROTOTYPES=true` and restore original files from `bmad/agents/archived/langchain-integration`.
 """
+import os
+if os.environ.get('ENABLE_AI_PROTOTYPES', 'false').lower() != 'true':
+    raise RuntimeError('LangChain adapters are archived. Set ENABLE_AI_PROTOTYPES=true to enable.')
+from __future__ import annotations
 from __future__ import annotations
 import json
 from pathlib import Path

@@ -1,7 +1,11 @@
 
 /**
- * Perplexity Research Skill - TypeScript/Deno Version
- * Token-efficient web research for AI agents
+ * ARCHIVED: Perplexity Research Skill - TypeScript/Deno Version
+ * This module is part of experimental AI features which are paused by project policy.
+ * Do not use in active server code unless explicitly re-enabled.
+ * See docs/AI_SUSPENDED.md and bmad/agents/langchain-integration/ARCHIVED.md for details.
+ *
+ * Perplexity Research Skill - Token-efficient web research for AI agents
  */
 
 export interface ResearchOptions {
@@ -27,6 +31,14 @@ export class PerplexityResearch {
   private endpoint = 'https://api.perplexity.ai/chat/completions';
 
   constructor(apiKey?: string) {
+    // Guard: Modules are archived by default. Only allow instantiation when
+    // the environment variable ENABLE_AI_PROTOTYPES=true. This avoids accidental
+    // use of prototypes in production or CI.
+    const enabled = (Deno.env.get('ENABLE_AI_PROTOTYPES') || 'false').toLowerCase() === 'true';
+    if (!enabled) {
+      throw new Error('PerplexityResearch prototypes are archived. Set ENABLE_AI_PROTOTYPES=true to enable.');
+    }
+
     this.apiKey = apiKey || Deno.env.get('PERPLEXITY_API_KEY') || '';
     if (!this.apiKey) {
       throw new Error('PERPLEXITY_API_KEY not found in environment');

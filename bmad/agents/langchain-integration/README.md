@@ -1,4 +1,10 @@
-# LangChain Agent Integration (future implementation)
+# LangChain Agent Integration (ARCHIVED - Future Implementation)
+
+> Status: Paused — AI agent prototypes are archived for now. This folder contains prototype work and research for future agent support (LangChain integrations, prototypes, adapters). The active product is not dependent on these files; they are kept for future reference.
+>
+> Files moved into `bmad/agents/archived/langchain-integration/` as of 2025-12-10. The originals include a runtime guard and are not executed unless `ENABLE_AI_PROTOTYPES=true` is set in the environment.
+
+> Reason: AI features, including agents and TTS, are deferred to a later phase to keep the MVP stable and minimize operational/monitoring complexity.
 
 Purpose: outline how the BMAD agents in this repository (intake, quote, scheduler, invoice, outbox, digest, review) can be augmented or reimplemented as "agentic" workflows using LangChain-style chains, tools and agents. This document is a roadmap and reference for future implementation work; no production code is included here.
 
@@ -90,7 +96,7 @@ Next artifacts to implement (pickable)
 - `bmad/agents/langchain-integration/agents/quote_agent.py` — LangChain prototype (Python)
 - CI workflow to run agent unit tests in a sandboxed environment using recorded LLM responses.
 
-If you'd like, I can scaffold the prototype files (adapter stubs, a LangChain QuoteAgent example in Python or Node) and add tests that run against the existing dev DB. Tell me which language (Python or Node) you prefer for the LangChain prototype.
+If you'd like, I can scaffold the prototype files (adapter stubs, a LangChain QuoteAgent example in Python or Node) and add tests that run against the existing dev DB. Tell me which language (Python or Node) you prefer for the LangChain prototype. For now, these artifacts are archived and are not executed by CI.
 
 ## Perplexity integration
 

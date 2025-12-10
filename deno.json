@@ -22,8 +22,8 @@
       "exclude": [
         "web/static/**",
         "web/tests/**",
-        "bmad/agents/langchain-integration/**",
-        "bmad/agents/langchain_integration/**",
+        "bmad/agents/archived/langchain-integration/**",
+        "bmad/agents/archived/langchain_integration/**",
         "bmad/bmb/**",
         "bmad/**/workflows/**",
         "bmad/**/installer-templates/**",

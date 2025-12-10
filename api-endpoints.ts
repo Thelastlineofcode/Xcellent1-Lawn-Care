@@ -190,8 +190,11 @@ function corsHeaders() {
 }
 
 // ============================================
-// ENDPOINTS
+// ENDPOINTS (ARCHIVE NOTE)
 // ============================================
+// NOTE: `api-endpoints.ts` contains experimental/legacy endpoints. The canonical runtime handlers live in `server.ts`.
+// To avoid duplication and divergence, prefer `server.ts` for runtime behavior and refactor this file to import shared handlers.
+// ----
 
 // POST /api/waitlist - Customer joins waitlist
 async function handleWaitlist(req: Request): Promise<Response> {

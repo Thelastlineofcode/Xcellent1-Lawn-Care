@@ -68,37 +68,36 @@ Turn Xcellent1 into a lightweight local-operations platform that can be configur
 ---
 
 ## Functional Requirements (High-level)
-
-1. User Management
+1. User Management (FR-001)
    - Owner and manager accounts
    - Crew accounts with limited permissions
    - Authentication via Supabase
 
-2. Landing Page & Waitlist
+2. Landing Page & Waitlist (FR-002)
    - Mobile-responsive landing page
    - Waitlist form storing leads in Supabase
    - Email confirmation for signups
 
-3. Job Management & Scheduling
+3. Job Management & Scheduling (FR-003)
    - Create job entries (customer, address, service type, date/time)
    - Assign job to crew
    - Crew can view assigned jobs on mobile
 
-4. Crew Mobile Workflow
+4. Crew Mobile Workflow (FR-004)
    - Job list with details
    - Mark job as in-progress / complete
    - Upload photos tied to job records (Supabase Storage)
 
-5. Invoicing & Payments
+5. Invoicing & Payments (FR-005)
    - Generate simple invoice on job completion
    - Stripe Checkout links sent to customers
    - Webhook for payment confirmation to update invoice status
 
-6. Owner Dashboard
+6. Owner Dashboard (FR-006)
    - Revenue summary, jobs completed, crew performance
    - Pending invoices and quick actions (send reminder, mark paid)
 
-7. Notifications
+7. Notifications (FR-007)
    - Email confirmations, owner notifications for waitlist and payments
 
 8. Deploy & Operations

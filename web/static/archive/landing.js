@@ -1,5 +1,4 @@
-// DEPRECATED: Landing page UI script — archived under `web/static/archive/landing.js`.
-// Use `web/static/app.js` / `home.html` built-in handlers instead.
+// Archived landing.js - moved from root to archive so the main app uses canonical handlers
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('lead-form');
   if (!form) return;
