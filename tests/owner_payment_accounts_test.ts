@@ -60,15 +60,9 @@ Deno.test("Owner can add and list payment accounts", { permissions: { net: true 
     assertEquals(createRes.status, 201);
     const cr = await createRes.json();
     assertEquals(cr.ok, true);
+    const account = cr.account;
+    assert(account.id || account[0]?.id, 'payment account id returned');
   }
-  const createRes = await fetch(`${BASE_URL}/api/owner/payment-accounts`, {
-    method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(accountBody)
-  });
-  assertEquals(createRes.status, 201);
-  const cr = await createRes.json();
-  assertEquals(cr.ok, true);
-  const account = cr.account;
-  assert(account.id || account[0]?.id, 'payment account id returned');
 
   // list accounts
   const listRes = await fetch(`${BASE_URL}/api/owner/payment-accounts`, { headers: { Authorization: `Bearer ${token}` } });
@@ -76,4 +70,5 @@ Deno.test("Owner can add and list payment accounts", { permissions: { net: true 
   const listJson = await listRes.json();
   assertEquals(listJson.ok, true);
   assert(Array.isArray(listJson.accounts), 'accounts list exists');
+  assert(listJson.accounts.length >= methods.length, 'at least the created accounts are present');
 });
