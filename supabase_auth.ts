@@ -217,6 +217,8 @@ export async function getUserProfile(authUserId: string): Promise<any | null> {
   }
 }
 
+
+
 /**
  * Middleware helper to extract and verify auth from request
  * @param req Request object
