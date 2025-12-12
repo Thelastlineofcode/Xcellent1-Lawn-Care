@@ -2,21 +2,21 @@
   "leads": [],
   "events_outbox": [
     {
-      "id": "outbox_1765384312185_1260",
+      "id": "outbox_1765347863166_4829",
       "status": "pending",
       "attempts": 1,
-      "created_at": "2025-12-10T16:31:52.185Z",
+      "created_at": "2025-12-10T06:24:23.166Z",
       "payload": {
         "hello": "world"
       },
       "type": "TEST_EVENT",
-      "next_attempt_at": "2025-12-10T16:32:52.189Z"
+      "next_attempt_at": "2025-12-10T06:25:23.168Z"
     },
     {
-      "id": "outbox_1765384312347_2820",
+      "id": "outbox_1765347863302_7275",
       "status": "pending",
       "attempts": 0,
-      "created_at": "2025-12-10T16:31:52.347Z",
+      "created_at": "2025-12-10T06:24:23.302Z",
       "payload": {
         "lead": {
           "service_type": "mowing",
@@ -27,81 +27,13 @@
           "price_high_cents": 1875
         },
         "slots": [
-          "2025-12-13T16:31:52.340Z",
-          "2025-12-17T16:31:52.340Z"
+          "2025-12-13T06:24:23.293Z",
+          "2025-12-17T06:24:23.293Z"
         ],
-        "created_at": "2025-12-10T16:31:52.340Z"
+        "created_at": "2025-12-10T06:24:23.293Z"
       },
       "type": "QUOTE_PROPOSED"
-    },
-    {
-      "id": "evt_1765384314405",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-10T16:31:54.405Z",
-      "payload": {
-        "id": "wait_1765384314404",
-        "name": "Test Waitlist",
-        "email": "waitlist@example.com",
-        "service": "weekly",
-        "notes": "",
-        "created_at": "2025-12-10T16:31:54.405Z"
-      },
-      "status": "pending"
-    },
-    {
-      "id": "evt_1765384315126",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-10T16:31:55.126Z",
-      "payload": {
-        "id": "wait_1765384315126",
-        "name": "E2E Test User",
-        "email": "e2e-waitlist@example.com",
-        "service": "weekly",
-        "notes": "",
-        "created_at": "2025-12-10T16:31:55.126Z"
-      },
-      "status": "pending"
-    },
-    {
-      "id": "evt_1765520585834",
-      "type": "WAITLIST_SIGNUP",
-      "created_at": "2025-12-12T06:23:05.834Z",
-      "payload": {
-        "id": "wait_1765520585833",
-        "name": "E2E Test User",
-        "email": "e2e-waitlist@example.com",
-        "service": "weekly",
-        "notes": "",
-        "created_at": "2025-12-12T06:23:05.833Z"
-      },
-      "status": "pending"
     }
   ],
-  "invoices": [],
-  "waitlist": [
-    {
-      "id": "wait_1765384314404",
-      "name": "Test Waitlist",
-      "email": "waitlist@example.com",
-      "service": "weekly",
-      "notes": "",
-      "created_at": "2025-12-10T16:31:54.405Z"
-    },
-    {
-      "id": "wait_1765384315126",
-      "name": "E2E Test User",
-      "email": "e2e-waitlist@example.com",
-      "service": "weekly",
-      "notes": "",
-      "created_at": "2025-12-10T16:31:55.126Z"
-    },
-    {
-      "id": "wait_1765520585833",
-      "name": "E2E Test User",
-      "email": "e2e-waitlist@example.com",
-      "service": "weekly",
-      "notes": "",
-      "created_at": "2025-12-12T06:23:05.833Z"
-    }
-  ]
+  "invoices": []
 }
