@@ -72,7 +72,7 @@ async function generateToken(role: string, userId: string = "test-user-id") {
 // Global state for test data
 let OWNER_TOKEN = "";
 let CREW_TOKEN = "";
-let CLIENT_TOKEN = "";
+const CLIENT_TOKEN = "";
 let createdClientId = "";
 let createdJobId = "";
 let createdInvoiceId = "";

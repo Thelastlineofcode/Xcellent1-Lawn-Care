@@ -248,31 +248,35 @@ serve(
       }
     }
 
-      // API: owner invoices - list/create
-      if (pathname === "/api/owner/invoices") {
-        try {
-          const { authenticateRequest } = await import("../supabase_auth.ts");
-          const authRes = await authenticateRequest(req);
-          if (!authRes || authRes.profile.role !== "owner") {
-            return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
-          }
-          if (req.method === "GET") {
-            const { supabaseSelect } = await import("../bmad/agents/lib/supabase.ts");
-            const invoices = await supabaseSelect("invoices", "select=*");
-            return jsonResponse({ ok: true, invoices });
-          }
-          if (req.method === "POST") {
-            const body = await req.json();
-            const { supabaseInsert } = await import("../bmad/agents/lib/supabase.ts");
-            const created = await supabaseInsert("invoices", body);
-            return jsonResponse({ ok: true, invoice: created });
-          }
-          return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
-        } catch (err) {
-          console.error("/api/owner/invoices error", err);
-          return jsonResponse({ ok: false, error: String(err) }, 500);
+    // API: owner invoices - list/create
+    if (pathname === "/api/owner/invoices") {
+      try {
+        const { authenticateRequest } = await import("../supabase_auth.ts");
+        const authRes = await authenticateRequest(req);
+        if (!authRes || authRes.profile.role !== "owner") {
+          return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
         }
+        if (req.method === "GET") {
+          const { supabaseSelect } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
+          const invoices = await supabaseSelect("invoices", "select=*");
+          return jsonResponse({ ok: true, invoices });
+        }
+        if (req.method === "POST") {
+          const body = await req.json();
+          const { supabaseInsert } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
+          const created = await supabaseInsert("invoices", body);
+          return jsonResponse({ ok: true, invoice: created });
+        }
+        return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
+      } catch (err) {
+        console.error("/api/owner/invoices error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
       }
+    }
 
     // API: owner metrics endpoint - requires Authorization Bearer token
     if (req.method === "GET" && pathname === "/api/owner/metrics") {
@@ -280,7 +284,9 @@ serve(
         // lazy import auth helper
         const { authenticateRequest } = await import("../supabase_auth.ts");
         const auth = await authenticateRequest(req);
-        if (!auth) return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        if (!auth) {
+          return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        }
 
         // Build small metrics object; in real app we'd query RLS-protected resources
         const metrics = {
@@ -304,16 +310,22 @@ serve(
       try {
         const { authenticateRequest } = await import("../supabase_auth.ts");
         const authRes = await authenticateRequest(req);
-        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        if (!authRes || authRes.profile.role !== "owner") {
+          return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        }
 
         if (req.method === "GET") {
-          const { supabaseSelect } = await import("../bmad/agents/lib/supabase.ts");
+          const { supabaseSelect } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
           const jobs = await supabaseSelect("jobs", "select=*");
           return jsonResponse({ ok: true, jobs });
         }
         if (req.method === "POST") {
           const body = await req.json();
-          const { supabaseInsert } = await import("../bmad/agents/lib/supabase.ts");
+          const { supabaseInsert } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
           const created = await supabaseInsert("jobs", body);
           return jsonResponse({ ok: true, job: created });
         }
@@ -328,12 +340,16 @@ serve(
       try {
         const { authenticateRequest } = await import("../supabase_auth.ts");
         const authRes = await authenticateRequest(req);
-        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        if (!authRes || authRes.profile.role !== "owner") {
+          return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        }
         const parts = pathname.split("/");
         const jobId = parts[parts.length - 1];
         if (req.method === "PATCH") {
           const body = await req.json();
-          const { supabaseUpdate } = await import("../bmad/agents/lib/supabase.ts");
+          const { supabaseUpdate } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
           const updated = await supabaseUpdate("jobs", "id", jobId, body);
           return jsonResponse({ ok: true, job: updated });
         }
@@ -349,9 +365,13 @@ serve(
       try {
         const { authenticateRequest } = await import("../supabase_auth.ts");
         const authRes = await authenticateRequest(req);
-        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        if (!authRes || authRes.profile.role !== "owner") {
+          return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        }
         if (req.method === "GET") {
-          const { supabaseSelect } = await import("../bmad/agents/lib/supabase.ts");
+          const { supabaseSelect } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
           const apps = await supabaseSelect("applications", "select=*");
           return jsonResponse({ ok: true, applications: apps });
         }
@@ -366,13 +386,22 @@ serve(
       try {
         const { authenticateRequest } = await import("../supabase_auth.ts");
         const authRes = await authenticateRequest(req);
-        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        if (!authRes || authRes.profile.role !== "owner") {
+          return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        }
         const parts = pathname.split("/");
         const appId = parts[parts.length - 1];
         if (req.method === "PATCH") {
           const body = await req.json();
-          const { supabaseUpdate } = await import("../bmad/agents/lib/supabase.ts");
-          const updated = await supabaseUpdate("applications", "id", appId, body);
+          const { supabaseUpdate } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
+          const updated = await supabaseUpdate(
+            "applications",
+            "id",
+            appId,
+            body,
+          );
           return jsonResponse({ ok: true, application: updated });
         }
         return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
@@ -387,15 +416,21 @@ serve(
       try {
         const { authenticateRequest } = await import("../supabase_auth.ts");
         const authRes = await authenticateRequest(req);
-        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        if (!authRes || authRes.profile.role !== "owner") {
+          return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        }
         if (req.method === "GET") {
-          const { supabaseSelect } = await import("../bmad/agents/lib/supabase.ts");
+          const { supabaseSelect } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
           const w = await supabaseSelect("waitlist", "select=*");
           return jsonResponse({ ok: true, waitlist: w });
         }
         if (req.method === "POST") {
           const body = await req.json();
-          const { supabaseInsert } = await import("../bmad/agents/lib/supabase.ts");
+          const { supabaseInsert } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
           const created = await supabaseInsert("waitlist", body);
           return jsonResponse({ ok: true, waitlist_item: created });
         }
@@ -410,12 +445,16 @@ serve(
       try {
         const { authenticateRequest } = await import("../supabase_auth.ts");
         const authRes = await authenticateRequest(req);
-        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        if (!authRes || authRes.profile.role !== "owner") {
+          return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        }
         const parts = pathname.split("/");
         const itemId = parts[parts.length - 1];
         if (req.method === "PATCH") {
           const body = await req.json();
-          const { supabaseUpdate } = await import("../bmad/agents/lib/supabase.ts");
+          const { supabaseUpdate } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
           const updated = await supabaseUpdate("waitlist", "id", itemId, body);
           return jsonResponse({ ok: true, waitlist_item: updated });
         }
@@ -441,14 +480,18 @@ serve(
         }
 
         if (req.method === "GET") {
-          const { supabaseSelect } = await import("../bmad/agents/lib/supabase.ts");
+          const { supabaseSelect } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
           const clients = await supabaseSelect("clients", "select=*");
           return jsonResponse({ ok: true, clients });
         }
 
         if (req.method === "POST") {
           const body = await req.json();
-          const { supabaseInsert } = await import("../bmad/agents/lib/supabase.ts");
+          const { supabaseInsert } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
           const resInsert = await supabaseInsert("clients", body);
           return jsonResponse({ ok: true, client: resInsert });
         }
@@ -472,7 +515,9 @@ serve(
         const clientId = parts[parts.length - 1];
         if (req.method === "PATCH") {
           const body = await req.json();
-          const { supabaseUpdate } = await import("../bmad/agents/lib/supabase.ts");
+          const { supabaseUpdate } = await import(
+            "../bmad/agents/lib/supabase.ts"
+          );
           const updated = await supabaseUpdate("clients", "id", clientId, body);
           return jsonResponse({ ok: true, client: updated });
         }
@@ -494,8 +539,15 @@ serve(
       // Add helpful, non-sensitive settings
       publicEnv["APP_ENV"] = Deno.env.get("APP_ENV") || "development";
       // Ensure the Next public keys are always present (fall back to server-side keys or placeholder)
-      publicEnv["NEXT_PUBLIC_SUPABASE_URL"] = publicEnv["NEXT_PUBLIC_SUPABASE_URL"] || Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") || Deno.env.get("SUPABASE_URL") || "https://utivthfrwgtjatsusopw.supabase.co";
-      publicEnv["NEXT_PUBLIC_SUPABASE_ANON_KEY"] = publicEnv["NEXT_PUBLIC_SUPABASE_ANON_KEY"] || Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_ANON_KEY") || "YOUR_SUPABASE_ANON_KEY_HERE";
+      publicEnv["NEXT_PUBLIC_SUPABASE_URL"] =
+        publicEnv["NEXT_PUBLIC_SUPABASE_URL"] ||
+        Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") ||
+        Deno.env.get("SUPABASE_URL") ||
+        "https://utivthfrwgtjatsusopw.supabase.co";
+      publicEnv["NEXT_PUBLIC_SUPABASE_ANON_KEY"] =
+        publicEnv["NEXT_PUBLIC_SUPABASE_ANON_KEY"] ||
+        Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
+        Deno.env.get("SUPABASE_ANON_KEY") || "YOUR_SUPABASE_ANON_KEY_HERE";
 
       const js = `window.__ENV = ${JSON.stringify(publicEnv)};`;
       return new Response(js, {
@@ -509,8 +561,14 @@ serve(
 
     // Health endpoint
     if (req.method === "GET" && pathname === "/health") {
-      const { hasRealSupabase } = await import("../bmad/agents/lib/supabase.ts");
-      return jsonResponse({ ok: true, time: new Date().toISOString(), supabase: hasRealSupabase() });
+      const { hasRealSupabase } = await import(
+        "../bmad/agents/lib/supabase.ts"
+      );
+      return jsonResponse({
+        ok: true,
+        time: new Date().toISOString(),
+        supabase: hasRealSupabase(),
+      });
     }
 
     return new Response("Not found", { status: 404 });

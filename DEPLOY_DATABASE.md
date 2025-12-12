@@ -5,12 +5,13 @@ schema to your Supabase project.
 
 ## Prerequisites
 
-✅ **Environment configured** - You have `.env.local` file with Supabase credentials (copy from `.env.local.example`)
-✅ **Supabase project** - You have a Supabase project at:
-`https://utivthfrwgtjatsusopw.supabase.co` ✅ **Owner account** - You mentioned
-✅ **Local env** - Copy `.env.local.example` to `.env.local` and populate Supabase credentials
-✅ **Validate env** - Run `scripts/check_env.sh` to verify local env before starting the server
-there's already an owner user in Supabase Auth
+✅ **Environment configured** - You have `.env.local` file with Supabase
+credentials (copy from `.env.local.example`) ✅ **Supabase project** - You have
+a Supabase project at: `https://utivthfrwgtjatsusopw.supabase.co` ✅ **Owner
+account** - You mentioned ✅ **Local env** - Copy `.env.local.example` to
+`.env.local` and populate Supabase credentials ✅ **Validate env** - Run
+`scripts/check_env.sh` to verify local env before starting the server there's
+already an owner user in Supabase Auth
 
 ## Deployment Options
 

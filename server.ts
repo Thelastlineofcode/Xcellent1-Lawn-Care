@@ -25,10 +25,18 @@ if (APP_ENV === "production") {
   if (!DATABASE_URL) missingVars.push("DATABASE_URL");
   if (!Deno.env.get("SUPABASE_URL")) missingVars.push("SUPABASE_URL");
   if (!Deno.env.get("SUPABASE_ANON_KEY")) missingVars.push("SUPABASE_ANON_KEY");
-  if (!Deno.env.get("SUPABASE_JWT_SECRET")) missingVars.push("SUPABASE_JWT_SECRET");
+  if (!Deno.env.get("SUPABASE_JWT_SECRET")) {
+    missingVars.push("SUPABASE_JWT_SECRET");
+  }
   if (missingVars.length > 0) {
-    console.error(`❌ Production environment requires the following environment variables: ${missingVars.join(", ")}`);
-    console.error(`❌ Aborting startup to avoid running without database or Supabase in production.`);
+    console.error(
+      `❌ Production environment requires the following environment variables: ${
+        missingVars.join(", ")
+      }`,
+    );
+    console.error(
+      `❌ Aborting startup to avoid running without database or Supabase in production.`,
+    );
     // use Deno.exit to fail fast
     Deno.exit(1);
   }

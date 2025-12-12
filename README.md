@@ -1,6 +1,7 @@
 # Xcellent1 Lawn Care
 
-> Workflow analysis completed: sprint-status.yaml and bmm-workflow-status.yaml read and summarized. Management System
+> Workflow analysis completed: sprint-status.yaml and bmm-workflow-status.yaml
+> read and summarized. Management System
 
 A complete lawn care business management platform built with Deno, Supabase, and
 vanilla JavaScript.
@@ -184,7 +185,9 @@ Or create users manually:
 
 ## 🚢 Production Deployments (Fly.io)
 
-When deploying to production with Fly.io, the app must run in production mode and **cannot** use the local file-backed fallback. Use `APP_ENV=production` and ensure the following secrets are set in Fly or CI:
+When deploying to production with Fly.io, the app must run in production mode
+and **cannot** use the local file-backed fallback. Use `APP_ENV=production` and
+ensure the following secrets are set in Fly or CI:
 
 - `DATABASE_URL` (required)
 - `SUPABASE_URL` (required)
@@ -201,12 +204,14 @@ flyctl secrets set DATABASE_URL="postgresql://user:pass@..." \
 ```
 
 Then deploy with our helper (CI or local):
+
 ```bash
 APP_ENV=production FLY_APP_NAME=<your-fly-app> ./scripts/deploy_fly.sh
 ```
 
-For CI/CD: Use the `deploy-flyio.yml` GitHub Actions workflow. Ensure these repository secrets are configured: `FLY_API_TOKEN`, `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_JWT_SECRET`, `FLY_APP_NAME`.
-
+For CI/CD: Use the `deploy-flyio.yml` GitHub Actions workflow. Ensure these
+repository secrets are configured: `FLY_API_TOKEN`, `DATABASE_URL`,
+`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_JWT_SECRET`, `FLY_APP_NAME`.
 
 ## 🏃 Running Locally
 

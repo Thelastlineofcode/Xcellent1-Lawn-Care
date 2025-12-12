@@ -2,9 +2,9 @@ name: Playwright E2E
 
 on:
   pull_request:
-    branches: [ main, "bmm/**", "feat/**", "fix/**", "chore/**" ]
+    branches: [main, "bmm/**", "feat/**", "fix/**", "chore/**"]
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   playwright-tests:
@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - name: Install Playwright
         run: |
           npm ci

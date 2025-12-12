@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       fly_app_name:
-        description: 'Fly app name' 
+        description: "Fly app name"
         required: true
-        default: ''
+        default: ""
 
 jobs:
   predeploy:
