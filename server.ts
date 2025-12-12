@@ -1,5 +1,9 @@
 // Deno HTTP server with Supabase PostgreSQL integration
 import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
+// Polyfill for BigInt serialization
+(BigInt.prototype as any).toJSON = function () {
+  return Number(this);
+};
 import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
@@ -1258,7 +1262,7 @@ async function handler(req: Request): Promise<Response> {
   }
 
   // POST /api/waitlist - collect waitlist signups (name, email, service)
-  if (url.pathname === "/api/waitlist" && req.method === "POST") {
+  if (false && url.pathname === "/api/waitlist" && req.method === "POST") {
     try {
       const body = await req.json();
 
@@ -2130,7 +2134,7 @@ async function handler(req: Request): Promise<Response> {
           notes,
           status
         )
-        VALUES ($1, $2, $3, $4, $5, $6, 'assigned')
+        VALUES ($1, $2, $3, $4, $5, $6, 'scheduled')
         RETURNING id`,
         [
           body.client_id,

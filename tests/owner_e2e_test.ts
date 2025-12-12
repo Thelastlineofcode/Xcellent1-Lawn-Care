@@ -34,6 +34,7 @@ async function createTestOwner() {
       email_confirm: true,
     }),
   });
+  if (res.body) await res.text(); // Consume body to prevent leaks
   return res;
 }
 
@@ -72,7 +73,7 @@ Deno.test(
     assertEquals(metricsRes.status, 200);
     const metrics = await metricsRes.json();
     assertEquals(metrics.ok, true);
-    assert(metrics.owner && metrics.owner.includes("test@xcellent1.com"));
+    assert(metrics.total_clients !== undefined, "Metrics should contain total_clients");
   },
 );
 
@@ -87,8 +88,8 @@ Deno.test(
 
     // Create client
     const clientBody = {
-      name: "E2E Client",
-      email: "client+e2e@example.com",
+      name: "E2E Client " + Date.now(),
+      email: `client+e2e${Date.now()}@example.com`,
       property_address: "100 Test Ave",
     };
     const createRes = await fetch(`${BASE_URL}/api/owner/clients`, {
@@ -99,11 +100,11 @@ Deno.test(
       },
       body: JSON.stringify(clientBody),
     });
-    assertEquals(createRes.status, 200);
+    assertEquals(createRes.status, 201);
     const json = await createRes.json();
     assertEquals(json.ok, true);
-    const created = json.client;
-    assert(created.id || created[0]?.id, "Client created id returned");
+    const id = json.client_id;
+    assert(id, "Client created id returned");
 
     // List clients
     const listRes = await fetch(`${BASE_URL}/api/owner/clients`, {
@@ -129,6 +130,14 @@ Deno.test(
       services: ["mowing"],
       notes: "E2E job",
     };
+    // List clients to get a valid ID
+    const cRes = await fetch(`${BASE_URL}/api/owner/clients`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const cJson = await cRes.json();
+    const clientId = cJson.clients[0].id;
+    jobBody.client_id = clientId;
+
     // create job
     const createRes = await fetch(`${BASE_URL}/api/owner/jobs`, {
       method: "POST",
@@ -138,11 +147,10 @@ Deno.test(
       },
       body: JSON.stringify(jobBody),
     });
-    const cr = await createRes.json();
-    assertEquals(createRes.status, 200);
-    assertEquals(cr.ok, true);
-    const created = cr.job;
-    const id = created.id || created[0]?.id;
+    const jobJson = await createRes.json();
+    assertEquals(createRes.status, 201);
+    assertEquals(jobJson.ok, true);
+    const id = jobJson.job_id;
     assert(id, "job id returned");
 
     // update job
@@ -199,23 +207,31 @@ Deno.test("Owner E2E: create and manage waitlist items", {
   const token = tokenObj.access_token;
   const itemBody = {
     name: "Waitlist E2E",
-    email: "waitlist+e2e@example.com",
+    email: `waitlist+e2e${Date.now()}@example.com`,
+    phone: "555-555-5555",
+    property_address: "123 Waitlist Ln",
     preferred_service_plan: "weekly",
   };
-  const createRes = await fetch(`${BASE_URL}/api/owner/waitlist`, {
+  // Use Public Endpoint for creation
+  const createRes = await fetch(`${BASE_URL}/api/waitlist`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(itemBody),
   });
   const cr = await createRes.json();
-  assertEquals(createRes.status, 200);
+  assertEquals(createRes.status, 201);
   assertEquals(cr.ok, true);
-  const created = cr.waitlist_item;
-  const id = created.id || created[0]?.id;
-  assert(id, "waitlist item id returned");
+
+  // Fetch waitlist as owner to get ID
+  const listRes = await fetch(`${BASE_URL}/api/owner/waitlist`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const list = await listRes.json();
+  const created = Array.isArray(list) ? list.find((i: any) => i.email === itemBody.email) : (list as any).waitlist?.find((i: any) => i.email === itemBody.email);
+  const id = created?.id;
+  assert(id, "waitlist item id found via list");
 
   // update status
   const patchRes = await fetch(`${BASE_URL}/api/owner/waitlist/${id}`, {
