@@ -95,6 +95,24 @@ The system will:
 - **Good For**: In-person card payments with Square reader
 - **Setup**: Connect your Square email
 
+### Venmo
+
+- **Account ID**: Your Venmo username (e.g., @LaCardio)
+- **Good For**: Peer-to-peer mobile payments commonly used in the US
+- **Setup**: Enter your Venmo username in the Payment Accounts form
+
+### Zelle
+
+- **Account ID**: Your Zelle-registered email or phone number
+- **Good For**: Fast bank-to-bank transfers (US)
+- **Setup**: Enter your Zelle email/phone in the Payment Accounts form
+
+### Apple Pay and Google Pay
+
+- **Account ID**: These are client-side payment instruments that usually require a card processor (e.g., Stripe or Square) to accept payments. Use `stripe` or `square` as the payment method when you want Apple/Google Pay enabled.
+- **Good For**: In-browser or in-app card payments
+- **Setup**: Connect a Stripe or Square account to enable Apple Pay / Google Pay checkouts (provider integration required, not offered by default)
+
 ## API Endpoints
 
 All payment account management is handled through these endpoints:
