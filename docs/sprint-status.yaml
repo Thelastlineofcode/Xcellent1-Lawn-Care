@@ -50,7 +50,9 @@ commitments:
     epic: epic-02-customer-acquisition
     points: 2
     file: docs/stories/story-04-landing-page.md
-    status: in-progress
+    status: done
+    done_by: alex
+    done_at: "2025-12-11"
     assignee: alex
 
   - story_id: story-05-waitlist-form

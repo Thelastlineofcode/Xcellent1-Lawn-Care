@@ -69,7 +69,8 @@ Landing page implementation is largely correct: the canonical `home.html` integr
   - Evidence: `web/static/styles.clean.css` [styles.clean.css#L274-L280] includes `.waitlist-form` styling.
 
 - Remove redundant skeleton page `web/static/landing-skeleton.html` — NOT DONE
-  - Evidence: `web/static/landing-skeleton.html` still present with redirect to `home.html` [landing-skeleton.html#L1-L8].
+ - Remove redundant skeleton page `web/static/landing-skeleton.html` — DONE
+  - Evidence: `web/static/landing-skeleton.html` has been removed from the root and archived at `web/static/archive/landing-skeleton-deprecated-2025-12-11.html`.
 
 - Wire the waitlist form to `/api/leads` and add/update `tests/lead_form_integration_test.ts` — PARTIAL/AMBIGUOUS
   - Evidence: The application wires the waitlist form to `/api/waitlist` (client: `web/static/app.js` [app.js#L160-L180], server: `server.ts` [server.ts#L1238-L1328]). A `tests/lead_form_integration_test.ts` exists but targets `/api/leads` (career leads), not `/api/waitlist`. Clarify intent: if the waitlist should post to `/api/leads`, update implementation or update task to match AC/UI.

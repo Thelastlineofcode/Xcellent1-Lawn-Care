@@ -61,6 +61,20 @@
         "created_at": "2025-12-10T16:31:55.126Z"
       },
       "status": "pending"
+    },
+    {
+      "id": "evt_1765520585834",
+      "type": "WAITLIST_SIGNUP",
+      "created_at": "2025-12-12T06:23:05.834Z",
+      "payload": {
+        "id": "wait_1765520585833",
+        "name": "E2E Test User",
+        "email": "e2e-waitlist@example.com",
+        "service": "weekly",
+        "notes": "",
+        "created_at": "2025-12-12T06:23:05.833Z"
+      },
+      "status": "pending"
     }
   ],
   "invoices": [],
@@ -80,6 +94,14 @@
       "service": "weekly",
       "notes": "",
       "created_at": "2025-12-10T16:31:55.126Z"
+    },
+    {
+      "id": "wait_1765520585833",
+      "name": "E2E Test User",
+      "email": "e2e-waitlist@example.com",
+      "service": "weekly",
+      "notes": "",
+      "created_at": "2025-12-12T06:23:05.833Z"
     }
   ]
 }
