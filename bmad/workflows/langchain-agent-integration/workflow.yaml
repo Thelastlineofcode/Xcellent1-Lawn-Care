@@ -10,6 +10,6 @@ instructions: "{installed_path}/instructions.md"
 installed_path: "{project-root}/bmad/workflows/langchain-agent-integration"
 
 agents:
-  - bmad/agents/langchain-integration
+  - bmad/agents/archived/langchain-integration
 
 default_output_file: "{config_source}:output_folder/langchain-agent-integration-{{date}}.md"

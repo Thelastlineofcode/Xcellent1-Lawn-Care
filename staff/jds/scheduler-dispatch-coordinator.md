@@ -4,13 +4,17 @@ Hiring priority: P0
 
 ## Role summary
 
-The Scheduler / Dispatch Coordinator converts accepted quotes into scheduled jobs, assigns crews, manages daily routes, and handles schedule exceptions (weather, crew availability). This role keeps operations running on time and communicates schedule changes to customers and crews.
+The Scheduler / Dispatch Coordinator converts accepted quotes into scheduled
+jobs, assigns crews, manages daily routes, and handles schedule exceptions
+(weather, crew availability). This role keeps operations running on time and
+communicates schedule changes to customers and crews.
 
 ## Responsibilities
 
 - Create and confirm jobs in the system from accepted quotes.
 - Assign crews and confirm time windows with customers via SMS/email.
-- Monitor daily schedule and reassign work as needed for delays or crew shortages.
+- Monitor daily schedule and reassign work as needed for delays or crew
+  shortages.
 - Coordinate with Crew Leads to prioritize urgent or high-value customers.
 - Maintain a manual routing sheet until route optimization is implemented.
 
@@ -30,13 +34,17 @@ The Scheduler / Dispatch Coordinator converts accepted quotes into scheduled job
 
 ## Compensation & hours
 
-- Full-time or strong part-time depending on volume. Competitive pay for local market.
+- Full-time or strong part-time depending on volume. Competitive pay for local
+  market.
 
 ## Interview checklist
 
-1. Describe an experience where you had to reschedule multiple workers due to an unexpected event.
-2. How would you prioritize competing schedule conflicts (e.g., VIP client vs. weather delay)?
-3. Explain how you would create a daily route given a list of jobs and crew locations.
+1. Describe an experience where you had to reschedule multiple workers due to an
+   unexpected event.
+2. How would you prioritize competing schedule conflicts (e.g., VIP client vs.
+   weather delay)?
+3. Explain how you would create a daily route given a list of jobs and crew
+   locations.
 
 ## Onboarding (first 2 weeks)
 

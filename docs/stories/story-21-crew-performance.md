@@ -6,11 +6,12 @@ owner: dev
 points: 3
 ---
 
-Tasks
------
-- Add endpoints to calculate crew metrics: jobs completed, photos uploaded, average job time.
+## Tasks
+
+- Add endpoints to calculate crew metrics: jobs completed, photos uploaded,
+  average job time.
 - Hook metrics into owner dashboard with simple cards.
 
-Acceptance Criteria
--------------------
+## Acceptance Criteria
+
 - Owner dashboard shows crew performance with date filters.

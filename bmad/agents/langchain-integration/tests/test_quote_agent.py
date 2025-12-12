@@ -6,10 +6,14 @@
 #
 # Implement with pytest or unittest
 import json
+import os
+import pytest
 from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+
+pytestmark = pytest.mark.skipif(os.getenv('ENABLE_AI_PROTOTYPES', 'false').lower() != 'true', reason='LangChain prototypes are archived. Set ENABLE_AI_PROTOTYPES=true to run them.')
 
 from agents.langchain_integration.adapter import tools as tools
 from agents.langchain_integration.agents.quote_agent import QuoteAgent

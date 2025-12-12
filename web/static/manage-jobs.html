@@ -1,9 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Manage jobs and scheduling - Xcellent1 Lawn Care" />
+    <meta
+      name="description"
+      content="Manage jobs and scheduling - Xcellent1 Lawn Care"
+    />
     <meta name="theme-color" content="#10b981" />
     <meta name="robots" content="noindex, nofollow" />
     <title>Job Management | Xcellent1 Owner</title>
@@ -14,7 +17,11 @@
   <body>
     <nav class="navbar">
       <div class="navbar-brand">
-        <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+        <img
+          src="images/xcellent1-logo-transparent.png"
+          alt="Xcellent1 logo"
+          class="navbar-logo"
+        />
         <div class="navbar-title">
           <span class="navbar-name">XCELLENT1</span>
           <span class="navbar-tagline">LAWN CARE</span>
@@ -84,11 +91,21 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="scheduled-date">Date *</label>
-                <input type="date" id="scheduled-date" required class="form-control" />
+                <input
+                  type="date"
+                  id="scheduled-date"
+                  required
+                  class="form-control"
+                />
               </div>
               <div class="form-group">
                 <label for="scheduled-time">Time</label>
-                <input type="time" id="scheduled-time" class="form-control" value="09:00" />
+                <input
+                  type="time"
+                  id="scheduled-time"
+                  class="form-control"
+                  value="09:00"
+                />
               </div>
             </div>
 
@@ -131,13 +148,23 @@
 
             <div class="form-group-full">
               <label for="job-notes">Notes</label>
-              <textarea id="job-notes" class="form-control" rows="3" placeholder="Special instructions, gate code, etc."></textarea>
+              <textarea
+                id="job-notes"
+                class="form-control"
+                rows="3"
+                placeholder="Special instructions, gate code, etc."
+              ></textarea>
             </div>
 
             <div class="form-grid">
               <div class="form-group">
                 <label for="estimated-duration">Est. Duration (min)</label>
-                <input type="number" id="estimated-duration" class="form-control" value="60" />
+                <input
+                  type="number"
+                  id="estimated-duration"
+                  class="form-control"
+                  value="60"
+                />
               </div>
               <div class="form-group">
                 <label for="job-status">Status</label>
@@ -150,7 +177,13 @@
             </div>
 
             <div class="modal-actions">
-              <button type="button" class="btn btn-secondary" onclick="closeJobModal()">Cancel</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeJobModal()"
+              >
+                Cancel
+              </button>
               <button type="submit" class="btn">Save Job</button>
             </div>
           </form>
@@ -160,10 +193,10 @@
 
     <script src="app.js"></script>
     <script type="module">
-      import { requireAuth, logout } from './auth-helper.js';
+      import { logout, requireAuth } from "./auth-helper.js";
 
       // Require owner authentication
-      const userProfile = await requireAuth('owner');
+      const userProfile = await requireAuth("owner");
       window.ownerProfile = userProfile;
     </script>
     <script>
@@ -177,13 +210,13 @@
         try {
           const token = window.supabaseSession?.access_token;
           if (!token) {
-            throw new Error('No authentication token');
+            throw new Error("No authentication token");
           }
 
-          const response = await fetch('/api/owner/jobs', {
+          const response = await fetch("/api/owner/jobs", {
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
+              "Authorization": `Bearer ${token}`,
+            },
           });
 
           if (!response.ok) {
@@ -192,15 +225,18 @@
 
           const data = await response.json();
           if (!data.ok) {
-            throw new Error(data.error || 'Failed to fetch jobs');
+            throw new Error(data.error || "Failed to fetch jobs");
           }
 
           jobsData = data.jobs || [];
           renderJobs(jobsData);
         } catch (err) {
-          console.error('Failed to load jobs:', err);
-          showMessage('⚠️ Unable to load jobs. Please refresh the page.', 'warning');
-          document.getElementById('jobs-grid').innerHTML = `
+          console.error("Failed to load jobs:", err);
+          showMessage(
+            "⚠️ Unable to load jobs. Please refresh the page.",
+            "warning",
+          );
+          document.getElementById("jobs-grid").innerHTML = `
             <div style="text-align: center; padding: 3rem; color: var(--color-text-secondary);">
               No jobs scheduled. Click "Schedule Job" to get started.
             </div>
@@ -212,8 +248,8 @@
       async function loadClients() {
         try {
           const token = window.supabaseSession?.access_token;
-          const response = await fetch('/api/owner/clients', {
-            headers: { 'Authorization': `Bearer ${token}` }
+          const response = await fetch("/api/owner/clients", {
+            headers: { "Authorization": `Bearer ${token}` },
           });
 
           const data = await response.json();
@@ -222,7 +258,7 @@
             populateClientDropdowns();
           }
         } catch (err) {
-          console.error('Failed to load clients:', err);
+          console.error("Failed to load clients:", err);
         }
       }
 
@@ -230,8 +266,8 @@
       async function loadCrew() {
         try {
           const token = window.supabaseSession?.access_token;
-          const response = await fetch('/api/owner/crew', {
-            headers: { 'Authorization': `Bearer ${token}` }
+          const response = await fetch("/api/owner/crew", {
+            headers: { "Authorization": `Bearer ${token}` },
           });
 
           const data = await response.json();
@@ -240,37 +276,41 @@
             populateCrewDropdowns();
           }
         } catch (err) {
-          console.error('Failed to load crew:', err);
+          console.error("Failed to load crew:", err);
         }
       }
 
       function populateClientDropdowns() {
-        const clientSelect = document.getElementById('client-select');
-        const clientFilter = document.getElementById('client-filter');
+        const clientSelect = document.getElementById("client-select");
+        const clientFilter = document.getElementById("client-filter");
 
-        const options = clientsData.map(c =>
+        const options = clientsData.map((c) =>
           `<option value="${c.id}">${c.name} - ${c.property_address}</option>`
-        ).join('');
+        ).join("");
 
-        clientSelect.innerHTML = '<option value="">Select client...</option>' + options;
-        clientFilter.innerHTML = '<option value="">All Clients</option>' + options;
+        clientSelect.innerHTML =
+          '<option value="">Select client...</option>' + options;
+        clientFilter.innerHTML =
+          '<option value="">All Clients</option>' + options;
       }
 
       function populateCrewDropdowns() {
-        const crewSelect = document.getElementById('crew-select');
-        const crewFilter = document.getElementById('crew-filter');
+        const crewSelect = document.getElementById("crew-select");
+        const crewFilter = document.getElementById("crew-filter");
 
-        const options = crewData.map(c =>
+        const options = crewData.map((c) =>
           `<option value="${c.id}">${c.name}</option>`
-        ).join('');
+        ).join("");
 
-        crewSelect.innerHTML = '<option value="">Select crew member...</option>' + options;
-        crewFilter.innerHTML = '<option value="">All Crew</option>' + options;
+        crewSelect.innerHTML =
+          '<option value="">Select crew member...</option>' + options;
+        crewFilter.innerHTML = '<option value="">All Crew</option>' +
+          options;
       }
 
       // Render jobs
       function renderJobs(jobs) {
-        const grid = document.getElementById('jobs-grid');
+        const grid = document.getElementById("jobs-grid");
 
         if (jobs.length === 0) {
           grid.innerHTML = `
@@ -286,76 +326,114 @@
           new Date(a.scheduled_date) - new Date(b.scheduled_date)
         );
 
-        grid.innerHTML = sorted.map(job => {
+        grid.innerHTML = sorted.map((job) => {
           const date = new Date(job.scheduled_date);
-          const dateStr = date.toLocaleDateString('en-US', {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric'
+          const dateStr = date.toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
           });
 
           const services = Array.isArray(job.services)
             ? job.services
-            : (job.services || '').split(',').filter(Boolean);
+            : (job.services || "").split(",").filter(Boolean);
 
           return `
             <div class="job-card ${job.status}" onclick="editJob('${job.id}')">
               <div class="job-header">
-                <div class="job-date">${dateStr} ${job.scheduled_time || ''}</div>
+                <div class="job-date">${dateStr} ${
+            job.scheduled_time || ""
+          }</div>
                 <span class="job-status ${job.status}">${job.status}</span>
               </div>
               <div class="job-info">
                 <div class="job-info-row">
-                  <strong>👤 Client:</strong> ${job.client_name || 'Unknown'}
+                  <strong>👤 Client:</strong> ${
+            job.client_name || "Unknown"
+          }
                 </div>
                 <div class="job-info-row">
-                  <strong>📍 Address:</strong> ${job.property_address || 'N/A'}
+                  <strong>📍 Address:</strong> ${
+            job.property_address || "N/A"
+          }
                 </div>
                 <div class="job-info-row">
-                  <strong>👷 Crew:</strong> ${job.crew_name || 'Unassigned'}
+                  <strong>👷 Crew:</strong> ${
+            job.crew_name || "Unassigned"
+          }
                 </div>
                 <div class="job-info-row">
                   <strong>🛠️ Services:</strong>
                   <div class="services-list">
-                    ${services.map(s => `<span class="service-tag">${s.trim()}</span>`).join('')}
+                    ${
+            services.map((s) =>
+              `<span class="service-tag">${s.trim()}</span>`
+            ).join("")
+          }
                   </div>
                 </div>
-                ${job.notes ? `
+                ${
+            job.notes
+              ? `
                   <div class="job-info-row" style="background: #fef3c7; padding: 0.5rem; border-radius: 8px; margin-top: 0.5rem;">
                     <strong>⚠️ Note:</strong> ${job.notes}
                   </div>
-                ` : ''}
+                `
+              : ""
+          }
               </div>
               <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                 <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); editJob('${job.id}')">Edit</button>
-                ${job.status !== 'completed' ? `
+                ${
+            job.status !== "completed"
+              ? `
                   <button class="btn btn-sm" onclick="event.stopPropagation(); markComplete('${job.id}')">Mark Complete</button>
-                ` : ''}
+                `
+              : ""
+          }
               </div>
             </div>
           `;
-        }).join('');
+        }).join("");
       }
 
       // Filter functions
-      document.getElementById('date-filter').addEventListener('change', filterJobs);
-      document.getElementById('status-filter').addEventListener('change', filterJobs);
-      document.getElementById('crew-filter').addEventListener('change', filterJobs);
-      document.getElementById('client-filter').addEventListener('change', filterJobs);
+      document.getElementById("date-filter").addEventListener(
+        "change",
+        filterJobs,
+      );
+      document.getElementById("status-filter").addEventListener(
+        "change",
+        filterJobs,
+      );
+      document.getElementById("crew-filter").addEventListener(
+        "change",
+        filterJobs,
+      );
+      document.getElementById("client-filter").addEventListener(
+        "change",
+        filterJobs,
+      );
 
       function filterJobs() {
-        const dateFilter = document.getElementById('date-filter').value;
-        const statusFilter = document.getElementById('status-filter').value;
-        const crewFilter = document.getElementById('crew-filter').value;
-        const clientFilter = document.getElementById('client-filter').value;
+        const dateFilter = document.getElementById("date-filter").value;
+        const statusFilter =
+          document.getElementById("status-filter").value;
+        const crewFilter = document.getElementById("crew-filter").value;
+        const clientFilter =
+          document.getElementById("client-filter").value;
 
-        const filtered = jobsData.filter(job => {
-          const matchesDate = !dateFilter || job.scheduled_date === dateFilter;
-          const matchesStatus = !statusFilter || job.status === statusFilter;
+        const filtered = jobsData.filter((job) => {
+          const matchesDate = !dateFilter ||
+            job.scheduled_date === dateFilter;
+          const matchesStatus = !statusFilter ||
+            job.status === statusFilter;
           const matchesCrew = !crewFilter || job.crew_id === crewFilter;
-          const matchesClient = !clientFilter || job.client_id === clientFilter;
+          const matchesClient = !clientFilter ||
+            job.client_id === clientFilter;
 
-          return matchesDate && matchesStatus && matchesCrew && matchesClient;
+          return matchesDate && matchesStatus && matchesCrew &&
+            matchesClient;
         });
 
         renderJobs(filtered);
@@ -364,140 +442,165 @@
       // Modal functions
       function openAddJobModal() {
         editingJobId = null;
-        document.getElementById('modal-title').textContent = 'Schedule New Job';
-        document.getElementById('job-form').reset();
-        document.getElementById('job-id').value = '';
+        document.getElementById("modal-title").textContent =
+          "Schedule New Job";
+        document.getElementById("job-form").reset();
+        document.getElementById("job-id").value = "";
 
         // Set default date to tomorrow
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        document.getElementById('scheduled-date').value = tomorrow.toISOString().split('T')[0];
+        document.getElementById("scheduled-date").value =
+          tomorrow.toISOString().split("T")[0];
 
-        document.getElementById('job-modal').classList.add('active');
+        document.getElementById("job-modal").classList.add("active");
       }
 
       function closeJobModal() {
-        document.getElementById('job-modal').classList.remove('active');
+        document.getElementById("job-modal").classList.remove("active");
         editingJobId = null;
       }
 
       function editJob(jobId) {
-        const job = jobsData.find(j => j.id === jobId);
+        const job = jobsData.find((j) => j.id === jobId);
         if (!job) return;
 
         editingJobId = jobId;
-        document.getElementById('modal-title').textContent = 'Edit Job';
-        document.getElementById('job-id').value = jobId;
-        document.getElementById('client-select').value = job.client_id || '';
-        document.getElementById('scheduled-date').value = job.scheduled_date || '';
-        document.getElementById('scheduled-time').value = job.scheduled_time || '';
-        document.getElementById('crew-select').value = job.crew_id || '';
-        document.getElementById('job-notes').value = job.notes || '';
-        document.getElementById('estimated-duration').value = job.estimated_duration || 60;
-        document.getElementById('job-status').value = job.status || 'pending';
+        document.getElementById("modal-title").textContent = "Edit Job";
+        document.getElementById("job-id").value = jobId;
+        document.getElementById("client-select").value =
+          job.client_id || "";
+        document.getElementById("scheduled-date").value =
+          job.scheduled_date || "";
+        document.getElementById("scheduled-time").value =
+          job.scheduled_time || "";
+        document.getElementById("crew-select").value = job.crew_id ||
+          "";
+        document.getElementById("job-notes").value = job.notes || "";
+        document.getElementById("estimated-duration").value =
+          job.estimated_duration || 60;
+        document.getElementById("job-status").value = job.status ||
+          "pending";
 
         // Check services
         const services = Array.isArray(job.services)
           ? job.services
-          : (job.services || '').split(',').map(s => s.trim());
+          : (job.services || "").split(",").map((s) => s.trim());
 
-        document.querySelectorAll('input[name="service"]').forEach(checkbox => {
-          checkbox.checked = services.includes(checkbox.value);
-        });
+        document.querySelectorAll('input[name="service"]').forEach(
+          (checkbox) => {
+            checkbox.checked = services.includes(checkbox.value);
+          },
+        );
 
-        document.getElementById('job-modal').classList.add('active');
+        document.getElementById("job-modal").classList.add("active");
       }
 
       // Save job
       async function saveJob(event) {
         event.preventDefault();
 
-        const selectedServices = Array.from(document.querySelectorAll('input[name="service"]:checked'))
-          .map(cb => cb.value);
+        const selectedServices = Array.from(
+          document.querySelectorAll('input[name="service"]:checked'),
+        )
+          .map((cb) => cb.value);
 
         if (selectedServices.length === 0) {
-          showMessage('⚠️ Please select at least one service', 'warning');
+          showMessage(
+            "⚠️ Please select at least one service",
+            "warning",
+          );
           return;
         }
 
         const jobData = {
-          client_id: document.getElementById('client-select').value,
-          scheduled_date: document.getElementById('scheduled-date').value,
-          scheduled_time: document.getElementById('scheduled-time').value,
-          crew_id: document.getElementById('crew-select').value,
+          client_id: document.getElementById("client-select").value,
+          scheduled_date:
+            document.getElementById("scheduled-date").value,
+          scheduled_time:
+            document.getElementById("scheduled-time").value,
+          crew_id: document.getElementById("crew-select").value,
           services: selectedServices,
-          notes: document.getElementById('job-notes').value,
-          estimated_duration: document.getElementById('estimated-duration').value,
-          status: document.getElementById('job-status').value
+          notes: document.getElementById("job-notes").value,
+          estimated_duration:
+            document.getElementById("estimated-duration").value,
+          status: document.getElementById("job-status").value,
         };
 
-        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const submitBtn = event.target.querySelector(
+          'button[type="submit"]',
+        );
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="spinner"></span> Saving...';
 
         try {
           const token = window.supabaseSession?.access_token;
-          const method = editingJobId ? 'PATCH' : 'POST';
+          const method = editingJobId ? "PATCH" : "POST";
           const url = editingJobId
             ? `/api/owner/jobs/${editingJobId}`
-            : '/api/owner/jobs';
+            : "/api/owner/jobs";
 
           const response = await fetch(url, {
             method,
             headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify(jobData)
+            body: JSON.stringify(jobData),
           });
 
           const data = await response.json();
 
           if (!response.ok || !data.ok) {
-            throw new Error(data.error || 'Failed to save job');
+            throw new Error(data.error || "Failed to save job");
           }
 
-          showMessage(`✓ Job ${editingJobId ? 'updated' : 'scheduled'} successfully!`, 'success');
+          showMessage(
+            `✓ Job ${
+              editingJobId ? "updated" : "scheduled"
+            } successfully!`,
+            "success",
+          );
           closeJobModal();
           await loadJobs();
         } catch (err) {
-          console.error('Failed to save job:', err);
-          showMessage(`✗ ${err.message}`, 'error');
+          console.error("Failed to save job:", err);
+          showMessage(`✗ ${err.message}`, "error");
         } finally {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = 'Save Job';
+          submitBtn.innerHTML = "Save Job";
         }
       }
 
       async function markComplete(jobId) {
-        if (!confirm('Mark this job as completed?')) return;
+        if (!confirm("Mark this job as completed?")) return;
 
         try {
           const token = window.supabaseSession?.access_token;
           const response = await fetch(`/api/jobs/${jobId}/complete`, {
-            method: 'PATCH',
-            headers: { 'Authorization': `Bearer ${token}` }
+            method: "PATCH",
+            headers: { "Authorization": `Bearer ${token}` },
           });
 
           const data = await response.json();
           if (data.ok) {
-            showMessage('✓ Job marked as complete!', 'success');
+            showMessage("✓ Job marked as complete!", "success");
             await loadJobs();
           }
         } catch (err) {
-          console.error('Failed to mark job complete:', err);
-          showMessage('✗ Failed to update job', 'error');
+          console.error("Failed to mark job complete:", err);
+          showMessage("✗ Failed to update job", "error");
         }
       }
 
-      function showMessage(message, type = 'info') {
-        const container = document.getElementById('status-message');
+      function showMessage(message, type = "info") {
+        const container = document.getElementById("status-message");
         container.className = `message message-${type}`;
         container.textContent = message;
-        container.style.display = 'block';
+        container.style.display = "block";
 
         setTimeout(() => {
-          container.style.display = 'none';
+          container.style.display = "none";
         }, 5000);
       }
 

@@ -4,7 +4,9 @@
 
 ### Simple Business Management - No AI Needed
 
-This application is designed as a straightforward field service management system. The owner explicitly **does not want AI features** - just practical dashboards for:
+This application is designed as a straightforward field service management
+system. The owner explicitly **does not want AI features** - just practical
+dashboards for:
 
 1. **Owner**: Manage clients, schedule jobs, create invoices, track payments
 2. **Crew**: View daily job list, mark jobs complete, upload photos
@@ -30,9 +32,11 @@ This application is designed as a straightforward field service management syste
 
 **Primary Server**: `/server.ts` (root directory)
 
-This is the production server with full Supabase authentication, role-based access control, and comprehensive API endpoints.
+This is the production server with full Supabase authentication, role-based
+access control, and comprehensive API endpoints.
 
 **To start the server:**
+
 ```bash
 deno task start   # Production
 deno task dev     # Development with auto-reload
@@ -40,15 +44,16 @@ deno task dev     # Development with auto-reload
 
 ### File Status
 
-| File | Status | Purpose |
-|------|--------|---------|
-| `/server.ts` | ✅ ACTIVE | Production server - use this |
-| `/web/server.ts` | ⚠️ ARCHIVE | Legacy minimal server - not used |
+| File                | Status     | Purpose                           |
+| ------------------- | ---------- | --------------------------------- |
+| `/server.ts`        | ✅ ACTIVE  | Production server - use this      |
+| `/web/server.ts`    | ⚠️ ARCHIVE | Legacy minimal server - not used  |
 | `/api-endpoints.ts` | ⚠️ ARCHIVE | Experimental endpoints - not used |
 
 ### Why Multiple Server Files Exist
 
 The project went through several iterations:
+
 1. **web/server.ts** - Initial lightweight server for static file serving
 2. **api-endpoints.ts** - Experimental API design with different auth pattern
 3. **server.ts** (root) - Final production server combining best of both
@@ -64,6 +69,7 @@ The project went through several iterations:
 **Primary Schema**: `/db/schema.sql`
 
 This schema includes:
+
 - ✅ Supabase Auth integration via `auth_user_id` foreign keys
 - ✅ Row Level Security (RLS) policies
 - ✅ Helper functions (`get_crew_jobs`, `get_owner_metrics`, etc.)
@@ -71,17 +77,19 @@ This schema includes:
 
 ### Schema Status
 
-| File | Status | Purpose |
-|------|--------|---------|
-| `/db/schema.sql` | ✅ ACTIVE | Production schema - use this |
-| `/database-schema.sql` | ⚠️ LEGACY | Old schema without auth integration |
+| File                      | Status       | Purpose                              |
+| ------------------------- | ------------ | ------------------------------------ |
+| `/db/schema.sql`          | ✅ ACTIVE    | Production schema - use this         |
+| `/database-schema.sql`    | ⚠️ LEGACY    | Old schema without auth integration  |
 | `/db/database-schema.sql` | ⚠️ DUPLICATE | Exact copy of `/database-schema.sql` |
 
-**Decision**: Use `/db/schema.sql` as it has proper auth integration and matches server.ts implementation.
+**Decision**: Use `/db/schema.sql` as it has proper auth integration and matches
+server.ts implementation.
 
 ### Key Schema Features
 
 **Tables:**
+
 - `users` - All system users with `auth_user_id` linking to Supabase Auth
 - `clients` - Customer accounts with property information
 - `jobs` - Work assignments with crew and client relationships
@@ -91,6 +99,7 @@ This schema includes:
 - `outbox_events` - Event sourcing for async operations
 
 **Authentication Flow:**
+
 ```
 Supabase Auth (auth.users)
          ↓
@@ -127,12 +136,12 @@ Role-based RLS policies
 
 ### Roles
 
-| Role | Access |
-|------|--------|
-| `owner` | Full access to all data and operations |
-| `crew` | View assigned jobs, upload photos, complete jobs |
-| `client` | View own jobs, invoices, payments |
-| `applicant` | Limited access (future feature) |
+| Role        | Access                                           |
+| ----------- | ------------------------------------------------ |
+| `owner`     | Full access to all data and operations           |
+| `crew`      | View assigned jobs, upload photos, complete jobs |
+| `client`    | View own jobs, invoices, payments                |
+| `applicant` | Limited access (future feature)                  |
 
 ---
 
@@ -141,6 +150,7 @@ Role-based RLS policies
 ### Current Implementation (server.ts)
 
 **Public Endpoints:**
+
 ```
 GET    /health                      - Health check
 GET    /config.js                   - Runtime config for frontend
@@ -151,6 +161,7 @@ POST   /api/service-inquiry         - Service request form
 ```
 
 **Protected Endpoints:**
+
 ```
 GET    /api/crew/:id/jobs           [crew, owner]   - Get crew's daily jobs
 GET    /api/owner/metrics           [owner]         - Business KPIs
@@ -164,6 +175,7 @@ GET    /api/status                  [owner]         - System status
 ### Endpoint Architecture
 
 All protected endpoints use this pattern:
+
 ```typescript
 const authResult = await requireAuth(req, ["allowed", "roles"]);
 if (!authResult.authorized) {
@@ -180,6 +192,7 @@ const { auth } = authResult;
 ### Pages
 
 **Public Pages:**
+
 - `index.html` - Landing page (redirects to home.html)
 - `home.html` - Marketing homepage
 - `shop.html` - Product catalog
@@ -188,12 +201,14 @@ const { auth } = authResult;
 - `blog-*.html` - Educational content
 
 **Protected Pages:**
+
 - `owner.html` - Business dashboard (KPIs, metrics, quick actions)
 - `crew.html` - Daily job list with navigation and photo upload
 - `client.html` - Client portal (jobs, photos, invoices)
 - `dashboard.html` - Hiring manager dashboard
 
 **Management Pages (Owner Only):**
+
 - `manage-clients.html` - Client management (CRUD operations)
 - `manage-jobs.html` - Job scheduling and assignment
 - `manage-invoices.html` - Invoice creation and payment tracking
@@ -202,18 +217,18 @@ const { auth } = authResult;
 
 **Current Status:**
 
-| Dashboard | Fetch Implemented | Backend Ready | Status |
-|-----------|-------------------|---------------|--------|
-| Owner | ✅ Calls `/api/owner/metrics` | ✅ Yes | Complete |
-| Crew | ✅ Calls `/api/crew/:id/jobs` | ✅ Endpoint exists | Complete |
-| Client | ✅ Calls `/api/client/:id/dashboard` | ✅ Endpoint exists | Complete |
+| Dashboard | Fetch Implemented                    | Backend Ready      | Status   |
+| --------- | ------------------------------------ | ------------------ | -------- |
+| Owner     | ✅ Calls `/api/owner/metrics`        | ✅ Yes             | Complete |
+| Crew      | ✅ Calls `/api/crew/:id/jobs`        | ✅ Endpoint exists | Complete |
+| Client    | ✅ Calls `/api/client/:id/dashboard` | ✅ Endpoint exists | Complete |
 
 **Management Pages:**
 
-| Page | Purpose | Status |
-|------|---------|--------|
-| manage-clients.html | Add/edit/list clients | ✅ Complete |
-| manage-jobs.html | Schedule & assign jobs | ✅ Complete |
+| Page                 | Purpose                  | Status      |
+| -------------------- | ------------------------ | ----------- |
+| manage-clients.html  | Add/edit/list clients    | ✅ Complete |
+| manage-jobs.html     | Schedule & assign jobs   | ✅ Complete |
 | manage-invoices.html | Create & manage invoices | ✅ Complete |
 
 ---
@@ -336,6 +351,7 @@ curl http://localhost:8000/health
 ## Deployment
 
 See deployment guides:
+
 - `DEPLOY_DATABASE.md` - Supabase database deployment
 - `SUPABASE_CLI_SETUP.md` - CLI configuration
 - `README.md` - General setup instructions
@@ -405,6 +421,7 @@ See deployment guides:
 ### Why Root server.ts?
 
 After experimenting with multiple approaches, root `server.ts` provides:
+
 - ✅ Full Supabase integration
 - ✅ JWT signature verification
 - ✅ Role-based access control
@@ -423,6 +440,7 @@ When modifying the codebase:
 4. **Documentation**: Update this file and relevant guides
 
 **Do not**:
+
 - Modify `/web/server.ts` (archived)
 - Modify `/database-schema.sql` (legacy)
 - Use `/api-endpoints.ts` (experimental)
@@ -432,6 +450,7 @@ When modifying the codebase:
 ## Support
 
 For questions or issues:
+
 - Check `README.md` for basic setup
 - Review deployment guides in root directory
 - Check Supabase logs: https://app.supabase.com/project/_/logs

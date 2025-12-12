@@ -2,11 +2,15 @@
 
 ## Overview
 
-This guide shows you how to configure Claude Code to natively understand and use the BMAD (Business Management and Development) framework globally across all your projects.
+This guide shows you how to configure Claude Code to natively understand and use
+the BMAD (Business Management and Development) framework globally across all
+your projects.
 
 ## What is BMAD Framework?
 
-Based on your codebase, BMAD is a modular framework for building business applications with:
+Based on your codebase, BMAD is a modular framework for building business
+applications with:
+
 - **Event-driven architecture** (Outbox pattern)
 - **Multi-agent systems** (Crew, Owner, Client agents)
 - **Modular services** (Authentication, Database, API routing)
@@ -75,30 +79,18 @@ You are now operating with the BMAD (Business Management and Development) Framew
    - Test outbox events, agents, and integrations
 
 ## Directory Structure
-
-```
-project/
-├── bmad/
-│   ├── agents/
-│   │   ├── owner/          # Owner agent capabilities
-│   │   ├── crew/           # Crew agent capabilities
-│   │   ├── client/         # Client agent capabilities
-│   │   └── tests/          # Agent tests
-│   ├── outbox/
-│   │   ├── publisher.ts    # Event publishing
-│   │   ├── processor.ts    # Event processing
-│   │   └── worker.ts       # Background workers
-│   └── services/
-│       ├── auth/           # Authentication services
-│       ├── db/             # Database services
-│       └── api/            # API routing
-├── db/
-│   └── schema.sql          # Database schema with RLS
-├── web/
-│   └── static/             # Frontend dashboards
-└── server.ts               # Main server entry point
 ```
 
+project/ ├── bmad/ │ ├── agents/ │ │ ├── owner/ # Owner agent capabilities │ │
+├── crew/ # Crew agent capabilities │ │ ├── client/ # Client agent capabilities
+│ │ └── tests/ # Agent tests │ ├── outbox/ │ │ ├── publisher.ts # Event
+publishing │ │ ├── processor.ts # Event processing │ │ └── worker.ts #
+Background workers │ └── services/ │ ├── auth/ # Authentication services │ ├──
+db/ # Database services │ └── api/ # API routing ├── db/ │ └── schema.sql #
+Database schema with RLS ├── web/ │ └── static/ # Frontend dashboards └──
+server.ts # Main server entry point
+
+````
 ## Development Patterns
 
 ### Pattern 1: Creating a New Event
@@ -132,37 +124,37 @@ async function processEntityCreated(event: OutboxEvent) {
   // Handle the event
   // Send notifications, update other systems, etc.
 }
-```
+````
 
 ### Pattern 2: Creating a New Agent Capability
 
 ```typescript
 // bmad/agents/crew/job-completion.ts
-import { authenticateRequest } from '../../services/auth/middleware.ts';
+import { authenticateRequest } from "../../services/auth/middleware.ts";
 
 export async function completeJob(
   req: Request,
-  jobId: string
+  jobId: string,
 ): Promise<Response> {
   // 1. Authenticate
   const auth = await authenticateRequest(req);
-  if (!auth || auth.profile.role !== 'crew') {
-    return new Response('Unauthorized', { status: 401 });
+  if (!auth || auth.profile.role !== "crew") {
+    return new Response("Unauthorized", { status: 401 });
   }
 
   // 2. Business logic
-  const job = await updateJobStatus(jobId, 'completed');
+  const job = await updateJobStatus(jobId, "completed");
 
   // 3. Publish event
   await publishEvent({
-    eventType: 'job.completed',
+    eventType: "job.completed",
     payload: { jobId, completedBy: auth.profile.id },
     aggregateId: jobId,
-    aggregateType: 'job'
+    aggregateType: "job",
   });
 
   return new Response(JSON.stringify(job), {
-    headers: { 'Content-Type': 'application/json' }
+    headers: { "Content-Type": "application/json" },
   });
 }
 ```
@@ -171,12 +163,12 @@ export async function completeJob(
 
 ```typescript
 // server.ts
-import { requireAuth } from './bmad/services/auth/middleware.ts';
+import { requireAuth } from "./bmad/services/auth/middleware.ts";
 
 // Protected endpoint
-if (pathname === '/api/jobs' && method === 'POST') {
-  const auth = await requireAuth(req, ['owner', 'crew']);
-  if (!auth) return new Response('Unauthorized', { status: 401 });
+if (pathname === "/api/jobs" && method === "POST") {
+  const auth = await requireAuth(req, ["owner", "crew"]);
+  if (!auth) return new Response("Unauthorized", { status: 401 });
 
   // Handle request with authenticated user
   const result = await createJob(req, auth.profile);
@@ -216,6 +208,7 @@ CREATE POLICY "client_own_jobs" ON jobs
 ## When to Use BMAD Framework
 
 Use BMAD when you need:
+
 - ✅ Event-driven business logic
 - ✅ Multi-tenant role-based access
 - ✅ Reliable event processing (Outbox pattern)
@@ -224,6 +217,7 @@ Use BMAD when you need:
 - ✅ Multi-agent orchestration
 
 Don't use BMAD for:
+
 - ❌ Simple CRUD apps without events
 - ❌ Single-user applications
 - ❌ Static websites
@@ -241,7 +235,8 @@ When activated, you can use these commands:
 
 ## Best Practices
 
-1. **Always use the Outbox pattern** for side effects (emails, notifications, integrations)
+1. **Always use the Outbox pattern** for side effects (emails, notifications,
+   integrations)
 2. **Test your agents** - Write tests in `bmad/agents/tests/`
 3. **Use RLS policies** - Never bypass database security
 4. **Separate concerns** - Keep agents, services, and outbox distinct
@@ -265,18 +260,21 @@ When starting a new BMAD project:
 ## Troubleshooting
 
 ### Events not processing?
+
 - Check outbox worker is running
 - Verify database connection
 - Check event status in outbox table
 - Review worker logs for errors
 
 ### Authentication failing?
+
 - Verify JWT secret is set
 - Check auth_user_id is linked
 - Confirm RLS policies are correct
 - Test with curl/Postman first
 
 ### Agent permissions wrong?
+
 - Review RLS policies
 - Check user role in database
 - Verify requireAuth middleware
@@ -284,10 +282,10 @@ When starting a new BMAD project:
 
 ---
 
-**BMAD Framework is now active. How can I help you build your event-driven application?**
-EOF
-```
+**BMAD Framework is now active. How can I help you build your event-driven
+application?** EOF
 
+````
 ### Step 3: Activate the Skill
 
 To use the BMAD framework in any project:
@@ -298,7 +296,7 @@ To use the BMAD framework in any project:
 
 # Or create an alias
 /alias bmad="skill bmad-framework"
-```
+````
 
 ## Method 2: Custom Slash Command
 
@@ -561,7 +559,7 @@ chmod +x /usr/local/bin/bmad
 
 Save this as a quick reference:
 
-```bash
+````bash
 cat > ~/.bmad-quickref.md << 'EOF'
 # BMAD Framework Quick Reference
 
@@ -580,15 +578,17 @@ await publishEvent({
   aggregateId: id,
   aggregateType: 'type'
 });
-```
+````
 
 ### Protected Endpoint
+
 ```typescript
-const auth = await requireAuth(req, ['owner', 'crew']);
+const auth = await requireAuth(req, ["owner", "crew"]);
 if (!auth) return unauthorized();
 ```
 
 ### RLS Policy
+
 ```sql
 CREATE POLICY "policy_name" ON table
   FOR SELECT USING (
@@ -597,15 +597,17 @@ CREATE POLICY "policy_name" ON table
 ```
 
 ### Agent Test
+
 ```typescript
 Deno.test("agent should...", async () => {
   const result = await agentFunction();
-  assertEquals(result.status, 'success');
+  assertEquals(result.status, "success");
 });
 ```
-EOF
-```
 
+EOF
+
+```
 ---
 
 ## Summary
@@ -627,3 +629,4 @@ This gives you:
 - Easy testing and debugging
 
 Let me know which method you'd like to implement first!
+```

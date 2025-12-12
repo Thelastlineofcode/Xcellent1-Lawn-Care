@@ -1,9 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Applications & Recruits - Xcellent1 Lawn Care" />
+    <meta
+      name="description"
+      content="Applications & Recruits - Xcellent1 Lawn Care"
+    />
     <meta name="theme-color" content="#10b981" />
     <meta name="robots" content="noindex, nofollow" />
     <title>Applications | Xcellent1 Owner</title>
@@ -36,12 +39,20 @@
 
       .application-card.hired {
         border-left: 4px solid var(--color-success);
-        background: linear-gradient(90deg, rgba(16, 185, 129, 0.05) 0%, transparent);
+        background: linear-gradient(
+          90deg,
+          rgba(16, 185, 129, 0.05) 0%,
+          transparent
+        );
       }
 
       .application-card.rejected {
         border-left: 4px solid var(--color-error);
-        background: linear-gradient(90deg, rgba(239, 68, 68, 0.05) 0%, transparent);
+        background: linear-gradient(
+          90deg,
+          rgba(239, 68, 68, 0.05) 0%,
+          transparent
+        );
       }
 
       .app-info {
@@ -187,7 +198,11 @@
     <!-- Navigation -->
     <nav class="navbar">
       <div class="navbar-brand">
-        <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+        <img
+          src="images/xcellent1-logo-transparent.png"
+          alt="Xcellent1 logo"
+          class="navbar-logo"
+        />
         <div class="navbar-title">
           <span class="navbar-name">XCELLENT1</span>
           <span class="navbar-tagline">LAWN CARE</span>
@@ -198,7 +213,8 @@
         <a href="manage-clients.html" class="navbar-link">Clients</a>
         <a href="manage-jobs.html" class="navbar-link">Jobs</a>
         <a href="manage-invoices.html" class="navbar-link">Invoices</a>
-        <a href="manage-applications.html" class="navbar-link active">Applications</a>
+        <a href="manage-applications.html" class="navbar-link active"
+        >Applications</a>
         <button onclick="logout()" class="btn btn-sm">Logout</button>
       </div>
     </nav>
@@ -239,7 +255,11 @@
 
       <!-- Filter Bar -->
       <div class="filter-bar">
-        <select class="filter-select" id="status-filter" onchange="filterApplications()">
+        <select
+          class="filter-select"
+          id="status-filter"
+          onchange="filterApplications()"
+        >
           <option value="">All Status</option>
           <option value="pending">Pending</option>
           <option value="screening">Screening</option>
@@ -248,7 +268,11 @@
           <option value="hired">Hired</option>
           <option value="rejected">Rejected</option>
         </select>
-        <select class="filter-select" id="source-filter" onchange="filterApplications()">
+        <select
+          class="filter-select"
+          id="source-filter"
+          onchange="filterApplications()"
+        >
           <option value="">All Sources</option>
           <option value="careers">Careers Page</option>
           <option value="web">Web Form</option>
@@ -258,7 +282,9 @@
 
       <!-- Applications List -->
       <div id="applications-list">
-        <div style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">
+        <div
+          style="text-align: center; padding: 2rem; color: var(--color-text-secondary)"
+        >
           <div class="spinner"></div>
           <div>Loading applications...</div>
         </div>
@@ -267,10 +293,10 @@
 
     <script src="app.js"></script>
     <script type="module">
-      import { requireAuth, logout } from './auth-helper.js';
+      import { logout, requireAuth } from "./auth-helper.js";
 
       // Require owner authentication
-      const userProfile = await requireAuth('owner');
+      const userProfile = await requireAuth("owner");
       window.ownerProfile = userProfile;
     </script>
     <script>
@@ -282,26 +308,26 @@
         interview: "Interview",
         offer: "Offer Made",
         hired: "Hired ✓",
-        rejected: "Rejected"
+        rejected: "Rejected",
       };
 
       const sourceLabels = {
         careers: "Careers Page",
         web: "Web Form",
-        referral: "Referral"
+        referral: "Referral",
       };
 
       async function loadApplications() {
         try {
           const token = window.supabaseSession?.access_token;
           if (!token) {
-            throw new Error('No authentication token');
+            throw new Error("No authentication token");
           }
 
-          const response = await fetch('/api/owner/applications', {
+          const response = await fetch("/api/owner/applications", {
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
+              "Authorization": `Bearer ${token}`,
+            },
           });
 
           if (!response.ok) {
@@ -310,16 +336,21 @@
 
           const data = await response.json();
           if (!data.ok) {
-            throw new Error(data.error || 'Failed to fetch applications');
+            throw new Error(
+              data.error || "Failed to fetch applications",
+            );
           }
 
           applicationsData = data.applications || [];
           updateStatistics();
           renderApplications(applicationsData);
         } catch (err) {
-          console.error('Failed to load applications:', err);
-          showMessage('⚠️ Unable to load applications. Please refresh the page.', 'warning');
-          document.getElementById('applications-list').innerHTML = `
+          console.error("Failed to load applications:", err);
+          showMessage(
+            "⚠️ Unable to load applications. Please refresh the page.",
+            "warning",
+          );
+          document.getElementById("applications-list").innerHTML = `
             <div class="empty-state">
               <div style="color: var(--color-text-secondary); margin: 1rem 0;">
                 No applications found or unable to load.
@@ -332,19 +363,26 @@
       function updateStatistics() {
         const stats = {
           total: applicationsData.length,
-          pending: applicationsData.filter(a => a.status === 'pending').length,
-          hired: applicationsData.filter(a => a.status === 'hired').length,
-          rejected: applicationsData.filter(a => a.status === 'rejected').length
+          pending:
+            applicationsData.filter((a) => a.status === "pending")
+              .length,
+          hired:
+            applicationsData.filter((a) => a.status === "hired").length,
+          rejected:
+            applicationsData.filter((a) => a.status === "rejected")
+              .length,
         };
 
-        document.getElementById('stat-total').textContent = stats.total;
-        document.getElementById('stat-pending').textContent = stats.pending;
-        document.getElementById('stat-hired').textContent = stats.hired;
-        document.getElementById('stat-rejected').textContent = stats.rejected;
+        document.getElementById("stat-total").textContent = stats.total;
+        document.getElementById("stat-pending").textContent =
+          stats.pending;
+        document.getElementById("stat-hired").textContent = stats.hired;
+        document.getElementById("stat-rejected").textContent =
+          stats.rejected;
       }
 
       function renderApplications(applications) {
-        const container = document.getElementById('applications-list');
+        const container = document.getElementById("applications-list");
 
         if (applications.length === 0) {
           container.innerHTML = `
@@ -359,13 +397,17 @@
           return;
         }
 
-        container.innerHTML = applications.map(app => `
+        container.innerHTML = applications.map((app) => `
           <div class="application-card ${app.status}">
             <div class="app-info">
               <div class="app-name">
                 ${app.name}
-                <span class="status-badge status-${app.status}">${statusLabels[app.status] || app.status}</span>
-                <span class="source-badge">${sourceLabels[app.source] || app.source}</span>
+                <span class="status-badge status-${app.status}">${
+          statusLabels[app.status] || app.status
+        }</span>
+                <span class="source-badge">${
+          sourceLabels[app.source] || app.source
+        }</span>
               </div>
               
               <div class="app-details">
@@ -383,11 +425,15 @@
                 </div>
               </div>
 
-              ${app.notes ? `
+              ${
+          app.notes
+            ? `
                 <div class="app-notes">
                   <strong>Notes:</strong> ${app.notes}
                 </div>
-              ` : ''}
+              `
+            : ""
+        }
             </div>
 
             <div class="app-actions">
@@ -404,16 +450,20 @@
               </button>
             </div>
           </div>
-        `).join('');
+        `).join("");
       }
 
       function filterApplications() {
-        const statusFilter = document.getElementById('status-filter').value;
-        const sourceFilter = document.getElementById('source-filter').value;
+        const statusFilter =
+          document.getElementById("status-filter").value;
+        const sourceFilter =
+          document.getElementById("source-filter").value;
 
-        const filtered = applicationsData.filter(app => {
-          const matchesStatus = !statusFilter || app.status === statusFilter;
-          const matchesSource = !sourceFilter || app.source === sourceFilter;
+        const filtered = applicationsData.filter((app) => {
+          const matchesStatus = !statusFilter ||
+            app.status === statusFilter;
+          const matchesSource = !sourceFilter ||
+            app.source === sourceFilter;
           return matchesStatus && matchesSource;
         });
 
@@ -425,40 +475,51 @@
 
         try {
           const token = window.supabaseSession?.access_token;
-          const response = await fetch(`/api/owner/applications/${applicationId}`, {
-            method: 'PATCH',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
+          const response = await fetch(
+            `/api/owner/applications/${applicationId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ status: newStatus }),
             },
-            body: JSON.stringify({ status: newStatus })
-          });
+          );
 
           const data = await response.json();
           if (data.ok) {
-            showMessage(`✓ Application status updated to ${statusLabels[newStatus]}!`, 'success');
+            showMessage(
+              `✓ Application status updated to ${
+                statusLabels[newStatus]
+              }!`,
+              "success",
+            );
             await loadApplications();
           } else {
-            throw new Error(data.error || 'Failed to update');
+            throw new Error(data.error || "Failed to update");
           }
         } catch (err) {
-          console.error('Error:', err);
-          showMessage(`✗ ${err.message}`, 'error');
+          console.error("Error:", err);
+          showMessage(`✗ ${err.message}`, "error");
         }
       }
 
       function contactApplicant(email, name) {
-        window.open(`mailto:${email}?subject=Xcellent1 Lawn Care - Opportunity for ${name}`, '_blank');
+        window.open(
+          `mailto:${email}?subject=Xcellent1 Lawn Care - Opportunity for ${name}`,
+          "_blank",
+        );
       }
 
-      function showMessage(message, type = 'info') {
-        const container = document.getElementById('status-message');
+      function showMessage(message, type = "info") {
+        const container = document.getElementById("status-message");
         container.className = `message message-${type}`;
         container.textContent = message;
-        container.style.display = 'block';
+        container.style.display = "block";
 
         setTimeout(() => {
-          container.style.display = 'none';
+          container.style.display = "none";
         }, 5000);
       }
 

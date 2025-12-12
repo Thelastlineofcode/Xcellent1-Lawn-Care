@@ -2,6 +2,9 @@
 .env
 .env.local
 .env.*.local
+.env.local.bak
+.env.local.bak2
+*.bak
 
 # Dependencies
 node_modules/
@@ -32,6 +35,8 @@ supabase
 # Logs
 *.log
 npm-debug.log*
+# Dev DB (local test data)
+ bmad/agents/dev_db.json
 
 # OS generated files
 Thumbs.db

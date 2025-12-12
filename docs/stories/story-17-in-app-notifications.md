@@ -6,11 +6,11 @@ owner: dev
 points: 3
 ---
 
-Tasks
------
+## Tasks
+
 - Implement in-app notification feed and API to retrieve unseen events.
 - Add a UI for Owner and Crew to view recent events and to dismiss them.
 
-Acceptance Criteria
--------------------
+## Acceptance Criteria
+
 - In-app notification feed exists and updates when outbox events are processed.

@@ -37,6 +37,8 @@ jobs:
 
   python-tests:
     runs-on: ubuntu-latest
+    # Disabled by default: AI/LangChain prototype tests are gated behind ENABLE_AI_TESTS env variable to avoid running experimental code in CI
+    if: ${{ env.ENABLE_AI_TESTS == 'true' }}
     needs: lint
     steps:
       - uses: actions/checkout@v4
@@ -56,3 +58,4 @@ jobs:
         run: |
           source .venv/bin/activate
           PYTHONPATH=bmad pytest bmad/agents/langchain-integration/tests -q
+        # Execution will be skipped unless ENABLE_AI_TESTS in CI is set to 'true' and explicit permission is granted

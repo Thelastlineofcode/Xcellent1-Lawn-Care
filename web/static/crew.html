@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -34,7 +34,7 @@
       </div>
     </nav>
     <!-- Crew Portal Header -->
-    <div style="display: none;">Crew Portal</div>
+    <div style="display: none">Crew Portal</div>
     <div class="crew-header">
       <div
         class="crew-header-top"
@@ -54,12 +54,9 @@
         </div>
         <div class="route-summary-item">
           <span>🚩</span>
-          <span
-            ><strong id="jobs-completed">0</strong>/<strong id="jobs-total"
-              >0</strong
-            >
-            Complete</span
-          >
+          <span><strong id="jobs-completed">0</strong>/<strong id="jobs-total"
+            >0</strong>
+            Complete</span>
         </div>
         <div class="route-summary-item">
           <span>📍</span>
@@ -118,7 +115,8 @@
         <div
           id="photo-preview"
           class="camera-preview hidden"
-        ></div>
+        >
+        </div>
         <div class="photo-type-selector">
           <button
             class="photo-type-btn selected"
@@ -155,7 +153,7 @@
     <script src="/config.js"></script>
     <script src="app.js"></script>
     <script type="module">
-      import { requireAuth, logout } from "auth-helper.js";
+      import { logout, requireAuth } from "auth-helper.js";
 
       // Require crew authentication
       const userProfile = await requireAuth("crew", ".greeting");
@@ -201,7 +199,7 @@
             "crew-status",
             "⚠️ Unable to load jobs. Please refresh the page.",
             "warning",
-            5000
+            5000,
           );
           return [];
         }
@@ -218,25 +216,24 @@
           time: job.scheduled_time || "TBD",
           client: job.client_name || "Unknown Client",
           address: job.property_address?.split(",")[0] || "",
-          city: job.property_address?.split(",").slice(1).join(",") || "",
-          services:
-            typeof job.services === "string"
-              ? job.services.split(",")
-              : Array.isArray(job.services)
-                ? job.services
-                : [],
+          city: job.property_address?.split(",").slice(1).join(",") ||
+            "",
+          services: typeof job.services === "string"
+            ? job.services.split(",")
+            : Array.isArray(job.services)
+            ? job.services
+            : [],
           notes: job.notes || "",
           duration: job.estimated_duration || 60,
           status: job.status || "pending",
         }));
         const now = new Date();
         const hour = now.getHours();
-        const greeting =
-          hour < 12
-            ? "Good morning"
-            : hour < 18
-              ? "Good afternoon"
-              : "Good evening";
+        const greeting = hour < 12
+          ? "Good morning"
+          : hour < 18
+          ? "Good afternoon"
+          : "Good evening";
         document.getElementById("crew-greeting").textContent =
           greeting + ", Marcus 👋";
 
@@ -248,9 +245,12 @@
         document.getElementById("route-date").textContent = dateStr;
 
         // Calculate stats
-        const completed = jobsData.filter((j) => j.status === "completed").length;
-        document.getElementById("jobs-completed").textContent = completed;
-        document.getElementById("jobs-total").textContent = jobsData.length;
+        const completed =
+          jobsData.filter((j) => j.status === "completed").length;
+        document.getElementById("jobs-completed").textContent =
+          completed;
+        document.getElementById("jobs-total").textContent =
+          jobsData.length;
         document.getElementById("route-miles").textContent = "0 mi"; // TODO: Calculate route distance
 
         renderJobs(jobsData);
@@ -268,14 +268,17 @@
         container.innerHTML = jobs
           .map((job) => {
             const activeClass = job.status === "active" ? "active" : "";
-            const completedClass =
-              job.status === "completed" ? "completed" : "";
+            const completedClass = job.status === "completed"
+              ? "completed"
+              : "";
 
             return `
           <div class="job-card ${activeClass} ${completedClass}">
             <div class="job-header">
               <div>
-                <div class="job-number">Job ${job.id.split("-")[1]}</div>
+                <div class="job-number">Job ${
+              job.id.split("-")[1]
+            }</div>
                 <div class="job-time">${job.time}</div>
               </div>
               <div class="job-status ${job.status}">${job.status}</div>
@@ -290,37 +293,45 @@
             </div>
             
             <div class="service-list">
-              ${job.services
+              ${
+              job.services
                 .map(
                   (service) => `
                 <div class="service-item">
-                  <input type="checkbox" id="${job.id}-${service}" ${job.status === "completed" ? "checked disabled" : ""}>
+                  <input type="checkbox" id="${job.id}-${service}" ${
+                    job.status === "completed" ? "checked disabled" : ""
+                  }>
                   <label for="${job.id}-${service}">${service}</label>
                 </div>
-              `
+              `,
                 )
-                .join("")}
+                .join("")
+            }
             </div>
             
-            ${job.notes ? `<div class="card job-notes"><strong>⚠️ Note:</strong> ${job.notes}</div>` : ""}
+            ${
+              job.notes
+                ? `<div class="card job-notes"><strong>⚠️ Note:</strong> ${job.notes}</div>`
+                : ""
+            }
             
             <div class="job-actions">
               <button class="btn btn-navigate" onclick="navigateToJob('${job.address}, ${job.city}')">
                 🧭 Navigate
               </button>
               ${
-                job.status !== "completed"
-                  ? `
+              job.status !== "completed"
+                ? `
                 <button class="btn btn-complete" onclick="openPhotoUpload('${job.id}')">
                   ✓ Complete
                 </button>
               `
-                  : `
+                : `
                 <button class="btn" disabled>
                   ✓ Done
                 </button>
               `
-              }
+            }
             </div>
           </div>
         `;
@@ -331,7 +342,8 @@
       // Navigation
       function navigateToJob(address) {
         const encoded = encodeURIComponent(address);
-        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
+        const googleMapsUrl =
+          `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
         const appleMapsUrl = `maps://maps.apple.com/?daddr=${encoded}`;
 
         // Try Apple Maps on iOS, Google Maps otherwise
@@ -349,10 +361,13 @@
       }
 
       function closePhotoUpload() {
-        document.getElementById("photo-modal").classList.remove("active");
+        document.getElementById("photo-modal").classList.remove(
+          "active",
+        );
         document.body.style.overflow = "";
         document.getElementById("photo-preview").style.display = "none";
-        document.getElementById("upload-photo-btn").style.display = "none";
+        document.getElementById("upload-photo-btn").style.display =
+          "none";
         capturedPhoto = null;
       }
 
@@ -368,20 +383,25 @@
       }
 
       // Handle photo selection
-      document.getElementById("photo-input").addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+      document.getElementById("photo-input").addEventListener(
+        "change",
+        (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          capturedPhoto = evt.target.result;
-          const preview = document.getElementById("photo-preview");
-          preview.innerHTML = `<img src="${evt.target.result}" alt="Photo preview">`;
-          preview.style.display = "block";
-          document.getElementById("upload-photo-btn").style.display = "block";
-        };
-        reader.readAsDataURL(file);
-      });
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            capturedPhoto = evt.target.result;
+            const preview = document.getElementById("photo-preview");
+            preview.innerHTML =
+              `<img src="${evt.target.result}" alt="Photo preview">`;
+            preview.style.display = "block";
+            document.getElementById("upload-photo-btn").style.display =
+              "block";
+          };
+          reader.readAsDataURL(file);
+        },
+      );
 
       // Upload photo
       async function uploadPhoto() {
@@ -404,16 +424,18 @@
 
           showMessage(
             "crew-status",
-            `✓ ${photoType === "before" ? "Before" : "After"} photo uploaded for ${currentJob}!`,
+            `✓ ${
+              photoType === "before" ? "Before" : "After"
+            } photo uploaded for ${currentJob}!`,
             "success",
-            3000
+            3000,
           );
         } catch (err) {
           showMessage(
             "crew-status",
             "✗ Upload failed. Please try again.",
             "error",
-            5000
+            5000,
           );
         } finally {
           btn.disabled = false;

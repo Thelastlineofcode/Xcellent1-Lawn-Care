@@ -1,12 +1,16 @@
 # Perplexity Research Skill - Quick Guide
 
 ## What It Does
-Real-time web research powered by Perplexity AI. Use it to research technical solutions, debug errors, and find best practices while building your lawn care SaaS.
+
+Real-time web research powered by Perplexity AI. Use it to research technical
+solutions, debug errors, and find best practices while building your lawn care
+SaaS.
 
 ## Setup (1 minute)
 
 1. Get API key: https://www.perplexity.ai/settings/api
 2. Add to your `.env`:
+
 ```bash
 PERPLEXITY_API_KEY=pplx-your-key-here
 ```
@@ -14,6 +18,7 @@ PERPLEXITY_API_KEY=pplx-your-key-here
 ## Quick Examples
 
 ### Research Before Building a Feature
+
 ```python
 from perplexity_research import perplexityResearch
 
@@ -30,6 +35,7 @@ for citation in result['citations']:
 ```
 
 ### Debug an Error
+
 ```python
 # Got an error? Research the solution
 result = perplexityResearch(
@@ -44,6 +50,7 @@ result = perplexityResearch(
 ```
 
 ### Compare Tech Options
+
 ```python
 # Deciding between solutions
 result = perplexityResearch(
@@ -75,6 +82,7 @@ print(f"Average tokens per request: {cost['average_tokens_per_request']:.0f}")
 ```
 
 ### Pricing
+
 - **sonar**: $1 per 1M tokens (~$0.002 per research)
 - **sonar-pro**: $5 per 1M tokens (~$0.01 per research)
 - **sonar-reasoning-pro**: $10 per 1M tokens (~$0.02 per research)
@@ -84,6 +92,7 @@ print(f"Average tokens per request: {cost['average_tokens_per_request']:.0f}")
 ## When to Use It
 
 **✅ Great for:**
+
 - Research best practices before implementing features
 - Debug errors with latest solutions
 - Compare technology options
@@ -91,6 +100,7 @@ print(f"Average tokens per request: {cost['average_tokens_per_request']:.0f}")
 - Learn about new libraries/APIs
 
 **❌ Don't use for:**
+
 - Information you already know
 - Simple Google searches
 - Stable, well-known concepts
@@ -99,6 +109,7 @@ print(f"Average tokens per request: {cost['average_tokens_per_request']:.0f}")
 ## Integration with Your Workflow
 
 ### Option 1: Run Directly in Python
+
 ```bash
 cd /Users/houseofobi/Documents/GitHub/Xcellent1-Lawn-Care
 python3 -c "from src.skills.perplexity_research import perplexityResearch; \
@@ -107,7 +118,9 @@ print(result['answer'])"
 ```
 
 ### Option 2: Quick Script
+
 Create `quick-research.py`:
+
 ```python
 #!/usr/bin/env python3
 import sys
@@ -127,13 +140,16 @@ print(f"\nTokens: {result['tokens_used']} | Time: {result['execution_time']}s")
 ```
 
 Run it:
+
 ```bash
 chmod +x quick-research.py
 ./quick-research.py "Best way to handle Stripe webhooks in Deno"
 ```
 
 ### Option 3: Use with BMad Workflow
-The file already has `research_for_story()` function - use it before implementing user stories.
+
+The file already has `research_for_story()` function - use it before
+implementing user stories.
 
 ## Real-World Example
 
@@ -170,11 +186,12 @@ print("Research saved! Now you can implement with confidence.")
 
 ## Tips for Better Results
 
-1. **Be specific**: "Stripe webhook verification Deno Deploy" > "How to use Stripe"
+1. **Be specific**: "Stripe webhook verification Deno Deploy" > "How to use
+   Stripe"
 2. **Include context**: Mention your tech stack (Deno, Supabase, etc.)
 3. **Ask for examples**: "Include code examples" gets you actual code
 4. **Set recency**: Use `search_recency_filter='week'` for fast-moving topics
-5. **Use right model**: 
+5. **Use right model**:
    - `sonar`: Quick lookups
    - `sonar-pro`: Most research (default)
    - `sonar-reasoning-pro`: Complex comparisons
@@ -182,6 +199,7 @@ print("Research saved! Now you can implement with confidence.")
 ## Next Steps
 
 1. Try a quick research now:
+
 ```bash
 cd /Users/houseofobi/Documents/GitHub/Xcellent1-Lawn-Care
 python3 -c "from src.skills.perplexity_research import perplexityResearch; print(perplexityResearch('Supabase Row Level Security quickstart')['answer'])"

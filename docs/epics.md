@@ -2,11 +2,15 @@
 
 ## Epic 1: Foundation (Week 1)
 
-**Goal:** Core infrastructure ready to support customer bookings and crew operations
+**Goal:** Core infrastructure ready to support customer bookings and crew
+operations
 
 ### Description
 
-Set up Supabase database with proper schema, authentication, Row Level Security policies, and API structure. Establish foundation for all future features.
+**Related FRs:** FR-001
+
+Set up Supabase database with proper schema, authentication, Row Level Security
+policies, and API structure. Establish foundation for all future features.
 
 ### Acceptance Criteria
 
@@ -33,7 +37,11 @@ Set up Supabase database with proper schema, authentication, Row Level Security 
 
 ### Description
 
-Rebuild landing page with modern UI (Tailwind CSS, mobile-first), integrate Instagram/Facebook photos, and replace booking form with waitlist signup. Create waitlist storage in Supabase.
+**Related FRs:** FR-002
+
+Rebuild landing page with modern UI (Tailwind CSS, mobile-first), integrate
+Instagram/Facebook photos, and replace booking form with waitlist signup. Create
+waitlist storage in Supabase.
 
 ### Acceptance Criteria
 
@@ -63,7 +71,11 @@ Rebuild landing page with modern UI (Tailwind CSS, mobile-first), integrate Inst
 
 ### Description
 
-Build crew.html as a responsive mobile dashboard where crew members can view assigned jobs, mark them complete, and upload photos. Integrate with job management API.
+**Related FRs:** FR-003, FR-004
+
+Build crew.html as a responsive mobile dashboard where crew members can view
+assigned jobs, mark them complete, and upload photos. Integrate with job
+management API.
 
 ### Acceptance Criteria
 
@@ -93,7 +105,11 @@ Build crew.html as a responsive mobile dashboard where crew members can view ass
 
 ### Description
 
-Build owner.html as analytics dashboard showing revenue, completed jobs, crew performance, pending payments, and customer feedback. Real-time data from Supabase.
+**Related FRs:** FR-006
+
+Build owner.html as analytics dashboard showing revenue, completed jobs, crew
+performance, pending payments, and customer feedback. Real-time data from
+Supabase.
 
 ### Acceptance Criteria
 
@@ -123,7 +139,11 @@ Build owner.html as analytics dashboard showing revenue, completed jobs, crew pe
 
 ### Description
 
-Generate invoices after job completion, integrate Stripe Checkout for customer payments, handle webhooks for payment confirmation, and update owner dashboard with revenue.
+**Related FRs:** FR-005
+
+Generate invoices after job completion, integrate Stripe Checkout for customer
+payments, handle webhooks for payment confirmation, and update owner dashboard
+with revenue.
 
 ### Acceptance Criteria
 
@@ -152,7 +172,11 @@ Generate invoices after job completion, integrate Stripe Checkout for customer p
 
 ### Description
 
-Create hiring.html page showcasing why someone should join the team, job responsibilities, pay, benefits, and application form. Store applications in Supabase for owner review.
+**Related FRs:** FR-001
+
+Create hiring.html page showcasing why someone should join the team, job
+responsibilities, pay, benefits, and application form. Store applications in
+Supabase for owner review.
 
 ### Acceptance Criteria
 
@@ -178,7 +202,10 @@ Create hiring.html page showcasing why someone should join the team, job respons
 
 ### Description
 
-Build blog.html landing page and blog post structure. Create categories for lawn care tips and dropshipping products. Optimize for search and social sharing.
+**Related FRs:** FR-001, FR-002
+
+Build blog.html landing page and blog post structure. Create categories for lawn
+care tips and dropshipping products. Optimize for search and social sharing.
 
 ### Acceptance Criteria
 
@@ -206,7 +233,11 @@ Build blog.html landing page and blog post structure. Create categories for lawn
 
 ### Description
 
-Create services.html detailing offerings (mowing, fertilizing, aeration, seeding) with pricing and photos. Create about.html with team photos and company mission.
+**Related FRs:** FR-002
+
+Create services.html detailing offerings (mowing, fertilizing, aeration,
+seeding) with pricing and photos. Create about.html with team photos and company
+mission.
 
 ### Acceptance Criteria
 
@@ -233,7 +264,10 @@ Create services.html detailing offerings (mowing, fertilizing, aeration, seeding
 
 ### Description
 
-Implement email and SMS notifications for waitlist confirmations, job assignments, job completions, payment confirmations, and owner summaries.
+**Related FRs:** FR-007
+
+Implement email and SMS notifications for waitlist confirmations, job
+assignments, job completions, payment confirmations, and owner summaries.
 
 ### Acceptance Criteria
 
@@ -261,11 +295,16 @@ Implement email and SMS notifications for waitlist confirmations, job assignment
 
 ### Description
 
-Consolidate pages (remove redundant files like dashboard.html, home.html, portal-index.html), update routing, ensure all assets are optimized, and redeploy.
+**Related FRs:** FR-001
+
+Consolidate pages (remove redundant files like dashboard.html, home.html,
+portal-index.html), update routing, ensure all assets are optimized, and
+redeploy.
 
 ### Acceptance Criteria
 
-- [ ] Old/unused pages removed (dashboard.html, home.html, portal-index.html, client.html)
+- [ ] Old/unused pages removed (dashboard.html, home.html, portal-index.html,
+      client.html)
 - [ ] Routing updated (correct pages at correct URLs)
 - [ ] Assets optimized (images compressed, CSS minified)
 - [ ] Favicon and metadata updated
@@ -289,7 +328,10 @@ Consolidate pages (remove redundant files like dashboard.html, home.html, portal
 
 ### Description
 
-Implement authentication security, data encryption, GDPR compliance, SSL/TLS, and audit logging.
+**Related FRs:** FR-001
+
+Implement authentication security, data encryption, GDPR compliance, SSL/TLS,
+and audit logging.
 
 ### Acceptance Criteria
 
@@ -317,7 +359,10 @@ Implement authentication security, data encryption, GDPR compliance, SSL/TLS, an
 
 ### Description
 
-Setup error tracking, performance monitoring, uptime monitoring, and analytics dashboards.
+**Related FRs:** FR-006
+
+Setup error tracking, performance monitoring, uptime monitoring, and analytics
+dashboards.
 
 ### Acceptance Criteria
 

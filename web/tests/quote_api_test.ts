@@ -21,7 +21,7 @@ Deno.test(
     assertEquals(res.status, 200);
     assertEquals(json.ok, true);
     // Optionally: check price_low, price_high
-  }
+  },
 );
 
 Deno.test("Quote API: outside River Parishes returns error", async () => {

@@ -1,13 +1,16 @@
-
 /**
- * Perplexity Research Skill - TypeScript/Deno Version
- * Token-efficient web research for AI agents
+ * ARCHIVED: Perplexity Research Skill - TypeScript/Deno Version
+ * This module is part of experimental AI features which are paused by project policy.
+ * Do not use in active server code unless explicitly re-enabled.
+ * See docs/AI_SUSPENDED.md and bmad/agents/langchain-integration/ARCHIVED.md for details.
+ *
+ * Perplexity Research Skill - Token-efficient web research for AI agents
  */
 
 export interface ResearchOptions {
-  model?: 'sonar' | 'sonar-pro' | 'sonar-reasoning-pro';
+  model?: "sonar" | "sonar-pro" | "sonar-reasoning-pro";
   maxTokens?: number;
-  recency?: 'day' | 'week' | 'month' | 'year';
+  recency?: "day" | "week" | "month" | "year";
   temperature?: number;
 }
 
@@ -24,55 +27,68 @@ export interface ResearchResult {
 
 export class PerplexityResearch {
   private apiKey: string;
-  private endpoint = 'https://api.perplexity.ai/chat/completions';
+  private endpoint = "https://api.perplexity.ai/chat/completions";
 
   constructor(apiKey?: string) {
-    this.apiKey = apiKey || Deno.env.get('PERPLEXITY_API_KEY') || '';
+    // Guard: Modules are archived by default. Only allow instantiation when
+    // the environment variable ENABLE_AI_PROTOTYPES=true. This avoids accidental
+    // use of prototypes in production or CI.
+    const enabled =
+      (Deno.env.get("ENABLE_AI_PROTOTYPES") || "false").toLowerCase() ===
+        "true";
+    if (!enabled) {
+      throw new Error(
+        "PerplexityResearch prototypes are archived. Set ENABLE_AI_PROTOTYPES=true to enable.",
+      );
+    }
+
+    this.apiKey = apiKey || Deno.env.get("PERPLEXITY_API_KEY") || "";
     if (!this.apiKey) {
-      throw new Error('PERPLEXITY_API_KEY not found in environment');
+      throw new Error("PERPLEXITY_API_KEY not found in environment");
     }
   }
 
   async query(
     question: string,
-    options: ResearchOptions = {}
+    options: ResearchOptions = {},
   ): Promise<ResearchResult> {
     const startTime = Date.now();
-    
+
     const {
-      model = 'sonar-pro',
+      model = "sonar-pro",
       maxTokens = 2000,
-      recency = 'month',
-      temperature = 0.2
+      recency = "month",
+      temperature = 0.2,
     } = options;
 
     const payload = {
       model,
       messages: [
         {
-          role: 'system',
-          content: 'Provide accurate, well-researched answers with citations. Focus on current best practices.'
+          role: "system",
+          content:
+            "Provide accurate, well-researched answers with citations. Focus on current best practices.",
         },
         {
-          role: 'user',
-          content: question
-        }
+          role: "user",
+          content: question,
+        },
       ],
       max_tokens: maxTokens,
       temperature,
       return_citations: true,
       search_recency_filter: recency,
-      stream: false
+      stream: false,
     };
 
     try {
       const response = await fetch(this.endpoint, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
+          "Authorization": `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -89,21 +105,20 @@ export class PerplexityResearch {
         tokensUsed: data.usage?.total_tokens || 0,
         executionTime: Math.round(executionTime * 100) / 100,
         timestamp: new Date().toISOString(),
-        success: true
+        success: true,
       };
-
     } catch (error) {
       const executionTime = (Date.now() - startTime) / 1000;
-      
+
       return {
-        answer: '',
+        answer: "",
         citations: [],
         model,
         tokensUsed: 0,
         executionTime: Math.round(executionTime * 100) / 100,
         timestamp: new Date().toISOString(),
         success: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -112,7 +127,7 @@ export class PerplexityResearch {
 // Simple function interface
 export async function research(
   query: string,
-  options?: ResearchOptions
+  options?: ResearchOptions,
 ): Promise<ResearchResult> {
   const skill = new PerplexityResearch();
   return await skill.query(query, options);
@@ -121,7 +136,7 @@ export async function research(
 // Example usage
 if (import.meta.main) {
   const result = await research("Best practices for lawn mowing patterns");
-  
+
   if (result.success) {
     console.log(`Answer: ${result.answer}`);
     console.log(`\nSources: ${result.citations.length} citations`);

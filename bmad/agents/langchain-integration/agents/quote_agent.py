@@ -1,10 +1,10 @@
-"""LangChain-based QuoteAgent prototype (Python).
-
-This prototype tries to use LangChain/OpenAI if available and falls back to
-a simple MockLLM for local testing. The agent returns a structured JSON-like
-dict with price_low_cents, price_high_cents, confidence (0-1), notes and
-two suggested time slots.
+"""ARCHIVED: LangChain-based QuoteAgent prototype (Python).
+This file is archived. To use it, set the environment variable ENABLE_AI_PROTOTYPES=true.
 """
+import os
+
+if os.environ.get('ENABLE_AI_PROTOTYPES', 'false').lower() != 'true':
+    raise RuntimeError('LangChain prototypes are archived. Set ENABLE_AI_PROTOTYPES=true to enable.')
 from __future__ import annotations
 import os
 import json

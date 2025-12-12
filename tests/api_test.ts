@@ -1,7 +1,10 @@
 // API Endpoint Tests
 // Run with: deno test --allow-net --allow-env tests/api_test.ts
 
-import { assertEquals, assertExists } from "https://deno.land/std@0.203.0/testing/asserts.ts";
+import {
+  assertEquals,
+  assertExists,
+} from "https://deno.land/std@0.203.0/testing/asserts.ts";
 
 const BASE_URL = Deno.env.get("TEST_BASE_URL") || "http://localhost:8000";
 
@@ -41,8 +44,8 @@ Deno.test("Quote API - missing required fields", async () => {
 });
 
 Deno.test("Quote API - invalid service type", async () => {
-  // Note: Current implementation defaults strictly to known types, 
-  // but let's check what it does for invalid. 
+  // Note: Current implementation defaults strictly to known types,
+  // but let's check what it does for invalid.
   // Actually the server implementation doesn't validate service type strictly against a list
   // other than for pricing. It just defaults to base price 50 if unknown?
   // Checking code: lines 214+. "let base = 50;". So it will returning 200 with base price.

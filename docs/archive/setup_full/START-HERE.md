@@ -1,6 +1,7 @@
 # Quick Start - 5 Minutes
 
 ## 1. Read This First
+
 - **`PROJECT-SUMMARY.md`** - Complete overview (5 min read)
 - **`BUILD-PLAN.md`** - 4-week implementation plan (5 min read)
 - **`docs/REALITY-CHECK.md`** - What this actually is vs hype (3 min read)
@@ -21,13 +22,15 @@ result = perplexityResearch('Supabase quickstart with Deno Deploy', model='sonar
 print(result['answer'][:500] + '...')"
 ```
 
-**If it works:** You're ready to build!
-**If error:** Check `.env` file has `PERPLEXITY_API_KEY=pplx-...`
+**If it works:** You're ready to build! **If error:** Check `.env` file has
+`PERPLEXITY_API_KEY=pplx-...`
 
 ## 3. Pick Your Starting Point
 
 ### Option A: Build Now (Action Mode)
+
 Start `BUILD-PLAN.md` Week 1:
+
 1. Create Supabase project → supabase.com
 2. Copy connection URL to `.env`
 3. Run `db/schema.sql` migrations
@@ -36,7 +39,9 @@ Start `BUILD-PLAN.md` Week 1:
 **Next:** Build customer booking endpoint
 
 ### Option B: Learn First (Study Mode)
+
 Research key topics:
+
 ```bash
 # Deno + Supabase
 python3 -c "from src.skills.perplexity_research import perplexityResearch; \
@@ -54,6 +59,7 @@ print(perplexityResearch('Progressive Web App offline mode tutorial')['answer'])
 **Next:** Build with knowledge
 
 ### Option C: Review Everything (Plan Mode)
+
 1. Read all 3 summary docs (15 min)
 2. Review web pages in `web/static/` (10 min)
 3. Check database schema in `db/schema.sql` (10 min)
@@ -66,6 +72,7 @@ print(perplexityResearch('Progressive Web App offline mode tutorial')['answer'])
 **Goal:** Customer submits booking form → saves to database
 
 **Steps:**
+
 1. Supabase setup (1 hour)
 2. Create `/api/leads/intake` endpoint (2 hours)
 3. Wire up form in `index.html` (1 hour)
@@ -78,6 +85,7 @@ print(perplexityResearch('Progressive Web App offline mode tutorial')['answer'])
 ## 5. Quick Reference
 
 ### Environment Variables (.env)
+
 ```bash
 PERPLEXITY_API_KEY=pplx-your-key-here
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
@@ -85,6 +93,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ### Research Before Building
+
 ```python
 from src.skills.perplexity_research import perplexityResearch
 result = perplexityResearch("YOUR QUESTION", model='sonar-pro')
@@ -92,11 +101,13 @@ print(result['answer'])
 ```
 
 ### Test API Locally
+
 ```bash
 deno run --allow-net --allow-env server.ts
 ```
 
 ### Deploy to Production
+
 ```bash
 git push origin main
 # Auto-deploys via Deno Deploy
@@ -123,9 +134,8 @@ git push origin main
 
 ## Next Step: Your Choice
 
-**Feeling ready?** → Start Option A (build now)
-**Want to learn?** → Start Option B (research first)
-**Need clarity?** → Start Option C (plan mode)
+**Feeling ready?** → Start Option A (build now) **Want to learn?** → Start
+Option B (research first) **Need clarity?** → Start Option C (plan mode)
 
 No wrong choice. Just pick one and start. You can always switch later.
 

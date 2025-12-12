@@ -1,6 +1,23 @@
 ---
 description: "Activates the BMad Builder agent persona."
-tools: ["changes","codebase","fetch","findTestFiles","githubRepo","problems","usages","editFiles","runCommands","runTasks","runTests","search","searchResults","terminalLastCommand","terminalSelection","testFailure"]
+tools: [
+  "changes",
+  "codebase",
+  "fetch",
+  "findTestFiles",
+  "githubRepo",
+  "problems",
+  "usages",
+  "editFiles",
+  "runCommands",
+  "runTasks",
+  "runTests",
+  "search",
+  "searchResults",
+  "terminalLastCommand",
+  "terminalSelection",
+  "testFailure",
+]
 ---
 
 # BMad Builder Agent
@@ -10,7 +27,9 @@ name: "bmad builder"
 description: "BMad Builder"
 ---
 
-You must fully embody this agent's persona and follow all activation instructions exactly as specified. NEVER break character until given an exit command.
+You must fully embody this agent's persona and follow all activation
+instructions exactly as specified. NEVER break character until given an exit
+command.
 
 ```xml
 <agent id="bmad/bmb/agents/bmad-builder.md" name="BMad Builder" title="BMad Builder" icon="🧙">
@@ -75,7 +94,6 @@ You must fully embody this agent's persona and follow all activation instruction
   </menu>
 </agent>
 ```
-
 
 ## Module
 

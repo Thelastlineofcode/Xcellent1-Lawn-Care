@@ -2,30 +2,35 @@
 
 ## Overview
 
-The Payment Accounts feature allows LaCardio to connect his PayPal, Cash App, Stripe, and Square accounts so he can track which clients pay through which method and manage cashflow effectively.
+The Payment Accounts feature allows LaCardio to connect his PayPal, Cash App,
+Stripe, and Square accounts so he can track which clients pay through which
+method and manage cashflow effectively.
 
 ## Features
 
-✅ Connect multiple payment accounts (PayPal, Cash App, Stripe, Square)  
-✅ Set a primary payment method per account type  
-✅ Track which payment method clients use  
-✅ Receive payments to configured accounts  
-✅ Manage account connectivity from the dashboard  
+✅ Connect multiple payment accounts (PayPal, Cash App, Stripe, Square)\
+✅ Set a primary payment method per account type\
+✅ Track which payment method clients use\
+✅ Receive payments to configured accounts\
+✅ Manage account connectivity from the dashboard
 
 ## Setup Instructions
 
 ### Step 1: Run Database Migration
 
-Since this is a new feature, you need to create the `payment_accounts` table in your Supabase database:
+Since this is a new feature, you need to create the `payment_accounts` table in
+your Supabase database:
 
 1. Go to your Supabase dashboard: https://app.supabase.com
 2. Select your project: `utivthfrwgtjatsusopw`
 3. Click **SQL Editor** in the left sidebar
 4. Click **New Query**
-5. Copy and paste the contents of `/db/migrations/001_create_payment_accounts.sql`
+5. Copy and paste the contents of
+   `/db/migrations/001_create_payment_accounts.sql`
 6. Click **Run**
 
 The migration will:
+
 - Create the `payment_accounts` table
 - Add proper indexes for performance
 - Enable Row Level Security (RLS) policies
@@ -58,6 +63,7 @@ When recording payments in the **Invoices** page:
 5. Click **Record Payment**
 
 The system will:
+
 - Record payment with the specified method
 - Track the payment in the database
 - Update client balance
@@ -66,21 +72,25 @@ The system will:
 ## Connected Payment Methods
 
 ### PayPal
+
 - **Account ID**: Your PayPal email address
 - **Good For**: Digital payments, customers with PayPal accounts
 - **Setup**: Connect your primary PayPal email
 
 ### Cash App
+
 - **Account ID**: Your $cashtag (e.g., $LaCardio)
 - **Good For**: Quick mobile payments from younger/tech-savvy clients
 - **Setup**: Connect your Cash App $cashtag
 
 ### Stripe
+
 - **Account ID**: Your Stripe email
 - **Good For**: Credit card processing, online invoicing
 - **Setup**: Connect your Stripe account email
 
 ### Square
+
 - **Account ID**: Your Square email
 - **Good For**: In-person card payments with Square reader
 - **Setup**: Connect your Square email
@@ -118,22 +128,26 @@ CREATE TABLE payment_accounts (
 
 ## Security Considerations
 
-✅ **Encrypted Storage**: Account identifiers are stored securely in Supabase  
-✅ **Row Level Security**: Owners can only access their own payment accounts  
-✅ **No Sensitive Data**: We don't store API keys or passwords (verification happens client-side)  
-✅ **Audit Trail**: All connected/disconnected accounts are timestamped  
+✅ **Encrypted Storage**: Account identifiers are stored securely in Supabase\
+✅ **Row Level Security**: Owners can only access their own payment accounts\
+✅ **No Sensitive Data**: We don't store API keys or passwords (verification
+happens client-side)\
+✅ **Audit Trail**: All connected/disconnected accounts are timestamped
 
 ## Troubleshooting
 
 ### "Payment method is required" error
+
 - Make sure you selected a payment method before clicking Connect
 
 ### Account not appearing in list
+
 - Verify the payment method and account identifier are correct
 - Refresh the page
 - Check browser console for errors
 
 ### Can't delete an account
+
 - The account must be inactive before deletion
 - Try setting another account as primary first
 
@@ -148,6 +162,7 @@ CREATE TABLE payment_accounts (
 ## Support
 
 For issues or questions about payment accounts:
+
 1. Check the browser console for error messages
 2. Review Supabase logs for API errors
 3. Verify the database migration was successful

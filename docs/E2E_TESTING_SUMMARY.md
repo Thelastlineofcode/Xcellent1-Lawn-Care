@@ -3,12 +3,14 @@
 ## ✅ Completed
 
 ### 1. Security Hardening
+
 - ✅ **Rate Limiting**: 300 requests/minute per IP
 - ✅ **Strict CORS**: Whitelisted origins only (no wildcards)
 - ✅ **Security Headers**: HSTS, X-Frame-Options, X-Content-Type-Options, etc.
 - ✅ **Documentation**: Created `docs/SECURITY.md`
 
 ### 2. E2E Test Suite
+
 - ✅ **Test Infrastructure**: Created `tests/e2e_scenarios.ts`
 - ✅ **DB Seeding**: Automated test user creation
 - ✅ **JWT Generation**: Local token generation for testing
@@ -16,6 +18,7 @@
 - ⚠️ **Owner Flow**: Partially working - needs final auth fix
 
 ### 3. Authentication Enhancements
+
 - ✅ **Local JWT Verification**: Added support for test tokens
 - ✅ **Dual User Lookup**: Supports both `auth_user_id` and direct `id` lookup
 - ✅ **Test User Support**: Users with NULL `auth_user_id` can authenticate
@@ -23,14 +26,18 @@
 ## ⚠️ Known Issues
 
 ### Owner Flow Test (401 Error)
+
 **Status**: Test users are created successfully, but authentication still fails.
 
-**Root Cause**: The `getUserProfile` function is likely returning `null` even though:
+**Root Cause**: The `getUserProfile` function is likely returning `null` even
+though:
+
 - Users are seeded in DB ✅
-- JWTs are generated with correct user IDs ✅  
+- JWTs are generated with correct user IDs ✅
 - JWT verification passes ✅
 
 **Next Steps**:
+
 1. Add debug logging to `authenticateRequest` to see exact failure point
 2. Verify the `sub` claim in JWT matches the database `id`
 3. Check if Supabase client is querying the correct table
@@ -47,6 +54,7 @@
 ## 🔒 Security Features Active
 
 All security features are **LIVE** in the running server:
+
 - Rate limiting active
 - CORS restrictions enforced
 - Security headers on all responses
@@ -61,4 +69,5 @@ All security features are **LIVE** in the running server:
 5. `docs/USER_FLOWS.md` - User flow documentation
 
 ---
-*Last Updated: December 9, 2025*
+
+_Last Updated: December 9, 2025_

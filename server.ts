@@ -4,18 +4,34 @@ import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 import { authenticateRequest, getSupabaseClient } from "./supabase_auth.ts";
-import { sendEmail, buildOwnerInvitationEmail } from "./email-service.ts";
+import { buildOwnerInvitationEmail, sendEmail } from "./email-service.ts";
 
 // Database connection
 // Prefer using an environment variable for DATABASE_URL. Avoid hardcoding
-// credentials in the repo. If DATABASE_URL is not set we run in fallback
-// (in-memory) mode and won't attempt a DB connection.
+// credentials in the repo. In PRODUCTION we require DATABASE_URL and
+// SUPABASE variables to be set and will fail fast to avoid any fallback mode.
 const DATABASE_URL = Deno.env.get("DATABASE_URL") || "";
+const APP_ENV = (Deno.env.get("APP_ENV") || "development").toLowerCase();
 
 // Create client only when a DATABASE_URL is provided
 let db: Client | null = null;
 if (DATABASE_URL) {
   db = new Client(DATABASE_URL);
+}
+
+// Safety: In production mode we disallow running the server without a DB
+if (APP_ENV === "production") {
+  const missingVars = [] as string[];
+  if (!DATABASE_URL) missingVars.push("DATABASE_URL");
+  if (!Deno.env.get("SUPABASE_URL")) missingVars.push("SUPABASE_URL");
+  if (!Deno.env.get("SUPABASE_ANON_KEY")) missingVars.push("SUPABASE_ANON_KEY");
+  if (!Deno.env.get("SUPABASE_JWT_SECRET")) missingVars.push("SUPABASE_JWT_SECRET");
+  if (missingVars.length > 0) {
+    console.error(`❌ Production environment requires the following environment variables: ${missingVars.join(", ")}`);
+    console.error(`❌ Aborting startup to avoid running without database or Supabase in production.`);
+    // use Deno.exit to fail fast
+    Deno.exit(1);
+  }
 }
 
 let dbConnected = false;
@@ -51,29 +67,31 @@ function getSecurityHeaders(req: Request) {
     "http://localhost:8000",
     "http://0.0.0.0:8000",
     "https://xcellent1lawncare.com",
-    "https://www.xcellent1lawncare.com"
+    "https://www.xcellent1lawncare.com",
   ];
-  const isAllowed = allowedOrigins.includes(origin) || origin.endsWith(".fly.dev");
+  const isAllowed = allowedOrigins.includes(origin) ||
+    origin.endsWith(".fly.dev");
   // For testing purposes, allow "*" if no origin is specified
   const corsOrigin = isAllowed ? origin : (origin === "" ? "*" : "null");
 
   return {
     "Access-Control-Allow-Origin": corsOrigin,
     "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization, x-client-info, apikey",
+    "Access-Control-Allow-Headers":
+      "Content-Type, Authorization, x-client-info, apikey",
     "Content-Type": "application/json",
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
     "Referrer-Policy": "same-origin",
-    "X-XSS-Protection": "1; mode=block"
+    "X-XSS-Protection": "1; mode=block",
   };
 }
 
 // Authentication middleware helper
 async function requireAuth(
   req: Request,
-  allowedRoles?: string[]
+  allowedRoles?: string[],
 ): Promise<
   { authorized: false; response: Response } | { authorized: true; auth: any }
 > {
@@ -87,7 +105,7 @@ async function requireAuth(
         {
           status: 401,
           headers: getSecurityHeaders(req),
-        }
+        },
       ),
     };
   }
@@ -104,7 +122,7 @@ async function requireAuth(
         {
           status: 403,
           headers: getSecurityHeaders(req),
-        }
+        },
       ),
     };
   }
@@ -118,7 +136,7 @@ async function requireAuth(
 // Helper: save base64 image to file
 async function saveBase64Image(
   dataUrl: string,
-  filename: string
+  filename: string,
 ): Promise<void> {
   const matches = dataUrl.match(/^data:image\/(\w+);base64,(.+)$/);
   if (!matches) throw new Error("Invalid data URL");
@@ -134,7 +152,8 @@ async function handler(req: Request): Promise<Response> {
   const url = new URL(req.url);
 
   // 1. Rate Limiting Check
-  const ip = (req.headers.get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+  const ip = (req.headers.get("x-forwarded-for") ?? "unknown").split(",")[0]
+    .trim();
   const now = Date.now();
   let limit = rateLimits.get(ip);
   if (!limit || now > limit.resetTime) {
@@ -143,13 +162,16 @@ async function handler(req: Request): Promise<Response> {
   }
   limit.count++;
 
-  // Allow strict static file access (images/css) to bypass strict limits if needed, 
+  // Allow strict static file access (images/css) to bypass strict limits if needed,
   // but 300 req/min is generous for a user.
   if (limit.count > 300) {
-    return new Response(JSON.stringify({ ok: false, error: "Too Many Requests" }), {
-      status: 429,
-      headers: { "Content-Type": "application/json" }
-    });
+    return new Response(
+      JSON.stringify({ ok: false, error: "Too Many Requests" }),
+      {
+        status: 429,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   }
 
   // 2. Security Headers & CORS
@@ -170,7 +192,7 @@ async function handler(req: Request): Promise<Response> {
       if (!address || !lawnSize || !serviceType) {
         return new Response(
           JSON.stringify({ ok: false, error: "All fields are required." }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       // Service area validation (River Parishes: St. John the Baptist, St. Charles, St. James)
@@ -207,7 +229,7 @@ async function handler(req: Request): Promise<Response> {
             error:
               "Address must be in the River Parishes (St. John, St. Charles, or St. James Parish, LA).",
           }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       // Simple price heuristics (can be replaced with more advanced logic)
@@ -226,10 +248,12 @@ async function handler(req: Request): Promise<Response> {
       const priceHigh = Math.round(priceLow * 1.25);
       // Notes for user
       let notes = "";
-      if (serviceType === "weekly")
+      if (serviceType === "weekly") {
         notes = "Includes mowing, edging, and blowing.";
-      if (serviceType === "flower-bed")
+      }
+      if (serviceType === "flower-bed") {
         notes = "Includes weed removal and bed prep.";
+      }
       if (serviceType === "tractor") notes = "Heavy-duty lot clearing.";
       // Return result
       return new Response(
@@ -239,13 +263,13 @@ async function handler(req: Request): Promise<Response> {
           price_high: priceHigh,
           notes,
         }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error in quote calculator:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -267,7 +291,7 @@ async function handler(req: Request): Promise<Response> {
     if (url.pathname.endsWith(".html")) {
       response.headers.set(
         "Cache-Control",
-        "no-cache, no-store, must-revalidate"
+        "no-cache, no-store, must-revalidate",
       );
       response.headers.set("Pragma", "no-cache");
       response.headers.set("Expires", "0");
@@ -277,12 +301,10 @@ async function handler(req: Request): Promise<Response> {
 
   // Health check for Supabase connectivity/configuration
   if (url.pathname === "/health") {
-    const supabaseUrl =
-      Deno.env.get("SUPABASE_URL") ||
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ||
       Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") ||
       "";
-    const supabaseAnon =
-      Deno.env.get("SUPABASE_ANON_KEY") ||
+    const supabaseAnon = Deno.env.get("SUPABASE_ANON_KEY") ||
       Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
       "";
     let reachable = false;
@@ -305,24 +327,24 @@ async function handler(req: Request): Promise<Response> {
           reachable,
         },
       }),
-      { status: 200, headers }
+      { status: 200, headers },
     );
   }
 
   // Runtime config JS for client-side (inject NEXT_PUBLIC_* values)
   if (url.pathname === "/config.js") {
-    const publicUrl =
-      Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") ||
+    const publicUrl = Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") ||
       Deno.env.get("SUPABASE_URL") ||
       "";
-    const publicAnon =
-      Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
+    const publicAnon = Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
       Deno.env.get("SUPABASE_ANON_KEY") ||
       "";
 
-    const js = `window.__ENV = { NEXT_PUBLIC_SUPABASE_URL: ${JSON.stringify(
-      publicUrl
-    )}, NEXT_PUBLIC_SUPABASE_ANON_KEY: ${JSON.stringify(publicAnon)} };`;
+    const js = `window.__ENV = { NEXT_PUBLIC_SUPABASE_URL: ${
+      JSON.stringify(
+        publicUrl,
+      )
+    }, NEXT_PUBLIC_SUPABASE_ANON_KEY: ${JSON.stringify(publicAnon)} };`;
 
     return new Response(js, {
       status: 200,
@@ -340,7 +362,7 @@ async function handler(req: Request): Promise<Response> {
     // the empty-format case and invalid tokens.
     return new Response(
       JSON.stringify({ ok: false, error: "Invitation not found or expired" }),
-      { status: 404, headers }
+      { status: 404, headers },
     );
   }
 
@@ -353,7 +375,7 @@ async function handler(req: Request): Promise<Response> {
       if (!serviceRoleKey || !supabaseUrl) {
         return new Response(
           JSON.stringify({ ok: false, error: "Missing Supabase credentials" }),
-          { status: 500, headers: getSecurityHeaders(req) }
+          { status: 500, headers: getSecurityHeaders(req) },
         );
       }
 
@@ -377,8 +399,12 @@ async function handler(req: Request): Promise<Response> {
 
       if (!createUserRes.ok && !authUser.msg?.includes("already registered")) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Failed to create auth user", details: authUser }),
-          { status: 500, headers: getSecurityHeaders(req) }
+          JSON.stringify({
+            ok: false,
+            error: "Failed to create auth user",
+            details: authUser,
+          }),
+          { status: 500, headers: getSecurityHeaders(req) },
         );
       }
 
@@ -405,8 +431,12 @@ async function handler(req: Request): Promise<Response> {
       if (!profileRes.ok) {
         const profileError = await profileRes.text();
         return new Response(
-          JSON.stringify({ ok: false, error: "Failed to create profile", details: profileError }),
-          { status: 500, headers: getSecurityHeaders(req) }
+          JSON.stringify({
+            ok: false,
+            error: "Failed to create profile",
+            details: profileError,
+          }),
+          { status: 500, headers: getSecurityHeaders(req) },
         );
       }
 
@@ -417,12 +447,12 @@ async function handler(req: Request): Promise<Response> {
           email: "test@xcellent1.com",
           password: "Test123!@#",
         }),
-        { status: 200, headers: getSecurityHeaders(req) }
+        { status: 200, headers: getSecurityHeaders(req) },
       );
     } catch (error) {
       return new Response(
         JSON.stringify({ ok: false, error: error.message }),
-        { status: 500, headers: getSecurityHeaders(req) }
+        { status: 500, headers: getSecurityHeaders(req) },
       );
     }
   }
@@ -465,9 +495,25 @@ async function handler(req: Request): Promise<Response> {
   }
 
   // Serve other static assets from root (CSS, JS, images, etc.)
-  if (!url.pathname.startsWith("/api/") && !url.pathname.startsWith("/static/")) {
+  if (
+    !url.pathname.startsWith("/api/") && !url.pathname.startsWith("/static/")
+  ) {
     const ext = url.pathname.split(".").pop()?.toLowerCase();
-    const staticExtensions = ["css", "js", "png", "jpg", "jpeg", "gif", "svg", "ico", "webp", "woff", "woff2", "ttf", "json"];
+    const staticExtensions = [
+      "css",
+      "js",
+      "png",
+      "jpg",
+      "jpeg",
+      "gif",
+      "svg",
+      "ico",
+      "webp",
+      "woff",
+      "woff2",
+      "ttf",
+      "json",
+    ];
 
     if (ext && staticExtensions.includes(ext)) {
       try {
@@ -493,7 +539,9 @@ async function handler(req: Request): Promise<Response> {
           status: 200,
           headers: {
             "Content-Type": contentTypes[ext] || "application/octet-stream",
-            "Cache-Control": ext === "html" ? "no-cache" : "public, max-age=31536000",
+            "Cache-Control": ext === "html"
+              ? "no-cache"
+              : "public, max-age=31536000",
           },
         });
       } catch (_error) {
@@ -516,19 +564,19 @@ async function handler(req: Request): Promise<Response> {
             ok: false,
             error: "Name must be at least 2 characters",
           }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.phone || !body.phone.trim()) {
         return new Response(
           JSON.stringify({ ok: false, error: "Phone is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.email || !/^\S+@\S+\.\S+$/.test(body.email)) {
         return new Response(
           JSON.stringify({ ok: false, error: "Valid email is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
@@ -549,7 +597,7 @@ async function handler(req: Request): Promise<Response> {
             body.email.trim(),
             body.notes?.trim() || "",
             source,
-          ]
+          ],
         );
 
         const id = (result.rows[0] as any).id;
@@ -560,11 +608,11 @@ async function handler(req: Request): Promise<Response> {
           INSERT INTO outbox_events (event_type, ref_id, payload, status)
           VALUES ($1, $2, $3, 'pending')
         `,
-          ["LEAD_CREATED", id, JSON.stringify(body)]
+          ["LEAD_CREATED", id, JSON.stringify(body)],
         );
 
         console.log(
-          `[server] ${isApplication ? "Application" : "Lead"} created: ${id}`
+          `[server] ${isApplication ? "Application" : "Lead"} created: ${id}`,
         );
         return new Response(JSON.stringify({ ok: true, id }), {
           status: 201,
@@ -594,7 +642,9 @@ async function handler(req: Request): Promise<Response> {
         });
 
         console.log(
-          `[server] ${isApplication ? "Application" : "Lead"} created (in-memory): ${id}`
+          `[server] ${
+            isApplication ? "Application" : "Lead"
+          } created (in-memory): ${id}`,
         );
         return new Response(JSON.stringify({ ok: true, id }), {
           status: 201,
@@ -605,7 +655,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("[server] Error creating lead:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -653,7 +703,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("[server] Error getting status:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -683,7 +733,7 @@ async function handler(req: Request): Promise<Response> {
           {
             status: 403,
             headers,
-          }
+          },
         );
       }
 
@@ -692,7 +742,7 @@ async function handler(req: Request): Promise<Response> {
           `
           SELECT * FROM get_crew_jobs($1, CURRENT_DATE)
         `,
-          [crewId]
+          [crewId],
         );
 
         return new Response(JSON.stringify({ ok: true, jobs: result.rows }), {
@@ -721,7 +771,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("[server] Error getting crew jobs:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -735,7 +785,7 @@ async function handler(req: Request): Promise<Response> {
     try {
       if (dbConnected) {
         const result = await db.queryObject(
-          `SELECT get_owner_metrics() as metrics`
+          `SELECT get_owner_metrics() as metrics`,
         );
         const metrics = (result.rows[0] as any).metrics;
 
@@ -762,7 +812,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("[server] Error getting owner metrics:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -776,7 +826,7 @@ async function handler(req: Request): Promise<Response> {
     try {
       if (dbConnected) {
         const result = await db.queryObject(
-          `SELECT * FROM get_crew_performance()`
+          `SELECT * FROM get_crew_performance()`,
         );
 
         return new Response(
@@ -784,7 +834,7 @@ async function handler(req: Request): Promise<Response> {
           {
             status: 200,
             headers,
-          }
+          },
         );
       } else {
         // Mock crew performance data
@@ -819,7 +869,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("[server] Error getting crew performance:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -842,7 +892,7 @@ async function handler(req: Request): Promise<Response> {
         if (dbConnected) {
           const clientResult = await db.queryObject(
             `SELECT id FROM clients WHERE user_id = $1`,
-            [authCheck.auth.profile.id]
+            [authCheck.auth.profile.id],
           );
 
           if (
@@ -857,7 +907,7 @@ async function handler(req: Request): Promise<Response> {
               {
                 status: 403,
                 headers,
-              }
+              },
             );
           }
         }
@@ -868,7 +918,7 @@ async function handler(req: Request): Promise<Response> {
           `
           SELECT get_client_dashboard($1) as data
         `,
-          [clientId]
+          [clientId],
         );
 
         const data = (result.rows[0] as any).data;
@@ -916,7 +966,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("[server] Error getting client dashboard:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -935,14 +985,17 @@ async function handler(req: Request): Promise<Response> {
       if (!body.dataUrl || !body.dataUrl.startsWith("data:image/")) {
         return new Response(
           JSON.stringify({ ok: false, error: "Invalid data URL" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       // Convert base64 to Blob for Supabase Storage
       const base64Data = body.dataUrl.split(",")[1];
       const mimeType = body.dataUrl.match(/data:([^;]+);/)?.[1] || "image/jpeg";
-      const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+      const binaryData = Uint8Array.from(
+        atob(base64Data),
+        (c) => c.charCodeAt(0),
+      );
       const blob = new Blob([binaryData], { type: mimeType });
 
       // Determine file extension from mime type
@@ -963,15 +1016,20 @@ async function handler(req: Request): Promise<Response> {
           await db.queryObject(
             `INSERT INTO job_photos (job_id, uploaded_by, photo_type, photo_url, photo_storage_path)
              VALUES ($1, $2, $3, $4, $5)`,
-            [jobId, authCheck.auth.profile.id, photoType, localPath, filename]
+            [jobId, authCheck.auth.profile.id, photoType, localPath, filename],
           );
         }
 
-        console.log(`[server] Photo uploaded locally for job ${jobId}: ${localPath}`);
-        return new Response(JSON.stringify({ ok: true, id: jobId, path: localPath }), {
-          status: 200,
-          headers,
-        });
+        console.log(
+          `[server] Photo uploaded locally for job ${jobId}: ${localPath}`,
+        );
+        return new Response(
+          JSON.stringify({ ok: true, id: jobId, path: localPath }),
+          {
+            status: 200,
+            headers,
+          },
+        );
       }
 
       // Upload to Supabase Storage
@@ -985,8 +1043,11 @@ async function handler(req: Request): Promise<Response> {
       if (uploadError) {
         console.error("[server] Supabase upload error:", uploadError);
         return new Response(
-          JSON.stringify({ ok: false, error: `Upload failed: ${uploadError.message}` }),
-          { status: 500, headers }
+          JSON.stringify({
+            ok: false,
+            error: `Upload failed: ${uploadError.message}`,
+          }),
+          { status: 500, headers },
         );
       }
 
@@ -1003,7 +1064,7 @@ async function handler(req: Request): Promise<Response> {
           `INSERT INTO job_photos (job_id, uploaded_by, photo_type, photo_url, photo_storage_path)
            VALUES ($1, $2, $3, $4, $5)
            RETURNING id`,
-          [jobId, authCheck.auth.profile.id, photoType, publicUrl, storagePath]
+          [jobId, authCheck.auth.profile.id, photoType, publicUrl, storagePath],
         );
 
         // Add event
@@ -1018,26 +1079,38 @@ async function handler(req: Request): Promise<Response> {
               job_id: jobId,
               type: photoType,
             }),
-          ]
+          ],
         );
       }
 
-      console.log(`[server] Photo uploaded to Supabase for job ${jobId}: ${publicUrl}`);
-      return new Response(JSON.stringify({ ok: true, id: jobId, url: publicUrl, path: storagePath }), {
-        status: 200,
-        headers,
-      });
+      console.log(
+        `[server] Photo uploaded to Supabase for job ${jobId}: ${publicUrl}`,
+      );
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          id: jobId,
+          url: publicUrl,
+          path: storagePath,
+        }),
+        {
+          status: 200,
+          headers,
+        },
+      );
     } catch (err) {
       console.error("[server] Error uploading photo:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Upload failed" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // POST /api/jobs/:id/photo/upload-target - return a storage target path for client-side upload
-  const photoTargetMatch = url.pathname.match(/^\/api\/jobs\/([^\/]+)\/photo\/upload-target$/);
+  const photoTargetMatch = url.pathname.match(
+    /^\/api\/jobs\/([^\/]+)\/photo\/upload-target$/,
+  );
   if (photoTargetMatch && req.method === "POST") {
     const authCheck = await requireAuth(req, ["crew", "owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
@@ -1054,17 +1127,32 @@ async function handler(req: Request): Promise<Response> {
       const supabase = getSupabaseClient();
       if (!supabase) {
         // Provide a local path so client can POST base64 to /api/jobs/:id/photo
-        return new Response(JSON.stringify({ ok: true, storagePath, note: "Local dev fallback. Use POST /api/jobs/:id/photo to upload base64." }), { status: 200, headers });
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            storagePath,
+            note:
+              "Local dev fallback. Use POST /api/jobs/:id/photo to upload base64.",
+          }),
+          { status: 200, headers },
+        );
       }
 
       // If Supabase available, return storage path and public URL (clients can then upload using anon key via client SDK)
-      const { data: urlData } = supabase.storage.from("job-photos").getPublicUrl(storagePath);
+      const { data: urlData } = supabase.storage.from("job-photos")
+        .getPublicUrl(storagePath);
       const publicUrl = urlData.publicUrl;
 
-      return new Response(JSON.stringify({ ok: true, storagePath, publicUrl }), { status: 200, headers });
+      return new Response(
+        JSON.stringify({ ok: true, storagePath, publicUrl }),
+        { status: 200, headers },
+      );
     } catch (err) {
       console.error("[server] Error creating upload target:", err);
-      return new Response(JSON.stringify({ ok: false, error: "Failed to create upload target" }), { status: 500, headers });
+      return new Response(
+        JSON.stringify({ ok: false, error: "Failed to create upload target" }),
+        { status: 500, headers },
+      );
     }
   }
 
@@ -1085,7 +1173,7 @@ async function handler(req: Request): Promise<Response> {
           SET status = 'completed', completed_at = NOW()
           WHERE id = $1
         `,
-          [jobId]
+          [jobId],
         );
 
         console.log(`[server] Job completed: ${jobId}`);
@@ -1104,7 +1192,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("[server] Error completing job:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -1117,7 +1205,7 @@ async function handler(req: Request): Promise<Response> {
       if (!body.type) {
         return new Response(
           JSON.stringify({ ok: false, error: "Event type is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
@@ -1128,7 +1216,7 @@ async function handler(req: Request): Promise<Response> {
           VALUES ($1, $2, $3, 'pending')
           RETURNING id
         `,
-          [body.type, body.ref_id || "", JSON.stringify(body.payload || {})]
+          [body.type, body.ref_id || "", JSON.stringify(body.payload || {})],
         );
 
         const id = (result.rows[0] as any).id;
@@ -1148,7 +1236,7 @@ async function handler(req: Request): Promise<Response> {
         };
         outbox.set(id, event);
         console.log(
-          `[server] Outbox event created (in-memory): ${id} (${body.type})`
+          `[server] Outbox event created (in-memory): ${id} (${body.type})`,
         );
         return new Response(JSON.stringify({ ok: true, id }), {
           status: 201,
@@ -1159,7 +1247,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("[server] Error creating outbox event:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -1175,13 +1263,13 @@ async function handler(req: Request): Promise<Response> {
             ok: false,
             error: "Name must be at least 2 characters",
           }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.email || !/^\S+@\S+\.\S+$/.test(body.email)) {
         return new Response(
           JSON.stringify({ ok: false, error: "Valid email is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
@@ -1203,14 +1291,41 @@ async function handler(req: Request): Promise<Response> {
             [
               record.name,
               record.email,
-              "",  // phone - not collected in simple form
-              "",  // property_address - not collected in simple form
+              body.phone ? String(body.phone).trim() : "",
+              body.property_address ? String(body.property_address).trim() : "",
               record.service,
               record.notes || "",
               "website",
-            ]
+            ],
           );
           const id = (result.rows[0] as any).id;
+          // Queue outbox event for WAITLIST_SIGNUP so emails and notifications can be processed async
+          try {
+            const outboxResult = await db.queryObject(
+              `INSERT INTO outbox_events (event_type, ref_id, payload, status)
+               VALUES ($1, $2, $3, 'pending') RETURNING id`,
+              [
+                "WAITLIST_SIGNUP",
+                id,
+                JSON.stringify({
+                  id,
+                  name: record.name,
+                  email: record.email,
+                  phone: body.phone || "",
+                  property_address: body.property_address || "",
+                  service: record.service,
+                  notes: record.notes || "",
+                }),
+              ],
+            );
+            const outboxId = (outboxResult.rows[0] as any).id;
+            console.log(`[server] Waitlist outbox event created: ${outboxId}`);
+          } catch (outErr) {
+            console.error(
+              "[server] Failed to create waitlist outbox event:",
+              outErr,
+            );
+          }
           return new Response(JSON.stringify({ ok: true, id }), {
             status: 201,
             headers,
@@ -1232,7 +1347,7 @@ async function handler(req: Request): Promise<Response> {
           file = JSON.stringify(
             { waitlist: [], leads: [], events_outbox: [], invoices: [] },
             null,
-            2
+            2,
           );
         }
         const json = JSON.parse(file || "{}");
@@ -1256,14 +1371,14 @@ async function handler(req: Request): Promise<Response> {
         console.error("[server] Error writing waitlist to dev_db:", fileErr);
         return new Response(
           JSON.stringify({ ok: false, error: "Internal server error" }),
-          { status: 500, headers }
+          { status: 500, headers },
         );
       }
     } catch (err) {
       console.error("[server] Error handling waitlist:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -1280,7 +1395,7 @@ async function handler(req: Request): Promise<Response> {
             ok: false,
             error: "Name must be at least 2 characters",
           }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.phone || body.phone.trim().length < 10) {
@@ -1289,13 +1404,13 @@ async function handler(req: Request): Promise<Response> {
             ok: false,
             error: "Valid phone number is required",
           }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.email || !/^\S+@\S+\.\S+$/.test(body.email)) {
         return new Response(
           JSON.stringify({ ok: false, error: "Valid email is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (
@@ -1307,12 +1422,13 @@ async function handler(req: Request): Promise<Response> {
             ok: false,
             error: "Please select a valid position",
           }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
-      const positionName =
-        body.position === "field-worker" ? "Field Worker" : "Crew Lead";
+      const positionName = body.position === "field-worker"
+        ? "Field Worker"
+        : "Crew Lead";
       const record = {
         id: `career_${Date.now()}`,
         name: body.name.trim(),
@@ -1333,7 +1449,7 @@ async function handler(req: Request): Promise<Response> {
               record.email,
               `Position: ${record.position}`,
               "careers",
-            ]
+            ],
           );
           const id = (result.rows[0] as any).id;
           return new Response(JSON.stringify({ ok: true, id }), {
@@ -1378,18 +1494,18 @@ async function handler(req: Request): Promise<Response> {
       } catch (fileErr) {
         console.error(
           "[server] Error writing careers application to dev_db:",
-          fileErr
+          fileErr,
         );
         return new Response(
           JSON.stringify({ ok: false, error: "Internal server error" }),
-          { status: 500, headers }
+          { status: 500, headers },
         );
       }
     } catch (err) {
       console.error("[server] Error handling careers application:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -1406,7 +1522,7 @@ async function handler(req: Request): Promise<Response> {
             ok: false,
             error: "First name must be at least 2 characters",
           }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.lastName || body.lastName.trim().length < 2) {
@@ -1415,7 +1531,7 @@ async function handler(req: Request): Promise<Response> {
             ok: false,
             error: "Last name must be at least 2 characters",
           }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.phone || body.phone.trim().length < 10) {
@@ -1424,25 +1540,25 @@ async function handler(req: Request): Promise<Response> {
             ok: false,
             error: "Valid phone number is required",
           }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.email || !/^\S+@\S+\.\S+$/.test(body.email)) {
         return new Response(
           JSON.stringify({ ok: false, error: "Valid email is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.address || body.address.trim().length < 5) {
         return new Response(
           JSON.stringify({ ok: false, error: "Service address is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.service || body.service.trim().length < 2) {
         return new Response(
           JSON.stringify({ ok: false, error: "Service type is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
@@ -1468,7 +1584,7 @@ async function handler(req: Request): Promise<Response> {
               record.email,
               `Service: ${record.service}\nAddress: ${record.address}`,
               "service-inquiry",
-            ]
+            ],
           );
           const id = (result.rows[0] as any).id;
           return new Response(JSON.stringify({ ok: true, id }), {
@@ -1513,18 +1629,18 @@ async function handler(req: Request): Promise<Response> {
       } catch (fileErr) {
         console.error(
           "[server] Error writing service inquiry to dev_db:",
-          fileErr
+          fileErr,
         );
         return new Response(
           JSON.stringify({ ok: false, error: "Internal server error" }),
-          { status: 500, headers }
+          { status: 500, headers },
         );
       }
     } catch (err) {
       console.error("[server] Error handling service inquiry:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -1542,40 +1658,43 @@ async function handler(req: Request): Promise<Response> {
       // Validation
       if (!body.name || body.name.trim().length < 2) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Name must be at least 2 characters" }),
-          { status: 400, headers }
+          JSON.stringify({
+            ok: false,
+            error: "Name must be at least 2 characters",
+          }),
+          { status: 400, headers },
         );
       }
       if (!body.email || !/^\S+@\S+\.\S+$/.test(body.email)) {
         return new Response(
           JSON.stringify({ ok: false, error: "Valid email is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.property_address || body.property_address.trim().length < 5) {
         return new Response(
           JSON.stringify({ ok: false, error: "Property address is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       // Check if email already exists
       const emailCheck = await db.queryObject(
         `SELECT id FROM users WHERE email = $1`,
-        [body.email.trim()]
+        [body.email.trim()],
       );
 
       if (emailCheck.rows.length > 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Email already exists" }),
-          { status: 409, headers }
+          { status: 409, headers },
         );
       }
 
@@ -1588,7 +1707,7 @@ async function handler(req: Request): Promise<Response> {
           body.email.trim(),
           body.phone?.trim() || "",
           body.name.trim(),
-        ]
+        ],
       );
 
       const userId = (userResult.rows[0] as any).id;
@@ -1613,7 +1732,7 @@ async function handler(req: Request): Promise<Response> {
           body.property_state?.trim() || "",
           body.property_zip?.trim() || "",
           body.service_plan || "weekly",
-        ]
+        ],
       );
 
       const clientId = (clientResult.rows[0] as any).id;
@@ -1624,15 +1743,15 @@ async function handler(req: Request): Promise<Response> {
         JSON.stringify({
           ok: true,
           client_id: clientId,
-          user_id: userId
+          user_id: userId,
         }),
-        { status: 201, headers }
+        { status: 201, headers },
       );
     } catch (err) {
       console.error("[server] Error creating client:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -1646,7 +1765,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -1683,7 +1802,8 @@ async function handler(req: Request): Promise<Response> {
       // Add search filter
       if (search) {
         paramCount++;
-        query += ` AND (u.name ILIKE $${paramCount} OR u.email ILIKE $${paramCount} OR c.property_address ILIKE $${paramCount})`;
+        query +=
+          ` AND (u.name ILIKE $${paramCount} OR u.email ILIKE $${paramCount} OR c.property_address ILIKE $${paramCount})`;
         params.push(`%${search}%`);
       }
 
@@ -1700,19 +1820,22 @@ async function handler(req: Request): Promise<Response> {
 
       return new Response(
         JSON.stringify({ ok: true, clients: result.rows }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error listing clients:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // GET /api/owner/clients/:id - Get client details
-  if (url.pathname.match(/^\/api\/owner\/clients\/[^\/]+$/) && req.method === "GET") {
+  if (
+    url.pathname.match(/^\/api\/owner\/clients\/[^\/]+$/) &&
+    req.method === "GET"
+  ) {
     const authCheck = await requireAuth(req, ["owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -1722,7 +1845,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -1737,13 +1860,13 @@ async function handler(req: Request): Promise<Response> {
         FROM clients c
         JOIN users u ON c.user_id = u.id
         WHERE c.id = $1`,
-        [clientId]
+        [clientId],
       );
 
       if (clientResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Client not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -1764,7 +1887,7 @@ async function handler(req: Request): Promise<Response> {
         WHERE j.client_id = $1
         ORDER BY j.scheduled_date DESC
         LIMIT 50`,
-        [clientId]
+        [clientId],
       );
 
       // Get invoices
@@ -1781,7 +1904,7 @@ async function handler(req: Request): Promise<Response> {
         WHERE i.client_id = $1
         ORDER BY i.created_at DESC
         LIMIT 50`,
-        [clientId]
+        [clientId],
       );
 
       // Get payments
@@ -1798,7 +1921,7 @@ async function handler(req: Request): Promise<Response> {
         WHERE p.client_id = $1
         ORDER BY p.created_at DESC
         LIMIT 50`,
-        [clientId]
+        [clientId],
       );
 
       return new Response(
@@ -1809,19 +1932,22 @@ async function handler(req: Request): Promise<Response> {
           invoices: invoicesResult.rows,
           payments: paymentsResult.rows,
         }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error getting client details:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // PATCH /api/owner/clients/:id - Update client
-  if (url.pathname.match(/^\/api\/owner\/clients\/[^\/]+$/) && req.method === "PATCH") {
+  if (
+    url.pathname.match(/^\/api\/owner\/clients\/[^\/]+$/) &&
+    req.method === "PATCH"
+  ) {
     const authCheck = await requireAuth(req, ["owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -1832,20 +1958,20 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       // Get the user_id for this client
       const clientResult = await db.queryObject(
         `SELECT user_id FROM clients WHERE id = $1`,
-        [clientId]
+        [clientId],
       );
 
       if (clientResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Client not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -1877,8 +2003,10 @@ async function handler(req: Request): Promise<Response> {
           paramCount++;
           userParams.push(userId);
           await db.queryObject(
-            `UPDATE users SET ${userUpdates.join(", ")} WHERE id = $${paramCount}`,
-            userParams
+            `UPDATE users SET ${
+              userUpdates.join(", ")
+            } WHERE id = $${paramCount}`,
+            userParams,
           );
         }
       }
@@ -1923,8 +2051,10 @@ async function handler(req: Request): Promise<Response> {
         paramCount++;
         clientParams.push(clientId);
         await db.queryObject(
-          `UPDATE clients SET ${clientUpdates.join(", ")} WHERE id = $${paramCount}`,
-          clientParams
+          `UPDATE clients SET ${
+            clientUpdates.join(", ")
+          } WHERE id = $${paramCount}`,
+          clientParams,
         );
       }
 
@@ -1932,13 +2062,13 @@ async function handler(req: Request): Promise<Response> {
 
       return new Response(
         JSON.stringify({ ok: true, client_id: clientId }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error updating client:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -1957,26 +2087,32 @@ async function handler(req: Request): Promise<Response> {
       if (!body.client_id) {
         return new Response(
           JSON.stringify({ ok: false, error: "Client ID is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.scheduled_date) {
         return new Response(
           JSON.stringify({ ok: false, error: "Scheduled date is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
-      if (!body.services || !Array.isArray(body.services) || body.services.length === 0) {
+      if (
+        !body.services || !Array.isArray(body.services) ||
+        body.services.length === 0
+      ) {
         return new Response(
-          JSON.stringify({ ok: false, error: "At least one service is required" }),
-          { status: 400, headers }
+          JSON.stringify({
+            ok: false,
+            error: "At least one service is required",
+          }),
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2000,7 +2136,7 @@ async function handler(req: Request): Promise<Response> {
           body.scheduled_time || null,
           body.services,
           body.notes?.trim() || "",
-        ]
+        ],
       );
 
       const jobId = (result.rows[0] as any).id;
@@ -2009,13 +2145,13 @@ async function handler(req: Request): Promise<Response> {
 
       return new Response(
         JSON.stringify({ ok: true, job_id: jobId }),
-        { status: 201, headers }
+        { status: 201, headers },
       );
     } catch (err) {
       console.error("[server] Error creating job:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2029,7 +2165,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2096,25 +2232,28 @@ async function handler(req: Request): Promise<Response> {
         params.push(date_to);
       }
 
-      query += ` ORDER BY j.scheduled_date DESC, j.scheduled_time ASC NULLS LAST`;
+      query +=
+        ` ORDER BY j.scheduled_date DESC, j.scheduled_time ASC NULLS LAST`;
 
       const result = await db.queryObject(query, params);
 
       return new Response(
         JSON.stringify({ ok: true, jobs: result.rows }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error listing jobs:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // GET /api/owner/jobs/:id - Get job details
-  if (url.pathname.match(/^\/api\/owner\/jobs\/[^\/]+$/) && req.method === "GET") {
+  if (
+    url.pathname.match(/^\/api\/owner\/jobs\/[^\/]+$/) && req.method === "GET"
+  ) {
     const authCheck = await requireAuth(req, ["owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -2124,7 +2263,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2145,13 +2284,13 @@ async function handler(req: Request): Promise<Response> {
         LEFT JOIN users c_user ON c_client.user_id = c_user.id
         LEFT JOIN users crew ON j.crew_id = crew.id
         WHERE j.id = $1`,
-        [jobId]
+        [jobId],
       );
 
       if (jobResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Job not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -2169,7 +2308,7 @@ async function handler(req: Request): Promise<Response> {
         LEFT JOIN users u ON jp.uploaded_by = u.id
         WHERE jp.job_id = $1
         ORDER BY jp.created_at DESC`,
-        [jobId]
+        [jobId],
       );
 
       return new Response(
@@ -2178,19 +2317,21 @@ async function handler(req: Request): Promise<Response> {
           job,
           photos: photosResult.rows,
         }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error getting job details:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // PATCH /api/owner/jobs/:id - Update job
-  if (url.pathname.match(/^\/api\/owner\/jobs\/[^\/]+$/) && req.method === "PATCH") {
+  if (
+    url.pathname.match(/^\/api\/owner\/jobs\/[^\/]+$/) && req.method === "PATCH"
+  ) {
     const authCheck = await requireAuth(req, ["owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -2201,7 +2342,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2255,7 +2396,7 @@ async function handler(req: Request): Promise<Response> {
       if (updates.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "No fields to update" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
@@ -2264,26 +2405,28 @@ async function handler(req: Request): Promise<Response> {
 
       await db.queryObject(
         `UPDATE jobs SET ${updates.join(", ")} WHERE id = $${paramCount}`,
-        params
+        params,
       );
 
       console.log(`[server] Job updated: ${jobId}`);
 
       return new Response(
         JSON.stringify({ ok: true, job_id: jobId }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error updating job:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // PATCH /api/jobs/:id/start - Start job (crew or owner)
-  if (url.pathname.match(/^\/api\/jobs\/[^\/]+\/start$/) && req.method === "PATCH") {
+  if (
+    url.pathname.match(/^\/api\/jobs\/[^\/]+\/start$/) && req.method === "PATCH"
+  ) {
     const authCheck = await requireAuth(req, ["crew", "owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -2293,26 +2436,26 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       await db.queryObject(
         `UPDATE jobs SET status = 'in_progress', updated_at = NOW() WHERE id = $1`,
-        [jobId]
+        [jobId],
       );
 
       console.log(`[server] Job started: ${jobId}`);
 
       return new Response(
         JSON.stringify({ ok: true, job_id: jobId }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error starting job:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2326,7 +2469,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2339,18 +2482,18 @@ async function handler(req: Request): Promise<Response> {
           status
         FROM users
         WHERE role = 'crew'
-        ORDER BY name ASC`
+        ORDER BY name ASC`,
       );
 
       return new Response(
         JSON.stringify({ ok: true, crew: result.rows }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error listing crew:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2368,35 +2511,37 @@ async function handler(req: Request): Promise<Response> {
       if (!body.client_id) {
         return new Response(
           JSON.stringify({ ok: false, error: "Client ID is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.amount || parseFloat(body.amount) <= 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Valid amount is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.due_date) {
         return new Response(
           JSON.stringify({ ok: false, error: "Due date is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       // Generate invoice number
       const invoiceCount = await db.queryObject(
-        `SELECT COUNT(*) as count FROM invoices`
+        `SELECT COUNT(*) as count FROM invoices`,
       );
       const count = (invoiceCount.rows[0] as any).count;
-      const invoiceNumber = `INV-${String(parseInt(count) + 1).padStart(5, "0")}`;
+      const invoiceNumber = `INV-${
+        String(parseInt(count) + 1).padStart(5, "0")
+      }`;
 
       // Create invoice
       const result = await db.queryObject(
@@ -2416,7 +2561,7 @@ async function handler(req: Request): Promise<Response> {
           parseFloat(body.amount),
           body.due_date,
           JSON.stringify(body.line_items || []),
-        ]
+        ],
       );
 
       const invoiceId = (result.rows[0] as any).id;
@@ -2424,20 +2569,24 @@ async function handler(req: Request): Promise<Response> {
       // Update client balance
       await db.queryObject(
         `UPDATE clients SET balance_due = balance_due + $1 WHERE id = $2`,
-        [parseFloat(body.amount), body.client_id]
+        [parseFloat(body.amount), body.client_id],
       );
 
       console.log(`[server] Invoice created: ${invoiceNumber}`);
 
       return new Response(
-        JSON.stringify({ ok: true, invoice_id: invoiceId, invoice_number: invoiceNumber }),
-        { status: 201, headers }
+        JSON.stringify({
+          ok: true,
+          invoice_id: invoiceId,
+          invoice_number: invoiceNumber,
+        }),
+        { status: 201, headers },
       );
     } catch (err) {
       console.error("[server] Error creating invoice:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2451,7 +2600,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2491,13 +2640,13 @@ async function handler(req: Request): Promise<Response> {
 
       return new Response(
         JSON.stringify({ ok: true, invoices: result.rows }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error listing invoices:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2505,7 +2654,10 @@ async function handler(req: Request): Promise<Response> {
   // ==================== PAYMENT RECORDING API ====================
 
   // POST /api/owner/invoices/:id/payment - Record payment
-  if (url.pathname.match(/^\/api\/owner\/invoices\/[^\/]+\/payment$/) && req.method === "POST") {
+  if (
+    url.pathname.match(/^\/api\/owner\/invoices\/[^\/]+\/payment$/) &&
+    req.method === "POST"
+  ) {
     const authCheck = await requireAuth(req, ["owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -2515,34 +2667,37 @@ async function handler(req: Request): Promise<Response> {
 
       if (!body.amount || parseFloat(body.amount) <= 0) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Valid payment amount is required" }),
-          { status: 400, headers }
+          JSON.stringify({
+            ok: false,
+            error: "Valid payment amount is required",
+          }),
+          { status: 400, headers },
         );
       }
       if (!body.payment_method) {
         return new Response(
           JSON.stringify({ ok: false, error: "Payment method is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       // Get invoice details
       const invoiceResult = await db.queryObject(
         `SELECT client_id, amount, status FROM invoices WHERE id = $1`,
-        [invoiceId]
+        [invoiceId],
       );
 
       if (invoiceResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Invoice not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -2568,35 +2723,39 @@ async function handler(req: Request): Promise<Response> {
           body.payment_method,
           body.transaction_id || "",
           body.notes || "",
-        ]
+        ],
       );
 
       const paymentId = (paymentResult.rows[0] as any).id;
 
       // Update invoice status
-      const newStatus = paymentAmount >= parseFloat(invoice.amount) ? "paid" : "unpaid";
+      const newStatus = paymentAmount >= parseFloat(invoice.amount)
+        ? "paid"
+        : "unpaid";
       await db.queryObject(
         `UPDATE invoices SET status = $1, paid_at = CASE WHEN $1 = 'paid' THEN NOW() ELSE NULL END WHERE id = $2`,
-        [newStatus, invoiceId]
+        [newStatus, invoiceId],
       );
 
       // Update client balance
       await db.queryObject(
         `UPDATE clients SET balance_due = balance_due - $1 WHERE id = $2`,
-        [paymentAmount, invoice.client_id]
+        [paymentAmount, invoice.client_id],
       );
 
-      console.log(`[server] Payment recorded: ${paymentId} for invoice ${invoiceId}`);
+      console.log(
+        `[server] Payment recorded: ${paymentId} for invoice ${invoiceId}`,
+      );
 
       return new Response(
         JSON.stringify({ ok: true, payment_id: paymentId }),
-        { status: 201, headers }
+        { status: 201, headers },
       );
     } catch (err) {
       console.error("[server] Error recording payment:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2612,12 +2771,15 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       // Get filter parameters
-      const urlObj = new URL(req.url, `https://${req.headers.get("host") || "localhost"}`);
+      const urlObj = new URL(
+        req.url,
+        `https://${req.headers.get("host") || "localhost"}`,
+      );
       const statusFilter = urlObj.searchParams.get("status");
       const sourceFilter = urlObj.searchParams.get("source");
 
@@ -2650,13 +2812,13 @@ async function handler(req: Request): Promise<Response> {
           applications: result.rows,
           count: result.rows.length,
         }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error listing applications:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2676,47 +2838,52 @@ async function handler(req: Request): Promise<Response> {
       if (!body.status) {
         return new Response(
           JSON.stringify({ ok: false, error: "Status is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
-      if (!["pending", "screening", "interview", "offer", "hired", "rejected"].includes(body.status)) {
+      if (
+        !["pending", "screening", "interview", "offer", "hired", "rejected"]
+          .includes(body.status)
+      ) {
         return new Response(
           JSON.stringify({ ok: false, error: "Invalid status" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       const result = await db.queryObject(
         `UPDATE applications SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING id`,
-        [body.status, applicationId]
+        [body.status, applicationId],
       );
 
       if (result.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Application not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
-      console.log(`[server] Application ${applicationId} status updated to ${body.status}`);
+      console.log(
+        `[server] Application ${applicationId} status updated to ${body.status}`,
+      );
 
       return new Response(
         JSON.stringify({ ok: true }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error updating application:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2732,7 +2899,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2746,20 +2913,20 @@ async function handler(req: Request): Promise<Response> {
         FROM payment_accounts
         WHERE user_id = $1 AND is_active = TRUE
         ORDER BY is_primary DESC, created_at DESC`,
-        [userId]
+        [userId],
       );
 
       console.log(`[server] Retrieved payment accounts for user ${userId}`);
 
       return new Response(
         JSON.stringify({ ok: true, accounts: result.rows }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error listing payment accounts:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2774,22 +2941,29 @@ async function handler(req: Request): Promise<Response> {
 
       if (!body.payment_method || !body.account_identifier) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Payment method and account identifier are required" }),
-          { status: 400, headers }
+          JSON.stringify({
+            ok: false,
+            error: "Payment method and account identifier are required",
+          }),
+          { status: 400, headers },
         );
       }
 
-      if (!["paypal", "cash_app", "stripe", "square"].includes(body.payment_method)) {
+      if (
+        !["paypal", "cash_app", "stripe", "square"].includes(
+          body.payment_method,
+        )
+      ) {
         return new Response(
           JSON.stringify({ ok: false, error: "Invalid payment method" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2799,7 +2973,7 @@ async function handler(req: Request): Promise<Response> {
       if (body.is_primary) {
         await db.queryObject(
           `UPDATE payment_accounts SET is_primary = FALSE WHERE user_id = $1 AND payment_method = $2`,
-          [userId, body.payment_method]
+          [userId, body.payment_method],
         );
       }
 
@@ -2816,24 +2990,24 @@ async function handler(req: Request): Promise<Response> {
           body.payment_method,
           body.account_identifier,
           body.account_name || null,
-          body.is_primary || false
-        ]
+          body.is_primary || false,
+        ],
       );
 
-      const account = (result.rows[0] as any);
+      const account = result.rows[0] as any;
       console.log(
-        `[server] Payment account created: ${account.id} for user ${userId} (${body.payment_method})`
+        `[server] Payment account created: ${account.id} for user ${userId} (${body.payment_method})`,
       );
 
       return new Response(
         JSON.stringify({ ok: true, account }),
-        { status: 201, headers }
+        { status: 201, headers },
       );
     } catch (err) {
       console.error("[server] Error creating payment account:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2852,7 +3026,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2861,13 +3035,13 @@ async function handler(req: Request): Promise<Response> {
       // Get the account to find its payment method
       const accountResult = await db.queryObject(
         `SELECT payment_method FROM payment_accounts WHERE id = $1 AND user_id = $2`,
-        [accountId, userId]
+        [accountId, userId],
       );
 
       if (accountResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Account not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -2876,32 +3050,35 @@ async function handler(req: Request): Promise<Response> {
       // Unset other primary accounts for this payment method
       await db.queryObject(
         `UPDATE payment_accounts SET is_primary = FALSE WHERE user_id = $1 AND payment_method = $2`,
-        [userId, paymentMethod]
+        [userId, paymentMethod],
       );
 
       // Set this account as primary
       await db.queryObject(
         `UPDATE payment_accounts SET is_primary = TRUE WHERE id = $1`,
-        [accountId]
+        [accountId],
       );
 
       console.log(`[server] Payment account ${accountId} set as primary`);
 
       return new Response(
         JSON.stringify({ ok: true }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error updating payment account:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // DELETE /api/owner/payment-accounts/:id - Delete payment account
-  if (url.pathname.match(/^\/api\/owner\/payment-accounts\/[^\/]+$/) && req.method === "DELETE") {
+  if (
+    url.pathname.match(/^\/api\/owner\/payment-accounts\/[^\/]+$/) &&
+    req.method === "DELETE"
+  ) {
     const authCheck = await requireAuth(req, ["owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -2911,7 +3088,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2920,33 +3097,35 @@ async function handler(req: Request): Promise<Response> {
       // Check if account exists and belongs to user
       const accountResult = await db.queryObject(
         `SELECT id FROM payment_accounts WHERE id = $1 AND user_id = $2`,
-        [accountId, userId]
+        [accountId, userId],
       );
 
       if (accountResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Account not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
       // Soft delete by setting is_active = FALSE
       await db.queryObject(
         `UPDATE payment_accounts SET is_active = FALSE WHERE id = $1`,
-        [accountId]
+        [accountId],
       );
 
-      console.log(`[server] Payment account ${accountId} deleted (soft delete)`);
+      console.log(
+        `[server] Payment account ${accountId} deleted (soft delete)`,
+      );
 
       return new Response(
         JSON.stringify({ ok: true }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error deleting payment account:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -2962,32 +3141,32 @@ async function handler(req: Request): Promise<Response> {
       if (!body.name || body.name.trim() === "") {
         return new Response(
           JSON.stringify({ ok: false, error: "Name is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.email || body.email.trim() === "") {
         return new Response(
           JSON.stringify({ ok: false, error: "Email is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.phone || body.phone.trim() === "") {
         return new Response(
           JSON.stringify({ ok: false, error: "Phone is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
       if (!body.property_address || body.property_address.trim() === "") {
         return new Response(
           JSON.stringify({ ok: false, error: "Property address is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -2996,13 +3175,16 @@ async function handler(req: Request): Promise<Response> {
         `SELECT 1 FROM waitlist WHERE email = $1 AND status IN ('pending', 'contacted')
          UNION
          SELECT 1 FROM users WHERE email = $1 AND role = 'client'`,
-        [body.email.trim()]
+        [body.email.trim()],
       );
 
       if (emailCheck.rows.length > 0) {
         return new Response(
-          JSON.stringify({ ok: false, error: "This email is already registered or on the waitlist" }),
-          { status: 409, headers }
+          JSON.stringify({
+            ok: false,
+            error: "This email is already registered or on the waitlist",
+          }),
+          { status: 409, headers },
         );
       }
 
@@ -3033,21 +3215,25 @@ async function handler(req: Request): Promise<Response> {
           body.preferred_service_plan || "weekly",
           body.notes?.trim() || "",
           body.source || "website",
-        ]
+        ],
       );
 
       const waitlistId = (result.rows[0] as any).id;
       console.log(`[server] New waitlist entry: ${waitlistId} - ${body.name}`);
 
       return new Response(
-        JSON.stringify({ ok: true, id: waitlistId, message: "Successfully added to waitlist!" }),
-        { status: 201, headers }
+        JSON.stringify({
+          ok: true,
+          id: waitlistId,
+          message: "Successfully added to waitlist!",
+        }),
+        { status: 201, headers },
       );
     } catch (err) {
       console.error("[server] Error adding to waitlist:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -3061,7 +3247,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -3098,7 +3284,8 @@ async function handler(req: Request): Promise<Response> {
 
       if (search) {
         paramCount++;
-        query += ` AND (name ILIKE $${paramCount} OR email ILIKE $${paramCount} OR phone ILIKE $${paramCount} OR property_address ILIKE $${paramCount})`;
+        query +=
+          ` AND (name ILIKE $${paramCount} OR email ILIKE $${paramCount} OR phone ILIKE $${paramCount} OR property_address ILIKE $${paramCount})`;
         params.push(`%${search}%`);
       }
 
@@ -3110,19 +3297,22 @@ async function handler(req: Request): Promise<Response> {
 
       return new Response(
         JSON.stringify({ ok: true, waitlist: result.rows }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error fetching waitlist:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // PATCH /api/owner/waitlist/:id - Update waitlist entry
-  if (url.pathname.match(/^\/api\/owner\/waitlist\/[^\/]+$/) && req.method === "PATCH") {
+  if (
+    url.pathname.match(/^\/api\/owner\/waitlist\/[^\/]+$/) &&
+    req.method === "PATCH"
+  ) {
     const authCheck = await requireAuth(req, ["owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -3133,7 +3323,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -3156,40 +3346,48 @@ async function handler(req: Request): Promise<Response> {
       if (updates.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "No fields to update" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       paramCount++;
       params.push(waitlistId);
 
-      const query = `UPDATE waitlist SET ${updates.join(", ")} WHERE id = $${paramCount} RETURNING id`;
+      const query = `UPDATE waitlist SET ${
+        updates.join(", ")
+      } WHERE id = $${paramCount} RETURNING id`;
       const result = await db.queryObject(query, params);
 
       if (result.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Waitlist entry not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
       console.log(`[server] Updated waitlist entry: ${waitlistId}`);
 
       return new Response(
-        JSON.stringify({ ok: true, message: "Waitlist entry updated successfully" }),
-        { status: 200, headers }
+        JSON.stringify({
+          ok: true,
+          message: "Waitlist entry updated successfully",
+        }),
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error updating waitlist entry:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // POST /api/owner/waitlist/:id/convert - Convert waitlist entry to client
-  if (url.pathname.match(/^\/api\/owner\/waitlist\/[^\/]+\/convert$/) && req.method === "POST") {
+  if (
+    url.pathname.match(/^\/api\/owner\/waitlist\/[^\/]+\/convert$/) &&
+    req.method === "POST"
+  ) {
     const authCheck = await requireAuth(req, ["owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -3200,20 +3398,20 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       // Get waitlist entry
       const waitlistResult = await db.queryObject(
         `SELECT * FROM waitlist WHERE id = $1`,
-        [waitlistId]
+        [waitlistId],
       );
 
       if (waitlistResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Waitlist entry not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -3222,13 +3420,16 @@ async function handler(req: Request): Promise<Response> {
       // Check if email already exists as a client
       const userCheck = await db.queryObject(
         `SELECT id FROM users WHERE email = $1`,
-        [waitlistEntry.email]
+        [waitlistEntry.email],
       );
 
       if (userCheck.rows.length > 0) {
         return new Response(
-          JSON.stringify({ ok: false, error: "A user with this email already exists" }),
-          { status: 409, headers }
+          JSON.stringify({
+            ok: false,
+            error: "A user with this email already exists",
+          }),
+          { status: 409, headers },
         );
       }
 
@@ -3237,7 +3438,7 @@ async function handler(req: Request): Promise<Response> {
         `INSERT INTO users (email, phone, name, role, status)
          VALUES ($1, $2, $3, 'client', 'active')
          RETURNING id`,
-        [waitlistEntry.email, waitlistEntry.phone, waitlistEntry.name]
+        [waitlistEntry.email, waitlistEntry.phone, waitlistEntry.name],
       );
 
       const userId = (userResult.rows[0] as any).id;
@@ -3262,7 +3463,7 @@ async function handler(req: Request): Promise<Response> {
           waitlistEntry.property_state || "",
           waitlistEntry.property_zip || "",
           body.service_plan || waitlistEntry.preferred_service_plan || "weekly",
-        ]
+        ],
       );
 
       const clientId = (clientResult.rows[0] as any).id;
@@ -3270,20 +3471,26 @@ async function handler(req: Request): Promise<Response> {
       // Update waitlist entry to mark as converted
       await db.queryObject(
         `UPDATE waitlist SET status = 'converted', converted_client_id = $1 WHERE id = $2`,
-        [clientId, waitlistId]
+        [clientId, waitlistId],
       );
 
-      console.log(`[server] Converted waitlist entry ${waitlistId} to client ${clientId}`);
+      console.log(
+        `[server] Converted waitlist entry ${waitlistId} to client ${clientId}`,
+      );
 
       return new Response(
-        JSON.stringify({ ok: true, client_id: clientId, message: "Successfully converted to client!" }),
-        { status: 201, headers }
+        JSON.stringify({
+          ok: true,
+          client_id: clientId,
+          message: "Successfully converted to client!",
+        }),
+        { status: 201, headers },
       );
     } catch (err) {
       console.error("[server] Error converting waitlist entry:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -3299,7 +3506,7 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -3325,26 +3532,29 @@ async function handler(req: Request): Promise<Response> {
         JOIN users u ON c.user_id = u.id
         WHERE p.notes LIKE '%Self-reported%'
         ORDER BY p.created_at DESC`,
-        []
+        [],
       );
 
       console.log(`[server] Retrieved ${result.rows.length} pending payments`);
 
       return new Response(
         JSON.stringify({ ok: true, payments: result.rows }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error fetching pending payments:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // PATCH /api/owner/payments/:id/verify - Verify or reject payment
-  if (url.pathname.match(/^\/api\/owner\/payments\/[^\/]+\/verify$/) && req.method === "PATCH") {
+  if (
+    url.pathname.match(/^\/api\/owner\/payments\/[^\/]+\/verify$/) &&
+    req.method === "PATCH"
+  ) {
     const authCheck = await requireAuth(req, ["owner"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -3354,15 +3564,18 @@ async function handler(req: Request): Promise<Response> {
 
       if (!body.action || !["approve", "reject"].includes(body.action)) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Action must be 'approve' or 'reject'" }),
-          { status: 400, headers }
+          JSON.stringify({
+            ok: false,
+            error: "Action must be 'approve' or 'reject'",
+          }),
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -3372,13 +3585,13 @@ async function handler(req: Request): Promise<Response> {
          FROM payments p
          JOIN invoices i ON p.invoice_id = i.id
          WHERE p.id = $1`,
-        [paymentId]
+        [paymentId],
       );
 
       if (paymentResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Payment not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -3390,44 +3603,50 @@ async function handler(req: Request): Promise<Response> {
           `UPDATE payments
            SET notes = REPLACE(notes, 'Self-reported by client', 'Verified by owner')
            WHERE id = $1`,
-          [paymentId]
+          [paymentId],
         );
 
         console.log(`[server] Payment ${paymentId} verified`);
 
         return new Response(
-          JSON.stringify({ ok: true, message: "Payment verified successfully" }),
-          { status: 200, headers }
+          JSON.stringify({
+            ok: true,
+            message: "Payment verified successfully",
+          }),
+          { status: 200, headers },
         );
       } else {
         // Reject payment - reverse the balance update and mark invoice as unpaid
         await db.queryObject(
           `UPDATE clients SET balance_due = balance_due + $1 WHERE id = $2`,
-          [parseFloat(payment.amount), payment.client_id]
+          [parseFloat(payment.amount), payment.client_id],
         );
 
         await db.queryObject(
           `UPDATE invoices SET status = 'unpaid', paid_at = NULL WHERE id = $1`,
-          [payment.invoice_id]
+          [payment.invoice_id],
         );
 
         await db.queryObject(
           `DELETE FROM payments WHERE id = $1`,
-          [paymentId]
+          [paymentId],
         );
 
         console.log(`[server] Payment ${paymentId} rejected and reversed`);
 
         return new Response(
-          JSON.stringify({ ok: true, message: "Payment rejected and balance restored" }),
-          { status: 200, headers }
+          JSON.stringify({
+            ok: true,
+            message: "Payment rejected and balance restored",
+          }),
+          { status: 200, headers },
         );
       }
     } catch (err) {
       console.error("[server] Error verifying payment:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -3443,20 +3662,20 @@ async function handler(req: Request): Promise<Response> {
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       // Get client record for authenticated user
       const clientResult = await db.queryObject(
         `SELECT id FROM clients WHERE user_id = $1`,
-        [authCheck.auth.profile.id]
+        [authCheck.auth.profile.id],
       );
 
       if (clientResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Client not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -3468,24 +3687,27 @@ async function handler(req: Request): Promise<Response> {
          FROM invoices
          WHERE client_id = $1
          ORDER BY created_at DESC`,
-        [clientId]
+        [clientId],
       );
 
       return new Response(
         JSON.stringify({ ok: true, invoices: invoicesResult.rows }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error fetching client invoices:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // POST /api/client/invoices/:id/mark-payment - Client reports payment sent
-  if (url.pathname.match(/^\/api\/client\/invoices\/[^\/]+\/mark-payment$/) && req.method === "POST") {
+  if (
+    url.pathname.match(/^\/api\/client\/invoices\/[^\/]+\/mark-payment$/) &&
+    req.method === "POST"
+  ) {
     const authCheck = await requireAuth(req, ["client"]);
     if (!authCheck.authorized) return (authCheck as any).response;
 
@@ -3496,14 +3718,14 @@ async function handler(req: Request): Promise<Response> {
       if (!body.payment_method) {
         return new Response(
           JSON.stringify({ ok: false, error: "Payment method is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
@@ -3513,13 +3735,13 @@ async function handler(req: Request): Promise<Response> {
          FROM invoices i
          JOIN clients c ON i.client_id = c.id
          WHERE i.id = $1`,
-        [invoiceId]
+        [invoiceId],
       );
 
       if (invoiceResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Invoice not found" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -3529,14 +3751,17 @@ async function handler(req: Request): Promise<Response> {
       if (invoice.user_id !== authCheck.auth.profile.id) {
         return new Response(
           JSON.stringify({ ok: false, error: "Unauthorized" }),
-          { status: 403, headers }
+          { status: 403, headers },
         );
       }
 
       if (invoice.status === "paid") {
         return new Response(
-          JSON.stringify({ ok: false, error: "This invoice is already marked as paid" }),
-          { status: 400, headers }
+          JSON.stringify({
+            ok: false,
+            error: "This invoice is already marked as paid",
+          }),
+          { status: 400, headers },
         );
       }
 
@@ -3559,7 +3784,7 @@ async function handler(req: Request): Promise<Response> {
           body.payment_method,
           body.transaction_id || "",
           `Self-reported by client. ${body.notes || ""}`.trim(),
-        ]
+        ],
       );
 
       const paymentId = (paymentResult.rows[0] as any).id;
@@ -3567,30 +3792,32 @@ async function handler(req: Request): Promise<Response> {
       // Update invoice status to indicate payment is pending verification
       await db.queryObject(
         `UPDATE invoices SET status = 'paid', paid_at = NOW() WHERE id = $1`,
-        [invoiceId]
+        [invoiceId],
       );
 
       // Update client balance
       await db.queryObject(
         `UPDATE clients SET balance_due = balance_due - $1 WHERE id = $2`,
-        [parseFloat(invoice.amount), invoice.client_id]
+        [parseFloat(invoice.amount), invoice.client_id],
       );
 
-      console.log(`[server] Client marked payment for invoice ${invoiceId}: ${paymentId}`);
+      console.log(
+        `[server] Client marked payment for invoice ${invoiceId}: ${paymentId}`,
+      );
 
       return new Response(
         JSON.stringify({
           ok: true,
           payment_id: paymentId,
-          message: "Payment marked successfully! We'll verify it shortly."
+          message: "Payment marked successfully! We'll verify it shortly.",
         }),
-        { status: 201, headers }
+        { status: 201, headers },
       );
     } catch (err) {
       console.error("[server] Error marking payment:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -3608,66 +3835,80 @@ async function handler(req: Request): Promise<Response> {
       if (!body.email || !body.name) {
         return new Response(
           JSON.stringify({ ok: false, error: "Email and name required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       // Check if email already exists as a user
       const existingUser = await db.queryObject(
         `SELECT id FROM users WHERE email = $1`,
-        [body.email.trim()]
+        [body.email.trim()],
       );
 
       if (existingUser.rows.length > 0) {
         return new Response(
-          JSON.stringify({ ok: false, error: "This email is already registered" }),
-          { status: 409, headers }
+          JSON.stringify({
+            ok: false,
+            error: "This email is already registered",
+          }),
+          { status: 409, headers },
         );
       }
 
       // Check if invitation already exists and is pending
       const existingInvite = await db.queryObject(
         `SELECT id FROM owner_invitations WHERE email = $1 AND status = 'pending'`,
-        [body.email.trim()]
+        [body.email.trim()],
       );
 
       if (existingInvite.rows.length > 0) {
         return new Response(
-          JSON.stringify({ ok: false, error: "An invitation has already been sent to this email" }),
-          { status: 409, headers }
+          JSON.stringify({
+            ok: false,
+            error: "An invitation has already been sent to this email",
+          }),
+          { status: 409, headers },
         );
       }
 
       // Generate invitation token (random 32-char string)
       const invitationToken = crypto.getRandomValues(new Uint8Array(24))
-        .reduce((acc, val) => acc + val.toString(16).padStart(2, '0'), '');
+        .reduce((acc, val) => acc + val.toString(16).padStart(2, "0"), "");
 
       // Create invitation record
       const inviteResult = await db.queryObject(
         `INSERT INTO owner_invitations (email, name, phone, invitation_token, status)
          VALUES ($1, $2, $3, $4, 'pending')
          RETURNING id, invitation_token, expires_at`,
-        [body.email.trim(), body.name.trim(), body.phone?.trim() || null, invitationToken]
+        [
+          body.email.trim(),
+          body.name.trim(),
+          body.phone?.trim() || null,
+          invitationToken,
+        ],
       );
 
-      const invite = (inviteResult.rows[0] as any);
-      const setupUrl = `https://xcellent1lawncare.com/owner-setup.html?token=${invite.invitation_token}`;
+      const invite = inviteResult.rows[0] as any;
+      const setupUrl =
+        `https://xcellent1lawncare.com/owner-setup.html?token=${invite.invitation_token}`;
 
-      console.log(`[server] Owner invitation created for ${body.email}: ${invite.id}`);
+      console.log(
+        `[server] Owner invitation created for ${body.email}: ${invite.id}`,
+      );
       console.log(`[server] Setup URL: ${setupUrl}`);
 
       // Send invitation email
       const emailHtml = buildOwnerInvitationEmail(
         body.name.trim(),
         setupUrl,
-        invite.expires_at
+        invite.expires_at,
       );
 
       const emailSent = await sendEmail({
@@ -3677,7 +3918,9 @@ async function handler(req: Request): Promise<Response> {
       });
 
       if (!emailSent) {
-        console.warn(`[server] Email send failed for ${body.email}, but invitation still created`);
+        console.warn(
+          `[server] Email send failed for ${body.email}, but invitation still created`,
+        );
       }
 
       return new Response(
@@ -3689,40 +3932,42 @@ async function handler(req: Request): Promise<Response> {
           email_sent: emailSent,
           message: emailSent
             ? "Invitation email sent successfully"
-            : "Invitation created, but email could not be sent. Please share the setup URL manually."
+            : "Invitation created, but email could not be sent. Please share the setup URL manually.",
         }),
-        { status: 201, headers }
+        { status: 201, headers },
       );
     } catch (err) {
       console.error("[server] Error creating owner invitation:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // GET /api/owner/invite/:token - Validate invitation token
-  if (url.pathname.match(/^\/api\/owner\/invite\/[^\/]+$/) && req.method === "GET") {
+  if (
+    url.pathname.match(/^\/api\/owner\/invite\/[^\/]+$/) && req.method === "GET"
+  ) {
     try {
       const token = url.pathname.split("/")[4];
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       const result = await db.queryObject(
         `SELECT id, email, name, phone, status, expires_at FROM owner_invitations WHERE invitation_token = $1`,
-        [token]
+        [token],
       );
 
       if (result.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Invalid invitation token" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -3730,15 +3975,18 @@ async function handler(req: Request): Promise<Response> {
 
       if (invite.status !== "pending") {
         return new Response(
-          JSON.stringify({ ok: false, error: `Invitation is ${invite.status}` }),
-          { status: 400, headers }
+          JSON.stringify({
+            ok: false,
+            error: `Invitation is ${invite.status}`,
+          }),
+          { status: 400, headers },
         );
       }
 
       if (new Date(invite.expires_at) < new Date()) {
         return new Response(
           JSON.stringify({ ok: false, error: "Invitation has expired" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
@@ -3748,21 +3996,24 @@ async function handler(req: Request): Promise<Response> {
           email: invite.email,
           name: invite.name,
           phone: invite.phone,
-          message: "Invitation is valid"
+          message: "Invitation is valid",
         }),
-        { status: 200, headers }
+        { status: 200, headers },
       );
     } catch (err) {
       console.error("[server] Error validating invitation:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
 
   // POST /api/owner/invite/:token/accept - Accept invitation and complete setup
-  if (url.pathname.match(/^\/api\/owner\/invite\/[^\/]+\/accept$/) && req.method === "POST") {
+  if (
+    url.pathname.match(/^\/api\/owner\/invite\/[^\/]+\/accept$/) &&
+    req.method === "POST"
+  ) {
     try {
       const token = url.pathname.split("/")[4];
       const body = await req.json();
@@ -3770,40 +4021,43 @@ async function handler(req: Request): Promise<Response> {
       if (!body.password || !body.password_confirm) {
         return new Response(
           JSON.stringify({ ok: false, error: "Password is required" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       if (body.password !== body.password_confirm) {
         return new Response(
           JSON.stringify({ ok: false, error: "Passwords do not match" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
       if (body.password.length < 8) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Password must be at least 8 characters" }),
-          { status: 400, headers }
+          JSON.stringify({
+            ok: false,
+            error: "Password must be at least 8 characters",
+          }),
+          { status: 400, headers },
         );
       }
 
       if (!dbConnected) {
         return new Response(
           JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers }
+          { status: 503, headers },
         );
       }
 
       const inviteResult = await db.queryObject(
         `SELECT id, email, name, phone, status, expires_at FROM owner_invitations WHERE invitation_token = $1`,
-        [token]
+        [token],
       );
 
       if (inviteResult.rows.length === 0) {
         return new Response(
           JSON.stringify({ ok: false, error: "Invalid invitation token" }),
-          { status: 404, headers }
+          { status: 404, headers },
         );
       }
 
@@ -3811,15 +4065,18 @@ async function handler(req: Request): Promise<Response> {
 
       if (invite.status !== "pending") {
         return new Response(
-          JSON.stringify({ ok: false, error: "Invitation already used or expired" }),
-          { status: 400, headers }
+          JSON.stringify({
+            ok: false,
+            error: "Invitation already used or expired",
+          }),
+          { status: 400, headers },
         );
       }
 
       if (new Date(invite.expires_at) < new Date()) {
         return new Response(
           JSON.stringify({ ok: false, error: "Invitation has expired" }),
-          { status: 400, headers }
+          { status: 400, headers },
         );
       }
 
@@ -3831,28 +4088,32 @@ async function handler(req: Request): Promise<Response> {
       if (!supabaseUrl || !supabaseKey) {
         return new Response(
           JSON.stringify({ ok: false, error: "Service configuration error" }),
-          { status: 500, headers }
+          { status: 500, headers },
         );
       }
 
       const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
 
-      const { data: authUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
-        email: invite.email,
-        password: body.password,
-        email_confirm: true,
-        user_metadata: {
-          name: invite.name,
-          phone: invite.phone,
-          role: "owner"
-        }
-      });
+      const { data: authUser, error: createError } = await supabaseAdmin.auth
+        .admin.createUser({
+          email: invite.email,
+          password: body.password,
+          email_confirm: true,
+          user_metadata: {
+            name: invite.name,
+            phone: invite.phone,
+            role: "owner",
+          },
+        });
 
       if (createError || !authUser) {
         console.error("[server] Auth user creation failed:", createError);
         return new Response(
-          JSON.stringify({ ok: false, error: createError?.message || "Failed to create auth account" }),
-          { status: 500, headers }
+          JSON.stringify({
+            ok: false,
+            error: createError?.message || "Failed to create auth account",
+          }),
+          { status: 500, headers },
         );
       }
 
@@ -3864,7 +4125,7 @@ async function handler(req: Request): Promise<Response> {
         `INSERT INTO users (email, phone, name, role, auth_user_id)
          VALUES ($1, $2, $3, 'owner', $4)
          RETURNING id`,
-        [invite.email, invite.phone || null, invite.name, createdUser.id]
+        [invite.email, invite.phone || null, invite.name, createdUser.id],
       );
 
       const userId = (userResult.rows[0] as any).id;
@@ -3874,24 +4135,26 @@ async function handler(req: Request): Promise<Response> {
         `UPDATE owner_invitations
          SET status = 'accepted', accepted_at = NOW()
          WHERE invitation_token = $1`,
-        [token]
+        [token],
       );
 
-      console.log(`[server] Owner invitation accepted for ${invite.email}: ${userId}`);
+      console.log(
+        `[server] Owner invitation accepted for ${invite.email}: ${userId}`,
+      );
 
       return new Response(
         JSON.stringify({
           ok: true,
           user_id: userId,
-          message: "Account created successfully! You can now log in."
+          message: "Account created successfully! You can now log in.",
         }),
-        { status: 201, headers }
+        { status: 201, headers },
       );
     } catch (err) {
       console.error("[server] Error accepting invitation:", err);
       return new Response(
         JSON.stringify({ ok: false, error: "Internal server error" }),
-        { status: 500, headers }
+        { status: 500, headers },
       );
     }
   }
@@ -3915,7 +4178,7 @@ console.log(`👷 Crew Dashboard: http://0.0.0.0:${PORT}/static/crew.html`);
 console.log(`📊 Owner Dashboard: http://0.0.0.0:${PORT}/static/owner.html`);
 console.log(`👤 Client Portal: http://0.0.0.0:${PORT}/static/client.html`);
 console.log(
-  `💼 Hiring Dashboard: http://0.0.0.0:${PORT}/static/dashboard.html`
+  `💼 Hiring Dashboard: http://0.0.0.0:${PORT}/static/dashboard.html`,
 );
 
 // Bind to 0.0.0.0 so Fly's proxy can reach the instance

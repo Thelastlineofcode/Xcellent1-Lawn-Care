@@ -1,0 +1,12 @@
+{
+  "name": "xcellent1-lawn-care",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test:playwright": "npx playwright test --config web/tests/playwright.config.ts",
+    "test:playwright:headed": "npx playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0"
+  }
+}

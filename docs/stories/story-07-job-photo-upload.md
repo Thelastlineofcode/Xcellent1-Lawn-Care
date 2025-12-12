@@ -4,14 +4,15 @@ id: story-07-job-photo-upload
 epic: epic-03-crew-mobile
 owner: dev
 points: 3
+related_frs: [FR-004]
 ---
 
-Tasks
------
+## Tasks
+
 - Add photo upload UI to job details screen.
 - Store photos in Supabase Storage with job association.
 - Show thumbnails in job history for Owner/Manager.
 
-Acceptance Criteria
--------------------
+## Acceptance Criteria
+
 - Photos uploaded by crew are visible in job details for authorized users.

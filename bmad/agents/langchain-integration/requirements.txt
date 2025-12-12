@@ -2,3 +2,6 @@ langchain>=0.0.300
 openai>=0.27.0
 pytest>=7.0
 httpx>=0.24.1
+
+# NOTE: This file is preserved for archival purposes and should not be installed in CI by default.
+# To run prototype tests, set `ENABLE_AI_PROTOTYPES=true` and install this file temporarily.

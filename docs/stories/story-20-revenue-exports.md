@@ -6,11 +6,11 @@ owner: dev
 points: 3
 ---
 
-Tasks
------
+## Tasks
+
 - Implement API to aggregate revenue by owner and date range.
 - Add CSV export endpoint and owner dashboard export UI.
 
-Acceptance Criteria
--------------------
+## Acceptance Criteria
+
 - Owner can export revenue CSV and the data matches sample inputs.

@@ -1,7 +1,6 @@
 # Authentication Configuration Review
 
-**Date**: 2025-11-17
-**Branch**: claude/review-changes-011CV51wpDpmEbt3Z6EYLYN4
+**Date**: 2025-11-17 **Branch**: claude/review-changes-011CV51wpDpmEbt3Z6EYLYN4
 **Status**: Partially Configured ⚠️
 
 ---
@@ -105,6 +104,7 @@ Run the schema in your Supabase SQL Editor:
 ```
 
 This will:
+
 - Create all tables
 - Enable Row Level Security
 - Set up RLS policies
@@ -142,12 +142,12 @@ SELECT create_linked_auth_user('sarah@example.com', 'SarahSecurePassword123!');
 
 ### From `db/schema.sql` (Lines 195-198):
 
-| Email | Name | Role | Status |
-|-------|------|------|--------|
-| owner@xcellent1.com | Business Owner | owner | ✅ Auth configured |
-| marcus@xcellent1.com | Marcus T. | crew | ⚠️ Needs auth setup |
-| priya@xcellent1.com | Priya K. | crew | ⚠️ Needs auth setup |
-| sarah@example.com | Sarah Martinez | client | ⚠️ Needs auth setup |
+| Email                | Name           | Role   | Status              |
+| -------------------- | -------------- | ------ | ------------------- |
+| owner@xcellent1.com  | Business Owner | owner  | ✅ Auth configured  |
+| marcus@xcellent1.com | Marcus T.      | crew   | ⚠️ Needs auth setup |
+| priya@xcellent1.com  | Priya K.       | crew   | ⚠️ Needs auth setup |
+| sarah@example.com    | Sarah Martinez | client | ⚠️ Needs auth setup |
 
 ---
 
@@ -156,16 +156,19 @@ SELECT create_linked_auth_user('sarah@example.com', 'SarahSecurePassword123!');
 These endpoints require authentication:
 
 ### Owner Only:
+
 - `POST /api/v1/quotes/estimate`
 - `GET /api/owner/metrics`
 - `GET /api/status`
 
 ### Crew or Owner:
+
 - `GET /api/crew/:id/jobs`
 - `POST /api/jobs/:id/photo`
 - `PATCH /api/jobs/:id/complete`
 
 ### Client or Owner:
+
 - `GET /api/client/:id/dashboard`
 
 ---
@@ -187,4 +190,3 @@ These endpoints require authentication:
 - You need to create auth accounts for crew and client users
 - All passwords should be changed in production
 - Never commit `.env` to version control (already in .gitignore)
-

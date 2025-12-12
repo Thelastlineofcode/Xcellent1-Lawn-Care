@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -36,18 +36,21 @@
         <button onclick="logout()" class="btn btn-sm">Logout</button>
       </div>
     </nav>
-    
+
     <!-- Load runtime config from server -->
     <script src="/config.js"></script>
-    
+
     <!-- Authentication Check -->
     <script type="module">
       import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
       // Use runtime-injected values when available, otherwise fall back to defaults
-      const _env = (typeof window !== "undefined" && window.__ENV) || {};
-      const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL || "https://utivthfrwgtjatsusopw.supabase.co";
-      const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "YOUR_SUPABASE_ANON_KEY_HERE";
+      const _env = (typeof window !== "undefined" && window.__ENV) ||
+        {};
+      const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL ||
+        "https://utivthfrwgtjatsusopw.supabase.co";
+      const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        "YOUR_SUPABASE_ANON_KEY_HERE";
 
       const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -192,7 +195,9 @@
           <a href="manage-invoices.html" class="action-card">
             <div class="action-icon">💰</div>
             <div class="action-label">Create Invoice</div>
-            <div class="action-count" id="action-invoices">Billing & payments</div>
+            <div class="action-count" id="action-invoices">
+              Billing & payments
+            </div>
           </a>
 
           <a href="dashboard.html" class="action-card">
@@ -204,19 +209,25 @@
           <a href="manage-applications.html" class="action-card">
             <div class="action-icon">📝</div>
             <div class="action-label">Manage Applications</div>
-            <div class="action-count" id="action-manage-apps">Detailed review</div>
+            <div class="action-count" id="action-manage-apps">
+              Detailed review
+            </div>
           </a>
 
           <a href="manage-waitlist.html" class="action-card">
             <div class="action-icon">📋</div>
             <div class="action-label">Manage Waitlist</div>
-            <div class="action-count" id="action-waitlist">Leads & inquiries</div>
+            <div class="action-count" id="action-waitlist">
+              Leads & inquiries
+            </div>
           </a>
 
           <a href="payment-accounts.html" class="action-card">
             <div class="action-icon">💳</div>
             <div class="action-label">Payment Accounts</div>
-            <div class="action-count" id="action-payment-accts">Setup & manage</div>
+            <div class="action-count" id="action-payment-accts">
+              Setup & manage
+            </div>
           </a>
 
           <a href="pending-payments.html" class="action-card">
@@ -261,11 +272,7 @@
             <div>
               <h3>Applications</h3>
               <div
-                style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-primary);
-                "
+                style="font-size: 2rem; font-weight: 700; color: var(--color-primary)"
                 id="hiring-applications"
               >
                 0
@@ -275,11 +282,7 @@
             <div>
               <h3>Interviews</h3>
               <div
-                style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-primary);
-                "
+                style="font-size: 2rem; font-weight: 700; color: var(--color-primary)"
                 id="hiring-interviews"
               >
                 0
@@ -289,11 +292,7 @@
             <div>
               <h3>Open Roles</h3>
               <div
-                style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-warning);
-                "
+                style="font-size: 2rem; font-weight: 700; color: var(--color-warning)"
                 id="hiring-openings"
               >
                 0
@@ -303,11 +302,7 @@
             <div>
               <h3>Retention</h3>
               <div
-                style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-success);
-                "
+                style="font-size: 2rem; font-weight: 700; color: var(--color-success)"
                 id="hiring-retention"
               >
                 0%
@@ -341,13 +336,7 @@
         <form
           id="quote-form"
           action="#"
-          style="
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: flex-end;
-            margin-bottom: 1rem;
-          "
+          style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; margin-bottom: 1rem"
         >
           <div
             class="quote-step"
@@ -417,12 +406,7 @@
               required
               autocomplete="off"
               inputmode="numeric"
-              style="
-                padding: 16px;
-                border-radius: 12px;
-                font-size: 1.15rem;
-                min-height: 48px;
-              "
+              style="padding: 16px; border-radius: 12px; font-size: 1.15rem; min-height: 48px"
             />
             <button
               type="button"
@@ -444,12 +428,7 @@
               name="service_type"
               class="form-select"
               required
-              style="
-                padding: 16px;
-                border-radius: 12px;
-                font-size: 1.15rem;
-                min-height: 48px;
-              "
+              style="padding: 16px; border-radius: 12px; font-size: 1.15rem; min-height: 48px"
             >
               <option value="" disabled selected>Select a service</option>
               <option value="weekly">Weekly Lawn Maintenance</option>
@@ -469,14 +448,10 @@
         </form>
         <div
           id="quote-result"
-          style="
-            display: none;
-            margin-top: 1rem;
-            font-weight: 600;
-            color: #059669;
-          "
+          style="display: none; margin-top: 1rem; font-weight: 600; color: #059669"
           aria-live="polite"
-        ></div>
+        >
+        </div>
         <div id="service-area-map" style="margin-top: 2rem">
           <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem">
             Service Area: River Parishes
@@ -498,8 +473,8 @@
         <script>
           function showQuoteStep(step) {
             for (let i = 1; i <= 3; i++) {
-              document.getElementById("quote-step-" + i).style.display =
-                i === step ? "" : "none";
+              document.getElementById("quote-step-" + i).style
+                .display = i === step ? "" : "none";
             }
           }
         </script>
@@ -512,27 +487,24 @@
           <div class="card">
             <h3>💰 Accounts Receivable</h3>
             <div
-              style="
-                font-size: 1.75rem;
-                font-weight: 700;
-                color: var(--color-warning);
-              "
+              style="font-size: 1.75rem; font-weight: 700; color: var(--color-warning)"
               id="fin-ar"
             >
               $0
             </div>
             <p class="text-muted">Outstanding invoices</p>
-            <button class="btn-secondary mt-sm full-width" aria-label="View accounts receivable details">View Details</button>
+            <button
+              class="btn-secondary mt-sm full-width"
+              aria-label="View accounts receivable details"
+            >
+              View Details
+            </button>
           </div>
 
           <div class="card">
             <h3>📊 Profit Margin</h3>
             <div
-              style="
-                font-size: 1.75rem;
-                font-weight: 700;
-                color: var(--color-success);
-              "
+              style="font-size: 1.75rem; font-weight: 700; color: var(--color-success)"
               id="fin-margin"
             >
               0%
@@ -540,23 +512,13 @@
             <p class="text-muted">This month (target: 50%)</p>
             <div
               class="progress-bar"
-              style="
-                height: 8px;
-                background: var(--color-bg);
-                border-radius: 4px;
-                overflow: hidden;
-                margin-top: 0.5rem;
-              "
+              style="height: 8px; background: var(--color-bg); border-radius: 4px; overflow: hidden; margin-top: 0.5rem"
             >
               <div
                 id="margin-bar"
-                style="
-                  height: 100%;
-                  background: var(--color-success);
-                  width: 0%;
-                  transition: width 0.5s;
-                "
-              ></div>
+                style="height: 100%; background: var(--color-success); width: 0%; transition: width 0.5s"
+              >
+              </div>
             </div>
           </div>
         </div>
@@ -573,7 +535,9 @@
     <script src="app.js"></script>
     <script>
       // Quote Calculator logic
-      document.getElementById("quote-form").onsubmit = async function (e) {
+      document.getElementById("quote-form").onsubmit = async function (
+        e,
+      ) {
         e.preventDefault();
         const form = e.target;
         const resultDiv = document.getElementById("quote-result");
@@ -595,8 +559,13 @@
           const json = await res.json();
           if (json.ok) {
             resultDiv.style.display = "block";
-            resultDiv.textContent = `Estimated Price: $${json.price_low} - $${json.price_high} (${json.notes || ""})`;
-          } else if (json.error && json.error.includes("River Parishes")) {
+            resultDiv.textContent =
+              `Estimated Price: $${json.price_low} - $${json.price_high} (${
+                json.notes || ""
+              })`;
+          } else if (
+            json.error && json.error.includes("River Parishes")
+          ) {
             resultDiv.style.display = "block";
             resultDiv.style.color = "#b91c1c";
             resultDiv.innerHTML = ""; // Clear any existing content
@@ -608,7 +577,8 @@
             leadBtn.style.marginTop = "0.75rem";
             leadBtn.textContent = "Request Future Service";
             leadBtn.onclick = function () {
-              resultDiv.innerHTML = "Thank you! We'll notify you if we expand to your area.";
+              resultDiv.innerHTML =
+                "Thank you! We'll notify you if we expand to your area.";
               // Optionally, send the lead to a /api/leads endpoint for future expansion
               fetch("/api/leads", {
                 method: "POST",
@@ -624,7 +594,8 @@
           } else {
             resultDiv.style.display = "block";
             resultDiv.style.color = "#b91c1c";
-            resultDiv.textContent = json.error || "Could not calculate quote.";
+            resultDiv.textContent = json.error ||
+              "Could not calculate quote.";
           }
         } catch (err) {
           resultDiv.style.display = "block";
@@ -665,7 +636,7 @@
             "owner-status",
             "⚠️ Unable to load live metrics. Showing cached data.",
             "warning",
-            5000
+            5000,
           );
           // Return fallback data
           return {
@@ -737,16 +708,18 @@
         };
 
         // Revenue KPI
-        document.getElementById("kpi-revenue").textContent =
-          "$" + data.revenue_this_month.toLocaleString();
+        document.getElementById("kpi-revenue").textContent = "$" +
+          data.revenue_this_month.toLocaleString();
         const revGrowth = data.revenue_growth_pct;
         document.getElementById("revenue-trend").textContent =
           (revGrowth > 0 ? "+" : "") + revGrowth + "%";
-        document.querySelector("#kpi-revenue").parentElement.querySelector(".kpi-trend").className =
-          "kpi-trend " + (revGrowth >= 0 ? "up" : "down");
+        document.querySelector("#kpi-revenue").parentElement
+          .querySelector(".kpi-trend").className = "kpi-trend " +
+            (revGrowth >= 0 ? "up" : "down");
 
         // Crew KPI
-        document.getElementById("kpi-crew").textContent = data.active_crew;
+        document.getElementById("kpi-crew").textContent =
+          data.active_crew;
         document.getElementById("crew-trend").textContent =
           data.open_positions + " openings";
         document
@@ -754,12 +727,14 @@
           .classList.add(data.open_positions > 0 ? "down" : "up");
 
         // Jobs KPI
-        document.getElementById("kpi-jobs").textContent = data.jobs_this_week;
+        document.getElementById("kpi-jobs").textContent =
+          data.jobs_this_week;
         const jobGrowth = data.jobs_growth_pct;
         document.getElementById("jobs-trend").textContent =
           (jobGrowth > 0 ? "+" : "") + jobGrowth + "%";
-        document.querySelector("#kpi-jobs").parentElement.querySelector(".kpi-trend").className =
-          "kpi-trend " + (jobGrowth >= 0 ? "up" : "down");
+        document.querySelector("#kpi-jobs").parentElement.querySelector(
+          ".kpi-trend",
+        ).className = "kpi-trend " + (jobGrowth >= 0 ? "up" : "down");
 
         // Applications KPI
         document.getElementById("kpi-applications").textContent =
@@ -769,19 +744,22 @@
         // Margin KPI
         document.getElementById("kpi-margin").textContent =
           data.profit_margin + "%";
-        const marginStatus =
-          data.profit_margin >= 50
-            ? "up"
-            : data.profit_margin >= 40
-              ? ""
-              : "down";
+        const marginStatus = data.profit_margin >= 50
+          ? "up"
+          : data.profit_margin >= 40
+          ? ""
+          : "down";
         document.getElementById("margin-trend").textContent =
           data.profit_margin >= 50 ? "On target" : "Below target";
-        if (marginStatus)
-          document.getElementById("margin-trend").classList.add(marginStatus);
+        if (marginStatus) {
+          document.getElementById("margin-trend").classList.add(
+            marginStatus,
+          );
+        }
 
         // Photos KPI
-        document.getElementById("kpi-photos").textContent = data.photos_today;
+        document.getElementById("kpi-photos").textContent =
+          data.photos_today;
 
         // Action counts
         document.getElementById("action-apps").textContent =
@@ -792,8 +770,8 @@
           data.total_clients + " accounts";
 
         // Financial
-        document.getElementById("fin-ar").textContent =
-          "$" + data.accounts_receivable.toLocaleString();
+        document.getElementById("fin-ar").textContent = "$" +
+          data.accounts_receivable.toLocaleString();
         document.getElementById("fin-margin").textContent =
           data.profit_margin + "%";
         document.getElementById("margin-bar").style.width =
@@ -817,7 +795,8 @@
           alerts.push({
             type: "success",
             icon: "💰",
-            message: `Revenue up ${data.revenue_growth_pct}% from last month ($${data.revenue_this_month.toLocaleString()})`,
+            message:
+              `Revenue up ${data.revenue_growth_pct}% from last month ($${data.revenue_this_month.toLocaleString()})`,
             action: "View Details",
             link: "#",
           });
@@ -825,7 +804,9 @@
           alerts.push({
             type: "warning",
             icon: "⚠️",
-            message: `Revenue down ${Math.abs(data.revenue_growth_pct)}% from last month`,
+            message: `Revenue down ${
+              Math.abs(data.revenue_growth_pct)
+            }% from last month`,
             action: "Review Metrics",
             link: "#",
           });
@@ -836,7 +817,9 @@
           alerts.push({
             type: "success",
             icon: "✅",
-            message: `${data.new_applications} new application${data.new_applications > 1 ? "s" : ""} to review`,
+            message: `${data.new_applications} new application${
+              data.new_applications > 1 ? "s" : ""
+            } to review`,
             action: "View Applications",
             link: "dashboard.html",
           });
@@ -858,7 +841,8 @@
           alerts.push({
             type: "warning",
             icon: "💵",
-            message: `$${data.accounts_receivable.toLocaleString()} in outstanding invoices`,
+            message:
+              `$${data.accounts_receivable.toLocaleString()} in outstanding invoices`,
             action: "Follow Up",
             link: "#",
           });
@@ -902,7 +886,7 @@
             <a href="${alert.link}" class="btn-secondary" style="white-space: nowrap;">${alert.action}</a>
           </div>
         </div>
-      `
+      `,
           )
           .join("");
       }
@@ -933,7 +917,7 @@
             <span class="badge badge-primary">Active</span>
           </div>
         </div>
-      `
+      `,
           )
           .join("");
       }

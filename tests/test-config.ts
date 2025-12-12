@@ -19,7 +19,7 @@ export async function setupTestEnvironment() {
   if (TEST_CONFIG.DATABASE_URL) {
     await testFixture.connect();
   }
-  
+
   // Set up any global test state
   console.log("🧪 Test environment setup complete");
 }
@@ -28,10 +28,10 @@ export async function setupTestEnvironment() {
 export async function teardownTestEnvironment() {
   // Clean up all test data
   await testFixture.cleanup();
-  
+
   // Disconnect from database
   await testFixture.disconnect();
-  
+
   console.log("🧹 Test environment teardown complete");
 }
 
@@ -56,11 +56,11 @@ export function databaseTest(name: string, fn: () => void | Promise<void>) {
       ignore: true,
       fn: () => {
         console.log(`⚠️  Skipping ${name} - DATABASE_URL not configured`);
-      }
+      },
     });
     return;
   }
-  
+
   Deno.test(name, fn);
 }
 
@@ -72,10 +72,10 @@ export function serverTest(name: string, fn: () => void | Promise<void>) {
       ignore: true,
       fn: () => {
         console.log(`⚠️  Skipping ${name} - TEST_BASE_URL not configured`);
-      }
+      },
     });
     return;
   }
-  
+
   Deno.test(name, fn);
 }

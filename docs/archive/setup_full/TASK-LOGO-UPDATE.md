@@ -1,25 +1,33 @@
 # Task: Update Xcellent1 Lawn Care Logo Assets
 
 ## Overview
-Replace existing logo files with newly generated professional digital assets optimized for web use.
+
+Replace existing logo files with newly generated professional digital assets
+optimized for web use.
 
 ## Generated Logo Assets
 
 Three logo variations have been created:
 
 ### 1. Primary Logo (Modernized)
+
 - **File**: `xcellent1-new.png`
-- **URL**: https://user-gen-media-assets.s3.amazonaws.com/gemini_images/c5113c9e-4719-4cd8-88d8-56f3d988034a.png
+- **URL**:
+  https://user-gen-media-assets.s3.amazonaws.com/gemini_images/c5113c9e-4719-4cd8-88d8-56f3d988034a.png
 - **Use**: Main website header, hero sections
 
 ### 2. Alternative Clean Design
+
 - **File**: `xcellent1-alt.png`
-- **URL**: https://user-gen-media-assets.s3.amazonaws.com/gemini_images/eabb11bb-952a-41e0-8906-7841cfa67460.png
+- **URL**:
+  https://user-gen-media-assets.s3.amazonaws.com/gemini_images/eabb11bb-952a-41e0-8906-7841cfa67460.png
 - **Use**: Secondary placements, smaller UI elements
 
 ### 3. Web-Optimized Emblem
+
 - **File**: `xcellent1-web.png`
-- **URL**: https://user-gen-media-assets.s3.amazonaws.com/gemini_images/5b84f266-1bd8-4c70-a395-80397e91e8d5.png
+- **URL**:
+  https://user-gen-media-assets.s3.amazonaws.com/gemini_images/5b84f266-1bd8-4c70-a395-80397e91e8d5.png
 - **Use**: Favicon, social media, compact displays
 
 ## Implementation Steps
@@ -39,21 +47,29 @@ curl -o xcellent1-web.png "https://user-gen-media-assets.s3.amazonaws.com/gemini
 ### Step 2: Update HTML Files
 
 #### index.html
+
 Replace the emoji logo in the header:
 
 **Current:**
+
 ```html
 <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
 ```
 
 **Updated:**
+
 ```html
 <a href="/" class="logo">
-  <img src="/static/images/xcellent1-new.png" alt="Xcellent1 Lawn Care" height="40">
+  <img
+    src="/static/images/xcellent1-new.png"
+    alt="Xcellent1 Lawn Care"
+    height="40"
+  >
 </a>
 ```
 
 #### Other HTML Files to Update
+
 - `web/static/home.html`
 - `web/static/dashboard.html`
 - `web/static/owner.html`
@@ -91,6 +107,7 @@ Add logo styling to `web/static/styles.css`:
 ### Step 4: Update Manifest & Meta Tags
 
 #### manifest.json
+
 Update icons to reference the new web-optimized logo:
 
 ```json
@@ -118,11 +135,21 @@ Update icons to reference the new web-optimized logo:
 ```
 
 #### Add Favicon Links
+
 Add to `<head>` section of all HTML files:
 
 ```html
-<link rel="icon" type="image/png" sizes="32x32" href="/static/images/xcellent1-web.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/static/images/xcellent1-web.png">
+<link
+  rel="icon"
+  type="image/png"
+  sizes="32x32"
+  href="/static/images/xcellent1-web.png"
+>
+<link
+  rel="apple-touch-icon"
+  sizes="180x180"
+  href="/static/images/xcellent1-web.png"
+>
 ```
 
 ### Step 5: Test & Verify
@@ -159,6 +186,7 @@ git push origin main
 ### Step 7: Deploy
 
 If using Fly.io:
+
 ```bash
 fly deploy
 ```
@@ -168,18 +196,21 @@ If using GitHub Actions, push will trigger automatic deployment.
 ## Logo Usage Guidelines
 
 ### Primary Logo (xcellent1-new.png)
+
 - Main website header
 - Landing page hero
 - Email signatures
 - Large format displays
 
 ### Alternative Logo (xcellent1-alt.png)
+
 - Dashboard header
 - Portal interfaces
 - Secondary pages
 - Marketing materials
 
 ### Web Emblem (xcellent1-web.png)
+
 - Favicon
 - Social media profile
 - Mobile app icon
@@ -195,6 +226,7 @@ git push origin main
 ```
 
 Or manually restore:
+
 ```html
 <a href="/" class="logo">🌱 Xcellent1 Lawn Care</a>
 ```
@@ -202,7 +234,8 @@ Or manually restore:
 ## Notes
 
 - Original logo files (`logo.png`, `logo-nobg.png`) will be kept as backup
-- New assets maintain green color palette consistent with brand (#10b981, #059669)
+- New assets maintain green color palette consistent with brand (#10b981,
+  #059669)
 - All logos are web-optimized for fast loading
 - Transparent backgrounds where appropriate
 
@@ -223,8 +256,8 @@ Or manually restore:
 
 ---
 
-**Task Owner:** Travone  
-**Priority:** Medium  
-**Estimated Time:** 30-45 minutes  
-**Dependencies:** None  
+**Task Owner:** Travone\
+**Priority:** Medium\
+**Estimated Time:** 30-45 minutes\
+**Dependencies:** None\
 **Status:** Ready to implement

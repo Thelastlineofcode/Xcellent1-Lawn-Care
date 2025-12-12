@@ -1,12 +1,21 @@
-# Perplexity Research Skill
+# Perplexity Research Skill (ARCHIVED - Future Implementation)
+
+> Status: Paused — Research skill for AI agents is archived and not used in
+> production. This folder contains helper code and prototypes that are planned
+> for future agent integration (e.g., LangChain). For now, AI components are on
+> hold; re-enable when AI features are accepted and supported in production.
 
 ## Overview
-Token-efficient research skill for AI agents using Perplexity API. Provides real-time web research capabilities without bloating agent prompts.
+
+Token-efficient research skill for AI agents using Perplexity API. Provides
+real-time web research capabilities without bloating agent prompts.
 
 ## Why This Skill?
+
 Based on the Claude extended context article, skills should:
+
 - ✅ Be **compact and focused** (saves tokens)
-- ✅ Have **clear input/output contracts**  
+- ✅ Have **clear input/output contracts**
 - ✅ Be **reusable across agents**
 - ✅ **Reduce repetitive prompt instructions**
 
@@ -22,13 +31,16 @@ pip install -r src/skills/perplexity/requirements.txt
 ## Configuration
 
 Add to your `.env`:
+
 ```bash
 PERPLEXITY_API_KEY=pplx-your-key-here
+ENABLE_AI_PROTOTYPES=true  # must be set to enable the archived prototype modules
 ```
 
 ## Usage
 
 ### 1. Quick Research (Python)
+
 ```python
 from src.skills.perplexity.skill import research
 
@@ -39,6 +51,7 @@ print(result['citations'])
 ```
 
 ### 2. Agent Integration (LangChain)
+
 ```python
 from langchain.tools import Tool
 from src.skills.perplexity.skill import research
@@ -60,13 +73,14 @@ agent = initialize_agent(
 ```
 
 ### 3. TypeScript/Deno Integration
+
 ```typescript
 import { PerplexityResearch } from "./skill.ts";
 
 const research = new PerplexityResearch(Deno.env.get("PERPLEXITY_API_KEY"));
 
 const result = await research.query(
-  "Latest lawn care industry trends 2025"
+  "Latest lawn care industry trends 2025",
 );
 console.log(result.answer);
 ```
@@ -76,14 +90,17 @@ console.log(result.answer);
 ### `research(query, options)`
 
 **Parameters:**
+
 - `query` (string): Research question
 - `options` (object, optional):
-  - `model`: 'sonar-pro' | 'sonar' | 'sonar-reasoning-pro' (default: 'sonar-pro')
+  - `model`: 'sonar-pro' | 'sonar' | 'sonar-reasoning-pro' (default:
+    'sonar-pro')
   - `max_tokens`: 1000-4000 (default: 2000)
   - `recency`: 'day' | 'week' | 'month' | 'year' (default: 'month')
   - `temperature`: 0.0-1.0 (default: 0.2)
 
 **Returns:**
+
 ```python
 {
     'answer': str,  # Research findings
@@ -98,6 +115,7 @@ console.log(result.answer);
 ## Example Use Cases
 
 ### For Intake Agent
+
 ```python
 # Research customer question
 result = research(
@@ -108,6 +126,7 @@ result = research(
 ```
 
 ### For Quote Agent
+
 ```python
 # Competitive pricing research
 result = research(
@@ -117,7 +136,8 @@ result = research(
 # Use findings to validate pricing
 ```
 
-### For Marketing Agent  
+### For Marketing Agent
+
 ```python
 # Content research
 result = research(
@@ -131,6 +151,7 @@ result = research(
 ## Token Efficiency
 
 **Before (embedded in prompt):**
+
 ```
 Agent Prompt: 1500 tokens
 + Research instructions: 500 tokens
@@ -139,6 +160,7 @@ Agent Prompt: 1500 tokens
 ```
 
 **After (using skill):**
+
 ```
 Agent Prompt: 800 tokens
 + Skill call: research("query")
@@ -166,6 +188,7 @@ print(tracker.get_monthly_cost())
 ## Integration with BMad Agents
 
 ### Step 1: Add to Agent Manifest
+
 ```yaml
 # bmad/agents/intake/agent.yaml
 tools:
@@ -175,6 +198,7 @@ tools:
 ```
 
 ### Step 2: Use in Handler
+
 ```python
 # bmad/agents/intake/handler.ts (via Python bridge)
 from src.skills.perplexity.skill import research
@@ -201,6 +225,7 @@ python src/skills/perplexity/test_skill.py --scenario "pricing_research"
 ## Monitoring
 
 View skill usage in agent audit logs:
+
 ```sql
 SELECT 
     agent_name,
@@ -214,7 +239,7 @@ GROUP BY agent_name;
 ## Best Practices
 
 1. **Cache common queries**: Store frequently asked research in database
-2. **Set appropriate recency**: Don't use 'day' for stable information  
+2. **Set appropriate recency**: Don't use 'day' for stable information
 3. **Choose right model**:
    - `sonar`: Fast, simple queries
    - `sonar-pro`: Most use cases (recommended)
@@ -225,6 +250,7 @@ GROUP BY agent_name;
 ## Troubleshooting
 
 **Issue**: "API key not found"
+
 ```bash
 # Check .env file
 cat .env | grep PERPLEXITY_API_KEY
@@ -234,11 +260,13 @@ export PERPLEXITY_API_KEY=pplx-your-key
 ```
 
 **Issue**: Slow responses
+
 - Use `sonar` instead of `sonar-pro` for speed
 - Reduce `max_tokens` to 1500
 - Check API rate limits
 
 **Issue**: Poor quality answers
+
 - Increase `temperature` to 0.3-0.5
 - Use `sonar-reasoning-pro` for complex queries
 - Make queries more specific

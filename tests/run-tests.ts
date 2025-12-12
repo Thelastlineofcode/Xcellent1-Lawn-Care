@@ -1,7 +1,10 @@
 // Test Runner - Following test-quality.md patterns
 // Executes tests with proper setup/teardown and reporting
 
-import { setupTestEnvironment, teardownTestEnvironment } from "./test-config.ts";
+import {
+  setupTestEnvironment,
+  teardownTestEnvironment,
+} from "./test-config.ts";
 
 async function waitForServer(url: string, maxAttempts = 30): Promise<boolean> {
   console.log(`Waiting for server at ${url}...`);
@@ -36,7 +39,14 @@ async function runTests() {
       // 1. Start Server locally
       console.log("Starting local server...");
       const serverCommand = new Deno.Command("deno", {
-        args: ["run", "--allow-net", "--allow-read", "--allow-write", "--allow-env", "server.ts"],
+        args: [
+          "run",
+          "--allow-net",
+          "--allow-read",
+          "--allow-write",
+          "--allow-env",
+          "server.ts",
+        ],
         stdout: "null",
         stderr: "inherit",
       });
@@ -62,14 +72,14 @@ async function runTests() {
         // Run all standard test locations
         "tests/",
         "web/tests/",
-        "bmad/agents/tests/"
+        "bmad/agents/tests/",
       ],
       stdout: "inherit",
       stderr: "inherit",
       env: {
         "BASE_URL": baseUrl,
-        "TEST_BASE_URL": baseUrl // Some tests might use this
-      }
+        "TEST_BASE_URL": baseUrl, // Some tests might use this
+      },
     });
 
     const { code: testCode } = await testCommand.output();
@@ -80,7 +90,7 @@ async function runTests() {
       args: ["run", "--allow-net", "--allow-env", "user_journey_test.js"],
       stdout: "inherit",
       stderr: "inherit",
-      env: { "BASE_URL": baseUrl }
+      env: { "BASE_URL": baseUrl },
     });
     const { code: journeyCode } = await journeyCommand.output();
 
@@ -93,7 +103,6 @@ async function runTests() {
     }
 
     return finalCode;
-
   } catch (error) {
     console.error("💥 Test execution failed:", error);
     return 1;

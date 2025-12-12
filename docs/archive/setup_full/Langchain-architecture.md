@@ -1,25 +1,21 @@
-LangChain AI Agent Architecture
-Core Agent Setup
+LangChain AI Agent Architecture Core Agent Setup
 
-Flask + LangChain Integration - Your existing Deno backend will integrate with Python microservices for AI functionality. Deploy LangChain agents as separate Flask APIs that your main Deno app calls via REST endpoints.​
+Flask + LangChain Integration - Your existing Deno backend will integrate with
+Python microservices for AI functionality. Deploy LangChain agents as separate
+Flask APIs that your main Deno app calls via REST endpoints.​
 
-Perplexity Integration - LangChain has native Perplexity support, making it perfect for your use case:​
+Perplexity Integration - LangChain has native Perplexity support, making it
+perfect for your use case:​
 
-python
-from langchain_community.chat_models import ChatPerplexity
-from langchain.agents import AgentExecutor, create_react_agent
-from langchain.tools import Tool
-import os
+python from langchain_community.chat_models import ChatPerplexity from
+langchain.agents import AgentExecutor, create_react_agent from langchain.tools
+import Tool import os
 
 # Set up Perplexity
 
 os.environ["PPLX_API_KEY"] = "your_perplexity_key"
 
-llm = ChatPerplexity(
-model="sonar-pro",
-temperature=0.7,
-max_tokens=1000
-)
+llm = ChatPerplexity( model="sonar-pro", temperature=0.7, max_tokens=1000 )
 Multi-Agent System Design
 
 Customer Service Agent - Handles inquiries, quotes, and booking:​
@@ -66,81 +62,54 @@ LangChain Tools & Integrations
 
 Custom Tools for Your Business:​
 
-python
-from langchain.tools import Tool
+python from langchain.tools import Tool
 
 # Supabase Database Tool
 
-def query_customer_data(customer_id): # Query Supabase for customer info
-return customer_history
+def query_customer_data(customer_id): # Query Supabase for customer info return
+customer_history
 
 # Crew Availability Tool
 
-def check_crew_schedule(date): # Check crew calendar availability
-return available_slots
+def check_crew_schedule(date): # Check crew calendar availability return
+available_slots
 
 # Quote Calculator Tool
 
-def calculate_quote(property_size, services): # Generate pricing based on parameters
-return quote_amount
+def calculate_quote(property_size, services): # Generate pricing based on
+parameters return quote_amount
 
 # Email Sender Tool (Zoho)
 
-def send_customer_email(to, subject, body): # Send via Zoho API
-return status
+def send_customer_email(to, subject, body): # Send via Zoho API return status
 
-tools = [
-Tool(name="CustomerLookup", func=query_customer_data),
+tools = [ Tool(name="CustomerLookup", func=query_customer_data),
 Tool(name="ScheduleCheck", func=check_crew_schedule),
-Tool(name="QuoteGenerator", func=calculate_quote),
-Tool(name="EmailSender", func=send_customer_email)
-]
-Implementation Architecture
+Tool(name="QuoteGenerator", func=calculate_quote), Tool(name="EmailSender",
+func=send_customer_email) ] Implementation Architecture
 
 Microservices Structure:​
 
-text
-xcellent1-lawn-care/
-├── deno-app/ # Main Deno/React application
-│ ├── server.ts # Your existing Deno server
-│ ├── web/ # React frontend
-│ └── supabase/ # Database configs
-│
-├── langchain-agents/ # New Python microservice
-│ ├── app.py # Flask API server
-│ ├── agents/
-│ │ ├── customer_agent.py
-│ │ ├── operations_agent.py
-│ │ ├── marketing_agent.py
-│ │ └── hiring_agent.py
-│ ├── tools/
-│ │ ├── supabase_tool.py
-│ │ ├── zoho_tool.py
-│ │ ├── calendar_tool.py
-│ │ └── quote_tool.py
-│ ├── memory/
-│ │ └── conversation_memory.py
-│ └── requirements.txt
-│
-└── fly.toml # Deploy both services
-Flask API Endpoints:​
+text xcellent1-lawn-care/ ├── deno-app/ # Main Deno/React application │ ├──
+server.ts # Your existing Deno server │ ├── web/ # React frontend │ └──
+supabase/ # Database configs │ ├── langchain-agents/ # New Python microservice │
+├── app.py # Flask API server │ ├── agents/ │ │ ├── customer_agent.py │ │ ├──
+operations_agent.py │ │ ├── marketing_agent.py │ │ └── hiring_agent.py │ ├──
+tools/ │ │ ├── supabase_tool.py │ │ ├── zoho_tool.py │ │ ├── calendar_tool.py │
+│ └── quote_tool.py │ ├── memory/ │ │ └── conversation_memory.py │ └──
+requirements.txt │ └── fly.toml # Deploy both services Flask API Endpoints:​
 
-python
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from agents.customer_agent import customer_service_agent
-from agents.operations_agent import operations_agent
+python from flask import Flask, request, jsonify from flask_cors import CORS
+from agents.customer_agent import customer_service_agent from
+agents.operations_agent import operations_agent
 
-app = Flask(**name**)
-CORS(app)
+app = Flask(**name**) CORS(app)
 
 # Customer inquiry endpoint
 
-@app.route('/api/agent/inquiry', methods=['POST'])
-def handle_inquiry():
-data = request.json
-user_message = data.get('message')
-customer_id = data.get('customer_id')
+@app.route('/api/agent/inquiry', methods=['POST']) def handle_inquiry(): data =
+request.json user_message = data.get('message') customer_id =
+data.get('customer_id')
 
     response = customer_service_agent.invoke({
         "input": user_message,
@@ -151,10 +120,8 @@ customer_id = data.get('customer_id')
 
 # Auto-schedule jobs
 
-@app.route('/api/agent/schedule', methods=['POST'])
-def auto_schedule():
-data = request.json
-date = data.get('date')
+@app.route('/api/agent/schedule', methods=['POST']) def auto_schedule(): data =
+request.json date = data.get('date')
 
     schedule = operations_agent.invoke({
         "task": "optimize_schedule",
@@ -167,20 +134,16 @@ Memory & Conversation Management
 
 Session-Based Memory:​
 
-python
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationChain
+python from langchain.memory import ConversationBufferMemory from
+langchain.chains import ConversationChain
 
 # Store conversations per customer
 
 customer_memories = {}
 
-def get_agent_with_memory(customer_id):
-if customer_id not in customer_memories:
-customer_memories[customer_id] = ConversationBufferMemory(
-return_messages=True,
-memory_key="chat_history"
-)
+def get_agent_with_memory(customer_id): if customer_id not in customer_memories:
+customer_memories[customer_id] = ConversationBufferMemory( return_messages=True,
+memory_key="chat_history" )
 
     return ConversationChain(
         llm=llm,
@@ -190,40 +153,32 @@ memory_key="chat_history"
 
 RAG for Business Knowledge
 
-Retrieval-Augmented Generation - Index your business documents for context-aware responses:​
+Retrieval-Augmented Generation - Index your business documents for context-aware
+responses:​
 
-python
-from langchain.vectorstores import SupabaseVectorStore
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.chains import RetrievalQA
+python from langchain.vectorstores import SupabaseVectorStore from
+langchain.embeddings import OpenAIEmbeddings from langchain.chains import
+RetrievalQA
 
 # Store service guides, FAQs, policies
 
-vector_store = SupabaseVectorStore(
-client=supabase_client,
-embedding=OpenAIEmbeddings(),
-table_name="business_knowledge"
-)
+vector_store = SupabaseVectorStore( client=supabase_client,
+embedding=OpenAIEmbeddings(), table_name="business_knowledge" )
 
 # Create RAG chain
 
-qa_chain = RetrievalQA.from_chain_type(
-llm=llm,
-retriever=vector_store.as_retriever(),
-return_source_documents=True
-)
-Autonomous Agent Workflows
+qa_chain = RetrievalQA.from_chain_type( llm=llm,
+retriever=vector_store.as_retriever(), return_source_documents=True ) Autonomous
+Agent Workflows
 
 ReAct Loop for Complex Tasks:​
 
-python
-from langchain.agents import create_react_agent
-from langchain.prompts import PromptTemplate
+python from langchain.agents import create_react_agent from langchain.prompts
+import PromptTemplate
 
 # Define agent prompt
 
-prompt = PromptTemplate(
-template="""You are Xcellent1 Lawn Care's AI assistant.
+prompt = PromptTemplate( template="""You are Xcellent1 Lawn Care's AI assistant.
 
     Use these tools to help customers:
     {tools}
@@ -239,14 +194,8 @@ template="""You are Xcellent1 Lawn Care's AI assistant.
 
 # Create ReAct agent
 
-agent = create_react_agent(llm, tools, prompt)
-agent_executor = AgentExecutor(
-agent=agent,
-tools=tools,
-verbose=True,
-max_iterations=5
-)
-Real-World Use Cases
+agent = create_react_agent(llm, tools, prompt) agent_executor = AgentExecutor(
+agent=agent, tools=tools, verbose=True, max_iterations=5 ) Real-World Use Cases
 
 1. Automated Quote Generation:​
 
@@ -306,32 +255,21 @@ text
 
 app = "xcellent1-langchain-agents"
 
-[build]
-dockerfile = "Dockerfile.agents"
+[build] dockerfile = "Dockerfile.agents"
 
-[env]
-FLASK_ENV = "production"
-PPLX_API_KEY = "your_key"
-SUPABASE_URL = "your_url"
+[env] FLASK_ENV = "production" PPLX_API_KEY = "your_key" SUPABASE_URL =
+"your_url"
 
-[[services]]
-internal_port = 5000
-protocol = "tcp"
+[[services]] internal_port = 5000 protocol = "tcp"
 
-[[services.ports]]
-port = 80
-handlers = ["http"]
-Environment Variables:
+[[services.ports]] port = 80 handlers = ["http"] Environment Variables:
 
-bash
-PPLX_API_KEY=your_perplexity_api_key
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_key
-ZOHO_API_KEY=your_zoho_key
-LANGSMITH_API_KEY=your_langsmith_key # For monitoring
-Monitoring & Observability
+bash PPLX_API_KEY=your_perplexity_api_key SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_key ZOHO_API_KEY=your_zoho_key
+LANGSMITH_API_KEY=your_langsmith_key # For monitoring Monitoring & Observability
 
-LangSmith Integration - Track agent performance, token usage, and conversation quality in real-time. Debug issues by replaying exact agent interactions.​
+LangSmith Integration - Track agent performance, token usage, and conversation
+quality in real-time. Debug issues by replaying exact agent interactions.​
 
 Cost Optimization
 
@@ -357,30 +295,24 @@ Integration with Your Workflow
 
 Connect to Existing Deno App:
 
-typescript
-// In your Deno server.ts
-async function getAIResponse(message: string, customerId: string) {
-const response = await fetch('https://xcellent1-langchain-agents.fly.dev/api/agent/inquiry', {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ message, customer_id: customerId })
-});
+typescript // In your Deno server.ts async function getAIResponse(message:
+string, customerId: string) { const response = await
+fetch('https://xcellent1-langchain-agents.fly.dev/api/agent/inquiry', { method:
+'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+message, customer_id: customerId }) });
 
-return await response.json();
-Step 5: Create config.py
+return await response.json(); Step 5: Create config.py
 
 python
 
 # config.py
 
-import os
-from dotenv import load_dotenv
+import os from dotenv import load_dotenv
 
 load_dotenv()
 
-class Config:
-FLASK_ENV = os.getenv('FLASK_ENV', 'production')
-DEBUG = FLASK_ENV == 'development'
+class Config: FLASK_ENV = os.getenv('FLASK_ENV', 'production') DEBUG = FLASK_ENV
+== 'development'
 
     # Perplexity - Using regular Sonar
     PPLX_API_KEY = os.getenv('PPLX_API_KEY')
@@ -413,23 +345,16 @@ Step 6: Create Agent Files
 
 Create folder structure:
 
-bash
-mkdir agents tools
-touch agents/**init**.py tools/**init**.py
+bash mkdir agents tools touch agents/**init**.py tools/**init**.py
 agents/customer_agent.py:
 
-python
-from langchain_community.chat_models import ChatPerplexity
-from langchain.agents import AgentExecutor, create_react_agent
-from langchain.prompts import PromptTemplate
-from langchain.tools import Tool
-from config import Config
+python from langchain_community.chat_models import ChatPerplexity from
+langchain.agents import AgentExecutor, create_react_agent from langchain.prompts
+import PromptTemplate from langchain.tools import Tool from config import Config
 import os
 
-def get_quote_tool():
-def calculate_quote(input_str): # Parse input like "5000 sqft, mowing, edging"
-parts = input_str.lower().split(',')
-sqft = 5000 # default
+def get_quote_tool(): def calculate_quote(input_str): # Parse input like "5000
+sqft, mowing, edging" parts = input_str.lower().split(',') sqft = 5000 # default
 services = []
 
         for part in parts:
@@ -460,32 +385,26 @@ services = []
         description="Calculate lawn care quotes. Input format: '5000 sqft, mowing, edging'"
     )
 
-def get_customer_agent(): # Initialize Perplexity with Sonar model
-llm = ChatPerplexity(
-api_key=Config.PPLX_API_KEY,
-model='sonar', # Regular Sonar - $0.20/1M tokens
-temperature=0.7,
-max_tokens=500
-)
+def get_customer_agent(): # Initialize Perplexity with Sonar model llm =
+ChatPerplexity( api_key=Config.PPLX_API_KEY, model='sonar', # Regular Sonar -
+$0.20/1M tokens temperature=0.7, max_tokens=500 )
 
     tools = [get_quote_tool()]
 
     prompt = PromptTemplate(
         template="""You are Xcellent1 Lawn Care's customer service AI assistant.
 
-Service areas: LaPlace, Norco, Hahnville, Destrehan (Louisiana)
-Services: Weekly mowing, edging, fertilization, weed control, aeration, seasonal cleanup
+Service areas: LaPlace, Norco, Hahnville, Destrehan (Louisiana) Services: Weekly
+mowing, edging, fertilization, weed control, aeration, seasonal cleanup
 
-Available tools:
-{tools}
+Available tools: {tools}
 
 Customer inquiry: {input}
 
-Provide helpful, professional responses. Use the QuoteCalculator tool when customers ask about pricing.
+Provide helpful, professional responses. Use the QuoteCalculator tool when
+customers ask about pricing.
 
-{agent_scratchpad}""",
-input_variables=["tools", "input", "agent_scratchpad"]
-)
+{agent_scratchpad}""", input_variables=["tools", "input", "agent_scratchpad"] )
 
     agent = create_react_agent(llm, tools, prompt)
 
@@ -499,24 +418,18 @@ input_variables=["tools", "input", "agent_scratchpad"]
 
 agents/operations_agent.py:
 
-python
-from langchain_community.chat_models import ChatPerplexity
-from langchain.agents import AgentExecutor, create_react_agent
-from langchain.prompts import PromptTemplate
-from config import Config
+python from langchain_community.chat_models import ChatPerplexity from
+langchain.agents import AgentExecutor, create_react_agent from langchain.prompts
+import PromptTemplate from config import Config
 
-def get_operations_agent():
-llm = ChatPerplexity(
-api_key=Config.PPLX_API_KEY,
-model='sonar',
-temperature=0.5,
-max_tokens=500
-)
+def get_operations_agent(): llm = ChatPerplexity( api_key=Config.PPLX_API_KEY,
+model='sonar', temperature=0.5, max_tokens=500 )
 
     prompt = PromptTemplate(
         template="""You are Xcellent1 Lawn Care's operations manager AI.
 
-Your role: Optimize crew schedules, route planning, and job assignments for LaPlace, LA area.
+Your role: Optimize crew schedules, route planning, and job assignments for
+LaPlace, LA area.
 
 Task: {input}
 
@@ -527,9 +440,7 @@ Provide actionable scheduling recommendations considering:
 - Crew availability
 - Job priority
 
-{agent_scratchpad}""",
-input_variables=["input", "agent_scratchpad"]
-)
+{agent_scratchpad}""", input_variables=["input", "agent_scratchpad"] )
 
     agent = create_react_agent(llm, [], prompt)
 
@@ -543,19 +454,12 @@ input_variables=["input", "agent_scratchpad"]
 
 agents/hiring_agent.py:
 
-python
-from langchain_community.chat_models import ChatPerplexity
-from langchain.agents import AgentExecutor, create_react_agent
-from langchain.prompts import PromptTemplate
-from config import Config
+python from langchain_community.chat_models import ChatPerplexity from
+langchain.agents import AgentExecutor, create_react_agent from langchain.prompts
+import PromptTemplate from config import Config
 
-def get_hiring_agent():
-llm = ChatPerplexity(
-api_key=Config.PPLX_API_KEY,
-model='sonar',
-temperature=0.3,
-max_tokens=400
-)
+def get_hiring_agent(): llm = ChatPerplexity( api_key=Config.PPLX_API_KEY,
+model='sonar', temperature=0.3, max_tokens=400 )
 
     prompt = PromptTemplate(
         template="""You are Xcellent1 Lawn Care's hiring manager AI.
@@ -575,9 +479,7 @@ Provide a screening assessment with:
 2. Concerns
 3. Recommendation (Interview/Reject)
 
-{agent_scratchpad}""",
-input_variables=["input", "agent_scratchpad"]
-)
+{agent_scratchpad}""", input_variables=["input", "agent_scratchpad"] )
 
     agent = create_react_agent(llm, [], prompt)
 
@@ -591,36 +493,22 @@ input_variables=["input", "agent_scratchpad"]
 
 Step 7: Create Main Flask App (app.py)
 
-python
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from dotenv import load_dotenv
-import os
-from agents.customer_agent import get_customer_agent
-from agents.operations_agent import get_operations_agent
-from agents.hiring_agent import get_hiring_agent
+python from flask import Flask, request, jsonify from flask_cors import CORS
+from dotenv import load_dotenv import os from agents.customer_agent import
+get_customer_agent from agents.operations_agent import get_operations_agent from
+agents.hiring_agent import get_hiring_agent
 
-load_dotenv()
-app = Flask(**name**)
+load_dotenv() app = Flask(**name**)
 
-CORS(app, origins=[
-"https://xcellent1lawncare.com",
-"http://localhost:8000"
-])
+CORS(app, origins=[ "https://xcellent1lawncare.com", "http://localhost:8000" ])
 
-@app.route('/health', methods=['GET'])
-def health_check():
-return jsonify({
-"status": "healthy",
-"service": "xcellent1-langchain-agents",
-"model": "perplexity-sonar"
-})
+@app.route('/health', methods=['GET']) def health_check(): return jsonify({
+"status": "healthy", "service": "xcellent1-langchain-agents", "model":
+"perplexity-sonar" })
 
-@app.route('/api/agent/inquiry', methods=['POST'])
-def handle_customer_inquiry():
-try:
-data = request.json
-message = data.get('message')
+@app.route('/api/agent/inquiry', methods=['POST']) def
+handle_customer_inquiry(): try: data = request.json message =
+data.get('message')
 
         if not message:
             return jsonify({"error": "Message required"}), 400
@@ -635,11 +523,8 @@ message = data.get('message')
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/agent/schedule', methods=['POST'])
-def auto_schedule():
-try:
-data = request.json
-date = data.get('date')
+@app.route('/api/agent/schedule', methods=['POST']) def auto_schedule(): try:
+data = request.json date = data.get('date')
 
         agent = get_operations_agent()
         response = agent.invoke({
@@ -650,11 +535,9 @@ date = data.get('date')
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/agent/screen-application', methods=['POST'])
-def screen_application():
-try:
-data = request.json
-application = data.get('application')
+@app.route('/api/agent/screen-application', methods=['POST']) def
+screen_application(): try: data = request.json application =
+data.get('application')
 
         agent = get_hiring_agent()
         response = agent.invoke({
@@ -665,98 +548,64 @@ application = data.get('application')
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-if **name** == '**main**':
-port = int(os.environ.get('PORT', 5000))
-app.run(host='0.0.0.0', port=port, debug=True)
-Step 8: Create Deployment Files
+if **name** == '**main**': port = int(os.environ.get('PORT', 5000))
+app.run(host='0.0.0.0', port=port, debug=True) Step 8: Create Deployment Files
 
 Procfile:
 
-text
-web: gunicorn app:app
-fly.toml:
+text web: gunicorn app:app fly.toml:
 
-text
-app = "xcellent1-langchain-agents"
-primary_region = "iad"
+text app = "xcellent1-langchain-agents" primary_region = "iad"
 
-[build]
-builder = "paketobuildpacks/builder:base"
+[build] builder = "paketobuildpacks/builder:base"
 
-[env]
-PORT = "8080"
+[env] PORT = "8080"
 
-[[services]]
-internal_port = 8080
-protocol = "tcp"
+[[services]] internal_port = 8080 protocol = "tcp"
 
-[[services.ports]]
-handlers = ["http"]
-port = 80
+[[services.ports]] handlers = ["http"] port = 80
 
-[[services.ports]]
-handlers = ["tls", "http"]
-port = 443
-.gitignore:
+[[services.ports]] handlers = ["tls", "http"] port = 443 .gitignore:
 
-text
-venv/
-\*.pyc
-**pycache**/
-.env
-.DS_Store
-Step 9: Test Locally
+text venv/ \*.pyc **pycache**/ .env .DS_Store Step 9: Test Locally
 
-bash
-flask run
-Visit http://127.0.0.1:5000/health - should see:
+bash flask run Visit http://127.0.0.1:5000/health - should see:
 
-json
-{"status": "healthy", "service": "xcellent1-langchain-agents", "model": "perplexity-sonar"}
-Test customer agent:
+json {"status": "healthy", "service": "xcellent1-langchain-agents", "model":
+"perplexity-sonar"} Test customer agent:
 
-bash
-curl -X POST http://127.0.0.1:5000/api/agent/inquiry \
- -H "Content-Type: application/json" \
- -d '{"message": "How much for 5000 sq ft lawn with mowing and edging?"}'
-Step 10: Deploy to Fly.io
+bash curl -X POST http://127.0.0.1:5000/api/agent/inquiry\
+-H "Content-Type: application/json"\
+-d '{"message": "How much for 5000 sq ft lawn with mowing and edging?"}' Step
+10: Deploy to Fly.io
 
-bash
-fly launch
+bash fly launch
 
 # Choose name: xcellent1-langchain-agents
 
 # Choose region: iad (close to Houston)
 
-fly secrets set PPLX_API_KEY=your_actual_key
-fly secrets set SUPABASE_URL=your_supabase_url
-fly secrets set SUPABASE_KEY=your_supabase_key
+fly secrets set PPLX_API_KEY=your_actual_key fly secrets set
+SUPABASE_URL=your_supabase_url fly secrets set SUPABASE_KEY=your_supabase_key
 fly secrets set ZOHO_API_KEY=your_zoho_key
 
 fly deploy
 
-fly status
-Step 11: Connect to Your Deno App
+fly status Step 11: Connect to Your Deno App
 
 Update your server.ts:
 
-typescript
-const AGENT_URL = "https://xcellent1-langchain-agents.fly.dev";
+typescript const AGENT_URL = "https://xcellent1-langchain-agents.fly.dev";
 
-app.post("/api/contact", async (c) => {
-const { message, email } = await c.req.json();
+app.post("/api/contact", async (c) => { const { message, email } = await
+c.req.json();
 
-const response = await fetch(`${AGENT_URL}/api/agent/inquiry`, {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ message, customer_id: email })
-});
+const response = await fetch(`${AGENT_URL}/api/agent/inquiry`, { method: "POST",
+headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message,
+customer_id: email }) });
 
-const data = await response.json();
-return c.json(data);
-});
-Cost Analysis (Sonar Model)
-Price: $0.20 per 1M tokens
+const data = await response.json(); return c.json(data); }); Cost Analysis
+(Sonar Model) Price: $0.20 per 1M tokens
 
 Average customer inquiry: ~500 tokens = $0.0001 (1/100th of a penny)
 
@@ -766,8 +615,6 @@ Average customer inquiry: ~500 tokens = $0.0001 (1/100th of a penny)
 
 Your $5 credit: ~25M tokens = months of testing!
 
-Monitoring
-View live logs:
+Monitoring View live logs:
 
-bash
-fly logs -a xcellent1-langchain-agents
+bash fly logs -a xcellent1-langchain-agents

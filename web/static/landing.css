@@ -1,0 +1,76 @@
+/* DEPRECATED: Landing page styles - moved to canonical `styles.clean.css` if required. Archived under `web/static/archive/landing.css` */
+/* This file is kept for history only. Use `styles.clean.css` for production styling */
+
+/* No-op placeholder to prevent accidental loading of legacy landing.css */
+body {
+  font-family:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #111827;
+  margin: 0;
+  padding: 0;
+  background: #f9fafb;
+}
+
+.landing-container {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+header.landing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero {
+  display: grid;
+  gap: 1rem;
+  background: white;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.lead-form {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+}
+
+.lead-form label {
+  display: block;
+  font-size: 14px;
+}
+input[type="text"], input[type="email"], input[type="tel"] {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  box-sizing: border-box;
+}
+
+button.btn-primary {
+  background: #10b981;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 0;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .landing-container {
+    grid-template-columns: 1fr 400px;
+  }
+  .hero {
+    padding: 2rem;
+  }
+  .lead-form {
+    gap: 1rem;
+  }
+}

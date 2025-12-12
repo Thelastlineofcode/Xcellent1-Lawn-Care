@@ -4,18 +4,24 @@ Hiring priority: P0
 
 ## Role summary
 
-The Billing & Payments Specialist owns invoice generation, Stripe checkout/paylink issuance, payment reconciliation, and collections processes. They ensure accurate billing, timely follow-ups, and handle disputes or chargebacks.
+The Billing & Payments Specialist owns invoice generation, Stripe
+checkout/paylink issuance, payment reconciliation, and collections processes.
+They ensure accurate billing, timely follow-ups, and handle disputes or
+chargebacks.
 
 ## Responsibilities
 
-- Generate invoices from completed jobs and send Stripe paylinks within 24 hours.
+- Generate invoices from completed jobs and send Stripe paylinks within 24
+  hours.
 - Reconcile Stripe payments and update Supabase records.
-- Monitor failed payments and execute follow-up reminders or manual outreach for high-value balances.
+- Monitor failed payments and execute follow-up reminders or manual outreach for
+  high-value balances.
 - Produce monthly MTD and revenue reports for the owner.
 
 ## Required skills & experience
 
-- Familiarity with Stripe (Checkout, Payment Intents) and basic accounting/bookkeeping concepts.
+- Familiarity with Stripe (Checkout, Payment Intents) and basic
+  accounting/bookkeeping concepts.
 - Attention to detail and accuracy in financial records.
 - Comfortable using dashboards and running exports.
 

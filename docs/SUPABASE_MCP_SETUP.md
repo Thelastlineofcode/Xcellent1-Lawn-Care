@@ -1,7 +1,10 @@
 # Supabase MCP Server Setup
 
 ## What is this?
-This sets up a Model Context Protocol (MCP) server that allows AI agents to directly interact with your Supabase database. This means agents can:
+
+This sets up a Model Context Protocol (MCP) server that allows AI agents to
+directly interact with your Supabase database. This means agents can:
+
 - Run SQL queries
 - Fix RLS policies
 - Create/update tables
@@ -19,7 +22,8 @@ npx -y @modelcontextprotocol/server-supabase
 
 ### 2. Configure MCP Settings
 
-Add this to your MCP settings file (usually `~/.config/mcp/settings.json` or similar):
+Add this to your MCP settings file (usually `~/.config/mcp/settings.json` or
+similar):
 
 ```json
 {
@@ -41,7 +45,8 @@ Add this to your MCP settings file (usually `~/.config/mcp/settings.json` or sim
 
 ### 3. Get Your Service Role Key
 
-1. Go to: https://supabase.com/dashboard/project/utivthfrwgtjatsusopw/settings/api
+1. Go to:
+   https://supabase.com/dashboard/project/utivthfrwgtjatsusopw/settings/api
 2. Copy the **service_role** key (click the eye icon to reveal it)
 3. Replace `your_service_role_key_here` in the config above
 
@@ -54,24 +59,28 @@ After configuring, restart your AI agent/IDE so it picks up the new MCP server.
 Once configured, agents can:
 
 ✅ **Run SQL directly**
+
 ```sql
 -- Agent can execute this without you copying/pasting
 CREATE POLICY "fix_policy" ON users FOR SELECT USING (auth_user_id = auth.uid());
 ```
 
 ✅ **Query database state**
+
 ```sql
 -- Agent can check what policies exist
 SELECT * FROM pg_policies WHERE tablename = 'users';
 ```
 
 ✅ **Debug issues**
+
 ```sql
 -- Agent can investigate RLS issues
 SELECT * FROM users WHERE auth_user_id = '41875d51-e5bd-4aa9-8abe-f0d23cf319d5';
 ```
 
 ✅ **Create migrations**
+
 - Agent can generate and apply schema changes
 - Fix broken policies automatically
 - Update table structures
@@ -79,11 +88,13 @@ SELECT * FROM users WHERE auth_user_id = '41875d51-e5bd-4aa9-8abe-f0d23cf319d5';
 ## Security Note
 
 ⚠️ The service role key has **full database access**. Only use this in:
+
 - Development environments
 - Trusted AI agents
 - Local machines
 
 For production, consider:
+
 - Using a separate development Supabase project
 - Implementing additional access controls
 - Rotating keys regularly

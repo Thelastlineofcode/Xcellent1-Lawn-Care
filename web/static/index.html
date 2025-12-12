@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -19,8 +19,8 @@
       // offering a redirect for browsers.
       // The form below is intentionally minimal and is used by tests to verify
       // presence of lead capture fields.
-      window.addEventListener('DOMContentLoaded', () => {
-        const exists = document.getElementById('lead-form');
+      window.addEventListener("DOMContentLoaded", () => {
+        const exists = document.getElementById("lead-form");
         if (!exists) {
           // degrade to redirect if not in a test environment
           window.location.replace("home.html");
@@ -30,7 +30,12 @@
   </head>
   <body>
     <!-- Minimal lead form for static tests -->
-    <form id="lead-form" style="display:none;" action="/api/leads" method="post">
+    <form
+      id="lead-form"
+      style="display: none"
+      action="/api/leads"
+      method="post"
+    >
       <input id="name" name="name" placeholder="Name" />
       <input id="phone" name="phone" placeholder="Phone" />
       <input id="email" name="email" placeholder="Email" />

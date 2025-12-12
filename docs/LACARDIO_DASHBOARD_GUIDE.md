@@ -2,9 +2,10 @@
 
 ## ✅ Your Dashboard Is Ready!
 
-**Email**: lacardiofrancis@gmail.com  
-**Status**: 🟢 All Systems Ready  
-**Setup Link**: https://xcellent1lawncare.com/owner-setup.html?token=owner-invite-143fd04d-0659-4519-9a60-682d07196e2c
+**Email**: lacardiofrancis@gmail.com\
+**Status**: 🟢 All Systems Ready\
+**Setup Link**:
+https://xcellent1lawncare.com/owner-setup.html?token=owner-invite-143fd04d-0659-4519-9a60-682d07196e2c
 
 ---
 
@@ -13,6 +14,7 @@
 After you log in, you'll have access to all these features:
 
 ### 1. **Dashboard** - Business Overview
+
 - 📈 Key metrics and KPIs
 - 👥 Active crew members
 - 📋 Jobs this week
@@ -21,6 +23,7 @@ After you log in, you'll have access to all these features:
 - 👔 Crew performance
 
 ### 2. **Clients** - Customer Management
+
 - ➕ Add new customers
 - ✏️ Edit client details
 - 📍 View property addresses
@@ -28,6 +31,7 @@ After you log in, you'll have access to all these features:
 - 📊 Filter by status
 
 ### 3. **Jobs** - Work Scheduling
+
 - 📅 Schedule new jobs
 - 👨‍🔧 Assign crews
 - ⏱️ Track job status
@@ -35,6 +39,7 @@ After you log in, you'll have access to all these features:
 - 📝 View job details
 
 ### 4. **Invoices** - Billing & Payments
+
 - 📄 Create invoices
 - 📝 Add line items
 - 💳 Record payments (6 methods)
@@ -42,6 +47,7 @@ After you log in, you'll have access to all these features:
 - 📊 Filter by status
 
 ### 5. **Applications** - Recruit Management (NEW!)
+
 - 📋 View all job applicants
 - 🔍 Filter by status & source
 - 📧 Contact applicants
@@ -49,12 +55,14 @@ After you log in, you'll have access to all these features:
 - 📈 See hiring statistics
 
 ### 6. **Waitlist** - Lead Management
+
 - 👥 View waitlist entries
 - 🔄 Convert to clients
 - 📊 Track lead source
 - 🗂️ Organize by status
 
 ### 7. **Payment Accounts** - Payment Methods
+
 - 🅿️ Connect PayPal
 - 💵 Connect Cash App
 - ⟨ ⟩ Connect Stripe
@@ -83,6 +91,7 @@ After you log in, you'll have access to all these features:
 ### Filtering Applications
 
 **By Status**:
+
 - All Status (see everyone)
 - Pending (haven't reviewed yet)
 - Screening (being screened)
@@ -92,12 +101,14 @@ After you log in, you'll have access to all these features:
 - Rejected (not interested)
 
 **By Source**:
+
 - All Sources
 - Careers Page (applied via website)
 - Web Form (online form submission)
 - Referral (referred by someone)
 
 **Example Workflow**:
+
 1. Filter by "Pending" to see new applicants
 2. Review their info
 3. Click "Change Status..." to move them through pipeline
@@ -106,16 +117,19 @@ After you log in, you'll have access to all these features:
 ### Managing Applicants
 
 **Changing Status**:
+
 - Click the **"Change Status..."** dropdown on any applicant
 - Select new status (Screening → Interview → Offer → Hired)
 - Status updates immediately
 
 **Contacting Applicants**:
+
 - Click the **"📧 Contact"** button
 - Opens your email client with pre-filled "To:" field
 - Compose and send your message
 
 **Tracking Progress**:
+
 - Watch the statistics update as you move applicants through pipeline
 - See "Hired" count increase as you hire people
 - Track "Pending Review" to know who needs attention
@@ -149,6 +163,7 @@ Your elderly clients can pay via **6 different methods**:
 ### Tracking by Payment Method
 
 All payments are recorded with their method, so you can:
+
 - See which clients prefer which method
 - Track cash vs. digital payments
 - Understand client payment patterns
@@ -161,6 +176,7 @@ All payments are recorded with their method, so you can:
 The **Waitlist** shows interested people who want your services:
 
 ### Viewing Waitlist:
+
 1. Click **"Invoices"** → Scroll to Waitlist section
    - OR go directly to **"Waitlist"** page
 
@@ -171,6 +187,7 @@ The **Waitlist** shows interested people who want your services:
    - Current status
 
 ### Converting to Client:
+
 1. Review waitlist entry
 2. Click **"📧 Contact"** or **"✏️ Edit"**
 3. When ready to add them:
@@ -179,6 +196,7 @@ The **Waitlist** shows interested people who want your services:
    - Can now schedule jobs and create invoices
 
 ### Filtering Waitlist:
+
 - By status (New, Contacted, Scheduled, Converted)
 - By source (Website, Referral, Ad, etc.)
 - By when they joined
@@ -190,26 +208,31 @@ The **Waitlist** shows interested people who want your services:
 ### Payment Receiving Accounts (Optional but Recommended):
 
 **PayPal**:
+
 - Email: lacardiofrancis@gmail.com
 - Clients can pay directly to your PayPal
 - Digital payments tracked automatically
 
 **Cash App**:
+
 - Your $cashtag (e.g., $LaCardio)
 - Quick mobile payments from younger clients
 - Instant notifications
 
 **Stripe** (for online invoicing):
+
 - Email: lacardiofrancis@gmail.com
 - Accept credit cards online
 - Professional payment gateway
 
 **Square** (for in-person):
+
 - Email: lacardiofrancis@gmail.com
 - Use Square card reader for on-site payments
 - Works with phone/tablet
 
 ### How to Connect:
+
 1. Go to **"Payment Accounts"**
 2. Click **"+ Connect Payment Account"**
 3. Select method
@@ -238,10 +261,10 @@ The **Waitlist** shows interested people who want your services:
 **Your Setup Link**:
 https://xcellent1lawncare.com/owner-setup.html?token=owner-invite-143fd04d-0659-4519-9a60-682d07196e2c
 
-**Login Page**:
-https://xcellent1lawncare.com/login.html
+**Login Page**: https://xcellent1lawncare.com/login.html
 
 **After Login - Dashboard URLs**:
+
 - Dashboard: /owner.html
 - Clients: /manage-clients.html
 - Jobs: /manage-jobs.html
@@ -251,6 +274,7 @@ https://xcellent1lawncare.com/login.html
 - Payment Accounts: /payment-accounts.html
 
 **Contact**:
+
 - Email: info@xcellent1lawn.com
 - Phone: (504) 875-8079
 
@@ -259,6 +283,7 @@ https://xcellent1lawncare.com/login.html
 ## ✨ Key Features for Your Elderly Clients
 
 ✅ **Multiple Payment Methods**:
+
 - Cash (still accepted!)
 - PayPal (for tech-savvy clients)
 - Cash App (quick mobile transfers)
@@ -267,18 +292,21 @@ https://xcellent1lawncare.com/login.html
 - Credit/Debit Card (for convenience)
 
 ✅ **Flexible Job Scheduling**:
+
 - One-time services
 - Weekly, biweekly, or monthly plans
 - Track photos before/after
 - Full job history
 
 ✅ **Easy Invoicing**:
+
 - Automatic tracking
 - Online payment options
 - Clear itemization
 - Payment history
 
 ✅ **Professional Dashboard**:
+
 - View crew performance
 - Track all your business metrics
 - Manage teams and scheduling
@@ -295,6 +323,7 @@ Your Xcellent1 Lawn Care system is fully deployed and ready to use.
 https://xcellent1lawncare.com/owner-setup.html?token=owner-invite-143fd04d-0659-4519-9a60-682d07196e2c
 
 After setup, you can immediately:
+
 - View your business dashboard
 - See job applications and manage hiring
 - Manage your customer waitlist
@@ -305,5 +334,5 @@ After setup, you can immediately:
 
 ---
 
-*Last Updated: December 3, 2025*  
-*System Status: 🟢 Production Ready*
+_Last Updated: December 3, 2025_\
+_System Status: 🟢 Production Ready_

@@ -1,20 +1,21 @@
 # API Wiring Documentation
 
-> Complete API endpoint mapping and data flow documentation for Xcellent1 Lawn Care.
+> Complete API endpoint mapping and data flow documentation for Xcellent1 Lawn
+> Care.
 
 ## Quick Reference
 
-| Dashboard | URL | API Endpoints Used |
-|-----------|-----|-------------------|
-| Home/Landing | `/static/home.html` | `POST /api/waitlist` |
-| Owner Dashboard | `/static/owner.html` | `GET /api/owner/metrics` |
-| Manage Clients | `/static/manage-clients.html` | `GET/POST /api/owner/clients` |
-| Manage Jobs | `/static/manage-jobs.html` | `GET/POST /api/owner/jobs` |
-| Manage Invoices | `/static/manage-invoices.html` | `GET/POST /api/owner/invoices` |
-| Manage Waitlist | `/static/manage-waitlist.html` | `GET/PATCH /api/owner/waitlist` |
+| Dashboard        | URL                             | API Endpoints Used              |
+| ---------------- | ------------------------------- | ------------------------------- |
+| Home/Landing     | `/static/home.html`             | `POST /api/waitlist`            |
+| Owner Dashboard  | `/static/owner.html`            | `GET /api/owner/metrics`        |
+| Manage Clients   | `/static/manage-clients.html`   | `GET/POST /api/owner/clients`   |
+| Manage Jobs      | `/static/manage-jobs.html`      | `GET/POST /api/owner/jobs`      |
+| Manage Invoices  | `/static/manage-invoices.html`  | `GET/POST /api/owner/invoices`  |
+| Manage Waitlist  | `/static/manage-waitlist.html`  | `GET/PATCH /api/owner/waitlist` |
 | Pending Payments | `/static/pending-payments.html` | `GET/PATCH /api/owner/payments` |
-| Crew Dashboard | `/static/crew.html` | `GET /api/crew/:id/jobs` |
-| Client Portal | `/static/client.html` | `GET /api/client/invoices` |
+| Crew Dashboard   | `/static/crew.html`             | `GET /api/crew/:id/jobs`        |
+| Client Portal    | `/static/client.html`           | `GET /api/client/invoices`      |
 
 ---
 
@@ -33,8 +34,10 @@
 ```
 
 **Form Fields:**
+
 - name, email, phone, property_address (required)
-- property_city, property_state, property_zip, preferred_service_plan, notes (optional)
+- property_city, property_state, property_zip, preferred_service_plan, notes
+  (optional)
 
 ### 2. Client Management Flow
 
@@ -77,9 +80,11 @@
 ### Public Endpoints (No Auth)
 
 #### `POST /api/waitlist`
+
 Join the service waitlist.
 
 **Request:**
+
 ```json
 {
   "name": "John Doe",
@@ -95,6 +100,7 @@ Join the service waitlist.
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -108,9 +114,11 @@ Join the service waitlist.
 ### Owner Endpoints (Requires `owner` role)
 
 #### `GET /api/owner/metrics`
+
 Get business KPIs.
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -125,22 +133,27 @@ Get business KPIs.
 ```
 
 #### `GET /api/owner/clients`
+
 List all clients.
 
 **Query Params:** `?search=name&status=active`
 
 #### `POST /api/owner/clients`
+
 Create new client.
 
 #### `GET /api/owner/waitlist`
+
 List waitlist entries.
 
 **Query Params:** `?status=pending&search=name`
 
 #### `PATCH /api/owner/waitlist/:id`
+
 Update waitlist entry status/notes.
 
 **Request:**
+
 ```json
 {
   "status": "contacted",
@@ -149,9 +162,11 @@ Update waitlist entry status/notes.
 ```
 
 #### `POST /api/owner/waitlist/:id/convert`
+
 Convert waitlist entry to client.
 
 **Request:**
+
 ```json
 {
   "service_plan": "weekly"
@@ -159,31 +174,39 @@ Convert waitlist entry to client.
 ```
 
 #### `GET /api/owner/jobs`
+
 List all jobs.
 
 **Query Params:** `?date=2025-12-01&status=scheduled&crew_id=uuid`
 
 #### `POST /api/owner/jobs`
+
 Create new job.
 
 #### `GET /api/owner/invoices`
+
 List all invoices.
 
 **Query Params:** `?client_id=uuid&status=unpaid`
 
 #### `POST /api/owner/invoices`
+
 Create invoice.
 
 #### `POST /api/owner/invoices/:id/payment`
+
 Record payment.
 
 #### `GET /api/owner/payments/pending`
+
 List payments pending verification.
 
 #### `PATCH /api/owner/payments/:id/verify`
+
 Approve or reject payment.
 
 **Request:**
+
 ```json
 {
   "action": "approve"
@@ -195,17 +218,21 @@ Approve or reject payment.
 ### Crew Endpoints (Requires `crew` role)
 
 #### `GET /api/crew/:id/jobs`
+
 Get crew's jobs for a date.
 
 **Query Params:** `?date=2025-12-01`
 
 #### `PATCH /api/jobs/:id/start`
+
 Start a job (also available to owner).
 
 #### `POST /api/jobs/:id/photo`
+
 Upload job photo.
 
 **Request:** `multipart/form-data`
+
 - `photo`: File
 - `photo_type`: `before` | `after`
 
@@ -214,12 +241,15 @@ Upload job photo.
 ### Client Endpoints (Requires `client` role)
 
 #### `GET /api/client/invoices`
+
 Get client's invoices.
 
 #### `POST /api/client/invoices/:id/mark-payment`
+
 Report payment sent.
 
 **Request:**
+
 ```json
 {
   "payment_method": "cashapp",
@@ -239,6 +269,7 @@ Authorization: Bearer <supabase-jwt-token>
 ```
 
 The token is obtained from Supabase Auth on login and contains:
+
 - `sub`: User ID
 - `role`: User role (`owner`, `crew`, `client`)
 
@@ -246,16 +277,16 @@ The token is obtained from Supabase Auth on login and contains:
 
 ## Database Tables
 
-| Table | Purpose |
-|-------|---------|
-| `users` | All users with roles |
-| `clients` | Client property/billing info |
-| `jobs` | Scheduled work |
-| `job_photos` | Before/after photos |
-| `invoices` | Billing records |
-| `payments` | Payment tracking |
-| `waitlist` | Prospective clients |
-| `applications` | Job applicants |
+| Table          | Purpose                      |
+| -------------- | ---------------------------- |
+| `users`        | All users with roles         |
+| `clients`      | Client property/billing info |
+| `jobs`         | Scheduled work               |
+| `job_photos`   | Before/after photos          |
+| `invoices`     | Billing records              |
+| `payments`     | Payment tracking             |
+| `waitlist`     | Prospective clients          |
+| `applications` | Job applicants               |
 
 ---
 
@@ -288,6 +319,7 @@ All endpoints return consistent error format:
 ```
 
 **HTTP Status Codes:**
+
 - `400` - Bad Request (validation error)
 - `401` - Unauthorized (no/invalid token)
 - `403` - Forbidden (wrong role)
@@ -301,11 +333,13 @@ All endpoints return consistent error format:
 ## Testing the API
 
 ### Health Check
+
 ```bash
 curl http://localhost:8000/health
 ```
 
 ### Waitlist Signup
+
 ```bash
 curl -X POST http://localhost:8000/api/waitlist \
   -H "Content-Type: application/json" \
@@ -318,6 +352,7 @@ curl -X POST http://localhost:8000/api/waitlist \
 ```
 
 ### Owner Endpoints (with auth)
+
 ```bash
 curl http://localhost:8000/api/owner/waitlist \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
@@ -325,4 +360,4 @@ curl http://localhost:8000/api/owner/waitlist \
 
 ---
 
-*Last Updated: December 2025*
+_Last Updated: December 2025_
