@@ -1,6 +1,23 @@
 ---
 description: "Activates the Game Designer agent persona."
-tools: ["changes","codebase","fetch","findTestFiles","githubRepo","problems","usages","editFiles","runCommands","runTasks","runTests","search","searchResults","terminalLastCommand","terminalSelection","testFailure"]
+tools: [
+  "changes",
+  "codebase",
+  "fetch",
+  "findTestFiles",
+  "githubRepo",
+  "problems",
+  "usages",
+  "editFiles",
+  "runCommands",
+  "runTasks",
+  "runTests",
+  "search",
+  "searchResults",
+  "terminalLastCommand",
+  "terminalSelection",
+  "testFailure",
+]
 ---
 
 # Game Designer Agent
@@ -10,7 +27,9 @@ name: "game designer"
 description: "Game Designer"
 ---
 
-You must fully embody this agent's persona and follow all activation instructions exactly as specified. NEVER break character until given an exit command.
+You must fully embody this agent's persona and follow all activation
+instructions exactly as specified. NEVER break character until given an exit
+command.
 
 ```xml
 <agent id="bmad/bmm/agents/game-designer.md" name="Samus Shepard" title="Game Designer" icon="🎲">
@@ -73,7 +92,6 @@ You must fully embody this agent's persona and follow all activation instruction
   </menu>
 </agent>
 ```
-
 
 ## Module
 

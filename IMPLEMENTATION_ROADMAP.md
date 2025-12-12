@@ -3,6 +3,7 @@
 ## Project Scope
 
 **Goal**: Simple field service management system for lawn care business
+
 - Owner dashboard for managing clients, jobs, invoices
 - Crew dashboard for viewing daily jobs
 - Client portal for viewing services and paying bills
@@ -15,6 +16,7 @@
 ## Current Status ✅
 
 ### Completed
+
 - ✅ Database schema designed (`/db/schema.sql`)
 - ✅ Supabase authentication integrated
 - ✅ Role-based access control (owner, crew, client)
@@ -27,6 +29,7 @@
 - ✅ Basic API endpoints (health, config, leads, waitlist, careers)
 
 ### Database Ready
+
 - ✅ Users table with auth_user_id linking
 - ✅ Clients table with property information
 - ✅ Jobs table with crew assignments
@@ -36,6 +39,7 @@
 - ✅ Helper functions for common queries
 
 ### Frontend Ready
+
 - ✅ Home/marketing pages
 - ✅ Dashboard templates (owner, crew, client)
 - ✅ Login/authentication flow
@@ -50,10 +54,11 @@
 **Goal**: Get essential features working for daily operations
 
 ### 1.1 Client Management API
-**Priority**: CRITICAL
-**Estimated**: 2 days
+
+**Priority**: CRITICAL **Estimated**: 2 days
 
 **Tasks**:
+
 - [ ] Create `POST /api/owner/clients` - Add new client
   - Validates email uniqueness
   - Creates user + client records
@@ -72,6 +77,7 @@
   - Saves pricing_config JSON
 
 **Testing**:
+
 - [ ] Can add client with all fields
 - [ ] Email uniqueness enforced
 - [ ] Search/filter works correctly
@@ -80,10 +86,11 @@
 ---
 
 ### 1.2 Client Management UI
-**Priority**: CRITICAL
-**Estimated**: 3 days
+
+**Priority**: CRITICAL **Estimated**: 3 days
 
 **Tasks**:
+
 - [ ] Build "Add Client" form on owner dashboard
   - All required fields with validation
   - Service plan dropdown
@@ -106,6 +113,7 @@
   - Validate inputs
 
 **Testing**:
+
 - [ ] Add 5 test clients via UI
 - [ ] Search finds clients correctly
 - [ ] Edit updates save properly
@@ -114,10 +122,11 @@
 ---
 
 ### 1.3 Job Creation & Assignment
-**Priority**: CRITICAL
-**Estimated**: 2 days
+
+**Priority**: CRITICAL **Estimated**: 2 days
 
 **Tasks**:
+
 - [ ] Create `POST /api/owner/jobs` - Create job
   - Assigns to crew member
   - Sets scheduled date
@@ -139,6 +148,7 @@
   - Quick actions (edit, cancel)
 
 **Testing**:
+
 - [ ] Create jobs for next week
 - [ ] Assign to different crew members
 - [ ] Edit job reassigns correctly
@@ -147,13 +157,13 @@
 ---
 
 ### 1.4 Crew Dashboard - Connect to Backend
-**Priority**: HIGH
-**Estimated**: 2 days
 
-**Current**: Crew dashboard uses mock data
-**Goal**: Connect to real API
+**Priority**: HIGH **Estimated**: 2 days
+
+**Current**: Crew dashboard uses mock data **Goal**: Connect to real API
 
 **Tasks**:
+
 - [ ] Update `crew.html` to fetch from `/api/crew/:id/jobs`
   - Get crew ID from auth session
   - Pass today's date as parameter
@@ -173,6 +183,7 @@
   - Offline support (cache last fetch)
 
 **Testing**:
+
 - [ ] Login as crew member
 - [ ] See today's jobs from database
 - [ ] Start job updates status
@@ -182,10 +193,11 @@
 ---
 
 ### 1.5 Invoice Creation
-**Priority**: HIGH
-**Estimated**: 2 days
+
+**Priority**: HIGH **Estimated**: 2 days
 
 **Tasks**:
+
 - [ ] Create `POST /api/owner/invoices` - Create invoice
   - Auto-generates invoice number
   - Calculates totals
@@ -210,6 +222,7 @@
   - Print/PDF option (future)
 
 **Testing**:
+
 - [ ] Create invoice manually
 - [ ] Create invoice from completed job
 - [ ] Line items calculate correctly
@@ -220,13 +233,13 @@
 ## Phase 2: Self-Service Features (Week 3-4)
 
 ### 2.1 Client Dashboard - Connect to Backend
-**Priority**: MEDIUM
-**Estimated**: 2 days
 
-**Current**: Client dashboard uses mock data
-**Goal**: Show real data
+**Priority**: MEDIUM **Estimated**: 2 days
+
+**Current**: Client dashboard uses mock data **Goal**: Show real data
 
 **Tasks**:
+
 - [ ] Update `client.html` to fetch from `/api/client/:id/dashboard`
   - Get client ID from auth session
   - Display real upcoming jobs
@@ -241,6 +254,7 @@
   - Payment method used
 
 **Testing**:
+
 - [ ] Login as client
 - [ ] See real jobs and invoices
 - [ ] Data matches what owner sees
@@ -248,10 +262,11 @@
 ---
 
 ### 2.2 Payment Recording (Owner)
-**Priority**: MEDIUM
-**Estimated**: 1 day
+
+**Priority**: MEDIUM **Estimated**: 1 day
 
 **Tasks**:
+
 - [ ] Create `POST /api/owner/invoices/:id/payment` - Record payment
   - Creates payment record
   - Updates invoice status
@@ -266,6 +281,7 @@
 - [ ] Add payment history tab on client detail page
 
 **Testing**:
+
 - [ ] Record cash payment
 - [ ] Record check payment
 - [ ] Record Cash App payment
@@ -275,10 +291,11 @@
 ---
 
 ### 2.3 Waitlist Management
-**Priority**: MEDIUM
-**Estimated**: 2 days
+
+**Priority**: MEDIUM **Estimated**: 2 days
 
 **Tasks**:
+
 - [ ] Deploy `create_waitlist_table.sql` to Supabase
 - [ ] Verify `/api/waitlist` endpoint works (should already exist)
 - [ ] Create `GET /api/owner/waitlist` - View all waitlist
@@ -296,6 +313,7 @@
 - [ ] Add waitlist count to owner metrics
 
 **Testing**:
+
 - [ ] Submit waitlist form on website
 - [ ] Entry appears in owner dashboard
 - [ ] Can update status
@@ -304,10 +322,11 @@
 ---
 
 ### 2.4 Client Payment (Self-Service)
-**Priority**: MEDIUM
-**Estimated**: 2 days
+
+**Priority**: MEDIUM **Estimated**: 2 days
 
 **Tasks**:
+
 - [ ] Create `POST /api/client/invoices/:id/pay` - Mark as paid
   - For external payments (Cash App, Zelle, PayPal)
   - Sets status to 'pending verification'
@@ -321,6 +340,7 @@
 - [ ] Owner dashboard shows pending payments badge
 
 **Testing**:
+
 - [ ] Client marks invoice as paid
 - [ ] Status changes to pending
 - [ ] Owner sees in pending list
@@ -330,10 +350,11 @@
 ## Phase 3: Enhanced Features (Week 5-6)
 
 ### 3.1 Payment Verification (Owner)
-**Priority**: LOW
-**Estimated**: 1 day
+
+**Priority**: LOW **Estimated**: 1 day
 
 **Tasks**:
+
 - [ ] Create `PATCH /api/owner/payments/:id/verify` - Verify payment
 - [ ] Create `GET /api/owner/payments/pending` - List pending
 - [ ] Build pending payments view
@@ -344,6 +365,7 @@
 - [ ] Rejection notifies client
 
 **Testing**:
+
 - [ ] Verify pending payment
 - [ ] Invoice marked as paid
 - [ ] Balance updates
@@ -351,10 +373,11 @@
 ---
 
 ### 3.2 Photo Upload (Crew)
-**Priority**: LOW
-**Estimated**: 2 days
+
+**Priority**: LOW **Estimated**: 2 days
 
 **Tasks**:
+
 - [ ] Integrate Supabase Storage
   - Create `job-photos` bucket
   - Set up upload policy
@@ -371,6 +394,7 @@
   - Lightbox for full size
 
 **Testing**:
+
 - [ ] Upload photo from mobile
 - [ ] Photo appears in client dashboard
 - [ ] Multiple photos per job work
@@ -378,10 +402,11 @@
 ---
 
 ### 3.3 Owner Metrics Dashboard
-**Priority**: LOW
-**Estimated**: 1 day
+
+**Priority**: LOW **Estimated**: 1 day
 
 **Tasks**:
+
 - [ ] Update owner.html to call `/api/owner/metrics`
   - Replace mock data with real API
 - [ ] Display KPI cards:
@@ -396,6 +421,7 @@
   - Show last 10 actions
 
 **Testing**:
+
 - [ ] Metrics display real data
 - [ ] Numbers match database counts
 
@@ -404,10 +430,11 @@
 ## Phase 4: Polish & Launch (Week 7-8)
 
 ### 4.1 Testing & Bug Fixes
-**Priority**: CRITICAL
-**Estimated**: 3 days
+
+**Priority**: CRITICAL **Estimated**: 3 days
 
 **Tasks**:
+
 - [ ] End-to-end testing of all workflows
 - [ ] Mobile responsiveness check
 - [ ] Cross-browser testing
@@ -418,10 +445,11 @@
 ---
 
 ### 4.2 Documentation & Training
-**Priority**: HIGH
-**Estimated**: 2 days
+
+**Priority**: HIGH **Estimated**: 2 days
 
 **Tasks**:
+
 - [ ] Update README with deployment instructions
 - [ ] Create user guide for owner
 - [ ] Create user guide for crew
@@ -431,10 +459,11 @@
 ---
 
 ### 4.3 Production Deployment
-**Priority**: CRITICAL
-**Estimated**: 2 days
+
+**Priority**: CRITICAL **Estimated**: 2 days
 
 **Tasks**:
+
 - [ ] Deploy database to production Supabase
 - [ ] Configure production environment variables
 - [ ] Deploy server to hosting (Fly.io, Railway, etc.)
@@ -448,6 +477,7 @@
 ## Optional Future Enhancements
 
 ### Low Priority (Post-Launch)
+
 - [ ] Stripe integration for card payments
 - [ ] Email notifications (invoice sent, payment received)
 - [ ] SMS reminders for crew (job starting soon)
@@ -458,6 +488,7 @@
 - [ ] Mobile app (React Native)
 
 ### Explicitly Out of Scope
+
 - ❌ AI-powered scheduling
 - ❌ Chatbots
 - ❌ Automated notifications
@@ -469,6 +500,7 @@
 ## Development Workflow
 
 ### Daily Process
+
 1. Pick task from current phase
 2. Create API endpoint (if needed)
 3. Test endpoint with curl/Postman
@@ -480,6 +512,7 @@
 9. Move to next task
 
 ### Git Workflow
+
 ```bash
 # Start feature
 git checkout -b feature/client-management
@@ -495,6 +528,7 @@ git push origin feature/client-management
 ```
 
 ### Testing Checklist per Feature
+
 - [ ] Works on desktop Chrome
 - [ ] Works on mobile Safari
 - [ ] API returns correct data
@@ -509,6 +543,7 @@ git push origin feature/client-management
 ## Success Criteria
 
 ### Phase 1 Complete When:
+
 - ✅ Owner can add/edit clients
 - ✅ Owner can create and assign jobs
 - ✅ Crew sees real jobs on dashboard
@@ -517,18 +552,21 @@ git push origin feature/client-management
 - ✅ Owner can record payments
 
 ### Phase 2 Complete When:
+
 - ✅ Clients see their jobs and invoices
 - ✅ Clients can mark invoices as paid
 - ✅ Owner can manage waitlist
 - ✅ Owner can convert waitlist to clients
 
 ### Phase 3 Complete When:
+
 - ✅ Crew can upload photos
 - ✅ Clients see job photos
 - ✅ Owner dashboard shows real metrics
 - ✅ Payment verification works
 
 ### Launch Ready When:
+
 - ✅ All Phase 1-3 features work
 - ✅ No critical bugs
 - ✅ Mobile responsive

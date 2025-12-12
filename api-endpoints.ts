@@ -19,7 +19,10 @@ async function handleEstimate(req: Request): Promise<Response> {
   // Required fields: service_type, lawn_size, frequency
   const { service_type, lawn_size, frequency } = body;
   if (!service_type || !lawn_size || !frequency) {
-    return error("Missing required fields: service_type, lawn_size, frequency", 400);
+    return error(
+      "Missing required fields: service_type, lawn_size, frequency",
+      400,
+    );
   }
   // Simple pricing logic (can be replaced with more advanced logic)
   // Example: $45 base, adjust by size/frequency
@@ -98,7 +101,8 @@ const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY") || "";
 const STRIPE_WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") || "";
 const JWT_SECRET = Deno.env.get("JWT_SECRET") || "";
 const EMAIL_API_KEY = Deno.env.get("EMAIL_API_KEY") || ""; // Resend or SendGrid
-const EMAIL_FROM = Deno.env.get("EMAIL_FROM") || "noreply@xcellent1lawncare.com";
+const EMAIL_FROM = Deno.env.get("EMAIL_FROM") ||
+  "noreply@xcellent1lawncare.com";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -138,14 +142,14 @@ function checkRateLimit(ip: string, limit = 5, windowMs = 60000): boolean {
   if (!rateLimitStore[ip]) {
     rateLimitStore[ip] = [];
   }
-  
+
   // Remove old requests outside window
   rateLimitStore[ip] = rateLimitStore[ip].filter((t) => now - t < windowMs);
-  
+
   if (rateLimitStore[ip].length >= limit) {
     return false;
   }
-  
+
   rateLimitStore[ip].push(now);
   return true;
 }
@@ -154,7 +158,7 @@ function checkRateLimit(ip: string, limit = 5, windowMs = 60000): boolean {
 async function sendEmail(
   to: string,
   subject: string,
-  html: string
+  html: string,
 ): Promise<boolean> {
   try {
     const response = await fetch("https://api.resend.com/emails", {
@@ -213,7 +217,8 @@ async function handleWaitlist(req: Request): Promise<Response> {
     }
 
     const body = await req.json();
-    const { name, email, phone, address, city, state, zip, service_date } = body;
+    const { name, email, phone, address, city, state, zip, service_date } =
+      body;
 
     // Validation
     if (!name || !email || !phone || !address) {
@@ -261,7 +266,8 @@ async function handleWaitlist(req: Request): Promise<Response> {
     await sendEmail(email, "Welcome to Xcellent1 Waitlist", confirmationHtml);
 
     // Notify owner
-    const ownerEmail = Deno.env.get("OWNER_EMAIL") || "owner@xcellent1lawncare.com";
+    const ownerEmail = Deno.env.get("OWNER_EMAIL") ||
+      "owner@xcellent1lawncare.com";
     const ownerHtml = `
       <h2>New Waitlist Signup</h2>
       <p><strong>${name}</strong></p>
@@ -279,7 +285,7 @@ async function handleWaitlist(req: Request): Promise<Response> {
         id: data?.[0]?.id,
         message: "You're on the waitlist!",
       },
-      201
+      201,
     );
   } catch (err) {
     console.error("Waitlist error:", err);
@@ -345,7 +351,8 @@ async function handleApplications(req: Request): Promise<Response> {
     await sendEmail(email, "Application Received", confirmHtml);
 
     // Notify owner
-    const ownerEmail = Deno.env.get("OWNER_EMAIL") || "owner@xcellent1lawncare.com";
+    const ownerEmail = Deno.env.get("OWNER_EMAIL") ||
+      "owner@xcellent1lawncare.com";
     const ownerHtml = `
       <h2>New Job Application</h2>
       <p><strong>${name}</strong></p>
@@ -364,7 +371,7 @@ async function handleApplications(req: Request): Promise<Response> {
         id: data?.[0]?.id,
         message: "Application submitted successfully!",
       },
-      201
+      201,
     );
   } catch (err) {
     console.error("Application error:", err);
@@ -449,7 +456,10 @@ async function handleGetJobs(req: Request): Promise<Response> {
 }
 
 // POST /api/jobs/:id/complete - Mark job as complete
-async function handleCompleteJob(req: Request, jobId: string): Promise<Response> {
+async function handleCompleteJob(
+  req: Request,
+  jobId: string,
+): Promise<Response> {
   if (req.method !== "POST") {
     return error("Method not allowed", 405);
   }
@@ -491,7 +501,10 @@ async function handleCompleteJob(req: Request, jobId: string): Promise<Response>
           invoice_number: invoiceNumber,
           amount,
           status: "draft",
-          due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+          due_date:
+            new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split(
+              "T",
+            )[0],
         });
 
       if (!invoiceError) {
@@ -500,7 +513,8 @@ async function handleCompleteJob(req: Request, jobId: string): Promise<Response>
     }
 
     // Notify owner
-    const ownerEmail = Deno.env.get("OWNER_EMAIL") || "owner@xcellent1lawncare.com";
+    const ownerEmail = Deno.env.get("OWNER_EMAIL") ||
+      "owner@xcellent1lawncare.com";
     const html = `
       <h2>Job Completed</h2>
       <p>Job #${jobId} has been marked complete.</p>
@@ -602,7 +616,7 @@ async function routeRequest(pathname: string, req: Request): Promise<Response> {
   }
 
   // POST /api/jobs/:id/complete
-    const jobCompleteMatch = pathname.match(/^\/api\/jobs\/([^/]+)\/complete$/);
+  const jobCompleteMatch = pathname.match(/^\/api\/jobs\/([^/]+)\/complete$/);
   if (jobCompleteMatch) {
     return await handleCompleteJob(req, jobCompleteMatch[1]);
   }

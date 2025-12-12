@@ -2,12 +2,15 @@
 
 ## Epic 1: Foundation (Week 1)
 
-**Goal:** Core infrastructure ready to support customer bookings and crew operations
+**Goal:** Core infrastructure ready to support customer bookings and crew
+operations
 
 ### Description
+
 **Related FRs:** FR-001
 
-Set up Supabase database with proper schema, authentication, Row Level Security policies, and API structure. Establish foundation for all future features.
+Set up Supabase database with proper schema, authentication, Row Level Security
+policies, and API structure. Establish foundation for all future features.
 
 ### Acceptance Criteria
 
@@ -33,9 +36,12 @@ Set up Supabase database with proper schema, authentication, Row Level Security 
 **Goal:** Professional landing page with customer waitlist signup form
 
 ### Description
+
 **Related FRs:** FR-002
 
-Rebuild landing page with modern UI (Tailwind CSS, mobile-first), integrate Instagram/Facebook photos, and replace booking form with waitlist signup. Create waitlist storage in Supabase.
+Rebuild landing page with modern UI (Tailwind CSS, mobile-first), integrate
+Instagram/Facebook photos, and replace booking form with waitlist signup. Create
+waitlist storage in Supabase.
 
 ### Acceptance Criteria
 
@@ -64,9 +70,12 @@ Rebuild landing page with modern UI (Tailwind CSS, mobile-first), integrate Inst
 **Goal:** Mobile-first crew interface for job management and photo uploads
 
 ### Description
+
 **Related FRs:** FR-003, FR-004
 
-Build crew.html as a responsive mobile dashboard where crew members can view assigned jobs, mark them complete, and upload photos. Integrate with job management API.
+Build crew.html as a responsive mobile dashboard where crew members can view
+assigned jobs, mark them complete, and upload photos. Integrate with job
+management API.
 
 ### Acceptance Criteria
 
@@ -95,9 +104,12 @@ Build crew.html as a responsive mobile dashboard where crew members can view ass
 **Goal:** Owner visibility into revenue, crew performance, and business metrics
 
 ### Description
+
 **Related FRs:** FR-006
 
-Build owner.html as analytics dashboard showing revenue, completed jobs, crew performance, pending payments, and customer feedback. Real-time data from Supabase.
+Build owner.html as analytics dashboard showing revenue, completed jobs, crew
+performance, pending payments, and customer feedback. Real-time data from
+Supabase.
 
 ### Acceptance Criteria
 
@@ -126,9 +138,12 @@ Build owner.html as analytics dashboard showing revenue, completed jobs, crew pe
 **Goal:** Automated invoicing and Stripe payment integration
 
 ### Description
+
 **Related FRs:** FR-005
 
-Generate invoices after job completion, integrate Stripe Checkout for customer payments, handle webhooks for payment confirmation, and update owner dashboard with revenue.
+Generate invoices after job completion, integrate Stripe Checkout for customer
+payments, handle webhooks for payment confirmation, and update owner dashboard
+with revenue.
 
 ### Acceptance Criteria
 
@@ -156,9 +171,12 @@ Generate invoices after job completion, integrate Stripe Checkout for customer p
 **Goal:** Professional hiring page to recruit crew members
 
 ### Description
+
 **Related FRs:** FR-001
 
-Create hiring.html page showcasing why someone should join the team, job responsibilities, pay, benefits, and application form. Store applications in Supabase for owner review.
+Create hiring.html page showcasing why someone should join the team, job
+responsibilities, pay, benefits, and application form. Store applications in
+Supabase for owner review.
 
 ### Acceptance Criteria
 
@@ -183,9 +201,11 @@ Create hiring.html page showcasing why someone should join the team, job respons
 **Goal:** Educational blog for SEO and dropshipping product showcase
 
 ### Description
+
 **Related FRs:** FR-001, FR-002
 
-Build blog.html landing page and blog post structure. Create categories for lawn care tips and dropshipping products. Optimize for search and social sharing.
+Build blog.html landing page and blog post structure. Create categories for lawn
+care tips and dropshipping products. Optimize for search and social sharing.
 
 ### Acceptance Criteria
 
@@ -212,9 +232,12 @@ Build blog.html landing page and blog post structure. Create categories for lawn
 **Goal:** Professional information pages showcasing services and team
 
 ### Description
+
 **Related FRs:** FR-002
 
-Create services.html detailing offerings (mowing, fertilizing, aeration, seeding) with pricing and photos. Create about.html with team photos and company mission.
+Create services.html detailing offerings (mowing, fertilizing, aeration,
+seeding) with pricing and photos. Create about.html with team photos and company
+mission.
 
 ### Acceptance Criteria
 
@@ -240,9 +263,11 @@ Create services.html detailing offerings (mowing, fertilizing, aeration, seeding
 **Goal:** Keep customers, crew, and owner informed in real-time
 
 ### Description
+
 **Related FRs:** FR-007
 
-Implement email and SMS notifications for waitlist confirmations, job assignments, job completions, payment confirmations, and owner summaries.
+Implement email and SMS notifications for waitlist confirmations, job
+assignments, job completions, payment confirmations, and owner summaries.
 
 ### Acceptance Criteria
 
@@ -269,13 +294,17 @@ Implement email and SMS notifications for waitlist confirmations, job assignment
 **Goal:** Remove old code, restructure for production, deploy to Fly.io
 
 ### Description
+
 **Related FRs:** FR-001
 
-Consolidate pages (remove redundant files like dashboard.html, home.html, portal-index.html), update routing, ensure all assets are optimized, and redeploy.
+Consolidate pages (remove redundant files like dashboard.html, home.html,
+portal-index.html), update routing, ensure all assets are optimized, and
+redeploy.
 
 ### Acceptance Criteria
 
-- [ ] Old/unused pages removed (dashboard.html, home.html, portal-index.html, client.html)
+- [ ] Old/unused pages removed (dashboard.html, home.html, portal-index.html,
+      client.html)
 - [ ] Routing updated (correct pages at correct URLs)
 - [ ] Assets optimized (images compressed, CSS minified)
 - [ ] Favicon and metadata updated
@@ -298,9 +327,11 @@ Consolidate pages (remove redundant files like dashboard.html, home.html, portal
 **Goal:** Protect customer data and ensure compliance
 
 ### Description
+
 **Related FRs:** FR-001
 
-Implement authentication security, data encryption, GDPR compliance, SSL/TLS, and audit logging.
+Implement authentication security, data encryption, GDPR compliance, SSL/TLS,
+and audit logging.
 
 ### Acceptance Criteria
 
@@ -327,9 +358,11 @@ Implement authentication security, data encryption, GDPR compliance, SSL/TLS, an
 **Goal:** Visibility into system health and business metrics
 
 ### Description
+
 **Related FRs:** FR-006
 
-Setup error tracking, performance monitoring, uptime monitoring, and analytics dashboards.
+Setup error tracking, performance monitoring, uptime monitoring, and analytics
+dashboards.
 
 ### Acceptance Criteria
 

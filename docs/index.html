@@ -1,65 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Professional lawn care for Houston. Beautiful lawns delivered by our skilled crew.">
-  <title>Xcellent1 Lawn Care - Houston's Premium Lawn Service</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    * {
-      scroll-behavior: smooth;
-    }
-  </style>
-</head>
-<body class="bg-white text-gray-900">
-  <!-- Navigation -->
-  <nav class="sticky top-0 z-50 bg-white shadow-md">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-      <div class="flex items-center space-x-2">
-        <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-          <span class="text-white font-bold text-lg">X1</span>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="Professional lawn care for Houston. Beautiful lawns delivered by our skilled crew."
+    >
+    <title>Xcellent1 Lawn Care - Houston's Premium Lawn Service</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      * {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+  <body class="bg-white text-gray-900">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white shadow-md">
+      <div
+        class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-2">
+          <div
+            class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center"
+          >
+            <span class="text-white font-bold text-lg">X1</span>
+          </div>
+          <span class="text-xl font-bold text-gray-900">Xcellent1</span>
         </div>
-        <span class="text-xl font-bold text-gray-900">Xcellent1</span>
-      </div>
-      
-      <div class="hidden md:flex space-x-6 items-center">
-        <a href="#services" class="text-gray-700 hover:text-green-600 font-medium">Services</a>
-        <a href="#about" class="text-gray-700 hover:text-green-600 font-medium">About</a>
-        <a href="#waitlist" class="text-gray-700 hover:text-green-600 font-medium">Waitlist</a>
-        <a href="/hiring" class="text-gray-700 hover:text-green-600 font-medium">We're Hiring</a>
-        <a href="#contact" class="text-gray-700 hover:text-green-600 font-medium">Contact</a>
+
+        <div class="hidden md:flex space-x-6 items-center">
+          <a
+            href="#services"
+            class="text-gray-700 hover:text-green-600 font-medium"
+          >Services</a>
+          <a
+            href="#about"
+            class="text-gray-700 hover:text-green-600 font-medium"
+          >About</a>
+          <a
+            href="#waitlist"
+            class="text-gray-700 hover:text-green-600 font-medium"
+          >Waitlist</a>
+          <a
+            href="/hiring"
+            class="text-gray-700 hover:text-green-600 font-medium"
+          >We're Hiring</a>
+          <a
+            href="#contact"
+            class="text-gray-700 hover:text-green-600 font-medium"
+          >Contact</a>
+        </div>
+
+        <div class="md:hidden">
+          <button
+            class="text-gray-700 hover:text-green-600"
+            onclick="document.getElementById('menu').classList.toggle('hidden')"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              >
+              </path>
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <div class="md:hidden">
-        <button class="text-gray-700 hover:text-green-600" onclick="document.getElementById('menu').classList.toggle('hidden')">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
+      <!-- Mobile Menu -->
+      <div id="menu" class="hidden md:hidden bg-white border-t">
+        <a
+          href="#services"
+          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+        >Services</a>
+        <a href="#about" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+        >About</a>
+        <a
+          href="#waitlist"
+          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+        >Waitlist</a>
+        <a
+          href="/hiring"
+          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+        >We're Hiring</a>
+        <a
+          href="#contact"
+          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+        >Contact</a>
       </div>
-    </div>
+    </nav>
 
-    <!-- Mobile Menu -->
-    <div id="menu" class="hidden md:hidden bg-white border-t">
-      <a href="#services" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Services</a>
-      <a href="#about" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">About</a>
-      <a href="#waitlist" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Waitlist</a>
-      <a href="/hiring" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">We're Hiring</a>
-      <a href="#contact" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Contact</a>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="bg-gradient-to-r from-green-600 to-green-700 text-white py-20">
-    <div class="max-w-6xl mx-auto px-4 text-center">
-      <h1 class="text-5xl md:text-6xl font-bold mb-4">Professional Lawn Care for Houston</h1>
-      <p class="text-xl md:text-2xl mb-8 text-green-100">Beautiful, healthy lawns delivered by our skilled crew</p>
-      <a href="#waitlist" class="inline-block bg-white text-green-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition duration-300">
-        Join the Waitlist
-      </a>
-    </div>
-  </section>
-  <!-- ...existing code for the rest of the landing page... -->
-</body>
+    <!-- Hero Section -->
+    <section
+      class="bg-gradient-to-r from-green-600 to-green-700 text-white py-20"
+    >
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-4">
+          Professional Lawn Care for Houston
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 text-green-100">
+          Beautiful, healthy lawns delivered by our skilled crew
+        </p>
+        <a
+          href="#waitlist"
+          class="inline-block bg-white text-green-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition duration-300"
+        >
+          Join the Waitlist
+        </a>
+      </div>
+    </section>
+    <!-- ...existing code for the rest of the landing page... -->
+  </body>
 </html>

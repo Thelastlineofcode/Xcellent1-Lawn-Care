@@ -75,7 +75,7 @@ async function sendViaMailService(options: EmailOptions): Promise<boolean> {
 export function buildOwnerInvitationEmail(
   name: string,
   setupUrl: string,
-  expiresAt: string
+  expiresAt: string,
 ): string {
   const expiryDate = new Date(expiresAt).toLocaleDateString("en-US", {
     weekday: "long",

@@ -6,11 +6,11 @@ owner: devops
 points: 3
 ---
 
-Tasks
------
+## Tasks
+
 - Configure CI pipeline to run `scripts/run_migrations.sh` in test mode.
 - Ensure tests run against a migrated test DB and rollback/cleanup happens.
 
-Acceptance Criteria
--------------------
+## Acceptance Criteria
+
 - CI runs migrations successfully and tests pass against the test DB.

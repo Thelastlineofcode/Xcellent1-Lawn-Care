@@ -1,9 +1,13 @@
 # Product Roadmap - Xcellent1 Lawn Care
 
 ## Vision
-Build a fully automated lawn care SaaS platform where AI agents handle customer acquisition, scheduling, billing, and operations - allowing the business owner to focus on growth and quality.
+
+Build a fully automated lawn care SaaS platform where AI agents handle customer
+acquisition, scheduling, billing, and operations - allowing the business owner
+to focus on growth and quality.
 
 ## Success Metrics (12-Month Goals)
+
 - 📈 $20K+ MRR
 - 👥 100+ active customers
 - ⭐ 4.8+ Google rating
@@ -14,12 +18,15 @@ Build a fully automated lawn care SaaS platform where AI agents handle customer 
 ---
 
 ## Phase 1: MVP Foundation (Months 1-3)
+
 **Goal**: Launch core customer-facing features and payment processing
 
 ### Timeline: Weeks 1-12
+
 **Target**: $5K MRR | 25+ customers
 
 ### Key Features
+
 1. ✅ **Landing Page with Instant Quotes**
    - Waitlist signup
    - Service area validation
@@ -46,6 +53,7 @@ Build a fully automated lawn care SaaS platform where AI agents handle customer 
    - Receipt generation
 
 ### User Stories (P0 - Must Have)
+
 - Epic 1: Stories 1.1, 1.2, 1.3, 1.4 (Quotes, Chat, Booking, Mobile)
 - Epic 3: Stories 3.1, 3.2, 3.3, 3.4 (Invoicing, Payments)
 - Epic 4: Stories 4.1, 4.2, 4.3 (AI Agent, Quotes, Escalation)
@@ -54,6 +62,7 @@ Build a fully automated lawn care SaaS platform where AI agents handle customer 
 **Total**: 18 stories | 125 story points
 
 ### Tech Stack Priorities
+
 - Frontend: Static PWA (HTML/Tailwind) on Netlify
 - Backend: Deno Deploy with Hono framework
 - Database: Supabase (Postgres + Auth)
@@ -64,12 +73,15 @@ Build a fully automated lawn care SaaS platform where AI agents handle customer 
 ---
 
 ## Phase 2: Operations Automation (Months 4-6)
+
 **Goal**: Automate crew management and job execution
 
 ### Timeline: Weeks 13-24
+
 **Target**: $10K MRR | 50+ customers | 95% on-time completion
 
 ### Key Features
+
 1. ✅ **Smart Route Optimization**
    - AI-powered route planning
    - 20% reduction in drive time
@@ -97,12 +109,16 @@ Build a fully automated lawn care SaaS platform where AI agents handle customer 
    - Crew feedback
 
 ### User Stories (P1 - Should Have)
-- Epic 2: Stories 2.1, 2.2, 2.3, 2.4, 2.5 (Routes, Status, Scheduling, Weather, GPS)
-- Epic 5: Stories 5.4, 5.5, 5.6, 5.7 (Navigation, Completion, Offline, Dashboard)
+
+- Epic 2: Stories 2.1, 2.2, 2.3, 2.4, 2.5 (Routes, Status, Scheduling, Weather,
+  GPS)
+- Epic 5: Stories 5.4, 5.5, 5.6, 5.7 (Navigation, Completion, Offline,
+  Dashboard)
 
 **Total**: 20+ stories | 180 story points
 
 ### Success Criteria
+
 - 95% on-time job completion
 - <5 minute average photo upload time
 - 90% crew app adoption rate
@@ -111,12 +127,15 @@ Build a fully automated lawn care SaaS platform where AI agents handle customer 
 ---
 
 ## Phase 3: Business Intelligence (Months 7-9)
+
 **Goal**: Data-driven decision making and hiring automation
 
 ### Timeline: Weeks 25-36
+
 **Target**: $15K MRR | 75+ customers
 
 ### Key Features
+
 1. ✅ **Owner Dashboard**
    - Real-time revenue tracking
    - Weekly KPI digest
@@ -142,12 +161,16 @@ Build a fully automated lawn care SaaS platform where AI agents handle customer 
    - QuickBooks integration
 
 ### User Stories (P1 - Should Have)
-- Epic 6: Stories 6.1, 6.2, 6.3, 6.4 (Dashboard, Retention, Performance, Margins)
-- Epic 7: Stories 7.1, 7.2, 7.3, 7.4 (Screening, Scheduling, Onboarding, Tracking)
+
+- Epic 6: Stories 6.1, 6.2, 6.3, 6.4 (Dashboard, Retention, Performance,
+  Margins)
+- Epic 7: Stories 7.1, 7.2, 7.3, 7.4 (Screening, Scheduling, Onboarding,
+  Tracking)
 
 **Total**: 15+ stories | 155 story points
 
 ### Success Criteria
+
 - All KPIs visible in one dashboard
 - <2 weeks average hiring time
 - 70% customer retention rate
@@ -156,12 +179,15 @@ Build a fully automated lawn care SaaS platform where AI agents handle customer 
 ---
 
 ## Phase 4: Growth & Scale (Months 10-12)
+
 **Goal**: Marketing automation and revenue expansion
 
 ### Timeline: Weeks 37-48
+
 **Target**: $20K MRR | 100+ customers
 
 ### Key Features
+
 1. ✅ **Content Marketing Automation**
    - AI blog generation
    - SEO optimization
@@ -187,12 +213,14 @@ Build a fully automated lawn care SaaS platform where AI agents handle customer 
    - Partnership opportunities
 
 ### User Stories (P2 - Could Have)
+
 - Epic 8: All stories (Content, SEO, Reviews, Email, Social)
 - Epic 9: Stories 9.1-9.7 (Catalog, Cart, Fulfillment, Recommendations)
 
 **Total**: 25+ stories | 215 story points
 
 ### Success Criteria
+
 - 3+ blog posts per week (automated)
 - 5+ Google reviews per month
 - $500+ monthly e-commerce revenue
@@ -201,5 +229,5 @@ Build a fully automated lawn care SaaS platform where AI agents handle customer 
 ---
 
 ## Future Backlog (P3 - Post-Launch)
-**Features for consideration after Month 12**
 
+**Features for consideration after Month 12**

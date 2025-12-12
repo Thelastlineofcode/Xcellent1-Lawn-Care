@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.201.0/http/server.ts";
 import {
-  supabaseInsert,
   fetchPendingOutbox,
+  supabaseInsert,
 } from "../bmad/agents/lib/supabase.ts";
 
 const _encoder = new TextEncoder();
@@ -64,12 +64,12 @@ serve(
     // Serve static assets
     if (req.method === "GET" && pathname === "/") {
       return serveFile(
-        new URL("./static/index.html", import.meta.url).pathname
+        new URL("./static/index.html", import.meta.url).pathname,
       );
     }
     if (req.method === "GET" && pathname === "/dashboard") {
       return serveFile(
-        new URL("./static/dashboard.html", import.meta.url).pathname
+        new URL("./static/dashboard.html", import.meta.url).pathname,
       );
     }
     if (req.method === "GET" && pathname.startsWith("/static/")) {
@@ -86,8 +86,8 @@ serve(
         const ct = filename.endsWith(".png")
           ? "image/png"
           : filename.endsWith(".jpg") || filename.endsWith(".jpeg")
-            ? "image/jpeg"
-            : "application/octet-stream";
+          ? "image/jpeg"
+          : "application/octet-stream";
         return new Response(data, {
           status: 200,
           headers: { "content-type": ct },
@@ -152,16 +152,18 @@ serve(
         const jobId = parts[2];
         const body = await req.json();
         const dataUrl = body.dataUrl;
-        if (!dataUrl || !dataUrl.startsWith("data:"))
+        if (!dataUrl || !dataUrl.startsWith("data:")) {
           return jsonResponse({ ok: false, error: "missing dataUrl" }, 400);
+        }
         const match = dataUrl.match(
-          /^data:(image\/(png|jpeg|jpg));base64,(.*)$/
+          /^data:(image\/(png|jpeg|jpg));base64,(.*)$/,
         );
-        if (!match)
+        if (!match) {
           return jsonResponse(
             { ok: false, error: "unsupported image format" },
-            400
+            400,
           );
+        }
         const ext = match[2] === "jpeg" ? "jpg" : match[2];
         const b64 = match[3];
         const bytes = atob(b64);
@@ -219,5 +221,5 @@ serve(
 
     return new Response("Not found", { status: 404 });
   },
-  { port: PORT, hostname: HOST }
+  { port: PORT, hostname: HOST },
 );

@@ -9,7 +9,7 @@ export interface TestJob {
   crew_id?: string;
   scheduled_date: string;
   services: string[];
-  status: 'scheduled' | 'assigned' | 'in_progress' | 'completed' | 'cancelled';
+  status: "scheduled" | "assigned" | "in_progress" | "completed" | "cancelled";
   notes?: string;
   estimated_duration?: number;
   actual_duration?: number;
@@ -17,13 +17,16 @@ export interface TestJob {
   updated_at?: Date;
 }
 
-export const createJob = (clientId: string, overrides: Partial<TestJob> = {}): TestJob => ({
+export const createJob = (
+  clientId: string,
+  overrides: Partial<TestJob> = {},
+): TestJob => ({
   id: faker.string.uuid(),
   client_id: clientId,
   crew_id: faker.string.uuid(),
-  scheduled_date: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Tomorrow
-  services: ['Mowing', 'Edging'],
-  status: 'scheduled',
+  scheduled_date: new Date(Date.now() + 86400000).toISOString().split("T")[0], // Tomorrow
+  services: ["Mowing", "Edging"],
+  status: "scheduled",
   notes: faker.lorem.sentence(),
   estimated_duration: faker.number.int({ min: 30, max: 120 }),
   created_at: new Date(),
@@ -31,15 +34,22 @@ export const createJob = (clientId: string, overrides: Partial<TestJob> = {}): T
   ...overrides,
 });
 
-export const createScheduledJob = (clientId: string, overrides: Partial<TestJob> = {}): TestJob =>
-  createJob(clientId, { status: 'scheduled', ...overrides });
+export const createScheduledJob = (
+  clientId: string,
+  overrides: Partial<TestJob> = {},
+): TestJob => createJob(clientId, { status: "scheduled", ...overrides });
 
-export const createInProgressJob = (clientId: string, overrides: Partial<TestJob> = {}): TestJob =>
-  createJob(clientId, { status: 'in_progress', ...overrides });
+export const createInProgressJob = (
+  clientId: string,
+  overrides: Partial<TestJob> = {},
+): TestJob => createJob(clientId, { status: "in_progress", ...overrides });
 
-export const createCompletedJob = (clientId: string, overrides: Partial<TestJob> = {}): TestJob =>
-  createJob(clientId, { 
-    status: 'completed', 
+export const createCompletedJob = (
+  clientId: string,
+  overrides: Partial<TestJob> = {},
+): TestJob =>
+  createJob(clientId, {
+    status: "completed",
     actual_duration: faker.number.int({ min: 30, max: 120 }),
-    ...overrides 
+    ...overrides,
   });

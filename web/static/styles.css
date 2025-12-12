@@ -1,14 +1,4 @@
-/* ==========================================
-   Xcellent1 Lawn Care - Legacy Stylesheet
-   ==========================================
-   
-   NOTE: This file is DEPRECATED.
-   
-   Use the proper stylesheet for your page type:
-   - Marketing pages: styles.clean.css
-   - Admin/Dashboard pages: admin.css (+ styles.clean.css)
-   
-   This file is kept for backwards compatibility only.
-   ========================================== */
-
-@import url('styles.clean.css');
+/* DEPRECATED: Root-level styles.css is legacy and replaced by `styles.clean.css` and `admin.css`.
+   This file is kept for archive purposes only and has been moved to `web/static/archive/styles.css`.
+*/
+console.warn('Deprecated file: styles.css. Use styles.clean.css and admin.css instead. This file is inert.');

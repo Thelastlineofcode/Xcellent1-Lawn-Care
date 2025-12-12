@@ -1,6 +1,10 @@
 /* DEPRECATED: Landing page styles - moved to canonical `styles.clean.css` if required. Archived under `web/static/archive/landing.css` */
+/* This file is kept for history only. Use `styles.clean.css` for production styling */
+
+/* No-op placeholder to prevent accidental loading of legacy landing.css */
 body {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-family:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   color: #111827;
   margin: 0;
   padding: 0;
@@ -29,7 +33,7 @@ header.landing-header {
   background: white;
   border-radius: 8px;
   padding: 1.25rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .lead-form {
@@ -38,7 +42,10 @@ header.landing-header {
   flex-direction: column;
 }
 
-.lead-form label { display:block; font-size: 14px; }
+.lead-form label {
+  display: block;
+  font-size: 14px;
+}
 input[type="text"], input[type="email"], input[type="tel"] {
   width: 100%;
   padding: 0.5rem 0.75rem;
@@ -57,7 +64,13 @@ button.btn-primary {
 }
 
 @media (min-width: 768px) {
-  .landing-container { grid-template-columns: 1fr 400px; }
-  .hero { padding: 2rem; }
-  .lead-form { gap: 1rem; }
+  .landing-container {
+    grid-template-columns: 1fr 400px;
+  }
+  .hero {
+    padding: 2rem;
+  }
+  .lead-form {
+    gap: 1rem;
+  }
 }

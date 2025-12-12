@@ -1,289 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Manage customer waitlist - Xcellent1 Lawn Care owner dashboard"
+    />
+    <meta name="theme-color" content="#10b981" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Waitlist Management | Xcellent1 Owner</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
+    <link rel="stylesheet" href="styles.clean.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Manage customer waitlist - Xcellent1 Lawn Care owner dashboard" />
-  <meta name="theme-color" content="#10b981" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>Waitlist Management | Xcellent1 Owner</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
-  <link rel="stylesheet" href="styles.clean.css" />
-  <link rel="stylesheet" href="admin.css" />
-</head>
-
-<body>
-  <!-- Navigation -->
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
-      <div class="navbar-title">
-        <span class="navbar-name">XCELLENT1</span>
-        <span class="navbar-tagline">LAWN CARE</span>
-      </div>
-    </div>
-    <div class="navbar-links">
-      <a href="owner.html" class="navbar-link">Dashboard</a>
-      <a href="manage-clients.html" class="navbar-link">Clients</a>
-      <a href="manage-jobs.html" class="navbar-link">Jobs</a>
-      <a href="manage-invoices.html" class="navbar-link">Invoices</a>
-      <a href="manage-waitlist.html" class="navbar-link active">Waitlist</a>
-      <button onclick="logout()" class="btn btn-sm">Logout</button>
-    </div>
-  </nav>
-
-  <div class="container">
-    <div class="header">
-      <h1>📋 Waitlist Management</h1>
-      <a href="owner.html" class="back-btn">← Back to Dashboard</a>
-    </div>
-
-    <div class="content">
-      <div class="toolbar">
-        <div class="search-box">
-          <input type="text" id="searchInput" placeholder="Search by name, email, phone, or address..." />
-        </div>
-        <select id="statusFilter" class="filter-select">
-          <option value="">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="contacted">Contacted</option>
-          <option value="converted">Converted</option>
-          <option value="rejected">Rejected</option>
-        </select>
-      </div>
-
-      <div class="stats-row">
-        <div class="stat-card">
-          <h3>Total Entries</h3>
-          <div class="number" id="totalCount">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Pending</h3>
-          <div class="number" id="pendingCount">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Contacted</h3>
-          <div class="number" id="contactedCount">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Converted</h3>
-          <div class="number" id="convertedCount">0</div>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <img
+          src="images/xcellent1-logo-transparent.png"
+          alt="Xcellent1 logo"
+          class="navbar-logo"
+        />
+        <div class="navbar-title">
+          <span class="navbar-name">XCELLENT1</span>
+          <span class="navbar-tagline">LAWN CARE</span>
         </div>
       </div>
-
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Property Address</th>
-              <th>Service Plan</th>
-              <th>Status</th>
-              <th>Created</th>
-            </tr>
-          </thead>
-          <tbody id="waitlistTbody">
-            <tr>
-              <td colspan="7" class="loading">Loading waitlist...</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="navbar-links">
+        <a href="owner.html" class="navbar-link">Dashboard</a>
+        <a href="manage-clients.html" class="navbar-link">Clients</a>
+        <a href="manage-jobs.html" class="navbar-link">Jobs</a>
+        <a href="manage-invoices.html" class="navbar-link">Invoices</a>
+        <a href="manage-waitlist.html" class="navbar-link active">Waitlist</a>
+        <button onclick="logout()" class="btn btn-sm">Logout</button>
       </div>
-    </div>
-  </div>
+    </nav>
 
-  <!-- Detail Modal -->
-  <div id="detailModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Waitlist Entry Details</h2>
-        <button class="close-btn" onclick="closeDetailModal()">&times;</button>
+    <div class="container">
+      <div class="header">
+        <h1>📋 Waitlist Management</h1>
+        <a href="owner.html" class="back-btn">← Back to Dashboard</a>
       </div>
-      <div class="modal-body">
-        <div class="detail-row">
-          <div class="detail-label">Name</div>
-          <div class="detail-value" id="detailName">-</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">Email</div>
-          <div class="detail-value" id="detailEmail">-</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">Phone</div>
-          <div class="detail-value" id="detailPhone">-</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">Property Address</div>
-          <div class="detail-value" id="detailAddress">-</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">City, State ZIP</div>
-          <div class="detail-value" id="detailCityStateZip">-</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">Preferred Service Plan</div>
-          <div class="detail-value" id="detailServicePlan">-</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">Source</div>
-          <div class="detail-value" id="detailSource">-</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">Status</div>
-          <div class="detail-value" id="detailStatus">-</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">Notes</div>
-          <div class="detail-value" id="detailNotes">-</div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-label">Created</div>
-          <div class="detail-value" id="detailCreated">-</div>
-        </div>
 
-        <div class="action-buttons">
-          <button class="btn btn-primary" onclick="showUpdateModal()" id="updateBtn">Update Status</button>
-          <button class="btn btn-success" onclick="showConvertModal()" id="convertBtn">Convert to Client</button>
-          <button class="btn btn-secondary" onclick="closeDetailModal()">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Update Status Modal -->
-  <div id="updateModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Update Status</h2>
-        <button class="close-btn" onclick="closeUpdateModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form id="updateForm">
-          <div class="form-group">
-            <label for="updateStatus">Status</label>
-            <select id="updateStatus" required>
-              <option value="pending">Pending</option>
-              <option value="contacted">Contacted</option>
-              <option value="rejected">Rejected</option>
-            </select>
+      <div class="content">
+        <div class="toolbar">
+          <div class="search-box">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search by name, email, phone, or address..."
+            />
           </div>
-          <div class="form-group">
-            <label for="updateNotes">Notes</label>
-            <textarea id="updateNotes" rows="4" placeholder="Add any notes about this contact..."></textarea>
+          <select id="statusFilter" class="filter-select">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="contacted">Contacted</option>
+            <option value="converted">Converted</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <h3>Total Entries</h3>
+            <div class="number" id="totalCount">0</div>
           </div>
+          <div class="stat-card">
+            <h3>Pending</h3>
+            <div class="number" id="pendingCount">0</div>
+          </div>
+          <div class="stat-card">
+            <h3>Contacted</h3>
+            <div class="number" id="contactedCount">0</div>
+          </div>
+          <div class="stat-card">
+            <h3>Converted</h3>
+            <div class="number" id="convertedCount">0</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Property Address</th>
+                <th>Service Plan</th>
+                <th>Status</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody id="waitlistTbody">
+              <tr>
+                <td colspan="7" class="loading">Loading waitlist...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Waitlist Entry Details</h2>
+          <button class="close-btn" onclick="closeDetailModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="detail-row">
+            <div class="detail-label">Name</div>
+            <div class="detail-value" id="detailName">-</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Email</div>
+            <div class="detail-value" id="detailEmail">-</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Phone</div>
+            <div class="detail-value" id="detailPhone">-</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Property Address</div>
+            <div class="detail-value" id="detailAddress">-</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">City, State ZIP</div>
+            <div class="detail-value" id="detailCityStateZip">-</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Preferred Service Plan</div>
+            <div class="detail-value" id="detailServicePlan">-</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Source</div>
+            <div class="detail-value" id="detailSource">-</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Status</div>
+            <div class="detail-value" id="detailStatus">-</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Notes</div>
+            <div class="detail-value" id="detailNotes">-</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Created</div>
+            <div class="detail-value" id="detailCreated">-</div>
+          </div>
+
           <div class="action-buttons">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <button type="button" class="btn btn-secondary" onclick="closeUpdateModal()">Cancel</button>
+            <button
+              class="btn btn-primary"
+              onclick="showUpdateModal()"
+              id="updateBtn"
+            >
+              Update Status
+            </button>
+            <button
+              class="btn btn-success"
+              onclick="showConvertModal()"
+              id="convertBtn"
+            >
+              Convert to Client
+            </button>
+            <button class="btn btn-secondary" onclick="closeDetailModal()">
+              Close
+            </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Convert to Client Modal -->
-  <div id="convertModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Convert to Client</h2>
-        <button class="close-btn" onclick="closeConvertModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p style="margin-bottom: 20px; color: #666;">
-          This will create a new client account and mark this waitlist entry as converted.
-        </p>
-        <form id="convertForm">
-          <div class="form-group">
-            <label for="convertServicePlan">Service Plan</label>
-            <select id="convertServicePlan" required>
-              <option value="weekly">Weekly</option>
-              <option value="biweekly">Bi-weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="seasonal">Seasonal</option>
-              <option value="one-time">One-time</option>
-            </select>
-          </div>
-          <div class="action-buttons">
-            <button type="submit" class="btn btn-success">Convert to Client</button>
-            <button type="button" class="btn btn-secondary" onclick="closeConvertModal()">Cancel</button>
-          </div>
-        </form>
+    <!-- Update Status Modal -->
+    <div id="updateModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Update Status</h2>
+          <button class="close-btn" onclick="closeUpdateModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="updateForm">
+            <div class="form-group">
+              <label for="updateStatus">Status</label>
+              <select id="updateStatus" required>
+                <option value="pending">Pending</option>
+                <option value="contacted">Contacted</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="updateNotes">Notes</label>
+              <textarea
+                id="updateNotes"
+                rows="4"
+                placeholder="Add any notes about this contact..."
+              ></textarea>
+            </div>
+            <div class="action-buttons">
+              <button type="submit" class="btn btn-primary">
+                Save Changes
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeUpdateModal()"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Load runtime config from server -->
-  <script src="/config.js"></script>
+    <!-- Convert to Client Modal -->
+    <div id="convertModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Convert to Client</h2>
+          <button class="close-btn" onclick="closeConvertModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <p style="margin-bottom: 20px; color: #666">
+            This will create a new client account and mark this waitlist entry
+            as converted.
+          </p>
+          <form id="convertForm">
+            <div class="form-group">
+              <label for="convertServicePlan">Service Plan</label>
+              <select id="convertServicePlan" required>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Bi-weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="seasonal">Seasonal</option>
+                <option value="one-time">One-time</option>
+              </select>
+            </div>
+            <div class="action-buttons">
+              <button type="submit" class="btn btn-success">
+                Convert to Client
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeConvertModal()"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
-  <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
+    <!-- Load runtime config from server -->
+    <script src="/config.js"></script>
 
-    const _env = (typeof window !== "undefined" && window.__ENV) || {};
-    const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL || "https://utivthfrwgtjatsusopw.supabase.co";
-    const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "YOUR_SUPABASE_ANON_KEY_HERE";
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <script type="module">
+      import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
-    // Logout function
-    window.logout = async function () {
-      await supabase.auth.signOut();
-      window.location.href = "login.html";
-    };
+      const _env = (typeof window !== "undefined" && window.__ENV) ||
+        {};
+      const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL ||
+        "https://utivthfrwgtjatsusopw.supabase.co";
+      const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        "YOUR_SUPABASE_ANON_KEY_HERE";
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const API_BASE = window.location.origin;
-    let allWaitlist = [];
-    let currentEntry = null;
+      // Logout function
+      window.logout = async function () {
+        await supabase.auth.signOut();
+        window.location.href = "login.html";
+      };
 
-    // Get session from localStorage
-    const session = JSON.parse(localStorage.getItem("supabase.auth.token") || "null");
+      const API_BASE = window.location.origin;
+      let allWaitlist = [];
+      let currentEntry = null;
 
-    if (!session || !session.access_token) {
-      alert("Please log in first");
-      window.location.href = "login.html";
-    }
+      // Get session from localStorage
+      const session = JSON.parse(
+        localStorage.getItem("supabase.auth.token") || "null",
+      );
 
-    // Load waitlist data
-    async function loadWaitlist() {
-      try {
-        const search = document.getElementById("searchInput").value.trim();
-        const status = document.getElementById("statusFilter").value;
+      if (!session || !session.access_token) {
+        alert("Please log in first");
+        window.location.href = "login.html";
+      }
 
-        const params = new URLSearchParams();
-        if (search) params.append("search", search);
-        if (status) params.append("status", status);
+      // Load waitlist data
+      async function loadWaitlist() {
+        try {
+          const search = document.getElementById("searchInput").value
+            .trim();
+          const status = document.getElementById("statusFilter").value;
 
-        const response = await fetch(`${API_BASE}/api/owner/waitlist?${params}`, {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
+          const params = new URLSearchParams();
+          if (search) params.append("search", search);
+          if (status) params.append("status", status);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch waitlist");
-        }
+          const response = await fetch(
+            `${API_BASE}/api/owner/waitlist?${params}`,
+            {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            },
+          );
 
-        const data = await response.json();
-        allWaitlist = data.waitlist || [];
-        renderWaitlist(allWaitlist);
-        updateStats(allWaitlist);
-      } catch (error) {
-        console.error("Error loading waitlist:", error);
-        document.getElementById("waitlistTbody").innerHTML = `
+          if (!response.ok) {
+            throw new Error("Failed to fetch waitlist");
+          }
+
+          const data = await response.json();
+          allWaitlist = data.waitlist || [];
+          renderWaitlist(allWaitlist);
+          updateStats(allWaitlist);
+        } catch (error) {
+          console.error("Error loading waitlist:", error);
+          document.getElementById("waitlistTbody").innerHTML = `
           <tr>
             <td colspan="7" style="text-align: center; padding: 40px; color: #dc3545;">
               Error loading waitlist. Please try again.
             </td>
           </tr>
         `;
+        }
       }
-    }
 
-    function renderWaitlist(waitlist) {
-      const tbody = document.getElementById("waitlistTbody");
+      function renderWaitlist(waitlist) {
+        const tbody = document.getElementById("waitlistTbody");
 
-      if (waitlist.length === 0) {
-        tbody.innerHTML = `
+        if (waitlist.length === 0) {
+          tbody.innerHTML = `
           <tr>
             <td colspan="7">
               <div class="empty-state">
@@ -293,215 +353,266 @@
             </td>
           </tr>
         `;
-        return;
-      }
+          return;
+        }
 
-      tbody.innerHTML = waitlist
-        .map(
-          (entry) => `
+        tbody.innerHTML = waitlist
+          .map(
+            (entry) => `
             <tr onclick="viewEntry('${entry.id}')">
               <td>${entry.name}</td>
               <td>${entry.email}</td>
               <td>${entry.phone}</td>
               <td>${entry.property_address}</td>
-              <td>${formatServicePlan(entry.preferred_service_plan)}</td>
+              <td>${
+              formatServicePlan(entry.preferred_service_plan)
+            }</td>
               <td><span class="badge ${entry.status}">${entry.status}</span></td>
               <td>${formatDate(entry.created_at)}</td>
             </tr>
-          `
-        )
-        .join("");
-    }
+          `,
+          )
+          .join("");
+      }
 
-    function updateStats(waitlist) {
-      document.getElementById("totalCount").textContent = waitlist.length;
-      document.getElementById("pendingCount").textContent = waitlist.filter(
-        (e) => e.status === "pending"
-      ).length;
-      document.getElementById("contactedCount").textContent = waitlist.filter(
-        (e) => e.status === "contacted"
-      ).length;
-      document.getElementById("convertedCount").textContent = waitlist.filter(
-        (e) => e.status === "converted"
-      ).length;
-    }
+      function updateStats(waitlist) {
+        document.getElementById("totalCount").textContent =
+          waitlist.length;
+        document.getElementById("pendingCount").textContent =
+          waitlist.filter(
+            (e) => e.status === "pending",
+          ).length;
+        document.getElementById("contactedCount").textContent =
+          waitlist.filter(
+            (e) => e.status === "contacted",
+          ).length;
+        document.getElementById("convertedCount").textContent =
+          waitlist.filter(
+            (e) => e.status === "converted",
+          ).length;
+      }
 
-    function formatServicePlan(plan) {
-      const plans = {
-        weekly: "Weekly",
-        biweekly: "Bi-weekly",
-        monthly: "Monthly",
-        seasonal: "Seasonal",
-        "one-time": "One-time",
-      };
-      return plans[plan] || plan;
-    }
+      function formatServicePlan(plan) {
+        const plans = {
+          weekly: "Weekly",
+          biweekly: "Bi-weekly",
+          monthly: "Monthly",
+          seasonal: "Seasonal",
+          "one-time": "One-time",
+        };
+        return plans[plan] || plan;
+      }
 
-    function formatDate(dateString) {
-      if (!dateString) return "-";
-      const date = new Date(dateString);
-      return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    }
+      function formatDate(dateString) {
+        if (!dateString) return "-";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
 
-    window.viewEntry = function (entryId) {
-      currentEntry = allWaitlist.find((e) => e.id === entryId);
-      if (!currentEntry) return;
+      window.viewEntry = function (entryId) {
+        currentEntry = allWaitlist.find((e) => e.id === entryId);
+        if (!currentEntry) return;
 
-      document.getElementById("detailName").textContent = currentEntry.name;
-      document.getElementById("detailEmail").textContent = currentEntry.email;
-      document.getElementById("detailPhone").textContent = currentEntry.phone;
-      document.getElementById("detailAddress").textContent = currentEntry.property_address;
-      document.getElementById("detailCityStateZip").textContent =
-        [currentEntry.property_city, currentEntry.property_state, currentEntry.property_zip]
+        document.getElementById("detailName").textContent =
+          currentEntry.name;
+        document.getElementById("detailEmail").textContent =
+          currentEntry.email;
+        document.getElementById("detailPhone").textContent =
+          currentEntry.phone;
+        document.getElementById("detailAddress").textContent =
+          currentEntry.property_address;
+        document.getElementById("detailCityStateZip").textContent = [
+          currentEntry.property_city,
+          currentEntry.property_state,
+          currentEntry.property_zip,
+        ]
           .filter(Boolean)
           .join(", ") || "-";
-      document.getElementById("detailServicePlan").textContent = formatServicePlan(
-        currentEntry.preferred_service_plan
+        document.getElementById("detailServicePlan").textContent =
+          formatServicePlan(
+            currentEntry.preferred_service_plan,
+          );
+        document.getElementById("detailSource").textContent =
+          currentEntry.source || "-";
+        document.getElementById("detailStatus").innerHTML =
+          `<span class="badge ${currentEntry.status}">${currentEntry.status}</span>`;
+        document.getElementById("detailNotes").textContent =
+          currentEntry.notes || "-";
+        document.getElementById("detailCreated").textContent =
+          formatDate(currentEntry.created_at);
+
+        // Disable convert button if already converted
+        const convertBtn = document.getElementById("convertBtn");
+        if (currentEntry.status === "converted") {
+          convertBtn.disabled = true;
+          convertBtn.style.opacity = "0.5";
+          convertBtn.style.cursor = "not-allowed";
+        } else {
+          convertBtn.disabled = false;
+          convertBtn.style.opacity = "1";
+          convertBtn.style.cursor = "pointer";
+        }
+
+        document.getElementById("detailModal").classList.add("active");
+      };
+
+      window.closeDetailModal = function () {
+        document.getElementById("detailModal").classList.remove(
+          "active",
+        );
+        currentEntry = null;
+      };
+
+      window.showUpdateModal = function () {
+        if (!currentEntry) return;
+        document.getElementById("updateStatus").value =
+          currentEntry.status;
+        document.getElementById("updateNotes").value =
+          currentEntry.notes || "";
+        document.getElementById("updateModal").classList.add("active");
+      };
+
+      window.closeUpdateModal = function () {
+        document.getElementById("updateModal").classList.remove(
+          "active",
+        );
+      };
+
+      window.showConvertModal = function () {
+        if (!currentEntry || currentEntry.status === "converted") {
+          return;
+        }
+        document.getElementById("convertServicePlan").value =
+          currentEntry.preferred_service_plan || "weekly";
+        document.getElementById("convertModal").classList.add("active");
+      };
+
+      window.closeConvertModal = function () {
+        document.getElementById("convertModal").classList.remove(
+          "active",
+        );
+      };
+
+      // Update status form handler
+      document.getElementById("updateForm").addEventListener(
+        "submit",
+        async (e) => {
+          e.preventDefault();
+          if (!currentEntry) return;
+
+          const status = document.getElementById("updateStatus").value;
+          const notes = document.getElementById("updateNotes").value
+            .trim();
+
+          try {
+            const response = await fetch(
+              `${API_BASE}/api/owner/waitlist/${currentEntry.id}`,
+              {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+                body: JSON.stringify({ status, notes }),
+              },
+            );
+
+            if (!response.ok) {
+              throw new Error("Failed to update entry");
+            }
+
+            alert("Status updated successfully!");
+            closeUpdateModal();
+            closeDetailModal();
+            loadWaitlist();
+          } catch (error) {
+            console.error("Error updating entry:", error);
+            alert("Failed to update entry. Please try again.");
+          }
+        },
       );
-      document.getElementById("detailSource").textContent = currentEntry.source || "-";
-      document.getElementById("detailStatus").innerHTML = `<span class="badge ${currentEntry.status}">${currentEntry.status}</span>`;
-      document.getElementById("detailNotes").textContent = currentEntry.notes || "-";
-      document.getElementById("detailCreated").textContent = formatDate(currentEntry.created_at);
 
-      // Disable convert button if already converted
-      const convertBtn = document.getElementById("convertBtn");
-      if (currentEntry.status === "converted") {
-        convertBtn.disabled = true;
-        convertBtn.style.opacity = "0.5";
-        convertBtn.style.cursor = "not-allowed";
-      } else {
-        convertBtn.disabled = false;
-        convertBtn.style.opacity = "1";
-        convertBtn.style.cursor = "pointer";
-      }
+      // Convert to client form handler
+      document.getElementById("convertForm").addEventListener(
+        "submit",
+        async (e) => {
+          e.preventDefault();
+          if (!currentEntry) return;
 
-      document.getElementById("detailModal").classList.add("active");
-    };
+          const servicePlan =
+            document.getElementById("convertServicePlan").value;
 
-    window.closeDetailModal = function () {
-      document.getElementById("detailModal").classList.remove("active");
-      currentEntry = null;
-    };
+          if (
+            !confirm(
+              `Convert ${currentEntry.name} to a client with ${
+                formatServicePlan(servicePlan)
+              } service?`,
+            )
+          ) {
+            return;
+          }
 
-    window.showUpdateModal = function () {
-      if (!currentEntry) return;
-      document.getElementById("updateStatus").value = currentEntry.status;
-      document.getElementById("updateNotes").value = currentEntry.notes || "";
-      document.getElementById("updateModal").classList.add("active");
-    };
+          try {
+            const response = await fetch(
+              `${API_BASE}/api/owner/waitlist/${currentEntry.id}/convert`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+                body: JSON.stringify({ service_plan: servicePlan }),
+              },
+            );
 
-    window.closeUpdateModal = function () {
-      document.getElementById("updateModal").classList.remove("active");
-    };
+            if (!response.ok) {
+              const data = await response.json();
+              throw new Error(
+                data.error || "Failed to convert to client",
+              );
+            }
 
-    window.showConvertModal = function () {
-      if (!currentEntry || currentEntry.status === "converted") return;
-      document.getElementById("convertServicePlan").value =
-        currentEntry.preferred_service_plan || "weekly";
-      document.getElementById("convertModal").classList.add("active");
-    };
+            alert("Successfully converted to client!");
+            closeConvertModal();
+            closeDetailModal();
+            loadWaitlist();
+          } catch (error) {
+            console.error("Error converting to client:", error);
+            alert(`Failed to convert: ${error.message}`);
+          }
+        },
+      );
 
-    window.closeConvertModal = function () {
-      document.getElementById("convertModal").classList.remove("active");
-    };
+      // Search and filter handlers
+      document.getElementById("searchInput").addEventListener(
+        "input",
+        () => {
+          loadWaitlist();
+        },
+      );
 
-    // Update status form handler
-    document.getElementById("updateForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!currentEntry) return;
+      document.getElementById("statusFilter").addEventListener(
+        "change",
+        () => {
+          loadWaitlist();
+        },
+      );
 
-      const status = document.getElementById("updateStatus").value;
-      const notes = document.getElementById("updateNotes").value.trim();
-
-      try {
-        const response = await fetch(`${API_BASE}/api/owner/waitlist/${currentEntry.id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({ status, notes }),
+      // Close modals on background click
+      document.querySelectorAll(".modal").forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.classList.remove("active");
+          }
         });
-
-        if (!response.ok) {
-          throw new Error("Failed to update entry");
-        }
-
-        alert("Status updated successfully!");
-        closeUpdateModal();
-        closeDetailModal();
-        loadWaitlist();
-      } catch (error) {
-        console.error("Error updating entry:", error);
-        alert("Failed to update entry. Please try again.");
-      }
-    });
-
-    // Convert to client form handler
-    document.getElementById("convertForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!currentEntry) return;
-
-      const servicePlan = document.getElementById("convertServicePlan").value;
-
-      if (
-        !confirm(
-          `Convert ${currentEntry.name} to a client with ${formatServicePlan(servicePlan)} service?`
-        )
-      ) {
-        return;
-      }
-
-      try {
-        const response = await fetch(`${API_BASE}/api/owner/waitlist/${currentEntry.id}/convert`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({ service_plan: servicePlan }),
-        });
-
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.error || "Failed to convert to client");
-        }
-
-        alert("Successfully converted to client!");
-        closeConvertModal();
-        closeDetailModal();
-        loadWaitlist();
-      } catch (error) {
-        console.error("Error converting to client:", error);
-        alert(`Failed to convert: ${error.message}`);
-      }
-    });
-
-    // Search and filter handlers
-    document.getElementById("searchInput").addEventListener("input", () => {
-      loadWaitlist();
-    });
-
-    document.getElementById("statusFilter").addEventListener("change", () => {
-      loadWaitlist();
-    });
-
-    // Close modals on background click
-    document.querySelectorAll(".modal").forEach((modal) => {
-      modal.addEventListener("click", (e) => {
-        if (e.target === modal) {
-          modal.classList.remove("active");
-        }
       });
-    });
 
-    // Initial load
-    loadWaitlist();
-  </script>
-</body>
-
+      // Initial load
+      loadWaitlist();
+    </script>
+  </body>
 </html>

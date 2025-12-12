@@ -1,6 +1,7 @@
 # LangChain Agents (langchain-agents)
 
-This folder contains a minimal Flask-based scaffold for LangChain AI agents (customer service, operations).
+This folder contains a minimal Flask-based scaffold for LangChain AI agents
+(customer service, operations).
 
 Quick start (local):
 
@@ -41,5 +42,8 @@ flyctl deploy
 
 Notes:
 
-- The current implementation uses lightweight stubs for agents and tools. Replace with LangChain logic, Perplexity integration, and Supabase tools when ready.
-- Keep API keys in Fly secrets or environment variables; do not commit them to the repo.
+- The current implementation uses lightweight stubs for agents and tools.
+  Replace with LangChain logic, Perplexity integration, and Supabase tools when
+  ready.
+- Keep API keys in Fly secrets or environment variables; do not commit them to
+  the repo.

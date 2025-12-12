@@ -2,16 +2,21 @@
 
 ## Overview
 
-This application now uses **Supabase Auth** for secure user authentication with role-based access control. All dashboards and API endpoints are protected and require valid authentication.
+This application now uses **Supabase Auth** for secure user authentication with
+role-based access control. All dashboards and API endpoints are protected and
+require valid authentication.
 
 ## What Was Implemented
 
 ### 1. Database Changes
+
 - ✅ Added `auth_user_id` column to `users` table to link with Supabase Auth
-- ✅ Created comprehensive RLS (Row Level Security) policies for role-based data access
+- ✅ Created comprehensive RLS (Row Level Security) policies for role-based data
+  access
 - ✅ Added helper function `auth.user_role()` for easy role checking in policies
 
 ### 2. Backend Security
+
 - ✅ Removed hardcoded credentials from `server.ts`
 - ✅ Implemented JWT verification in `supabase_auth.ts`
 - ✅ Created `requireAuth()` middleware for protected routes
@@ -25,14 +30,17 @@ This application now uses **Supabase Auth** for secure user authentication with 
   - `/api/jobs/:id/complete` - Crew or Owner
 
 ### 3. Frontend Security
+
 - ✅ Created login page (`/static/login.html`) with Supabase Auth integration
 - ✅ Added authentication checks to `owner.html` dashboard
 - ✅ Created reusable `auth-helper.js` module for all pages
 - ✅ Added logout functionality
-- ⏳ **TODO**: Add auth checks to `crew.html`, `client.html`, and `dashboard.html`
+- ⏳ **TODO**: Add auth checks to `crew.html`, `client.html`, and
+  `dashboard.html`
 - ⏳ **TODO**: Update `portal-index.html` with login link
 
 ### 4. Configuration
+
 - ✅ Created `.env.example` template
 - ✅ Verified `.env` is in `.gitignore`
 
@@ -47,6 +55,7 @@ Run the updated schema in your Supabase SQL Editor:
 ```
 
 Key changes in the schema:
+
 - New column: `users.auth_user_id`
 - New RLS policies for all tables
 - Helper function for role-based access
@@ -70,7 +79,8 @@ SUPABASE_JWT_SECRET=your_jwt_secret_here
 
 ### Step 4: Create User Accounts
 
-You need to create Supabase Auth users and link them to your database users table.
+You need to create Supabase Auth users and link them to your database users
+table.
 
 #### Option A: Via Supabase Dashboard (Recommended for Initial Setup)
 
@@ -140,6 +150,7 @@ SELECT create_auth_user(
 ### Step 5: Test Authentication
 
 1. Start your Deno server:
+
 ```bash
 deno run --allow-net --allow-read --allow-write --allow-env server.ts
 ```
@@ -152,7 +163,8 @@ deno run --allow-net --allow-read --allow-write --allow-env server.ts
 
 4. You should be redirected to `/static/owner.html`
 
-5. Try accessing `/static/owner.html` directly without logging in - you should be redirected to login
+5. Try accessing `/static/owner.html` directly without logging in - you should
+   be redirected to login
 
 ### Step 6: Complete Remaining Pages
 
@@ -163,30 +175,34 @@ The following pages still need auth checks added:
 3. **dashboard.html** - Import auth-helper.js and call `requireAuth('owner')`
 
 Example for crew.html:
+
 ```html
 <script type="module">
-  import { requireAuth } from '/static/auth-helper.js';
+  import { requireAuth } from "/static/auth-helper.js";
 
   // Check auth on page load
-  requireAuth('crew', '.crew-greeting');
+  requireAuth("crew", ".crew-greeting");
 </script>
 ```
 
 ## Security Features
 
 ### Authentication
+
 - ✅ Supabase JWT tokens with signature verification
 - ✅ Secure httpOnly session storage
 - ✅ Automatic token refresh
 - ✅ Password reset flow
 
 ### Authorization
+
 - ✅ Role-based access control (owner, crew, client)
 - ✅ Row-level security in database
 - ✅ API endpoint protection
 - ✅ Frontend route guards
 
 ### Best Practices
+
 - ✅ No hardcoded credentials
 - ✅ Environment variables for secrets
 - ✅ CORS headers configured
@@ -200,10 +216,12 @@ Example for crew.html:
 **Problem**: API returns 401 Unauthorized
 
 **Solutions**:
+
 1. Check that JWT Secret is set in `.env`
 2. Verify user's `auth_user_id` matches their Supabase Auth ID
 3. Check browser console for token expiration
 4. Ensure Authorization header is being sent:
+
 ```javascript
 // Check in browser DevTools > Network > Headers
 Authorization: Bearer eyJhbGc...
@@ -214,6 +232,7 @@ Authorization: Bearer eyJhbGc...
 **Problem**: "Invalid email or password" error
 
 **Solutions**:
+
 1. Verify email is confirmed in Supabase Dashboard
 2. Check that auth user exists in **Authentication** > **Users**
 3. Try password reset flow
@@ -224,9 +243,11 @@ Authorization: Bearer eyJhbGc...
 **Problem**: Database queries return no results even though data exists
 
 **Solutions**:
+
 1. Verify `auth_user_id` is set correctly in users table
 2. Check RLS policies are not too restrictive
 3. Test queries as specific users:
+
 ```sql
 -- Set auth context for testing
 SET request.jwt.claims = '{"sub": "auth-user-id-here"}';
@@ -262,6 +283,7 @@ SELECT * FROM jobs;
 ## Support
 
 For issues or questions:
+
 1. Check Supabase documentation: https://supabase.com/docs/guides/auth
 2. Review browser console for JavaScript errors
 3. Check Deno server logs for backend errors
@@ -284,6 +306,5 @@ Before going to production:
 
 ---
 
-**Last Updated**: 2025-11-14
-**Authentication System**: Supabase Auth + Custom RLS
-**Status**: ⚠️ Partially Complete - Remaining dashboards need auth checks
+**Last Updated**: 2025-11-14 **Authentication System**: Supabase Auth + Custom
+RLS **Status**: ⚠️ Partially Complete - Remaining dashboards need auth checks

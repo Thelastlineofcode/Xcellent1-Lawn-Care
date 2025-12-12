@@ -1,11 +1,12 @@
-// Xcellent1 Lawn Care - Worker Recruitment & Field Management
-// Designed for hiring lawn care workers and managing field operations
-// VERSION: 2.0 - Cleaned and improved
+// DEPRECATED: app-cleaned.js
+// This file is archived and replaced by `app.js` (canonical runtime file).
+// If you need the historical copy, see `web/static/archive/app-cleaned.js`.
+console.warn("app-cleaned.js is deprecated. Use web/static/app.js instead.");
+// No further actions - this file is intentionally inert.
 
 const API_BASE = "";
 const CONFIG = {
-  pollInterval:
-    window.config?.pollInterval ||
+  pollInterval: window.config?.pollInterval ||
     parseInt(document.body.dataset.pollInterval || "20000"),
   maxFileSize: 5 * 1024 * 1024, // 5MB
   validation: {
@@ -70,7 +71,8 @@ async function fetchJSON(url, options = {}) {
 function showMessage(containerId, message, type = "info", duration = 5000) {
   const container = document.getElementById(containerId);
   if (!container) return;
-  container.innerHTML = `<div class="message ${type}" role="alert">${message}</div>`;
+  container.innerHTML =
+    `<div class="message ${type}" role="alert">${message}</div>`;
   container.setAttribute("aria-live", "polite");
   if (duration > 0) {
     setTimeout(() => {
@@ -198,7 +200,7 @@ if (document.getElementById("lead-form")) {
           "form-status",
           "⚠️ Please enter your full name (at least 2 characters)",
           "warning",
-          3000
+          3000,
         );
         return;
       }
@@ -210,7 +212,7 @@ if (document.getElementById("lead-form")) {
           "form-status",
           "⚠️ Please enter a valid email address",
           "warning",
-          3000
+          3000,
         );
         return;
       }
@@ -238,21 +240,21 @@ if (document.getElementById("lead-form")) {
       return showMessage(
         "form-status",
         `⚠️ Name must be at least ${CONFIG.validation.nameMinLength} characters`,
-        "error"
+        "error",
       );
     }
     if (!phone || phone.length < CONFIG.validation.phoneMinLength) {
       return showMessage(
         "form-status",
         "⚠️ Please enter a valid phone number",
-        "error"
+        "error",
       );
     }
     if (!email || !isValidEmail(email)) {
       return showMessage(
         "form-status",
         "⚠️ Please enter a valid email address",
-        "error"
+        "error",
       );
     }
 
@@ -267,7 +269,7 @@ if (document.getElementById("lead-form")) {
       showMessage(
         "form-status",
         "✗ Request timed out. Please try again.",
-        "error"
+        "error",
       );
     }, 30000); // 30 second timeout
 
@@ -286,9 +288,11 @@ if (document.getElementById("lead-form")) {
       clearTimeout(submitTimeout);
       showMessage(
         "form-status",
-        `✓ <strong>Application Received!</strong><br><br>🎯 Application ID: <strong>${escapeHTML(data.id)}</strong><br><br>📞 <strong>What's Next?</strong><br>Our hiring manager will review your application and call you within <strong>48 hours</strong> to schedule an interview.<br><br>📧 Check your email (including spam folder) for confirmation.<br><br>👍 <strong>Pro Tip:</strong> Save our number so you don't miss the call!`,
+        `✓ <strong>Application Received!</strong><br><br>🎯 Application ID: <strong>${
+          escapeHTML(data.id)
+        }</strong><br><br>📞 <strong>What's Next?</strong><br>Our hiring manager will review your application and call you within <strong>48 hours</strong> to schedule an interview.<br><br>📧 Check your email (including spam folder) for confirmation.<br><br>👍 <strong>Pro Tip:</strong> Save our number so you don't miss the call!`,
         "success",
-        0
+        0,
       );
 
       form.reset();
@@ -300,7 +304,7 @@ if (document.getElementById("lead-form")) {
       showMessage(
         "form-status",
         `✗ <strong>Submission Error:</strong> ${err.message}<br><br>Please try again or call our hiring line: <strong>(555) 867-5309</strong>`,
-        "error"
+        "error",
       );
     } finally {
       submitBtn.disabled = false;
@@ -316,7 +320,7 @@ if (document.getElementById("lead-form")) {
         "form-status",
         "⚠️ This email format looks invalid",
         "warning",
-        3000
+        3000,
       );
     } else {
       form.email.removeAttribute("aria-invalid");
@@ -344,7 +348,7 @@ if (document.getElementById("dashboard")) {
     const leads = data.leads || [];
     const events = data.pending || [];
     const photos = events.filter(
-      (e) => e.payload && e.payload.photo_path
+      (e) => e.payload && e.payload.photo_path,
     ).length;
     animateCounter("stat-leads", leads.length);
     animateCounter("stat-events", events.length);
@@ -363,15 +367,14 @@ if (document.getElementById("dashboard")) {
     }
 
     const sorted = [...leads].sort(
-      (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)
+      (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0),
     );
     const careerApps = sorted.filter((l) => l.source === "careers");
     const otherLeads = sorted.filter((l) => l.source !== "careers");
 
     let html = "";
     if (careerApps.length > 0) {
-      html +=
-        '<h3 class="mb-sm">💼 Worker Applications (' +
+      html += '<h3 class="mb-sm">💼 Worker Applications (' +
         careerApps.length +
         ")</h3>";
       html += careerApps
@@ -381,18 +384,27 @@ if (document.getElementById("dashboard")) {
           <h3>👤 ${escapeHTML(lead.name)}</h3>
           <div class="lead-meta">
             <span>📞 ${escapeHTML(lead.phone)}</span><span>•</span>
-            <span>📧 <a href="mailto:${escapeHTML(lead.email)}">${escapeHTML(lead.email)}</a></span>
+            <span>📧 <a href="mailto:${escapeHTML(lead.email)}">${
+            escapeHTML(lead.email)
+          }</a></span>
           </div>
-          ${lead.notes ? `<p class="mt-sm"><strong>About:</strong> ${escapeHTML(lead.notes)}</p>` : ""}
-          <p class="text-muted mt-sm"><small>🕒 Applied ${formatDate(lead.created_at)}</small></p>
+          ${
+            lead.notes
+              ? `<p class="mt-sm"><strong>About:</strong> ${
+                escapeHTML(lead.notes)
+              }</p>`
+              : ""
+          }
+          <p class="text-muted mt-sm"><small>🕒 Applied ${
+            formatDate(lead.created_at)
+          }</small></p>
         </div><div><span class="badge badge-primary">CAREERS</span></div></div></div>
-      `
+      `,
         )
         .join("");
     }
     if (otherLeads.length > 0) {
-      html +=
-        '<h3 class="mt-lg mb-sm">🎯 Other Inquiries (' +
+      html += '<h3 class="mt-lg mb-sm">🎯 Other Inquiries (' +
         otherLeads.length +
         ")</h3>";
       html += otherLeads
@@ -402,12 +414,24 @@ if (document.getElementById("dashboard")) {
           <h3>👤 ${escapeHTML(lead.name)}</h3>
           <div class="lead-meta">
             <span>📞 ${escapeHTML(lead.phone)}</span><span>•</span>
-            <span>📧 <a href="mailto:${escapeHTML(lead.email)}">${escapeHTML(lead.email)}</a></span>
+            <span>📧 <a href="mailto:${escapeHTML(lead.email)}">${
+            escapeHTML(lead.email)
+          }</a></span>
           </div>
-          ${lead.notes ? `<p class="mt-sm"><strong>Notes:</strong> ${escapeHTML(lead.notes)}</p>` : ""}
-          <p class="text-muted mt-sm"><small>🕒 ${formatDate(lead.created_at)}</small></p>
-        </div><div><span class="badge">${escapeHTML(lead.source || "web").toUpperCase()}</span></div></div></div>
-      `
+          ${
+            lead.notes
+              ? `<p class="mt-sm"><strong>Notes:</strong> ${
+                escapeHTML(lead.notes)
+              }</p>`
+              : ""
+          }
+          <p class="text-muted mt-sm"><small>🕒 ${
+            formatDate(lead.created_at)
+          }</small></p>
+        </div><div><span class="badge">${
+            escapeHTML(lead.source || "web").toUpperCase()
+          }</span></div></div></div>
+      `,
         )
         .join("");
     }
@@ -432,12 +456,34 @@ if (document.getElementById("dashboard")) {
     }, {});
     let html = "";
     Object.entries(grouped).forEach(([type, typeEvents]) => {
-      html += `<h3 class="mt-md mb-sm">${escapeHTML(type)} (${typeEvents.length})</h3>`;
+      html += `<h3 class="mt-md mb-sm">${
+        escapeHTML(type)
+      } (${typeEvents.length})</h3>`;
       typeEvents.forEach((event) => {
         const hasPhoto = event.payload && event.payload.photo_path;
-        const statusClass =
-          event.status === "processed" ? "status-complete" : "status-pending";
-        html += `<div class="card"><div class="card-header"><div><span class="status-indicator ${statusClass}"></span><strong>${escapeHTML(type)}</strong></div>${event.ref_id ? `<span class="badge">Job: ${escapeHTML(event.ref_id)}</span>` : ""}</div><div class="card-body">${hasPhoto ? `<div class="photo-grid"><div class="photo-item"><img src="${escapeHTML(event.payload.photo_path)}" alt="Job photo" loading="lazy" /></div></div>` : ""}${event.created_at ? `<p class="text-muted mt-sm"><small>🕒 ${formatDate(event.created_at)}</small></p>` : ""}</div></div>`;
+        const statusClass = event.status === "processed"
+          ? "status-complete"
+          : "status-pending";
+        html +=
+          `<div class="card"><div class="card-header"><div><span class="status-indicator ${statusClass}"></span><strong>${
+            escapeHTML(type)
+          }</strong></div>${
+            event.ref_id
+              ? `<span class="badge">Job: ${escapeHTML(event.ref_id)}</span>`
+              : ""
+          }</div><div class="card-body">${
+            hasPhoto
+              ? `<div class="photo-grid"><div class="photo-item"><img src="${
+                escapeHTML(event.payload.photo_path)
+              }" alt="Job photo" loading="lazy" /></div></div>`
+              : ""
+          }${
+            event.created_at
+              ? `<p class="text-muted mt-sm"><small>🕒 ${
+                formatDate(event.created_at)
+              }</small></p>`
+              : ""
+          }</div></div>`;
       });
     });
     outboxContainer.innerHTML = html;
@@ -457,9 +503,11 @@ if (document.getElementById("dashboard")) {
       console.error("[dashboard] Refresh error:", err);
       showMessage(
         "dashboard-status",
-        `⚠ Unable to load  ${err.message}. Retrying in ${CONFIG.pollInterval / 1000} seconds...`,
+        `⚠ Unable to load  ${err.message}. Retrying in ${
+          CONFIG.pollInterval / 1000
+        } seconds...`,
         "error",
-        0
+        0,
       );
     }
   };
@@ -502,7 +550,7 @@ if (document.getElementById("upload-form")) {
       showMessage(
         "upload-status",
         "⚠️ Please select an image file (JPG, PNG, etc.)",
-        "error"
+        "error",
       );
       fileInput.value = "";
       preview.innerHTML = "";
@@ -511,8 +559,10 @@ if (document.getElementById("upload-form")) {
     if (file.size > CONFIG.maxFileSize) {
       showMessage(
         "upload-status",
-        `⚠️ File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max ${CONFIG.maxFileSize / 1024 / 1024}MB.`,
-        "error"
+        `⚠️ File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max ${
+          CONFIG.maxFileSize / 1024 / 1024
+        }MB.`,
+        "error",
       );
       fileInput.value = "";
       preview.innerHTML = "";
@@ -520,7 +570,10 @@ if (document.getElementById("upload-form")) {
     }
     const reader = new FileReader();
     reader.onload = (evt) => {
-      preview.innerHTML = `<div class="image-preview"><img src="${evt.target.result}" alt="Preview" /></div><p class="text-muted text-center mt-sm"><small>📎 ${escapeHTML(file.name)} (${(file.size / 1024).toFixed(1)} KB)</small></p>`;
+      preview.innerHTML =
+        `<div class="image-preview"><img src="${evt.target.result}" alt="Preview" /></div><p class="text-muted text-center mt-sm"><small>📎 ${
+          escapeHTML(file.name)
+        } (${(file.size / 1024).toFixed(1)} KB)</small></p>`;
     };
     reader.readAsDataURL(file);
     clearMessage("upload-status");
@@ -531,10 +584,12 @@ if (document.getElementById("upload-form")) {
     clearMessage("upload-status");
     const jobId = uploadForm.jobId.value.trim();
     const file = fileInput.files[0];
-    if (!jobId)
+    if (!jobId) {
       return showMessage("upload-status", "⚠️ Job ID is required", "error");
-    if (!file)
+    }
+    if (!file) {
       return showMessage("upload-status", "⚠️ Please select a photo", "error");
+    }
 
     uploadBtn.disabled = true;
     uploadBtn.innerHTML = '<span class="spinner"></span> Uploading...';
@@ -551,18 +606,19 @@ if (document.getElementById("upload-form")) {
         {
           method: "POST",
           body: JSON.stringify({ dataUrl }),
-        }
+        },
       );
       showMessage(
         "upload-status",
         `✓ Photo uploaded!<br><small>Path: ${escapeHTML(data.path)}</small>`,
         "success",
-        0
+        0,
       );
       uploadForm.reset();
       preview.innerHTML = "";
-      if (typeof refreshDashboard === "function")
+      if (typeof refreshDashboard === "function") {
         setTimeout(refreshDashboard, 1000);
+      }
     } catch (err) {
       showMessage("upload-status", `✗ Upload failed: ${err.message}`, "error");
     } finally {
@@ -578,8 +634,8 @@ if (document.getElementById("upload-form")) {
 
 if ("serviceWorker" in navigator) {
   // Allow localhost for development, production uses HTTPS
-  const shouldRegister =
-    location.protocol === "https:" || location.hostname === "localhost";
+  const shouldRegister = location.protocol === "https:" ||
+    location.hostname === "localhost";
 
   if (shouldRegister) {
     window.addEventListener("load", () => {

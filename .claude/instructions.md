@@ -1,10 +1,12 @@
 # Xcellent1 Lawn Care - Project Instructions
 
-This project uses the **BMAD Framework** for building event-driven business applications.
+This project uses the **BMAD Framework** for building event-driven business
+applications.
 
 ## Framework Rules
 
-1. **Event Publishing**: Always use the Outbox pattern from `bmad/outbox/publisher.ts`
+1. **Event Publishing**: Always use the Outbox pattern from
+   `bmad/outbox/publisher.ts`
 2. **Authentication**: Use `authenticateRequest()` from `supabase_auth.ts`
 3. **Database Access**: Leverage RLS policies, never bypass security
 4. **Agent Structure**: Organize code by agent role in `bmad/agents/{role}/`
@@ -24,28 +26,31 @@ This project uses the **BMAD Framework** for building event-driven business appl
 ## Common Patterns
 
 ### Publishing Events
+
 ```typescript
-import { publishEvent } from './bmad/outbox/publisher.ts';
+import { publishEvent } from "./bmad/outbox/publisher.ts";
 
 await publishEvent({
-  eventType: 'job.completed',
+  eventType: "job.completed",
   payload: { jobId, completedBy, timestamp },
   aggregateId: jobId,
-  aggregateType: 'job'
+  aggregateType: "job",
 });
 ```
 
 ### Authenticating Requests
+
 ```typescript
-import { authenticateRequest } from './supabase_auth.ts';
+import { authenticateRequest } from "./supabase_auth.ts";
 
 const auth = await authenticateRequest(req);
-if (!auth || auth.profile.role !== 'crew') {
-  return new Response('Unauthorized', { status: 401 });
+if (!auth || auth.profile.role !== "crew") {
+  return new Response("Unauthorized", { status: 401 });
 }
 ```
 
 ### Creating RLS Policies
+
 ```sql
 -- Enable RLS
 ALTER TABLE table_name ENABLE ROW LEVEL SECURITY;
@@ -59,12 +64,13 @@ CREATE POLICY "policy_name" ON table_name
 ```
 
 ### Writing Tests
-```typescript
-import { assertEquals } from 'https://deno.land/std@0.203.0/assert/mod.ts';
 
-Deno.test('should complete job successfully', async () => {
+```typescript
+import { assertEquals } from "https://deno.land/std@0.203.0/assert/mod.ts";
+
+Deno.test("should complete job successfully", async () => {
   const result = await completeJob(jobId, crewId);
-  assertEquals(result.status, 'completed');
+  assertEquals(result.status, "completed");
 });
 ```
 
@@ -80,6 +86,7 @@ Deno.test('should complete job successfully', async () => {
 ## Agent Roles
 
 ### Owner Agent
+
 - Business metrics and KPIs
 - Hiring pipeline management
 - Crew performance tracking
@@ -87,6 +94,7 @@ Deno.test('should complete job successfully', async () => {
 - System administration
 
 ### Crew Agent
+
 - View daily job assignments
 - Navigate to job locations
 - Upload before/after photos
@@ -94,6 +102,7 @@ Deno.test('should complete job successfully', async () => {
 - Track progress
 
 ### Client Agent
+
 - View service history
 - See before/after photos
 - Manage account
@@ -103,6 +112,7 @@ Deno.test('should complete job successfully', async () => {
 ## Database Schema
 
 Main tables:
+
 - `users` - All user accounts (with auth_user_id link)
 - `clients` - Customer information
 - `jobs` - Work assignments
@@ -117,6 +127,7 @@ All tables have RLS policies for role-based access.
 ## Environment Variables
 
 Required in `.env`:
+
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=https://utivthfrwgtjatsusopw.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
@@ -172,4 +183,6 @@ Deploy: `flyctl deploy`
 
 ---
 
-**Remember**: This is an event-driven, multi-agent system. All significant actions should publish events, all data access should use RLS, and all code should be organized by agent role.
+**Remember**: This is an event-driven, multi-agent system. All significant
+actions should publish events, all data access should use RLS, and all code
+should be organized by agent role.

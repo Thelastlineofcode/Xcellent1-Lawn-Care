@@ -17,15 +17,18 @@ This guide explains how to set up Supabase Storage for job photo uploads.
 4. Click **New Bucket**
 5. Enter the following details:
    - **Name**: `job-photos`
-   - **Public bucket**: ✅ Check this box (photos need to be publicly accessible)
+   - **Public bucket**: ✅ Check this box (photos need to be publicly
+     accessible)
    - **File size limit**: 5 MB (optional)
-   - **Allowed MIME types**: `image/jpeg,image/png,image/webp,image/heic` (optional)
+   - **Allowed MIME types**: `image/jpeg,image/png,image/webp,image/heic`
+     (optional)
 
 6. Click **Create bucket**
 
 ### 2. Set Storage Policies
 
 The bucket needs policies to allow:
+
 - **Crew members** to upload photos
 - **Everyone** to read/view photos (public access)
 
@@ -98,11 +101,13 @@ The bucket needs policies to allow:
 ### 4. Get Public URL Pattern
 
 The public URL for uploaded files will follow this pattern:
+
 ```
 https://<project-ref>.supabase.co/storage/v1/object/public/job-photos/<file-path>
 ```
 
 Example:
+
 ```
 https://utivthfrwgtjatsusopw.supabase.co/storage/v1/object/public/job-photos/jobs/123e4567-e89b-12d3-a456-426614174000/after-1732286400000.jpg
 ```
@@ -110,6 +115,7 @@ https://utivthfrwgtjatsusopw.supabase.co/storage/v1/object/public/job-photos/job
 ## File Naming Convention
 
 Files will be uploaded with the following structure:
+
 ```
 job-photos/
   jobs/
@@ -133,16 +139,19 @@ After setup, you can test by:
 ## Troubleshooting
 
 **Photos not uploading?**
+
 - Check that the bucket exists and is named exactly `job-photos`
 - Verify the upload policy allows authenticated users
 - Check browser console for errors
 
 **Photos not visible?**
+
 - Check that the bucket is set to Public
 - Verify the public read policy exists
 - Check the photo URL is correctly formatted
 
 **403 Forbidden errors?**
+
 - Verify RLS policies are set correctly
 - Ensure the authenticated user has valid credentials
 - Check bucket permissions in Supabase Dashboard
@@ -158,10 +167,12 @@ After setup, you can test by:
 ## Cost Estimation
 
 Supabase Free Tier:
+
 - Storage: 1 GB (approximately 500-1000 high-quality photos)
 - Bandwidth: 2 GB/month transfers
 
 Upgrade needed when:
+
 - More than 1GB of photos stored
 - High traffic exceeds 2GB bandwidth/month
 

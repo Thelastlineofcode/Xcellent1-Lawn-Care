@@ -1,7 +1,10 @@
 // Authentication and Authorization Tests
 // Run with: deno test --allow-net --allow-env tests/auth_test.ts
 
-import { assertEquals, assertExists } from "https://deno.land/std@0.203.0/testing/asserts.ts";
+import {
+  assertEquals,
+  assertExists,
+} from "https://deno.land/std@0.203.0/testing/asserts.ts";
 
 const BASE_URL = Deno.env.get("TEST_BASE_URL") || "http://localhost:8000";
 
@@ -41,7 +44,6 @@ Deno.test("Owner invitation validation - requires valid format", async () => {
   assertEquals(json.ok, false);
 });
 
-
 Deno.test("Protected endpoint requires authentication", async () => {
   const res = await fetch(`${BASE_URL}/api/owner/metrics`, {
     method: "GET",
@@ -57,7 +59,10 @@ Deno.test("Static files are served with no-cache headers", async () => {
   await res.text(); // Consume response body
 
   assertEquals(res.status, 200);
-  assertEquals(res.headers.get("cache-control"), "no-cache, no-store, must-revalidate");
+  assertEquals(
+    res.headers.get("cache-control"),
+    "no-cache, no-store, must-revalidate",
+  );
   assertEquals(res.headers.get("pragma"), "no-cache");
   assertEquals(res.headers.get("expires"), "0");
 });

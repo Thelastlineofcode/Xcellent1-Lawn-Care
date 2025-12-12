@@ -1,7 +1,9 @@
 # Lawn Care Business SWOT Analysis – Xcellent 1 Lawn Care (Laplace, LA)
 
 ## Strengths
-- Strong owner and local management involvement (decision speed, local reputation)
+
+- Strong owner and local management involvement (decision speed, local
+  reputation)
 - Existing digital presence on Google, Facebook, Instagram
 - Multi-service: offers mowing, cleanup, edging, with room to expand
 - High customer satisfaction and repeat business in Laplace core
@@ -11,16 +13,19 @@
 - Cost management discipline with moderate fixed costs
 
 ## Weaknesses
+
 - Low brand visibility vs. regional or national franchises
 - Capacity/crew size limits max jobs per week; scalability risk
 - Heavy dependence on Laplace market (overconcentration risk)
 - Seasonality: revenue dips in winter, cash flow stress
 - Limited online booking/CRM (if still using manual tools)
 - One owner (Lacardio) must split focus with another job
-- Not all service categories covered (fertilization/pesticides may require licensing)
+- Not all service categories covered (fertilization/pesticides may require
+  licensing)
 - Potential for employee turnover with no formal incentive program
 
 ## Opportunities
+
 - Grow recurring contract base, especially premium packages
 - Expand into HOAs and small commercial properties with fixed contracts
 - Upsell: landscaping, aeration, fertilization for higher margins
@@ -31,6 +36,7 @@
 - Add seasonal/winter services (pressure washing, holiday lighting)
 
 ## Threats
+
 - Price-based competition from local and national chains
 - Economic downturn impact: residents cut discretionary lawn spending
 - Weather volatility (heavy rain, hurricane season) causing schedule disruptions

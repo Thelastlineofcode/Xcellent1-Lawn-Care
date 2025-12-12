@@ -1,26 +1,34 @@
 # Deploy Enhanced Owner Metrics
 
-This guide explains how to deploy the enhanced database functions that power all dashboard metrics.
+This guide explains how to deploy the enhanced database functions that power all
+dashboard metrics.
 
 ## What's Being Added
 
 The `enhanced_owner_metrics.sql` file adds:
 
 ### 1. Enhanced `get_owner_metrics()` Function
+
 Returns complete business KPIs including:
-- **Financial**: `revenue_this_month`, `revenue_last_month`, `accounts_receivable`, `profit_margin`
-- **Operational**: `jobs_this_week`, `jobs_last_week`, `active_crew`, `total_clients`, `photos_today`
+
+- **Financial**: `revenue_this_month`, `revenue_last_month`,
+  `accounts_receivable`, `profit_margin`
+- **Operational**: `jobs_this_week`, `jobs_last_week`, `active_crew`,
+  `total_clients`, `photos_today`
 - **Hiring**: `new_applications`, `retention_90day`
 - **Calculated**: `revenue_growth_pct`, `jobs_growth_pct`
 
 ### 2. New `get_crew_performance()` Function
+
 Returns performance metrics for each crew member:
+
 - Jobs completed (total and this week)
 - Photos uploaded
 - Average rating (placeholder for now)
 - Current status
 
 ### 3. Performance Indexes
+
 - `idx_invoices_paid_at` - Speeds up revenue queries
 - `idx_invoices_status_amount` - Speeds up accounts receivable queries
 
@@ -68,6 +76,7 @@ SELECT get_owner_metrics();
 ```
 
 Expected output (JSON):
+
 ```json
 {
   "active_crew": 3,
@@ -95,6 +104,7 @@ SELECT * FROM get_crew_performance();
 ```
 
 Expected output:
+
 ```
  crew_id | crew_name  | crew_role | jobs_completed | jobs_this_week | photos_uploaded | avg_rating | status
 ---------+------------+-----------+----------------+----------------+-----------------+------------+--------
@@ -134,6 +144,7 @@ DROP FUNCTION IF EXISTS get_crew_performance();
 Once deployed, the owner dashboard will immediately start showing:
 
 ### Live Data
+
 - ✅ Real revenue numbers from invoices
 - ✅ Accounts receivable from unpaid invoices
 - ✅ Week-over-week job growth percentages
@@ -142,7 +153,9 @@ Once deployed, the owner dashboard will immediately start showing:
 - ✅ Crew performance metrics with real job counts
 
 ### Smart Alerts
+
 The dashboard will dynamically generate alerts:
+
 - Revenue growth/decline notifications
 - Outstanding invoice reminders
 - Application review prompts
@@ -150,20 +163,26 @@ The dashboard will dynamically generate alerts:
 
 ## Notes
 
-- **Profit Margin**: Currently set to a placeholder value of 40%. To calculate real profit margin, you'll need to track job costs (labor, equipment, materials).
-- **Interviews/Open Positions**: Set to 0 for now. Requires additional tracking tables to implement.
+- **Profit Margin**: Currently set to a placeholder value of 40%. To calculate
+  real profit margin, you'll need to track job costs (labor, equipment,
+  materials).
+- **Interviews/Open Positions**: Set to 0 for now. Requires additional tracking
+  tables to implement.
 - **Crew Ratings**: Placeholder at 4.5. Requires a ratings system to implement.
 
 ## Support
 
 If you encounter issues during deployment:
-1. Check that you have the required tables: `invoices`, `payments`, `jobs`, `users`, `clients`, `applications`, `job_photos`
+
+1. Check that you have the required tables: `invoices`, `payments`, `jobs`,
+   `users`, `clients`, `applications`, `job_photos`
 2. Verify RLS policies aren't blocking function execution
 3. Check Supabase logs in Dashboard → Database → Logs
 
 ## Next Steps
 
 After deployment:
+
 1. Restart your server: `deno task start`
 2. Login to owner dashboard at: `/static/owner.html`
 3. Verify all KPIs are showing real data

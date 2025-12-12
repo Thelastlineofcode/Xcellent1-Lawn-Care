@@ -1,13 +1,14 @@
-const port = Number(Deno.env.get("PORT") || 8000);
-// if using std/http
-serve(handler, { hostname: "0.0.0.0", port });const port = Number(Deno.env.get("PORT") || 8000);
-// if using std/http
-serve(handler, { hostname: "0.0.0.0", port });# Xcellent1 Build Plan - Keep It Simple
+const port = Number(Deno.env.get("PORT") || 8000); // if using std/http
+serve(handler, { hostname: "0.0.0.0", port });const port =
+Number(Deno.env.get("PORT") || 8000); // if using std/http serve(handler, {
+hostname: "0.0.0.0", port });# Xcellent1 Build Plan - Keep It Simple
 
 ## 🎯 Goal
+
 Working lawn care app for 5-person team. Customers book → Crew works → Get paid.
 
 ## ✅ What's Done
+
 - Web pages designed (HTML/CSS)
 - Architecture planned (Deno + Supabase)
 - Database schema defined
@@ -16,9 +17,11 @@ Working lawn care app for 5-person team. Customers book → Crew works → Get p
 ## 🚀 Next 4 Weeks
 
 ### Week 1: Database & Auth
+
 **Goal:** Supabase connected, can store data
 
 **Tasks:**
+
 1. Create Supabase project
 2. Run database migrations (schema from docs/Architecture.md)
 3. Set up Row Level Security policies
@@ -29,9 +32,11 @@ Working lawn care app for 5-person team. Customers book → Crew works → Get p
 ---
 
 ### Week 2: Customer Booking
+
 **Goal:** Customer fills form → job created in database
 
 **Tasks:**
+
 1. Create `/api/leads/intake` endpoint (Deno)
 2. Wire up index.html form to API
 3. Add form validation
@@ -39,7 +44,8 @@ Working lawn care app for 5-person team. Customers book → Crew works → Get p
 
 **Success:** Customer booking works end-to-end
 
-**Research first:** 
+**Research first:**
+
 ```python
 from src.skills.perplexity_research import perplexityResearch
 result = perplexityResearch(
@@ -51,9 +57,11 @@ result = perplexityResearch(
 ---
 
 ### Week 3: Crew Mobile & Photos
+
 **Goal:** Crew sees jobs on phone, uploads photos
 
 **Tasks:**
+
 1. Create `/api/jobs` endpoint (list today's jobs)
 2. Wire up crew.html to show jobs
 3. Add photo upload to Supabase Storage
@@ -63,6 +71,7 @@ result = perplexityResearch(
 **Success:** Crew member can complete a job on their phone
 
 **Research first:**
+
 ```python
 result = perplexityResearch(
     "Supabase Storage file upload from mobile web app best practices",
@@ -73,9 +82,11 @@ result = perplexityResearch(
 ---
 
 ### Week 4: Payments & Owner Dashboard
+
 **Goal:** Invoice sent → customer pays → owner sees revenue
 
 **Tasks:**
+
 1. Create `/api/invoices` endpoint (auto-generate after job)
 2. Integrate Stripe Checkout
 3. Add `/api/webhooks/stripe` (mark invoice paid)
@@ -85,6 +96,7 @@ result = perplexityResearch(
 **Success:** Full flow works. Money in Stripe, data in dashboard.
 
 **Research first:**
+
 ```python
 result = perplexityResearch(
     "Stripe Checkout integration with Deno Deploy and webhook verification",
@@ -97,6 +109,7 @@ result = perplexityResearch(
 ## 📋 After Month 1
 
 ### Must-Have Next
+
 1. SMS notifications (Twilio)
    - Customer reminder 24h before job
    - Owner weekly summary text
@@ -104,6 +117,7 @@ result = perplexityResearch(
 3. Review request after payment
 
 ### Nice-to-Have Later
+
 1. Route optimization
 2. Marketing automation
 3. E-commerce dropshipping
@@ -118,6 +132,7 @@ result = perplexityResearch(
 ### Before Starting Any Feature
 
 1. **Research** (if needed):
+
 ```bash
 cd /Users/houseofobi/Documents/GitHub/Xcellent1-Lawn-Care
 python3 -c "from src.skills.perplexity_research import perplexityResearch; \
@@ -151,24 +166,30 @@ print(perplexityResearch('YOUR QUESTION HERE')['answer'])"
 ## 📊 Success Metrics
 
 ### Week 1
+
 - [ ] Supabase connected
 - [ ] Can manually add data
 
 ### Week 2
+
 - [ ] 1 test customer booking works
 
 ### Week 3
+
 - [ ] 1 crew member completes job on phone
 
 ### Week 4
+
 - [ ] 1 end-to-end transaction: booking → work → payment
 
 ### Month 2
+
 - [ ] 5 real customers using the app
 - [ ] 3 crew members using daily
 - [ ] $500 revenue through system
 
 ### Month 3
+
 - [ ] 15 customers
 - [ ] Owner rarely touches the system
 - [ ] $2K revenue through system
@@ -215,20 +236,24 @@ When in doubt: **Ship the minimum. Add later if needed.**
 ## 📞 Current Team & Roles
 
 **Owner (You):**
+
 - Builds the app
 - Manages crew
 - Gets customer bookings
 
 **3 Field Workers:**
+
 - Do the lawn work
 - Use crew.html on phones
 - Upload photos after jobs
 
 **2 Workers Needed:**
+
 - Same as above
 - Hiring page live: index.html
 
-**That's it.** No "Head of Operations" or "Marketing Director". Just people who mow lawns and the person who built this app.
+**That's it.** No "Head of Operations" or "Marketing Director". Just people who
+mow lawns and the person who built this app.
 
 ---
 
@@ -237,6 +262,7 @@ When in doubt: **Ship the minimum. Add later if needed.**
 Pick ONE:
 
 **Option A:** Start Week 1 (Supabase setup)
+
 ```bash
 # Create Supabase project at supabase.com
 # Copy connection string to .env
@@ -244,6 +270,7 @@ Pick ONE:
 ```
 
 **Option B:** Research a technical question
+
 ```bash
 cd /Users/houseofobi/Documents/GitHub/Xcellent1-Lawn-Care
 python3 -c "from src.skills.perplexity_research import perplexityResearch; \
@@ -251,6 +278,7 @@ print(perplexityResearch('Supabase quickstart for Deno Deploy')['answer'])"
 ```
 
 **Option C:** Test Perplexity skill first
+
 ```bash
 # Just make sure it works
 python3 -c "from src.skills.perplexity_research import perplexityResearch; \

@@ -1,6 +1,8 @@
 # Local MVP — Run agents entirely offline
 
-This document explains how to run the BMAD agents locally without external services. The repo includes a file-backed dev DB so agents can persist leads, outbox events, and invoices to `bmad/agents/dev_db.json`.
+This document explains how to run the BMAD agents locally without external
+services. The repo includes a file-backed dev DB so agents can persist leads,
+outbox events, and invoices to `bmad/agents/dev_db.json`.
 
 Quickstart
 
@@ -41,5 +43,7 @@ curl -X POST http://localhost:8000 -H "Content-Type: application/json" -d '{"ser
 Notes
 
 - All agents fallback to the file-backed dev DB if SUPABASE_URL is not set.
-- No external API keys are required for local MVP; SendGrid/Twilio/Stripe integration points are simulated.
-- The dev DB file is at `bmad/agents/dev_db.json` and is safe to inspect / commit if desired (contains test data).
+- No external API keys are required for local MVP; SendGrid/Twilio/Stripe
+  integration points are simulated.
+- The dev DB file is at `bmad/agents/dev_db.json` and is safe to inspect /
+  commit if desired (contains test data).

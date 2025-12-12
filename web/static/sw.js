@@ -21,7 +21,7 @@ self.addEventListener("install", (event) => {
         console.log("[SW] Caching static assets");
         return cache.addAll(STATIC_ASSETS);
       })
-      .then(() => self.skipWaiting())
+      .then(() => self.skipWaiting()),
   );
 });
 
@@ -38,10 +38,10 @@ self.addEventListener("activate", (event) => {
             .map((name) => {
               console.log("[SW] Deleting old cache:", name);
               return caches.delete(name);
-            })
+            }),
         );
       })
-      .then(() => self.clients.claim())
+      .then(() => self.clients.claim()),
   );
 });
 
@@ -79,7 +79,7 @@ self.addEventListener("fetch", (event) => {
           // Return offline page if available
           return caches.match("offline.html");
         });
-    })
+    }),
   );
 });
 
@@ -89,7 +89,7 @@ self.addEventListener("sync", (event) => {
     console.log("[SW] Syncing leads...");
     event.waitUntil(
       // Implement retry logic for cached form submissions
-      Promise.resolve()
+      Promise.resolve(),
     );
   }
 });

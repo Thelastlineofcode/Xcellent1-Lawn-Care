@@ -1,19 +1,20 @@
 # Supabase CLI Setup Guide
 
-**Status**: Supabase CLI installed ✅ (v2.58.5)
-**Project**: Not linked yet ⚠️
+**Status**: Supabase CLI installed ✅ (v2.58.5) **Project**: Not linked yet ⚠️
 
 ---
 
 ## 📋 Current Situation
 
 ### ✅ What's Ready:
+
 - Supabase CLI binary downloaded and available (`./supabase`)
 - .env.example template exists
 - Authentication code ready in codebase
 - Database schema ready to deploy
 
 ### ❌ What's Missing:
+
 - `.env` file with actual Supabase credentials
 - Supabase CLI not authenticated
 - Project not linked to CLI
@@ -60,6 +61,7 @@ cat .env
 ```
 
 Should contain:
+
 ```env
 SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 SUPABASE_ANON_KEY=eyJhbGci...
@@ -70,6 +72,7 @@ DB_URL=postgresql://postgres:YOUR_PASSWORD@db.YOUR_PROJECT.supabase.co:5432/post
 #### Step 5: Add Missing Variables
 
 Edit `.env` and add:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
 NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
@@ -95,19 +98,21 @@ Visit: https://app.supabase.com/project/YOUR_PROJECT/settings/api
 
 Copy these values:
 
-| Field | Location | Variable Name |
-|-------|----------|---------------|
-| **Project URL** | API Settings → Project URL | `NEXT_PUBLIC_SUPABASE_URL` |
-| **anon public** | API Settings → anon/public key | `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
-| **JWT Secret** | API Settings → Config → JWT Secret | `SUPABASE_JWT_SECRET` |
+| Field           | Location                           | Variable Name                   |
+| --------------- | ---------------------------------- | ------------------------------- |
+| **Project URL** | API Settings → Project URL         | `NEXT_PUBLIC_SUPABASE_URL`      |
+| **anon public** | API Settings → anon/public key     | `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+| **JWT Secret**  | API Settings → Config → JWT Secret | `SUPABASE_JWT_SECRET`           |
 
 #### Step 3: Get Database Connection String
 
 Visit: https://app.supabase.com/project/YOUR_PROJECT/settings/database
 
-Copy the **Connection String** (Pooler mode for production, Direct mode for local dev)
+Copy the **Connection String** (Pooler mode for production, Direct mode for
+local dev)
 
 Format:
+
 ```
 postgresql://postgres:[YOUR-PASSWORD]@db.YOUR_PROJECT_REF.supabase.co:5432/postgres
 ```
@@ -119,6 +124,7 @@ nano .env
 ```
 
 Paste your actual values:
+
 ```env
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
@@ -144,6 +150,7 @@ curl http://localhost:8000/health
 ```
 
 Expected response:
+
 ```json
 {
   "ok": true,
@@ -162,10 +169,11 @@ curl http://localhost:8000/config.js
 ```
 
 Should return:
+
 ```javascript
 window.__ENV = {
   NEXT_PUBLIC_SUPABASE_URL: "https://...",
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: "eyJ..."
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: "eyJ...",
 };
 ```
 
@@ -174,6 +182,7 @@ window.__ENV = {
 Visit: http://localhost:8000/static/login.html
 
 Try logging in with:
+
 - **Email**: owner@xcellent1.com
 - **Password**: (the password you configured in Supabase)
 
@@ -252,39 +261,39 @@ Once your .env is configured and you can connect:
 
 ### "Supabase client not configured" Warning
 
-**Cause**: Missing or incorrect env vars
-**Fix**: Verify all required vars are in `.env`:
+**Cause**: Missing or incorrect env vars **Fix**: Verify all required vars are
+in `.env`:
+
 ```bash
 grep SUPABASE .env
 ```
 
 ### "Database connection failed"
 
-**Cause**: Wrong DATABASE_URL or password
-**Fix**: Check connection string in Supabase dashboard
+**Cause**: Wrong DATABASE_URL or password **Fix**: Check connection string in
+Supabase dashboard
 
 ### "JWT verification error"
 
-**Cause**: Wrong SUPABASE_JWT_SECRET
-**Fix**: Get the correct JWT Secret from Supabase dashboard → Settings → API → Config → JWT Secret
+**Cause**: Wrong SUPABASE_JWT_SECRET **Fix**: Get the correct JWT Secret from
+Supabase dashboard → Settings → API → Config → JWT Secret
 
 ### "User profile not found"
 
-**Cause**: Auth user exists but not linked to database user
-**Fix**: Run `db/create_auth_users.sql` to link them
+**Cause**: Auth user exists but not linked to database user **Fix**: Run
+`db/create_auth_users.sql` to link them
 
 ---
 
 ## 📂 Files Reference
 
-| File | Purpose |
-|------|---------|
-| `.env` | Your actual credentials (git-ignored) |
-| `.env.example` | Template with placeholders |
-| `db/schema.sql` | Database schema with RLS |
-| `db/create_auth_users.sql` | Links existing users to auth |
-| `db/add_new_users.sql` | Adds 8 new users |
-| `supabase_auth.ts` | Server-side JWT verification |
-| `web/static/auth-helper.js` | Client-side auth module |
-| `web/static/login.html` | Login page |
-
+| File                        | Purpose                               |
+| --------------------------- | ------------------------------------- |
+| `.env`                      | Your actual credentials (git-ignored) |
+| `.env.example`              | Template with placeholders            |
+| `db/schema.sql`             | Database schema with RLS              |
+| `db/create_auth_users.sql`  | Links existing users to auth          |
+| `db/add_new_users.sql`      | Adds 8 new users                      |
+| `supabase_auth.ts`          | Server-side JWT verification          |
+| `web/static/auth-helper.js` | Client-side auth module               |
+| `web/static/login.html`     | Login page                            |

@@ -1,20 +1,26 @@
 # Xcellent1 Lawn Care - User Stories
 
 ## Product Vision
-A simple, efficient field service management system for Xcellent1 Lawn Care that enables the owner to manage clients and pricing, crews to track daily jobs, and clients to view services and pay invoices online.
 
-**No AI/automation required** - Focus on practical business dashboards and data management.
+A simple, efficient field service management system for Xcellent1 Lawn Care that
+enables the owner to manage clients and pricing, crews to track daily jobs, and
+clients to view services and pay invoices online.
+
+**No AI/automation required** - Focus on practical business dashboards and data
+management.
 
 ---
 
 ## Epic 1: Owner Client Management
 
 ### Story 1.1: Add New Client
-**As an** owner
-**I want to** add new clients to the system with their property and service details
-**So that** I can start scheduling services and billing for them
+
+**As an** owner **I want to** add new clients to the system with their property
+and service details **So that** I can start scheduling services and billing for
+them
 
 **Acceptance Criteria:**
+
 - [ ] Owner can access "Add Client" form from owner dashboard
 - [ ] Form captures:
   - Client name, email, phone number
@@ -33,6 +39,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] New client appears in searchable client list
 
 **Technical Notes:**
+
 - API: `POST /api/owner/clients`
 - Creates Supabase Auth user with temporary password
 - Sends welcome email with login credentials (optional for MVP)
@@ -40,11 +47,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ---
 
 ### Story 1.2: Edit Client Information
-**As an** owner
-**I want to** edit client details and service plans
-**So that** I can update information when clients move or change service frequency
+
+**As an** owner **I want to** edit client details and service plans **So that**
+I can update information when clients move or change service frequency
 
 **Acceptance Criteria:**
+
 - [ ] Owner can click "Edit" on any client in client list
 - [ ] Edit form pre-populates with current client data
 - [ ] Owner can update:
@@ -59,17 +67,19 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Updated information immediately reflects in all views
 
 **Technical Notes:**
+
 - API: `PATCH /api/owner/clients/:id`
 - Updates both `users` and `clients` tables
 
 ---
 
 ### Story 1.3: View All Clients
-**As an** owner
-**I want to** see a list of all clients with their key information
-**So that** I can quickly find and manage client accounts
+
+**As an** owner **I want to** see a list of all clients with their key
+information **So that** I can quickly find and manage client accounts
 
 **Acceptance Criteria:**
+
 - [ ] Owner dashboard displays searchable client list
 - [ ] List shows for each client:
   - Name
@@ -88,6 +98,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Shows total count of active vs inactive clients
 
 **Technical Notes:**
+
 - API: `GET /api/owner/clients`
 - Returns joined data from `users` + `clients` tables
 - Pagination for large client lists
@@ -95,11 +106,13 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ---
 
 ### Story 1.4: Set Client Pricing
-**As an** owner
-**I want to** set custom pricing per client based on property size and services
-**So that** each client is billed correctly for their specific needs
+
+**As an** owner **I want to** set custom pricing per client based on property
+size and services **So that** each client is billed correctly for their specific
+needs
 
 **Acceptance Criteria:**
+
 - [ ] On client add/edit form, owner can set:
   - Base service price (per visit)
   - Optional add-on pricing:
@@ -115,6 +128,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Owner can override pricing on individual invoices
 
 **Technical Notes:**
+
 - Add `pricing_config` JSONB column to `clients` table
 - Structure: `{ base_price: 60, add_ons: { trimming: 20, mulch: 50 } }`
 - API: `PATCH /api/owner/clients/:id/pricing`
@@ -124,11 +138,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ## Epic 2: Waitlist Management
 
 ### Story 2.1: Capture Website Waitlist Signups
-**As a** potential client
-**I want to** join a waitlist from the website
-**So that** I can be contacted when service is available in my area
+
+**As a** potential client **I want to** join a waitlist from the website **So
+that** I can be contacted when service is available in my area
 
 **Acceptance Criteria:**
+
 - [ ] Website has waitlist form with fields:
   - Name (required)
   - Email (required)
@@ -142,18 +157,21 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Sends confirmation email to customer (optional for MVP)
 
 **Technical Notes:**
+
 - API: `POST /api/waitlist` (already exists in server.ts)
 - Create new table: `waitlist` with columns:
-  - id, name, email, phone, address, service_preference, source, status, created_at
+  - id, name, email, phone, address, service_preference, source, status,
+    created_at
 
 ---
 
 ### Story 2.2: View Waitlist in Owner Dashboard
-**As an** owner
-**I want to** see all waitlist signups in my dashboard
-**So that** I can contact them and convert them to active clients
+
+**As an** owner **I want to** see all waitlist signups in my dashboard **So
+that** I can contact them and convert them to active clients
 
 **Acceptance Criteria:**
+
 - [ ] Owner dashboard has "Waitlist" section
 - [ ] Displays table with columns:
   - Name
@@ -172,17 +190,19 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Badge notification for new (uncontacted) signups
 
 **Technical Notes:**
+
 - API: `GET /api/owner/waitlist`
 - Query: `SELECT * FROM waitlist ORDER BY created_at DESC`
 
 ---
 
 ### Story 2.3: Convert Waitlist to Client
-**As an** owner
-**I want to** convert a waitlist entry into an active client
+
+**As an** owner **I want to** convert a waitlist entry into an active client
 **So that** I can quickly onboard them without re-entering information
 
 **Acceptance Criteria:**
+
 - [ ] Each waitlist entry has "Convert to Client" button
 - [ ] Clicking button opens "Add Client" form
 - [ ] Form pre-populates with waitlist data:
@@ -199,17 +219,19 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Converted entries are visually distinct in waitlist view
 
 **Technical Notes:**
+
 - API: `POST /api/owner/waitlist/:id/convert`
 - Creates client, updates waitlist.status = 'converted'
 
 ---
 
 ### Story 2.4: Manage Waitlist Status
-**As an** owner
-**I want to** update waitlist entry status
-**So that** I can track my follow-up progress
+
+**As an** owner **I want to** update waitlist entry status **So that** I can
+track my follow-up progress
 
 **Acceptance Criteria:**
+
 - [ ] Owner can change status for each waitlist entry:
   - New (default)
   - Contacted (owner reached out)
@@ -222,6 +244,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Owner can bulk-update status for multiple entries
 
 **Technical Notes:**
+
 - API: `PATCH /api/owner/waitlist/:id`
 - Add columns: `status`, `notes`, `contacted_at`, `converted_at`
 
@@ -230,11 +253,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ## Epic 3: Crew Job Management
 
 ### Story 3.1: View Daily Job List
-**As a** crew member
-**I want to** see my jobs for today with addresses and directions
-**So that** I know where to go and what services to perform
+
+**As a** crew member **I want to** see my jobs for today with addresses and
+directions **So that** I know where to go and what services to perform
 
 **Acceptance Criteria:**
+
 - [ ] Crew dashboard shows today's jobs in chronological order
 - [ ] Each job displays:
   - Client name
@@ -250,6 +274,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Shows total: "X of Y jobs completed"
 
 **Technical Notes:**
+
 - API: `GET /api/crew/:id/jobs` (already exists in server.ts)
 - Use query param: `?date=YYYY-MM-DD` (defaults to today)
 - Returns jobs where `crew_id = :id` and `scheduled_date = :date`
@@ -257,11 +282,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ---
 
 ### Story 3.2: Mark Job In Progress
-**As a** crew member
-**I want to** mark a job as "in progress" when I arrive
+
+**As a** crew member **I want to** mark a job as "in progress" when I arrive
 **So that** the office knows I'm working on it
 
 **Acceptance Criteria:**
+
 - [ ] Each job has "Start Job" button
 - [ ] Click records start time and changes status to "in_progress"
 - [ ] Button changes to "Complete Job"
@@ -270,17 +296,19 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Only one job can be "in progress" at a time
 
 **Technical Notes:**
+
 - API: `PATCH /api/jobs/:id/start`
 - Updates: `status = 'in_progress'`, `started_at = NOW()`
 
 ---
 
 ### Story 3.3: Upload Job Photos
-**As a** crew member
-**I want to** upload before and after photos of completed work
-**So that** clients can see the quality of service
+
+**As a** crew member **I want to** upload before and after photos of completed
+work **So that** clients can see the quality of service
 
 **Acceptance Criteria:**
+
 - [ ] Job detail page has "Upload Photos" section
 - [ ] Crew can upload:
   - Before photos (taken before work starts)
@@ -294,6 +322,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Success message confirms upload
 
 **Technical Notes:**
+
 - API: `POST /api/jobs/:id/photo` (already exists)
 - Upload to Supabase Storage: `/job-photos/{job_id}/{timestamp}_{type}.jpg`
 - Insert record in `job_photos` table with storage URL
@@ -301,11 +330,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ---
 
 ### Story 3.4: Complete Job
-**As a** crew member
-**I want to** mark a job as complete
-**So that** it's off my list and the office can invoice the client
+
+**As a** crew member **I want to** mark a job as complete **So that** it's off
+my list and the office can invoice the client
 
 **Acceptance Criteria:**
+
 - [ ] "Complete Job" button available after job started
 - [ ] Optional: Add completion notes
 - [ ] Optionally prompted to upload photos (if none yet)
@@ -319,19 +349,22 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Completion data sent to owner dashboard
 
 **Technical Notes:**
+
 - API: `PATCH /api/jobs/:id/complete` (already exists)
-- Updates: `status = 'completed'`, `completed_at = NOW()`, `duration_minutes = calculated`
+- Updates: `status = 'completed'`, `completed_at = NOW()`,
+  `duration_minutes = calculated`
 
 ---
 
 ## Epic 4: Client Self-Service
 
 ### Story 4.1: View Upcoming Jobs
-**As a** client
-**I want to** see when my next lawn service is scheduled
-**So that** I know when to expect the crew
+
+**As a** client **I want to** see when my next lawn service is scheduled **So
+that** I know when to expect the crew
 
 **Acceptance Criteria:**
+
 - [ ] Client dashboard shows upcoming jobs
 - [ ] Displays:
   - Service date
@@ -344,6 +377,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Can filter by date range
 
 **Technical Notes:**
+
 - API: `GET /api/client/:id/dashboard` (already exists)
 - Returns jobs where `client_id = :id` and `scheduled_date >= TODAY`
 - Ordered by scheduled_date ASC
@@ -351,11 +385,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ---
 
 ### Story 4.2: View Service History
-**As a** client
-**I want to** see my past lawn services with photos
-**So that** I can review the work that's been done
+
+**As a** client **I want to** see my past lawn services with photos **So that**
+I can review the work that's been done
 
 **Acceptance Criteria:**
+
 - [ ] Client dashboard has "Service History" tab
 - [ ] Lists past jobs showing:
   - Date of service
@@ -370,17 +405,19 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Shows total services received
 
 **Technical Notes:**
+
 - API: `GET /api/client/:id/jobs?status=completed`
 - Joins with `job_photos` to include images
 
 ---
 
 ### Story 4.3: View Invoices
-**As a** client
-**I want to** see my current and past invoices
-**So that** I know what I owe and my payment history
+
+**As a** client **I want to** see my current and past invoices **So that** I
+know what I owe and my payment history
 
 **Acceptance Criteria:**
+
 - [ ] Client dashboard displays invoice list
 - [ ] Each invoice shows:
   - Invoice number
@@ -397,6 +434,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Shows total balance due across all invoices
 
 **Technical Notes:**
+
 - API: `GET /api/client/:id/invoices`
 - Returns invoices where `client_id = :id`
 - Ordered by due_date DESC
@@ -404,11 +442,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ---
 
 ### Story 4.4: Pay Invoice Online
-**As a** client
-**I want to** pay my invoice online with Cash App, Zelle, or card
-**So that** I don't have to mail checks or pay in person
+
+**As a** client **I want to** pay my invoice online with Cash App, Zelle, or
+card **So that** I don't have to mail checks or pay in person
 
 **Acceptance Criteria:**
+
 - [ ] Invoice detail page has "Pay Now" button
 - [ ] Payment modal shows:
   - Invoice amount
@@ -432,6 +471,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Payment confirmation email sent
 
 **Technical Notes:**
+
 - API: `POST /api/client/invoices/:id/pay`
 - For external payments: Creates payment record with `status = 'pending'`
 - For card: Integrates Stripe API (future enhancement)
@@ -442,11 +482,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ## Epic 5: Owner Invoice & Payment Management
 
 ### Story 5.1: Create Invoice for Client
-**As an** owner
-**I want to** create invoices for completed services
-**So that** I can bill clients for their lawn care
+
+**As an** owner **I want to** create invoices for completed services **So that**
+I can bill clients for their lawn care
 
 **Acceptance Criteria:**
+
 - [ ] Owner can create invoice from:
   - Client detail page ("Create Invoice" button)
   - Completed job ("Invoice This Job" button)
@@ -473,6 +514,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Success message with invoice number
 
 **Technical Notes:**
+
 - API: `POST /api/owner/invoices`
 - Invoice number format: `INV-{YYYYMMDD}-{sequence}`
 - `line_items` stored as JSONB array
@@ -480,11 +522,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ---
 
 ### Story 5.2: View All Invoices
-**As an** owner
-**I want to** see all invoices across all clients
-**So that** I can track accounts receivable
+
+**As an** owner **I want to** see all invoices across all clients **So that** I
+can track accounts receivable
 
 **Acceptance Criteria:**
+
 - [ ] Owner dashboard has "Invoices" section
 - [ ] Table displays:
   - Invoice number
@@ -507,17 +550,20 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] "Send Reminder" button for overdue invoices
 
 **Technical Notes:**
+
 - API: `GET /api/owner/invoices`
-- Add computed field: `days_overdue = CURRENT_DATE - due_date WHERE status = 'unpaid'`
+- Add computed field:
+  `days_overdue = CURRENT_DATE - due_date WHERE status = 'unpaid'`
 
 ---
 
 ### Story 5.3: Record Payment
-**As an** owner
-**I want to** record when a client pays (cash, check, Cash App, etc.)
-**So that** I can track which invoices are paid
+
+**As an** owner **I want to** record when a client pays (cash, check, Cash App,
+etc.) **So that** I can track which invoices are paid
 
 **Acceptance Criteria:**
+
 - [ ] Invoice detail page has "Record Payment" button
 - [ ] Payment form captures:
   - Amount paid (defaults to invoice total)
@@ -536,6 +582,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Payment confirmation shown
 
 **Technical Notes:**
+
 - API: `POST /api/owner/invoices/:id/payment`
 - Insert into `payments` table
 - Update invoice status based on amount_paid vs amount_due
@@ -543,11 +590,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ---
 
 ### Story 5.4: Verify External Payments
-**As an** owner
-**I want to** verify Cash App/Zelle/PayPal payments marked by clients
-**So that** I can confirm payment was actually received
+
+**As an** owner **I want to** verify Cash App/Zelle/PayPal payments marked by
+clients **So that** I can confirm payment was actually received
 
 **Acceptance Criteria:**
+
 - [ ] Owner dashboard shows "Pending Payments" badge
 - [ ] List shows payments with status = "pending verification"
 - [ ] Each entry displays:
@@ -564,6 +612,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Rejected payments send email notification to client
 
 **Technical Notes:**
+
 - API: `PATCH /api/owner/payments/:id/verify`
 - Body: `{ verified: true|false, actual_amount: number }`
 - Updates payment and invoice status
@@ -573,11 +622,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ## Epic 6: Owner Dashboard & Metrics
 
 ### Story 6.1: View Business Metrics
-**As an** owner
-**I want to** see key business metrics on my dashboard
-**So that** I can monitor business performance at a glance
+
+**As an** owner **I want to** see key business metrics on my dashboard **So
+that** I can monitor business performance at a glance
 
 **Acceptance Criteria:**
+
 - [ ] Owner dashboard displays KPI cards:
   - **Active Clients**: Count of clients with status='active'
   - **Jobs This Week**: Count of jobs scheduled this week
@@ -593,6 +643,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Can click metric to see detail view
 
 **Technical Notes:**
+
 - API: `GET /api/owner/metrics` (already exists)
 - Returns JSON with all metric values
 - SQL aggregations for each metric
@@ -600,11 +651,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ---
 
 ### Story 6.2: View Recent Activity
-**As an** owner
-**I want to** see recent system activity
-**So that** I can stay informed of what's happening
+
+**As an** owner **I want to** see recent system activity **So that** I can stay
+informed of what's happening
 
 **Acceptance Criteria:**
+
 - [ ] Dashboard shows "Recent Activity" feed
 - [ ] Activity types shown:
   - New waitlist signup
@@ -621,6 +673,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] "View All" link to activity history page
 
 **Technical Notes:**
+
 - Create `activity_log` table or query across multiple tables
 - API: `GET /api/owner/activity?limit=10`
 
@@ -629,11 +682,12 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 ## Epic 7: Job Scheduling
 
 ### Story 7.1: Create Job for Client
-**As an** owner
-**I want to** schedule jobs for my clients
-**So that** crew knows what work to do and when
+
+**As an** owner **I want to** schedule jobs for my clients **So that** crew
+knows what work to do and when
 
 **Acceptance Criteria:**
+
 - [ ] Owner can create job from:
   - Client detail page ("Schedule Service" button)
   - Calendar view (drag-and-drop - future)
@@ -660,17 +714,19 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Can bulk-create recurring jobs (optional for MVP)
 
 **Technical Notes:**
+
 - API: `POST /api/owner/jobs`
 - Insert into `jobs` table with status='assigned'
 
 ---
 
 ### Story 7.2: Edit/Reassign Job
-**As an** owner
-**I want to** edit job details or reassign to different crew
+
+**As an** owner **I want to** edit job details or reassign to different crew
 **So that** I can adjust schedule when things change
 
 **Acceptance Criteria:**
+
 - [ ] Owner can edit any job that's not completed
 - [ ] Can change:
   - Assigned crew member
@@ -682,6 +738,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 - [ ] Can cancel job (sets status = 'cancelled')
 
 **Technical Notes:**
+
 - API: `PATCH /api/owner/jobs/:id`
 - Validate: can't change status from 'completed'
 
@@ -692,6 +749,7 @@ A simple, efficient field service management system for Xcellent1 Lawn Care that
 Based on user stories above, we need:
 
 ### New Table: `waitlist`
+
 ```sql
 CREATE TABLE waitlist (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -714,18 +772,21 @@ CREATE INDEX idx_waitlist_created ON waitlist(created_at DESC);
 ```
 
 ### Add to `clients` table:
+
 ```sql
 ALTER TABLE clients ADD COLUMN pricing_config JSONB;
 -- Example: {"base_price": 60, "add_ons": {"trimming": 20, "mulch": 50}}
 ```
 
 ### Add to `jobs` table:
+
 ```sql
 ALTER TABLE jobs ADD COLUMN started_at TIMESTAMPTZ;
 -- (completed_at and duration_minutes already exist)
 ```
 
 ### Add to `payments` table:
+
 ```sql
 ALTER TABLE payments ADD COLUMN verified BOOLEAN DEFAULT true;
 ALTER TABLE payments ADD COLUMN verified_at TIMESTAMPTZ;
@@ -734,6 +795,7 @@ ALTER TABLE payments ADD COLUMN verified_by UUID REFERENCES users(id);
 ```
 
 ### New Table: `activity_log` (optional)
+
 ```sql
 CREATE TABLE activity_log (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -753,6 +815,7 @@ CREATE INDEX idx_activity_created ON activity_log(created_at DESC);
 ## API Endpoints Required
 
 ### Client Management
+
 - `POST /api/owner/clients` - Create client
 - `GET /api/owner/clients` - List all clients
 - `GET /api/owner/clients/:id` - Get client details
@@ -760,12 +823,14 @@ CREATE INDEX idx_activity_created ON activity_log(created_at DESC);
 - `PATCH /api/owner/clients/:id/pricing` - Update pricing config
 
 ### Waitlist
+
 - `POST /api/waitlist` - Add to waitlist (public - already exists)
 - `GET /api/owner/waitlist` - View all waitlist entries
 - `PATCH /api/owner/waitlist/:id` - Update status
 - `POST /api/owner/waitlist/:id/convert` - Convert to client
 
 ### Jobs
+
 - `POST /api/owner/jobs` - Create job
 - `GET /api/owner/jobs` - List all jobs
 - `PATCH /api/owner/jobs/:id` - Edit job
@@ -774,6 +839,7 @@ CREATE INDEX idx_activity_created ON activity_log(created_at DESC);
 - `POST /api/jobs/:id/photo` - Upload photo (already exists)
 
 ### Invoices
+
 - `POST /api/owner/invoices` - Create invoice
 - `GET /api/owner/invoices` - List all invoices
 - `GET /api/owner/invoices/:id` - Get invoice details
@@ -781,11 +847,13 @@ CREATE INDEX idx_activity_created ON activity_log(created_at DESC);
 - `POST /api/client/invoices/:id/pay` - Client mark as paid
 
 ### Payments
+
 - `POST /api/owner/invoices/:id/payment` - Record payment
 - `PATCH /api/owner/payments/:id/verify` - Verify external payment
 - `GET /api/owner/payments/pending` - List pending verifications
 
 ### Metrics
+
 - `GET /api/owner/metrics` - Business KPIs (already exists)
 - `GET /api/owner/activity` - Recent activity
 
@@ -794,6 +862,7 @@ CREATE INDEX idx_activity_created ON activity_log(created_at DESC);
 ## Priority Ranking
 
 ### Phase 1 - MVP (Essential for Launch)
+
 1. ✅ User authentication (already complete)
 2. **Epic 1: Owner Client Management** (Stories 1.1, 1.2, 1.3, 1.4)
 3. **Epic 7: Job Scheduling** (Stories 7.1, 7.2)
@@ -801,12 +870,14 @@ CREATE INDEX idx_activity_created ON activity_log(created_at DESC);
 5. **Epic 5: Invoice Management** (Stories 5.1, 5.3)
 
 ### Phase 2 - Enhanced Features
+
 6. **Epic 2: Waitlist Management** (All stories)
 7. **Epic 3: Crew Photos** (Story 3.3)
 8. **Epic 4: Client Self-Service** (Stories 4.1, 4.2, 4.3)
 9. **Epic 6: Owner Metrics** (Story 6.1)
 
 ### Phase 3 - Full Featured
+
 10. **Epic 4: Online Payments** (Story 4.4)
 11. **Epic 5: Payment Verification** (Story 5.4)
 12. **Epic 6: Activity Feed** (Story 6.2)

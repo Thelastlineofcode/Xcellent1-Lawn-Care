@@ -2,16 +2,19 @@
 
 ## Status: System Ready ✅
 
-All code is deployed and tested. **One manual step remains** to activate payment accounts in your Supabase database.
+All code is deployed and tested. **One manual step remains** to activate payment
+accounts in your Supabase database.
 
 ## Execute Migration (5 minutes)
 
 ### Step 1: Go to Supabase Dashboard
+
 ```
 https://app.supabase.com/project/utivthfrwgtjatsusopw
 ```
 
 ### Step 2: Open SQL Editor
+
 - Click **"SQL Editor"** in left sidebar
 - Click **"New Query"**
 
@@ -61,6 +64,7 @@ COMMENT ON TABLE payment_accounts IS 'Owner payment account connections (PayPal,
 ### Step 4: Click "Run"
 
 Wait for the green success message. You should see:
+
 ```
 ✓ Query executed successfully
 ```
@@ -80,10 +84,8 @@ Result should show: `table_exists = true`
 
 ## What Gets Created
 
-✅ `payment_accounts` table with all fields
-✅ 3 performance indexes  
-✅ Row Level Security (RLS) policies
-✅ Auto-update trigger for timestamps
+✅ `payment_accounts` table with all fields ✅ 3 performance indexes\
+✅ Row Level Security (RLS) policies ✅ Auto-update trigger for timestamps
 
 ## After Migration
 
@@ -107,16 +109,20 @@ Result should show: `table_exists = true`
 ## Troubleshooting
 
 **"Column 'payment_method' of relation 'payment_accounts' already exists"**
+
 - Table already created (migration ran successfully before)
 - This is fine! Just means the table exists.
 
 **"Permission denied"**
+
 - Make sure you're logged in to the correct Supabase project
 - Check you have admin/editor access to the database
 
 **"Function 'update_updated_at_column' does not exist"**
+
 - This function should already exist from the original schema
 - If not, you can create it with:
+
 ```sql
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -132,15 +138,16 @@ $$ LANGUAGE plpgsql;
 After running the migration successfully:
 
 1. ✅ Table exists in Supabase
-2. ✅ Indexes created  
+2. ✅ Indexes created
 3. ✅ RLS policies active
 4. ✅ Payment Accounts page responds to API calls
 5. ✅ LaCardio can connect his first account
 
 ---
 
-**Estimated Time**: 2-3 minutes to run migration  
-**Risk Level**: Very low - just adding a new table  
-**Rollback**: If needed, just drop the table  
+**Estimated Time**: 2-3 minutes to run migration\
+**Risk Level**: Very low - just adding a new table\
+**Rollback**: If needed, just drop the table
 
-**Questions?** Check `/docs/PAYMENT_ACCOUNTS_SETUP.md` for detailed documentation.
+**Questions?** Check `/docs/PAYMENT_ACCOUNTS_SETUP.md` for detailed
+documentation.

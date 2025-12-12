@@ -5,22 +5,21 @@ await load({ envPath: ".env.local", examplePath: null, export: true });
 // Supabase JWT validation for Deno (server-side)
 
 import {
-  verify,
   decode as decodeJwt,
+  verify,
 } from "https://deno.land/x/djwt@v2.8/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
 // Prefer explicit server-side env vars but fall back to NEXT_PUBLIC_* if present
-export const SUPABASE_URL =
-  Deno.env.get("SUPABASE_URL") ||
+export const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ||
   Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") ||
   "";
-export const SUPABASE_ANON_KEY =
-  Deno.env.get("SUPABASE_ANON_KEY") ||
+export const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ||
   Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
   "";
 export const SUPABASE_JWT_SECRET = Deno.env.get("SUPABASE_JWT_SECRET") || "";
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ||
+  "";
 
 let _supabase: any = null;
 let _supabaseAdmin: any = null; // Service role client (bypasses RLS)
@@ -37,7 +36,7 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY) {
   }
 } else {
   console.warn(
-    "[supabase_auth] Supabase env vars not provided - running without Supabase client"
+    "[supabase_auth] Supabase env vars not provided - running without Supabase client",
   );
 }
 
@@ -47,7 +46,10 @@ if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
     _supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     console.log("[supabase_auth] Supabase Admin client initialized");
   } catch (err) {
-    console.error("[supabase_auth] Failed to initialize Supabase Admin client:", err);
+    console.error(
+      "[supabase_auth] Failed to initialize Supabase Admin client:",
+      err,
+    );
     _supabaseAdmin = null;
   }
 }
@@ -75,7 +77,7 @@ export interface AuthUser {
  * @returns User payload if valid, null otherwise
  */
 export async function verifySupabaseJWT(
-  authHeader: string
+  authHeader: string,
 ): Promise<AuthUser | null> {
   if (!authHeader?.startsWith("Bearer ")) return null;
 
@@ -97,7 +99,7 @@ export async function verifySupabaseJWT(
             new TextEncoder().encode(SUPABASE_JWT_SECRET),
             { name: "HMAC", hash: "SHA-256" },
             false,
-            ["verify"]
+            ["verify"],
           );
 
           // verify() returns the payload if valid, throws if invalid
@@ -106,15 +108,18 @@ export async function verifySupabaseJWT(
             // Token is valid, return the payload with proper structure
             return {
               id: (verifiedPayload as any).sub || (verifiedPayload as any).id,
-              email: (verifiedPayload as any).email || '',
+              email: (verifiedPayload as any).email || "",
               sub: (verifiedPayload as any).sub,
               role: (verifiedPayload as any).role,
               aud: (verifiedPayload as any).aud,
-              exp: (verifiedPayload as any).exp
+              exp: (verifiedPayload as any).exp,
             } as AuthUser;
           }
         } catch (verifyErr) {
-          console.warn("[supabase_auth] Local JWT verification failed:", verifyErr);
+          console.warn(
+            "[supabase_auth] Local JWT verification failed:",
+            verifyErr,
+          );
           // Fall through to Supabase API verification
         }
       }
@@ -122,7 +127,9 @@ export async function verifySupabaseJWT(
 
     // Explicitly throw or return null here so we fall through to the getUser() check below
     if (!SUPABASE_JWT_SECRET) {
-      console.warn("WARNING: SUPABASE_JWT_SECRET not set, validation by signature not possible");
+      console.warn(
+        "WARNING: SUPABASE_JWT_SECRET not set, validation by signature not possible",
+      );
     }
 
     // Fallback: Verify using Supabase Client getUser() (Key Rotation / Opaque Token support)
@@ -134,7 +141,7 @@ export async function verifySupabaseJWT(
       }
     }
 
-    // Last resort: decode if previously requested 
+    // Last resort: decode if previously requested
     if (!SUPABASE_JWT_SECRET && !_supabase) {
       try {
         // Insecure decode for dev only
@@ -146,7 +153,6 @@ export async function verifySupabaseJWT(
     }
 
     return null;
-
   } catch (err) {
     console.error("JWT verification error:", err);
     // Try fallback here too
@@ -217,11 +223,11 @@ export async function getUserProfile(authUserId: string): Promise<any | null> {
  * @returns User profile or null
  */
 export async function authenticateRequest(
-  req: Request
+  req: Request,
 ): Promise<{ authUser: AuthUser; profile: any } | null> {
   if (!_supabaseConfigured) {
     console.warn(
-      "[supabase_auth] authenticateRequest called but Supabase not configured"
+      "[supabase_auth] authenticateRequest called but Supabase not configured",
     );
     return null;
   }
@@ -231,11 +237,17 @@ export async function authenticateRequest(
   if (!authHeader) return null;
 
   const authUser = await verifySupabaseJWT(authHeader);
-  console.log("[DEBUG] JWT verified, authUser:", authUser ? `ID: ${authUser.sub || authUser.id}` : "null");
+  console.log(
+    "[DEBUG] JWT verified, authUser:",
+    authUser ? `ID: ${authUser.sub || authUser.id}` : "null",
+  );
   if (!authUser) return null;
 
   const profile = await getUserProfile(authUser.id || (authUser as any).sub);
-  console.log("[DEBUG] Profile fetched:", profile ? `Role: ${profile.role}, Email: ${profile.email}` : "null");
+  console.log(
+    "[DEBUG] Profile fetched:",
+    profile ? `Role: ${profile.role}, Email: ${profile.email}` : "null",
+  );
   if (!profile) return null;
 
   return { authUser, profile };

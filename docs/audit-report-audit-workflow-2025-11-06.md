@@ -1,9 +1,7 @@
 # Workflow Audit Report
 
-**Workflow:** audit-workflow
-**Audit Date:** 2025-11-06
-**Auditor:** Audit Workflow (BMAD v6)
-**Workflow Type:** document
+**Workflow:** audit-workflow **Audit Date:** 2025-11-06 **Auditor:** Audit
+Workflow (BMAD v6) **Workflow Type:** document
 
 ---
 
@@ -29,9 +27,8 @@
 
 {{alignment_issues}}
 
-**Variables Analyzed:** {{total_variables}}
-**Used in Instructions:** {{instruction_usage_count}}
-**Used in Template:** {{template_usage_count}}
+**Variables Analyzed:** {{total_variables}} **Used in Instructions:**
+{{instruction_usage_count}} **Used in Template:** {{template_usage_count}}
 **Unused (Bloat):** {{bloat_count}}
 
 ---
@@ -40,11 +37,9 @@
 
 {{config_usage_issues}}
 
-**Communication Language:** {{comm_lang_status}}
-**User Name:** {{user_name_status}}
-**Output Folder:** {{output_folder_status}}
-**Date:** {{date_status}}
-**Nested Tag References:** {{nested_tag_count}} instances found
+**Communication Language:** {{comm_lang_status}} **User Name:**
+{{user_name_status}} **Output Folder:** {{output_folder_status}} **Date:**
+{{date_status}} **Nested Tag References:** {{nested_tag_count}} instances found
 
 ---
 
@@ -52,9 +47,8 @@
 
 {{web_bundle_issues}}
 
-**Web Bundle Present:** {{web_bundle_exists}}
-**Files Listed:** {{web_bundle_file_count}}
-**Missing Files:** {{missing_files_count}}
+**Web Bundle Present:** {{web_bundle_exists}} **Files Listed:**
+{{web_bundle_file_count}} **Missing Files:** {{missing_files_count}}
 
 ---
 
@@ -62,8 +56,8 @@
 
 {{bloat_items}}
 
-**Bloat Percentage:** {{bloat_percentage}}%
-**Cleanup Potential:** {{cleanup_potential}}
+**Bloat Percentage:** {{bloat_percentage}}% **Cleanup Potential:**
+{{cleanup_potential}}
 
 ---
 
@@ -71,9 +65,8 @@
 
 {{template_issues}}
 
-**Template Variables:** {{template_var_count}}
-**Mapped Correctly:** {{mapped_count}}
-**Missing Mappings:** {{missing_mapping_count}}
+**Template Variables:** {{template_var_count}} **Mapped Correctly:**
+{{mapped_count}} **Missing Mappings:** {{missing_mapping_count}}
 
 ---
 
@@ -108,10 +101,10 @@ Use this checklist to verify fixes:
 
 ## Next Steps
 
-1.  Review critical issues and fix immediately
-2.  Address important issues in next iteration
-3.  Consider cleanup recommendations for optimization
-4.  Re-run audit after fixes to verify improvements
+1. Review critical issues and fix immediately
+2. Address important issues in next iteration
+3. Consider cleanup recommendations for optimization
+4. Re-run audit after fixes to verify improvements
 
 ---
 

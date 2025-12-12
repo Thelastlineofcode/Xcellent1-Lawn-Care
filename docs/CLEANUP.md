@@ -3,19 +3,24 @@
 ## Files to Remove
 
 ### 1. Old Documentation (in `/docs/`)
+
 ```bash
 rm /Users/houseofobi/Documents/GitHub/Xcellent1-Lawn-Care/docs/epics_and_stories.md
 ```
+
 **Reason**: Replaced by new `STORIES.md` and `ROADMAP.md`
 
 ### 2. Redundant HTML Pages (in `/web/static/`)
+
 ```bash
 rm /Users/houseofobi/Documents/GitHub/Xcellent1-Lawn-Care/web/static/dashboard.html
 rm /Users/houseofobi/Documents/GitHub/Xcellent1-Lawn-Care/web/static/home.html
 rm /Users/houseofobi/Documents/GitHub/Xcellent1-Lawn-Care/web/static/client.html
 rm /Users/houseofobi/Documents/GitHub/Xcellent1-Lawn-Care/web/static/portal-index.html
 ```
+
 **Reason**: Consolidating into single-page PWA structure. Keep only:
+
 - `index.html` (landing page with waitlist)
 - `crew.html` (crew mobile portal)
 - `owner.html` (owner dashboard)
@@ -25,13 +30,12 @@ rm /Users/houseofobi/Documents/GitHub/Xcellent1-Lawn-Care/web/static/portal-inde
 ## Files to Keep & Update
 
 ### Keep These Files:
-✅ `/web/static/index.html` - Landing page (needs waitlist form)
-✅ `/web/static/crew.html` - Crew mobile app
-✅ `/web/static/owner.html` - Owner dashboard
-✅ `/web/static/app.js` - Main JavaScript
-✅ `/web/static/styles.css` - Styles
-✅ `/web/static/sw.js` - Service worker
-✅ `/web/static/manifest.json` - PWA manifest
+
+✅ `/web/static/index.html` - Landing page (needs waitlist form) ✅
+`/web/static/crew.html` - Crew mobile app ✅ `/web/static/owner.html` - Owner
+dashboard ✅ `/web/static/app.js` - Main JavaScript ✅
+`/web/static/styles.css` - Styles ✅ `/web/static/sw.js` - Service worker ✅
+`/web/static/manifest.json` - PWA manifest
 
 ---
 
@@ -100,6 +104,7 @@ ls -la web/static/
 ## Post-Cleanup Verification
 
 After cleanup, verify:
+
 1. ✅ Only 3 HTML files in `/web/static/`: index.html, crew.html, owner.html
 2. ✅ Old `epics_and_stories.md` is removed
 3. ✅ New `STORIES.md` and `ROADMAP.md` exist in `/docs/`

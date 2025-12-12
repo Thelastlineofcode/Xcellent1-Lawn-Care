@@ -1,6 +1,8 @@
 # Job Descriptions — Xcellent1 Lawn Care
 
-This folder contains P0 job descriptions generated from the architecture-to-staff conversion. Use these as hiring templates, interview guides, and onboarding checklists.
+This folder contains P0 job descriptions generated from the
+architecture-to-staff conversion. Use these as hiring templates, interview
+guides, and onboarding checklists.
 
 Included roles:
 
@@ -8,7 +10,8 @@ Included roles:
 - Scheduler / Dispatch Coordinator — `scheduler-dispatch-coordinator.md`
 - Platform Engineer (Deno + Supabase) — `platform-engineer-deno.md`
 - Billing & Payments Specialist — `billing-payments-specialist.md`
-- Communications & Notifications Coordinator — `communications-notifications-coordinator.md`
+- Communications & Notifications Coordinator —
+  `communications-notifications-coordinator.md`
 
 Next steps:
 

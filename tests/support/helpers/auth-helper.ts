@@ -13,17 +13,23 @@ export interface AuthToken {
  * Generate a JWT token for testing
  * Follows deterministic patterns - no randomness in core claims
  */
-export async function generateTestToken(role: 'owner' | 'crew' | 'client', userId: string): Promise<AuthToken> {
+export async function generateTestToken(
+  role: "owner" | "crew" | "client",
+  userId: string,
+): Promise<AuthToken> {
   const JWT_SECRET = Deno.env.get("SUPABASE_JWT_SECRET");
   if (!JWT_SECRET) {
     throw new Error("SUPABASE_JWT_SECRET required for test authentication");
   }
-  
+
   const key = await crypto.subtle.importKey(
-    "raw", new TextEncoder().encode(JWT_SECRET),
-    { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+    "raw",
+    new TextEncoder().encode(JWT_SECRET),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
   );
-  
+
   const now = Math.floor(Date.now() / 1000);
   const payload = {
     sub: userId,
@@ -32,15 +38,15 @@ export async function generateTestToken(role: 'owner' | 'crew' | 'client', userI
     exp: now + 3600, // 1 hour
     aud: "authenticated",
     role: "authenticated",
-    user_metadata: { role }
+    user_metadata: { role },
   };
-  
+
   const token = await create({ alg: "HS256", typ: "JWT" }, payload, key);
-  
+
   return {
     token,
     userId,
-    role
+    role,
   };
 }
 
@@ -50,7 +56,7 @@ export async function generateTestToken(role: 'owner' | 'crew' | 'client', userI
 export function createAuthHeaders(token: string) {
   return {
     "Authorization": `Bearer ${token}`,
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   };
 }
 
@@ -59,7 +65,7 @@ export function createAuthHeaders(token: string) {
  */
 export function validateTokenStructure(token: string): boolean {
   try {
-    const parts = token.split('.');
+    const parts = token.split(".");
     return parts.length === 3;
   } catch {
     return false;

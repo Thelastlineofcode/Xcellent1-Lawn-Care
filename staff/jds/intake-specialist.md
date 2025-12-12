@@ -4,14 +4,20 @@ Hiring priority: P0
 
 ## Role summary
 
-The Customer Intake Specialist is the first human contact for potential customers. They monitor inbound SMS, PWA lead submissions, and phone messages; qualify leads; record accurate customer data in Supabase; and hand-off qualified leads to the Scheduler or Pricing Coordinator.
+The Customer Intake Specialist is the first human contact for potential
+customers. They monitor inbound SMS, PWA lead submissions, and phone messages;
+qualify leads; record accurate customer data in Supabase; and hand-off qualified
+leads to the Scheduler or Pricing Coordinator.
 
 ## Responsibilities
 
-- Monitor inbound leads (Twilio SMS, PWA form, phone) and log into Supabase within 15 minutes.
-- Qualify lead information: service_type, address, lawn_size estimate, availability.
+- Monitor inbound leads (Twilio SMS, PWA form, phone) and log into Supabase
+  within 15 minutes.
+- Qualify lead information: service_type, address, lawn_size estimate,
+  availability.
 - Provide quick pricing heuristics and offer two slot options when possible.
-- Tag and route leads (residential, commercial, HOA, urgent) and escalate ambiguous cases.
+- Tag and route leads (residential, commercial, HOA, urgent) and escalate
+  ambiguous cases.
 - Maintain lead data quality and follow communication templates.
 - Provide manual fallbacks (phone/SMS) when automated flows are unavailable.
 
@@ -31,13 +37,16 @@ The Customer Intake Specialist is the first human contact for potential customer
 
 ## Compensation & hours
 
-- Part-time / flexible hours possible for small ops. Adjust compensation for local rates.
+- Part-time / flexible hours possible for small ops. Adjust compensation for
+  local rates.
 
 ## Interview checklist
 
-1. Describe past experience handling inbound messages at scale. What tools did you use?
+1. Describe past experience handling inbound messages at scale. What tools did
+   you use?
 2. Give an example of qualifying a lead and how you decided to escalate.
-3. Show an example or explain how you'd capture incomplete address information and verify it.
+3. Show an example or explain how you'd capture incomplete address information
+   and verify it.
 4. Role-play: Respond to an SMS lead asking for an estimate with limited data.
 
 ## Onboarding (first 2 weeks)

@@ -7,11 +7,11 @@ points: 3
 related_frs: [FR-002]
 ---
 
-Tasks
------
+## Tasks
+
 - Implement waitlist form frontend and submission endpoint.
 - Store leads in Supabase and send confirmation email.
 
-Acceptance Criteria
--------------------
+## Acceptance Criteria
+
 - Submissions create lead records and trigger confirmation email in dev/test.

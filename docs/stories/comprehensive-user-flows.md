@@ -1,12 +1,13 @@
 # Story: Comprehensive User Flow Testing
 
-**As a** QA Engineer  
-**I want** comprehensive E2E tests covering all user journeys  
+**As a** QA Engineer\
+**I want** comprehensive E2E tests covering all user journeys\
 **So that** I can validate the complete application functionality
 
 ## Acceptance Criteria
 
 ### Owner Workflow Tests
+
 - [ ] Owner can log in and access dashboard
 - [ ] Owner can view business KPIs and metrics
 - [ ] Owner can create and manage client records
@@ -16,7 +17,8 @@
 - [ ] Owner can view crew performance metrics
 - [ ] Owner can use the quote calculator
 
-### Crew Workflow Tests  
+### Crew Workflow Tests
+
 - [ ] Crew member can log in to mobile interface
 - [ ] Crew can view assigned jobs for the day
 - [ ] Crew can start jobs and update status
@@ -25,6 +27,7 @@
 - [ ] Crew can add notes to job completion
 
 ### Client Workflow Tests
+
 - [ ] Client can log in to self-service portal
 - [ ] Client can view upcoming scheduled jobs
 - [ ] Client can view service history and photos
@@ -33,6 +36,7 @@
 - [ ] Client can mark payments as completed
 
 ### Guest/Public Workflow Tests
+
 - [ ] Visitors can access careers page
 - [ ] Visitors can join waitlist for services
 - [ ] Visitors can use instant quote calculator
@@ -48,5 +52,7 @@
 - Tests must validate both UI and API responses
 
 ## Story Points: 21
+
 ## Priority: P0
+
 ## Dependencies: All core functionality implemented

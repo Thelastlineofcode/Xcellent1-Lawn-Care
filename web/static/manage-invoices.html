@@ -1,9 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Manage invoices and payments - Xcellent1 Lawn Care" />
+    <meta
+      name="description"
+      content="Manage invoices and payments - Xcellent1 Lawn Care"
+    />
     <meta name="theme-color" content="#10b981" />
     <meta name="robots" content="noindex, nofollow" />
     <title>Invoice Management | Xcellent1 Owner</title>
@@ -14,7 +17,11 @@
   <body>
     <nav class="navbar">
       <div class="navbar-brand">
-        <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+        <img
+          src="images/xcellent1-logo-transparent.png"
+          alt="Xcellent1 logo"
+          class="navbar-logo"
+        />
         <div class="navbar-title">
           <span class="navbar-name">XCELLENT1</span>
           <span class="navbar-tagline">LAWN CARE</span>
@@ -47,7 +54,9 @@
         <select class="filter-select" id="client-filter">
           <option value="">All Clients</option>
         </select>
-        <button class="btn" onclick="openAddInvoiceModal()">+ New Invoice</button>
+        <button class="btn" onclick="openAddInvoiceModal()">
+          + New Invoice
+        </button>
       </div>
 
       <div id="status-message" role="alert" aria-live="polite"></div>
@@ -82,13 +91,23 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">Record Payment</h2>
-          <button class="modal-close" onclick="closePaymentModal()">&times;</button>
+          <button class="modal-close" onclick="closePaymentModal()">
+            &times;
+          </button>
         </div>
         <div class="modal-body">
           <form id="payment-form" onsubmit="processPayment(event)">
             <div class="form-group">
               <label for="payment-amount">Payment Amount *</label>
-              <input type="number" id="payment-amount" step="0.01" min="0" required class="form-control" placeholder="0.00" />
+              <input
+                type="number"
+                id="payment-amount"
+                step="0.01"
+                min="0"
+                required
+                class="form-control"
+                placeholder="0.00"
+              />
             </div>
 
             <div class="form-group">
@@ -106,16 +125,32 @@
 
             <div class="form-group">
               <label for="transaction-id">Transaction ID (Optional)</label>
-              <input type="text" id="transaction-id" class="form-control" placeholder="e.g., PayPal transaction #, Cash App $cashtag" />
+              <input
+                type="text"
+                id="transaction-id"
+                class="form-control"
+                placeholder="e.g., PayPal transaction #, Cash App $cashtag"
+              />
             </div>
 
             <div class="form-group">
               <label for="payment-notes">Notes</label>
-              <textarea id="payment-notes" class="form-control" rows="2" placeholder="Any notes about this payment..."></textarea>
+              <textarea
+                id="payment-notes"
+                class="form-control"
+                rows="2"
+                placeholder="Any notes about this payment..."
+              ></textarea>
             </div>
 
             <div class="modal-actions">
-              <button type="button" class="btn btn-secondary" onclick="closePaymentModal()">Cancel</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closePaymentModal()"
+              >
+                Cancel
+              </button>
               <button type="submit" class="btn">Record Payment</button>
             </div>
           </form>
@@ -128,7 +163,9 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="modal-title">Create New Invoice</h2>
-          <button class="modal-close" onclick="closeInvoiceModal()">&times;</button>
+          <button class="modal-close" onclick="closeInvoiceModal()">
+            &times;
+          </button>
         </div>
         <div class="modal-body">
           <form id="invoice-form" onsubmit="saveInvoice(event)">
@@ -154,18 +191,34 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="invoice-date">Invoice Date *</label>
-                <input type="date" id="invoice-date" required class="form-control" />
+                <input
+                  type="date"
+                  id="invoice-date"
+                  required
+                  class="form-control"
+                />
               </div>
               <div class="form-group">
                 <label for="due-date">Due Date *</label>
-                <input type="date" id="due-date" required class="form-control" />
+                <input
+                  type="date"
+                  id="due-date"
+                  required
+                  class="form-control"
+                />
               </div>
             </div>
 
             <div>
               <div class="line-items-header">
                 <label>Line Items</label>
-                <button type="button" class="btn btn-sm" onclick="addLineItem()">+ Add Item</button>
+                <button
+                  type="button"
+                  class="btn btn-sm"
+                  onclick="addLineItem()"
+                >
+                  + Add Item
+                </button>
               </div>
 
               <table class="line-items-table">
@@ -180,11 +233,44 @@
                 </thead>
                 <tbody id="line-items-tbody">
                   <tr class="line-item-row">
-                    <td><input type="text" class="item-description" placeholder="Service description" required /></td>
-                    <td><input type="number" class="item-quantity" value="1" min="1" onchange="calculateTotal()" required /></td>
-                    <td><input type="number" class="item-price" step="0.01" placeholder="0.00" onchange="calculateTotal()" required /></td>
+                    <td>
+                      <input
+                        type="text"
+                        class="item-description"
+                        placeholder="Service description"
+                        required
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        class="item-quantity"
+                        value="1"
+                        min="1"
+                        onchange="calculateTotal()"
+                        required
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        class="item-price"
+                        step="0.01"
+                        placeholder="0.00"
+                        onchange="calculateTotal()"
+                        required
+                      />
+                    </td>
                     <td class="item-total">$0.00</td>
-                    <td><button type="button" onclick="removeLineItem(this)" class="btn-remove-item">&times;</button></td>
+                    <td>
+                      <button
+                        type="button"
+                        onclick="removeLineItem(this)"
+                        class="btn-remove-item"
+                      >
+                        &times;
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -207,11 +293,22 @@
 
             <div class="form-group">
               <label for="invoice-notes">Notes</label>
-              <textarea id="invoice-notes" class="form-control" rows="3" placeholder="Payment terms, thank you message, etc."></textarea>
+              <textarea
+                id="invoice-notes"
+                class="form-control"
+                rows="3"
+                placeholder="Payment terms, thank you message, etc."
+              ></textarea>
             </div>
 
             <div class="modal-actions">
-              <button type="button" class="btn btn-secondary" onclick="closeInvoiceModal()">Cancel</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeInvoiceModal()"
+              >
+                Cancel
+              </button>
               <button type="submit" class="btn">Save Invoice</button>
             </div>
           </form>
@@ -221,10 +318,10 @@
 
     <script src="app.js"></script>
     <script type="module">
-      import { requireAuth, logout } from './auth-helper.js';
+      import { logout, requireAuth } from "./auth-helper.js";
 
       // Require owner authentication
-      const userProfile = await requireAuth('owner');
+      const userProfile = await requireAuth("owner");
       window.ownerProfile = userProfile;
     </script>
     <script>
@@ -237,13 +334,13 @@
         try {
           const token = window.supabaseSession?.access_token;
           if (!token) {
-            throw new Error('No authentication token');
+            throw new Error("No authentication token");
           }
 
-          const response = await fetch('/api/owner/invoices', {
+          const response = await fetch("/api/owner/invoices", {
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
+              "Authorization": `Bearer ${token}`,
+            },
           });
 
           if (!response.ok) {
@@ -252,15 +349,18 @@
 
           const data = await response.json();
           if (!data.ok) {
-            throw new Error(data.error || 'Failed to fetch invoices');
+            throw new Error(data.error || "Failed to fetch invoices");
           }
 
           invoicesData = data.invoices || [];
           renderInvoices(invoicesData);
         } catch (err) {
-          console.error('Failed to load invoices:', err);
-          showMessage('⚠️ Unable to load invoices. Please refresh the page.', 'warning');
-          document.getElementById('invoices-tbody').innerHTML = `
+          console.error("Failed to load invoices:", err);
+          showMessage(
+            "⚠️ Unable to load invoices. Please refresh the page.",
+            "warning",
+          );
+          document.getElementById("invoices-tbody").innerHTML = `
             <tr>
               <td colspan="7" style="text-align: center; padding: 3rem; color: var(--color-text-secondary);">
                 No invoices found. Click "New Invoice" to get started.
@@ -274,8 +374,8 @@
       async function loadClients() {
         try {
           const token = window.supabaseSession?.access_token;
-          const response = await fetch('/api/owner/clients', {
-            headers: { 'Authorization': `Bearer ${token}` }
+          const response = await fetch("/api/owner/clients", {
+            headers: { "Authorization": `Bearer ${token}` },
           });
 
           const data = await response.json();
@@ -284,25 +384,27 @@
             populateClientDropdowns();
           }
         } catch (err) {
-          console.error('Failed to load clients:', err);
+          console.error("Failed to load clients:", err);
         }
       }
 
       function populateClientDropdowns() {
-        const clientSelect = document.getElementById('client-select');
-        const clientFilter = document.getElementById('client-filter');
+        const clientSelect = document.getElementById("client-select");
+        const clientFilter = document.getElementById("client-filter");
 
-        const options = clientsData.map(c =>
+        const options = clientsData.map((c) =>
           `<option value="${c.id}">${c.name}</option>`
-        ).join('');
+        ).join("");
 
-        clientSelect.innerHTML = '<option value="">Select client...</option>' + options;
-        clientFilter.innerHTML = '<option value="">All Clients</option>' + options;
+        clientSelect.innerHTML =
+          '<option value="">Select client...</option>' + options;
+        clientFilter.innerHTML =
+          '<option value="">All Clients</option>' + options;
       }
 
       // Render invoices table
       function renderInvoices(invoices) {
-        const tbody = document.getElementById('invoices-tbody');
+        const tbody = document.getElementById("invoices-tbody");
 
         if (invoices.length === 0) {
           tbody.innerHTML = `
@@ -315,35 +417,55 @@
           return;
         }
 
-        tbody.innerHTML = invoices.map(invoice => `
+        tbody.innerHTML = invoices.map((invoice) => `
           <tr onclick="editInvoice('${invoice.id}')">
-            <td><strong>#${invoice.invoice_number || invoice.id.slice(0, 8)}</strong></td>
-            <td>${invoice.client_name || 'Unknown'}</td>
-            <td>${new Date(invoice.invoice_date).toLocaleDateString()}</td>
+            <td><strong>#${
+          invoice.invoice_number || invoice.id.slice(0, 8)
+        }</strong></td>
+            <td>${invoice.client_name || "Unknown"}</td>
+            <td>${
+          new Date(invoice.invoice_date).toLocaleDateString()
+        }</td>
             <td>${new Date(invoice.due_date).toLocaleDateString()}</td>
-            <td><strong>$${(invoice.total_amount || 0).toFixed(2)}</strong></td>
+            <td><strong>$${
+          (invoice.total_amount || 0).toFixed(2)
+        }</strong></td>
             <td><span class="invoice-status ${invoice.status}">${invoice.status}</span></td>
             <td>
               <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); editInvoice('${invoice.id}')">Edit</button>
-              ${invoice.status !== 'paid' ? `
+              ${
+          invoice.status !== "paid"
+            ? `
                 <button class="btn btn-sm" onclick="event.stopPropagation(); recordPayment('${invoice.id}')">Record Payment</button>
-              ` : ''}
+              `
+            : ""
+        }
             </td>
           </tr>
-        `).join('');
+        `).join("");
       }
 
       // Filter functions
-      document.getElementById('status-filter').addEventListener('change', filterInvoices);
-      document.getElementById('client-filter').addEventListener('change', filterInvoices);
+      document.getElementById("status-filter").addEventListener(
+        "change",
+        filterInvoices,
+      );
+      document.getElementById("client-filter").addEventListener(
+        "change",
+        filterInvoices,
+      );
 
       function filterInvoices() {
-        const statusFilter = document.getElementById('status-filter').value;
-        const clientFilter = document.getElementById('client-filter').value;
+        const statusFilter =
+          document.getElementById("status-filter").value;
+        const clientFilter =
+          document.getElementById("client-filter").value;
 
-        const filtered = invoicesData.filter(invoice => {
-          const matchesStatus = !statusFilter || invoice.status === statusFilter;
-          const matchesClient = !clientFilter || invoice.client_id === clientFilter;
+        const filtered = invoicesData.filter((invoice) => {
+          const matchesStatus = !statusFilter ||
+            invoice.status === statusFilter;
+          const matchesClient = !clientFilter ||
+            invoice.client_id === clientFilter;
 
           return matchesStatus && matchesClient;
         });
@@ -354,20 +476,23 @@
       // Modal functions
       function openAddInvoiceModal() {
         editingInvoiceId = null;
-        document.getElementById('modal-title').textContent = 'Create New Invoice';
-        document.getElementById('invoice-form').reset();
-        document.getElementById('invoice-id').value = '';
+        document.getElementById("modal-title").textContent =
+          "Create New Invoice";
+        document.getElementById("invoice-form").reset();
+        document.getElementById("invoice-id").value = "";
 
         // Set default dates
         const today = new Date();
         const dueDate = new Date();
         dueDate.setDate(dueDate.getDate() + 30);
 
-        document.getElementById('invoice-date').value = today.toISOString().split('T')[0];
-        document.getElementById('due-date').value = dueDate.toISOString().split('T')[0];
+        document.getElementById("invoice-date").value =
+          today.toISOString().split("T")[0];
+        document.getElementById("due-date").value =
+          dueDate.toISOString().split("T")[0];
 
         // Reset line items
-        document.getElementById('line-items-tbody').innerHTML = `
+        document.getElementById("line-items-tbody").innerHTML = `
           <tr class="line-item-row">
             <td><input type="text" class="item-description" placeholder="Service description" required /></td>
             <td><input type="number" class="item-quantity" value="1" min="1" onchange="calculateTotal()" required /></td>
@@ -378,38 +503,50 @@
         `;
 
         calculateTotal();
-        document.getElementById('invoice-modal').classList.add('active');
+        document.getElementById("invoice-modal").classList.add(
+          "active",
+        );
       }
 
       function closeInvoiceModal() {
-        document.getElementById('invoice-modal').classList.remove('active');
+        document.getElementById("invoice-modal").classList.remove(
+          "active",
+        );
         editingInvoiceId = null;
       }
 
       function editInvoice(invoiceId) {
-        const invoice = invoicesData.find(i => i.id === invoiceId);
+        const invoice = invoicesData.find((i) => i.id === invoiceId);
         if (!invoice) return;
 
         editingInvoiceId = invoiceId;
-        document.getElementById('modal-title').textContent = 'Edit Invoice';
-        document.getElementById('invoice-id').value = invoiceId;
-        document.getElementById('client-select').value = invoice.client_id || '';
-        document.getElementById('invoice-status').value = invoice.status || 'draft';
-        document.getElementById('invoice-date').value = invoice.invoice_date || '';
-        document.getElementById('due-date').value = invoice.due_date || '';
-        document.getElementById('invoice-notes').value = invoice.notes || '';
+        document.getElementById("modal-title").textContent =
+          "Edit Invoice";
+        document.getElementById("invoice-id").value = invoiceId;
+        document.getElementById("client-select").value =
+          invoice.client_id || "";
+        document.getElementById("invoice-status").value =
+          invoice.status || "draft";
+        document.getElementById("invoice-date").value =
+          invoice.invoice_date || "";
+        document.getElementById("due-date").value = invoice.due_date ||
+          "";
+        document.getElementById("invoice-notes").value =
+          invoice.notes || "";
 
         // Load line items if available
         // TODO: Implement line items loading from API
 
-        document.getElementById('invoice-modal').classList.add('active');
+        document.getElementById("invoice-modal").classList.add(
+          "active",
+        );
       }
 
       // Line items management
       function addLineItem() {
-        const tbody = document.getElementById('line-items-tbody');
-        const row = document.createElement('tr');
-        row.className = 'line-item-row';
+        const tbody = document.getElementById("line-items-tbody");
+        const row = document.createElement("tr");
+        row.className = "line-item-row";
         row.innerHTML = `
           <td><input type="text" class="item-description" placeholder="Service description" required /></td>
           <td><input type="number" class="item-quantity" value="1" min="1" onchange="calculateTotal()" required /></td>
@@ -421,9 +558,9 @@
       }
 
       function removeLineItem(btn) {
-        const rows = document.querySelectorAll('.line-item-row');
+        const rows = document.querySelectorAll(".line-item-row");
         if (rows.length > 1) {
-          btn.closest('tr').remove();
+          btn.closest("tr").remove();
           calculateTotal();
         }
       }
@@ -431,81 +568,106 @@
       function calculateTotal() {
         let subtotal = 0;
 
-        document.querySelectorAll('.line-item-row').forEach(row => {
-          const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
-          const price = parseFloat(row.querySelector('.item-price').value) || 0;
+        document.querySelectorAll(".line-item-row").forEach((row) => {
+          const quantity =
+            parseFloat(row.querySelector(".item-quantity").value) || 0;
+          const price =
+            parseFloat(row.querySelector(".item-price").value) || 0;
           const total = quantity * price;
 
-          row.querySelector('.item-total').textContent = `$${total.toFixed(2)}`;
+          row.querySelector(".item-total").textContent = `$${
+            total.toFixed(2)
+          }`;
           subtotal += total;
         });
 
         const tax = 0; // TODO: Implement tax calculation
         const grandTotal = subtotal + tax;
 
-        document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-        document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
-        document.getElementById('grand-total').textContent = `$${grandTotal.toFixed(2)}`;
+        document.getElementById("subtotal").textContent = `$${
+          subtotal.toFixed(2)
+        }`;
+        document.getElementById("tax").textContent = `$${
+          tax.toFixed(2)
+        }`;
+        document.getElementById("grand-total").textContent = `$${
+          grandTotal.toFixed(2)
+        }`;
       }
 
       // Save invoice
       async function saveInvoice(event) {
         event.preventDefault();
 
-        const lineItems = Array.from(document.querySelectorAll('.line-item-row')).map(row => ({
-          description: row.querySelector('.item-description').value,
-          quantity: parseFloat(row.querySelector('.item-quantity').value),
-          price: parseFloat(row.querySelector('.item-price').value),
-          total: parseFloat(row.querySelector('.item-quantity').value) * parseFloat(row.querySelector('.item-price').value)
+        const lineItems = Array.from(
+          document.querySelectorAll(".line-item-row"),
+        ).map((row) => ({
+          description: row.querySelector(".item-description").value,
+          quantity: parseFloat(
+            row.querySelector(".item-quantity").value,
+          ),
+          price: parseFloat(row.querySelector(".item-price").value),
+          total: parseFloat(row.querySelector(".item-quantity").value) *
+            parseFloat(row.querySelector(".item-price").value),
         }));
 
-        const total = lineItems.reduce((sum, item) => sum + item.total, 0);
+        const total = lineItems.reduce(
+          (sum, item) => sum + item.total,
+          0,
+        );
 
         const invoiceData = {
-          client_id: document.getElementById('client-select').value,
-          invoice_date: document.getElementById('invoice-date').value,
-          due_date: document.getElementById('due-date').value,
-          status: document.getElementById('invoice-status').value,
+          client_id: document.getElementById("client-select").value,
+          invoice_date: document.getElementById("invoice-date").value,
+          due_date: document.getElementById("due-date").value,
+          status: document.getElementById("invoice-status").value,
           line_items: lineItems,
           total_amount: total,
-          notes: document.getElementById('invoice-notes').value
+          notes: document.getElementById("invoice-notes").value,
         };
 
-        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const submitBtn = event.target.querySelector(
+          'button[type="submit"]',
+        );
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="spinner"></span> Saving...';
 
         try {
           const token = window.supabaseSession?.access_token;
-          const method = editingInvoiceId ? 'PATCH' : 'POST';
+          const method = editingInvoiceId ? "PATCH" : "POST";
           const url = editingInvoiceId
             ? `/api/owner/invoices/${editingInvoiceId}`
-            : '/api/owner/invoices';
+            : "/api/owner/invoices";
 
           const response = await fetch(url, {
             method,
             headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify(invoiceData)
+            body: JSON.stringify(invoiceData),
           });
 
           const data = await response.json();
 
           if (!response.ok || !data.ok) {
-            throw new Error(data.error || 'Failed to save invoice');
+            throw new Error(data.error || "Failed to save invoice");
           }
 
-          showMessage(`✓ Invoice ${editingInvoiceId ? 'updated' : 'created'} successfully!`, 'success');
+          showMessage(
+            `✓ Invoice ${
+              editingInvoiceId ? "updated" : "created"
+            } successfully!`,
+            "success",
+          );
           closeInvoiceModal();
           await loadInvoices();
         } catch (err) {
-          console.error('Failed to save invoice:', err);
-          showMessage(`✗ ${err.message}`, 'error');
+          console.error("Failed to save invoice:", err);
+          showMessage(`✗ ${err.message}`, "error");
         } finally {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = 'Save Invoice';
+          submitBtn.innerHTML = "Save Invoice";
         }
       }
 
@@ -513,12 +675,16 @@
 
       function recordPayment(invoiceId) {
         currentPaymentInvoiceId = invoiceId;
-        document.getElementById('payment-form').reset();
-        document.getElementById('payment-modal').classList.add('active');
+        document.getElementById("payment-form").reset();
+        document.getElementById("payment-modal").classList.add(
+          "active",
+        );
       }
 
       function closePaymentModal() {
-        document.getElementById('payment-modal').classList.remove('active');
+        document.getElementById("payment-modal").classList.remove(
+          "active",
+        );
         currentPaymentInvoiceId = null;
       }
 
@@ -527,62 +693,72 @@
 
         if (!currentPaymentInvoiceId) return;
 
-        const amount = document.getElementById('payment-amount').value;
-        const method = document.getElementById('payment-method').value;
-        const transactionId = document.getElementById('transaction-id').value;
-        const notes = document.getElementById('payment-notes').value;
+        const amount = document.getElementById("payment-amount").value;
+        const method = document.getElementById("payment-method").value;
+        const transactionId =
+          document.getElementById("transaction-id").value;
+        const notes = document.getElementById("payment-notes").value;
 
         if (!amount || !method) {
-          showMessage('✗ Please enter amount and select payment method', 'error');
+          showMessage(
+            "✗ Please enter amount and select payment method",
+            "error",
+          );
           return;
         }
 
-        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const submitBtn = event.target.querySelector(
+          'button[type="submit"]',
+        );
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner"></span> Recording...';
+        submitBtn.innerHTML =
+          '<span class="spinner"></span> Recording...';
 
         try {
           const token = window.supabaseSession?.access_token;
-          const response = await fetch(`/api/owner/invoices/${currentPaymentInvoiceId}/payment`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
+          const response = await fetch(
+            `/api/owner/invoices/${currentPaymentInvoiceId}/payment`,
+            {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                amount: parseFloat(amount),
+                payment_method: method,
+                transaction_id: transactionId || null,
+                notes: notes || null,
+                payment_date: new Date().toISOString().split("T")[0],
+              }),
             },
-            body: JSON.stringify({
-              amount: parseFloat(amount),
-              payment_method: method,
-              transaction_id: transactionId || null,
-              notes: notes || null,
-              payment_date: new Date().toISOString().split('T')[0]
-            })
-          });
+          );
 
           const data = await response.json();
           if (data.ok) {
-            showMessage('✓ Payment recorded successfully!', 'success');
+            showMessage("✓ Payment recorded successfully!", "success");
             closePaymentModal();
             await loadInvoices();
           } else {
-            throw new Error(data.error || 'Failed to record payment');
+            throw new Error(data.error || "Failed to record payment");
           }
         } catch (err) {
-          console.error('Failed to record payment:', err);
-          showMessage(`✗ ${err.message}`, 'error');
+          console.error("Failed to record payment:", err);
+          showMessage(`✗ ${err.message}`, "error");
         } finally {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = 'Record Payment';
+          submitBtn.innerHTML = "Record Payment";
         }
       }
 
-      function showMessage(message, type = 'info') {
-        const container = document.getElementById('status-message');
+      function showMessage(message, type = "info") {
+        const container = document.getElementById("status-message");
         container.className = `message message-${type}`;
         container.textContent = message;
-        container.style.display = 'block';
+        container.style.display = "block";
 
         setTimeout(() => {
-          container.style.display = 'none';
+          container.style.display = "none";
         }, 5000);
       }
 

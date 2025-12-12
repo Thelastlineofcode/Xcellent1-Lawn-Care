@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -324,7 +324,9 @@
       const errorMessage = document.getElementById("errorMessage");
       const successMessage = document.getElementById("successMessage");
       const passwordInput = document.getElementById("password");
-      const passwordConfirmInput = document.getElementById("passwordConfirm");
+      const passwordConfirmInput = document.getElementById(
+        "passwordConfirm",
+      );
       const submitBtn = document.getElementById("submitBtn");
 
       const requirements = {
@@ -371,7 +373,10 @@
       }
 
       // Password validation
-      passwordInput.addEventListener("input", validatePasswordRequirements);
+      passwordInput.addEventListener(
+        "input",
+        validatePasswordRequirements,
+      );
 
       function validatePasswordRequirements() {
         const password = passwordInput.value;
@@ -412,7 +417,8 @@
         e.preventDefault();
 
         const password = document.getElementById("password").value;
-        const passwordConfirm = document.getElementById("passwordConfirm").value;
+        const passwordConfirm =
+          document.getElementById("passwordConfirm").value;
 
         if (password !== passwordConfirm) {
           showError("Passwords do not match");
@@ -424,14 +430,17 @@
           '<span class="loading-spinner"></span>Creating account...';
 
         try {
-          const response = await fetch(`/api/owner/invite/${token}/accept`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              password: password,
-              password_confirm: passwordConfirm,
-            }),
-          });
+          const response = await fetch(
+            `/api/owner/invite/${token}/accept`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                password: password,
+                password_confirm: passwordConfirm,
+              }),
+            },
+          );
 
           const data = await response.json();
 
@@ -443,7 +452,7 @@
           }
 
           showSuccess(
-            "Account created successfully! Redirecting to login..."
+            "Account created successfully! Redirecting to login...",
           );
           setTimeout(() => {
             window.location.href = "login.html";

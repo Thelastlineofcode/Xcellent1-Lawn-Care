@@ -7,10 +7,9 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 // Use runtime-injected values (via /config.js) when available, otherwise
 // fall back to the old hard-coded defaults (useful for local dev).
 const _env = (typeof window !== "undefined" && window.__ENV) || {};
-const SUPABASE_URL =
-  _env.NEXT_PUBLIC_SUPABASE_URL || "https://utivthfrwgtjatsusopw.supabase.co";
-const SUPABASE_ANON_KEY =
-  _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL ||
+  "https://utivthfrwgtjatsusopw.supabase.co";
+const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   "YOUR_SUPABASE_ANON_KEY_HERE";
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

@@ -3,6 +3,7 @@
 ## Quick Deploy to Production
 
 ### Prerequisites
+
 - ✅ Fly.io account configured
 - ✅ All environment variables set
 - ✅ Database migrations run
@@ -50,6 +51,7 @@ fly secrets list
 ```
 
 Required secrets:
+
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `DATABASE_URL`
