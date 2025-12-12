@@ -299,6 +299,138 @@ serve(
       }
     }
 
+    // API: owner jobs - list/create/update
+    if (pathname === "/api/owner/jobs") {
+      try {
+        const { authenticateRequest } = await import("../supabase_auth.ts");
+        const authRes = await authenticateRequest(req);
+        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+
+        if (req.method === "GET") {
+          const { supabaseSelect } = await import("../bmad/agents/lib/supabase.ts");
+          const jobs = await supabaseSelect("jobs", "select=*");
+          return jsonResponse({ ok: true, jobs });
+        }
+        if (req.method === "POST") {
+          const body = await req.json();
+          const { supabaseInsert } = await import("../bmad/agents/lib/supabase.ts");
+          const created = await supabaseInsert("jobs", body);
+          return jsonResponse({ ok: true, job: created });
+        }
+        return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
+      } catch (err) {
+        console.error("/api/owner/jobs error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
+      }
+    }
+
+    if (pathname.startsWith("/api/owner/jobs/")) {
+      try {
+        const { authenticateRequest } = await import("../supabase_auth.ts");
+        const authRes = await authenticateRequest(req);
+        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        const parts = pathname.split("/");
+        const jobId = parts[parts.length - 1];
+        if (req.method === "PATCH") {
+          const body = await req.json();
+          const { supabaseUpdate } = await import("../bmad/agents/lib/supabase.ts");
+          const updated = await supabaseUpdate("jobs", "id", jobId, body);
+          return jsonResponse({ ok: true, job: updated });
+        }
+        return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
+      } catch (err) {
+        console.error("/api/owner/jobs/:id error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
+      }
+    }
+
+    // API: owner applications - list/update
+    if (pathname === "/api/owner/applications") {
+      try {
+        const { authenticateRequest } = await import("../supabase_auth.ts");
+        const authRes = await authenticateRequest(req);
+        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        if (req.method === "GET") {
+          const { supabaseSelect } = await import("../bmad/agents/lib/supabase.ts");
+          const apps = await supabaseSelect("applications", "select=*");
+          return jsonResponse({ ok: true, applications: apps });
+        }
+        return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
+      } catch (err) {
+        console.error("/api/owner/applications error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
+      }
+    }
+
+    if (pathname.startsWith("/api/owner/applications/")) {
+      try {
+        const { authenticateRequest } = await import("../supabase_auth.ts");
+        const authRes = await authenticateRequest(req);
+        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        const parts = pathname.split("/");
+        const appId = parts[parts.length - 1];
+        if (req.method === "PATCH") {
+          const body = await req.json();
+          const { supabaseUpdate } = await import("../bmad/agents/lib/supabase.ts");
+          const updated = await supabaseUpdate("applications", "id", appId, body);
+          return jsonResponse({ ok: true, application: updated });
+        }
+        return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
+      } catch (err) {
+        console.error("/api/owner/applications/:id error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
+      }
+    }
+
+    // API: owner waitlist - list/create/update/convert
+    if (pathname === "/api/owner/waitlist") {
+      try {
+        const { authenticateRequest } = await import("../supabase_auth.ts");
+        const authRes = await authenticateRequest(req);
+        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        if (req.method === "GET") {
+          const { supabaseSelect } = await import("../bmad/agents/lib/supabase.ts");
+          const w = await supabaseSelect("waitlist", "select=*");
+          return jsonResponse({ ok: true, waitlist: w });
+        }
+        if (req.method === "POST") {
+          const body = await req.json();
+          const { supabaseInsert } = await import("../bmad/agents/lib/supabase.ts");
+          const created = await supabaseInsert("waitlist", body);
+          return jsonResponse({ ok: true, waitlist_item: created });
+        }
+        return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
+      } catch (err) {
+        console.error("/api/owner/waitlist error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
+      }
+    }
+
+    if (pathname.startsWith("/api/owner/waitlist/")) {
+      try {
+        const { authenticateRequest } = await import("../supabase_auth.ts");
+        const authRes = await authenticateRequest(req);
+        if (!authRes || authRes.profile.role !== "owner") return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        const parts = pathname.split("/");
+        const itemId = parts[parts.length - 1];
+        if (req.method === "PATCH") {
+          const body = await req.json();
+          const { supabaseUpdate } = await import("../bmad/agents/lib/supabase.ts");
+          const updated = await supabaseUpdate("waitlist", "id", itemId, body);
+          return jsonResponse({ ok: true, waitlist_item: updated });
+        }
+        if (req.method === "POST" && pathname.endsWith("/convert")) {
+          // convert waitlist item to client (just a stub on server)
+          // We'll return 200 and a message for now
+          return jsonResponse({ ok: true, message: "converted" });
+        }
+        return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
+      } catch (err) {
+        console.error("/api/owner/waitlist/:id error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
+      }
+    }
+
     // API: owner clients (/api/owner/clients) - list/create
     if (pathname === "/api/owner/clients") {
       try {
