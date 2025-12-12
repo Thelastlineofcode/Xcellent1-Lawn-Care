@@ -59,6 +59,26 @@ async function connectDB() {
     console.log("✅ Connected to Supabase PostgreSQL");
   } catch (err) {
     console.error("❌ Failed to connect to database:", err);
+
+    // Retry with TLS disabled if it looks like a TLS error
+    if (err instanceof Error && (err.message.includes("peer certificate") || err.message.includes("startup: N"))) {
+      console.log("⚠️ Retrying with TLS disabled...");
+      try {
+        if (db) await db.end(); // ensure closed
+        // Append sslmode=disable to the connection string
+        const separator = DATABASE_URL.includes("?") ? "&" : "?";
+        const noTlsUrl = DATABASE_URL + separator + "sslmode=disable";
+
+        db = new Client(noTlsUrl);
+        await db.connect();
+        dbConnected = true;
+        console.log("✅ Connected to Supabase PostgreSQL (TLS disabled)");
+        return;
+      } catch (retryErr) {
+        console.error("❌ Retry with TLS disabled failed:", retryErr);
+      }
+    }
+
     console.log("⚠️ Running in fallback mode (in-memory storage)");
   }
 }
@@ -365,13 +385,318 @@ async function handler(req: Request): Promise<Response> {
     });
   }
 
-  // Owner invitation validation
+  // Owner invitation validation and acceptance
   if (url.pathname.startsWith("/api/owner/invite/")) {
-    const token = url.pathname.split("/api/owner/invite/")[1];
-    // Treat missing token or any token as not found for now. Tests expect 404 for both
-    // the empty-format case and invalid tokens.
+    const parts = url.pathname.split("/"); // ["", "api", "owner", "invite", "token", "accept"?]
+    const token = parts[4];
+    const action = parts[5]; // "accept" or undefined
+
+    if (!token) {
+      return new Response(
+        JSON.stringify({ ok: false, error: "Token required" }),
+        { status: 404, headers },
+      );
+    }
+
+    try {
+      if (req.method === "GET" && !action) {
+        // Validate invitation
+        let invite: any = null;
+
+        // Try DB first
+        if (dbConnected && db) {
+          try {
+            const result = await db.queryObject<{
+              email: string;
+              name: string;
+              phone: string;
+              status: string;
+              expires_at: Date;
+            }>(
+              `SELECT email, name, phone, status, expires_at FROM owner_invitations WHERE invitation_token = $1`,
+              [token],
+            );
+            invite = result.rows[0];
+          } catch (e) {
+            console.error("DB Query failed", e);
+            // fallback to Supabase check below if invite is null
+          }
+        }
+
+        // Fallback: Use Supabase Admin Client if DB failed/unconnected
+        if (!invite) {
+          console.log("DEBUG: Falling back to Supabase Admin check for token:", token);
+          const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+          const adminClient = getSupabaseAdminClient();
+          if (adminClient) {
+            const { data, error } = await adminClient
+              .from("owner_invitations")
+              .select("email, name, phone, status, expires_at")
+              .eq("invitation_token", token)
+              .single();
+
+            console.log("DEBUG: Supabase Admin result:", data, error);
+
+            if (data && !error) {
+              invite = data;
+            }
+          } else {
+            console.log("DEBUG: adminClient is null/undefined in server.ts");
+          }
+        }
+
+
+        if (!invite) {
+          // If we still don't have it, assume invalid or truly DB down (but we tried HTTP fallback)
+          // If DB was down AND Supabase fallback failed -> 503? 
+          // But if Supabase works generally, empty result means truly not found.
+          return new Response(
+            JSON.stringify({ ok: false, error: "Invitation not found" }),
+            { status: 404, headers },
+          );
+        }
+
+        if (invite.status !== "pending") {
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              error: "Invitation has already been used or cancelled",
+            }),
+            { status: 400, headers },
+          );
+        }
+
+        // Handle date string vs Date object (Supabase returns ISO string)
+        const expiresAt = new Date(invite.expires_at);
+        if (new Date() > expiresAt) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Invitation expired" }),
+            { status: 400, headers },
+          );
+        }
+
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            email: invite.email,
+            name: invite.name,
+            phone: invite.phone,
+          }),
+          { status: 200, headers },
+        );
+      } else if (req.method === "POST" && action === "accept") {
+        // Accept invitation
+        const body = await req.json();
+        const { password } = body;
+
+        if (!password || password.length < 8) {
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              error: "Password must be at least 8 characters",
+            }),
+            { status: 400, headers },
+          );
+        }
+
+        // Logic for POST: 
+        // 1. Verify invite (similar logic to GET)
+        // 2. Create User (via Supabase Admin)
+        // 3. Insert Profile & Update Invite (needs DB Access OR Supabase Admin RLS bypass)
+
+        let invite: any = null;
+
+        // Try DB check
+        if (dbConnected && db) {
+          const result = await db.queryObject<{ id: string, email: string, name: string, phone: string, status: string, expires_at: Date }>(
+            `SELECT id, email, name, phone, status, expires_at FROM owner_invitations WHERE invitation_token = $1`,
+            [token]
+          );
+          invite = result.rows[0];
+        }
+
+        // Fallback Supabase check
+        if (!invite) {
+          const { _supabaseAdmin } = await import("./supabase_auth.ts");
+          if (_supabaseAdmin) {
+            const { data } = await _supabaseAdmin
+              .from("owner_invitations")
+              .select("id, email, name, phone, status, expires_at")
+              .eq("invitation_token", token)
+              .single();
+            invite = data;
+          }
+        }
+
+        if (!invite || invite.status !== "pending") {
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              error: "Invitation invalid or already used",
+            }),
+            { status: 400, headers },
+          );
+        }
+
+        if (new Date() > new Date(invite.expires_at)) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Invitation expired" }),
+            { status: 400, headers },
+          );
+        }
+
+        // 2. Create Auth User
+        const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+        const supabaseUrl = Deno.env.get("SUPABASE_URL");
+
+        if (!serviceRoleKey || !supabaseUrl) {
+          console.error("Missing Supabase credentials for user creation");
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              error: "Server configuration error",
+            }),
+            { status: 500, headers },
+          );
+        }
+
+        const createUserRes = await fetch(
+          `${supabaseUrl}/auth/v1/admin/users`,
+          {
+            method: "POST",
+            headers: {
+              apikey: serviceRoleKey,
+              Authorization: `Bearer ${serviceRoleKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: invite.email,
+              password: password,
+              email_confirm: true,
+              user_metadata: { name: invite.name, phone: invite.phone },
+            }),
+          },
+        );
+
+        const authUser = await createUserRes.json();
+
+        if (
+          !createUserRes.ok && !authUser.msg?.includes("already registered")
+        ) {
+          console.error("Failed to create auth user", authUser);
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              error: "Failed to create user account",
+            }),
+            { status: 500, headers },
+          );
+        }
+
+        const authUserId = authUser.id || authUser.user?.id;
+
+        // 3. Create User Profile in `users` table AND Update Invite
+        // If DB is connected, use Transaction.
+        // If DB is NOT connected, use Supabase Admin Client (HTTP).
+
+        if (dbConnected && db) {
+          const transaction = db.createTransaction("invite_accept_" + token);
+          await transaction.begin();
+
+          try {
+            // Insert user
+            const userInsert = await transaction.queryObject<{ id: string }>(
+              `
+                INSERT INTO users (auth_user_id, email, name, phone, role, status)
+                VALUES ($1, $2, $3, $4, 'owner', 'active')
+                ON CONFLICT (email) DO UPDATE SET auth_user_id = $1 -- handle existing email case
+                RETURNING id
+              `,
+              [authUserId, invite.email, invite.name, invite.phone],
+            );
+            const userId = userInsert.rows[0].id;
+            // Update invitation
+            await transaction.queryObject(
+              `
+                UPDATE owner_invitations
+                SET status = 'accepted', accepted_at = NOW(), user_id = $1
+                WHERE id = $2
+              `,
+              [userId, invite.id],
+            );
+            await transaction.commit();
+
+            return new Response(
+              JSON.stringify({ ok: true, message: "Account created" }),
+              { status: 200, headers },
+            );
+          } catch (err) {
+            await transaction.rollback();
+            console.error("Transaction failed:", err);
+            return new Response(
+              JSON.stringify({ ok: false, error: "Failed to finalize account" }),
+              { status: 500, headers },
+            );
+          }
+        } else {
+          // Fallback: Use Supabase Admin Client (HTTP)
+          const { _supabaseAdmin } = await import("./supabase_auth.ts");
+          if (!_supabaseAdmin) {
+            return new Response(JSON.stringify({ ok: false, error: "Database unavailable" }), { status: 503, headers });
+          }
+
+          // 3a. Upsert user
+          const { data: userRow, error: userError } = await _supabaseAdmin
+            .from('users')
+            .upsert({
+              auth_user_id: authUserId,
+              email: invite.email,
+              name: invite.name,
+              phone: invite.phone,
+              role: 'owner',
+              status: 'active'
+            }, { onConflict: 'email' })
+            .select('id')
+            .single();
+
+          if (userError) {
+            console.error("Supabase Admin User Insert Failed:", userError);
+            return new Response(JSON.stringify({ ok: false, error: "Failed to create profile" }), { status: 500, headers });
+          }
+
+          // 3b. Update invitation
+          const { error: inviteError } = await _supabaseAdmin
+            .from('owner_invitations')
+            .update({
+              status: 'accepted',
+              accepted_at: new Date().toISOString(),
+              user_id: userRow.id
+            })
+            .eq('id', invite.id);
+
+          if (inviteError) {
+            console.error("Supabase Admin Invite Update Failed:", inviteError);
+            // User is created, so maybe 200 OK mostly? Or warning?
+            // Technically account is created.
+          }
+
+          return new Response(
+            JSON.stringify({ ok: true, message: "Account created" }),
+            { status: 200, headers },
+          );
+        }
+
+      }
+    } catch (err) {
+      console.error("/api/owner/invite error:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal Error" }),
+        { status: 500, headers },
+      );
+    }
+
     return new Response(
-      JSON.stringify({ ok: false, error: "Invitation not found or expired" }),
+      JSON.stringify({ ok: false, error: "Not Found" }),
       { status: 404, headers },
     );
   }

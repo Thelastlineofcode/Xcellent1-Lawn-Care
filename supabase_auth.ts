@@ -58,6 +58,10 @@ export function getSupabaseClient() {
   return _supabase;
 }
 
+export function getSupabaseAdminClient() {
+  return _supabaseAdmin;
+}
+
 export function isSupabaseConfigured() {
   return _supabaseConfigured;
 }
