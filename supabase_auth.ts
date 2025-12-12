@@ -186,7 +186,7 @@ export async function getUserProfile(authUserId: string): Promise<any | null> {
 
   try {
     // First try to find by auth_user_id (normal Supabase Auth users)
-    let { data, error } = await client
+    const { data, error } = await client
       .from("users")
       .select("id, email, name, role, auth_user_id")
       .eq("auth_user_id", authUserId)
