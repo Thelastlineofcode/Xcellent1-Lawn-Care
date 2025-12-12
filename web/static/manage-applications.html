@@ -445,8 +445,8 @@
                 <option value="hired">Hired</option>
                 <option value="rejected">Rejected</option>
               </select>
-              <button class="btn btn-sm btn-secondary" onclick="contactApplicant('${app.email}', '${app.name}')">
-                📧 Contact
+              <button class="btn btn-sm btn-primary" onclick="contactApplicant('${app.email}', '${app.name}')">
+                📅 Schedule Interview
               </button>
             </div>
           </div>
@@ -507,7 +507,7 @@
 
       function contactApplicant(email, name) {
         window.open(
-          `mailto:${email}?subject=Xcellent1 Lawn Care - Opportunity for ${name}`,
+          `mailto:${email}?subject=Xcellent1 Lawn Care - Interview Request for ${name}`,
           "_blank",
         );
       }

@@ -11,14 +11,23 @@ import {
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
 // Prefer explicit server-side env vars but fall back to NEXT_PUBLIC_* if present
+// PRIORITIZE NEW KEYS provided by user (sb_publishable_... / sb_secret_...)
 export const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ||
   Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") ||
   "";
-export const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ||
+
+// Anon Key: Check new publishable key logic first (and potential typo), then standard anon key
+export const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ||
+  Deno.env.get("SUPABASE_PUBLIASHABLE_KEY") || // Handle typo in env
+  Deno.env.get("SUPABASE_ANON_KEY") ||
   Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
   "";
+
 export const SUPABASE_JWT_SECRET = Deno.env.get("SUPABASE_JWT_SECRET") || "";
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ||
+
+// Service Role: Check new secret key first, then standard service role
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SECRET_KEY") ||
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ||
   "";
 
 let _supabase: any = null;

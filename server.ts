@@ -60,22 +60,49 @@ async function connectDB() {
   } catch (err) {
     console.error("❌ Failed to connect to database:", err);
 
-    // Retry with TLS disabled if it looks like a TLS error
+    // Retry with TLS verification disabled if it looks like a certificate error
     if (err instanceof Error && (err.message.includes("peer certificate") || err.message.includes("startup: N"))) {
-      console.log("⚠️ Retrying with TLS disabled...");
+      console.log("⚠️ Retrying with TLS enabled but verification disabled (enforce: false)...");
       try {
         if (db) await db.end(); // ensure closed
-        // Append sslmode=disable to the connection string
-        const separator = DATABASE_URL.includes("?") ? "&" : "?";
-        const noTlsUrl = DATABASE_URL + separator + "sslmode=disable";
 
-        db = new Client(noTlsUrl);
+        // Parse DATABASE_URL manually to allow passing object config with enforce: false
+        const dbUrl = new URL(DATABASE_URL);
+        const config = {
+          user: dbUrl.username,
+          password: dbUrl.password,
+          database: dbUrl.pathname.slice(1), // remove leading '/'
+          hostname: dbUrl.hostname,
+          port: dbUrl.port ? parseInt(dbUrl.port) : 5432,
+          tls: {
+            enabled: true,
+            enforce: false, // Disables certificate verification
+          },
+        };
+
+        db = new Client(config);
         await db.connect();
         dbConnected = true;
-        console.log("✅ Connected to Supabase PostgreSQL (TLS disabled)");
+        console.log("✅ Connected to Supabase PostgreSQL (TLS verification disabled)");
         return;
       } catch (retryErr) {
-        console.error("❌ Retry with TLS disabled failed:", retryErr);
+        console.error("❌ Retry with TLS verification disabled failed:", retryErr);
+
+        // If that failed, try the old "disable" method as a last resort
+        console.log("⚠️ Retrying with TLS disabled (last resort)...");
+        try {
+          if (db) await db.end();
+          const separator = DATABASE_URL.includes("?") ? "&" : "?";
+          const noTlsUrl = DATABASE_URL + separator + "sslmode=disable";
+
+          db = new Client(noTlsUrl);
+          await db.connect();
+          dbConnected = true;
+          console.log("✅ Connected to Supabase PostgreSQL (TLS disabled)");
+          return;
+        } catch (lastErr) {
+          console.error("❌ Retry with TLS disabled failed:", lastErr);
+        }
       }
     }
 
@@ -1516,7 +1543,34 @@ async function handler(req: Request): Promise<Response> {
           headers,
         });
       } else {
-        // Mock success for demo
+        console.warn("⚠️ DB not connected. Attempting fallback for Job Completion...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        const { error } = await adminClient
+          .from('jobs')
+          .update({
+            status: 'completed',
+            completed_at: new Date().toISOString()
+          })
+          .eq('id', jobId);
+
+        if (error) {
+          console.error("Fallback complete job failed:", error);
+          return new Response(
+            JSON.stringify({ ok: false, error: "Failed to complete job (Fallback)" }),
+            { status: 500, headers },
+          );
+        }
+
+        console.log(`[server] Job completed (Fallback): ${jobId}`);
         return new Response(JSON.stringify({ ok: true, id: jobId }), {
           status: 200,
           headers,
@@ -2013,21 +2067,114 @@ async function handler(req: Request): Promise<Response> {
       }
 
       if (!dbConnected) {
+        console.warn("⚠️ DB not connected. Attempting fallback to Supabase Admin Client for Client Creation...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        // 1. Fallback: Check/Create User
+        let userIdVal: string | null = null;
+
+        // Check exact email match
+        const { data: existingUser } = await adminClient
+          .from('users')
+          .select('id')
+          .eq('email', body.email)
+          .single();
+
+        if (existingUser) {
+          userIdVal = existingUser.id;
+        } else {
+          // Create user
+          const { data: newUser, error: userError } = await adminClient
+            .from('users')
+            .insert({
+              email: body.email,
+              name: body.name,
+              phone: body.phone || "",
+              role: 'client'
+            })
+            .select('id')
+            .single();
+
+          if (userError || !newUser) {
+            console.error("Fallback user creation failed:", userError);
+            return new Response(
+              JSON.stringify({ ok: false, error: "Failed to create user record (Fallback)" }),
+              { status: 500, headers },
+            );
+          }
+          userIdVal = newUser.id;
+        }
+
+        // 2. Fallback: Create Client
+        // Check if client already exists for this user? OR just insert?
+        // Schema likely allows multiple clients per user? 
+        // Logic below checks "Client with this email already exists".
+        // If we found existingUser, does that mean Client exists? 
+        // Original SQL check was: `SELECT id FROM clients WHERE email = $1`
+        // So strict 1:1 email to client mapping enforced?
+
+        // Let's check checks table for email
+        const { data: existingClient } = await adminClient
+          .from('clients')
+          .select('id')
+          .eq('email', body.email)
+          .single();
+
+        if (existingClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Client with this email already exists" }),
+            { status: 400, headers },
+          );
+        }
+
+        const { data: newClient, error: insertError } = await adminClient
+          .from("clients")
+          .insert({
+            user_id: userIdVal,
+            property_address: body.property_address,
+            property_city: body.property_city || "",
+            property_state: body.property_state || "",
+            property_zip: body.property_zip || "",
+            service_plan: body.service_plan || "weekly",
+            status: "active",
+          })
+          .select("id")
+          .single();
+
+        if (insertError || !newClient) {
+          console.error("Fallback client insert failed:", insertError);
+          return new Response(
+            JSON.stringify({ ok: false, error: "Failed to create client record (Fallback)" }),
+            { status: 500, headers },
+          );
+        }
+
+        console.log(`[server] Client created via Fallback: ${newClient.id}`);
         return new Response(
-          JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers },
+          JSON.stringify({ ok: true, client_id: newClient.id, user_id: userIdVal }),
+          { status: 201, headers },
         );
       }
 
-      // Check if email already exists
+      // ================= SQL PATH (DB Connected) =================
+
+      // Check if email already exists in CLIENTS
       const emailCheck = await db.queryObject(
-        `SELECT id FROM users WHERE email = $1`,
-        [body.email.trim()],
+        `SELECT id FROM clients WHERE email = $1`,
+        [body.email],
       );
 
       if (emailCheck.rows.length > 0) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Email already exists" }),
+          JSON.stringify({ ok: false, error: "Client with this email already exists" }),
           { status: 409, headers },
         );
       }
@@ -2050,22 +2197,22 @@ async function handler(req: Request): Promise<Response> {
       const clientResult = await db.queryObject(
         `INSERT INTO clients (
           user_id,
+          name,
+          email,
+          phone,
           property_address,
-          property_city,
-          property_state,
-          property_zip,
-          service_plan,
+          notes,
           status
         )
         VALUES ($1, $2, $3, $4, $5, $6, 'active')
         RETURNING id`,
         [
           userId,
+          body.name.trim(),
+          body.email.trim(),
+          body.phone?.trim() || "",
           body.property_address.trim(),
-          body.property_city?.trim() || "",
-          body.property_state?.trim() || "",
-          body.property_zip?.trim() || "",
-          body.service_plan || "weekly",
+          body.notes?.trim() || "",
         ],
       );
 
@@ -2442,9 +2589,43 @@ async function handler(req: Request): Promise<Response> {
       }
 
       if (!dbConnected) {
+        console.warn("⚠️ DB not connected. Attempting fallback for Job Creation...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        const { data, error } = await adminClient
+          .from('jobs')
+          .insert({
+            client_id: body.client_id,
+            crew_id: body.crew_id || null,
+            scheduled_date: body.scheduled_date,
+            scheduled_time: body.scheduled_time || null,
+            services: body.services,
+            notes: body.notes?.trim() || "",
+            status: 'scheduled'
+          })
+          .select()
+          .single();
+
+        if (error) {
+          console.error("Fallback create job failed:", error);
+          return new Response(
+            JSON.stringify({ ok: false, error: "Failed to create job (Fallback)" }),
+            { status: 500, headers },
+          );
+        }
+
+        console.log(`[server] Job created (Fallback): ${data.id}`);
         return new Response(
-          JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers },
+          JSON.stringify({ ok: true, job_id: data.id }),
+          { status: 201, headers },
         );
       }
 
@@ -2495,9 +2676,67 @@ async function handler(req: Request): Promise<Response> {
 
     try {
       if (!dbConnected) {
+        console.warn("⚠️ DB not connected. Attempting fallback for Job List...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        const searchParams = url.searchParams;
+        const client_id = searchParams.get("client_id");
+        const crew_id = searchParams.get("crew_id");
+        const status = searchParams.get("status");
+        const date_from = searchParams.get("date_from");
+        const date_to = searchParams.get("date_to");
+
+        let query = adminClient
+          .from('jobs')
+          .select(`
+            *,
+            clients (
+              property_address,
+              users (
+                name
+              )
+            ),
+            crew:users (
+              name
+            )
+          `)
+          .order('scheduled_date', { ascending: true });
+
+        if (client_id) query = query.eq('client_id', client_id);
+        if (crew_id) query = query.eq('crew_id', crew_id);
+        if (status) query = query.eq('status', status);
+        if (date_from) query = query.gte('scheduled_date', date_from);
+        if (date_to) query = query.lte('scheduled_date', date_to);
+
+        const { data, error } = await query;
+
+        if (error) {
+          console.error("Fallback list jobs failed:", error);
+          return new Response(
+            JSON.stringify({ ok: false, error: "Failed to list jobs (Fallback)" }),
+            { status: 500, headers },
+          );
+        }
+
+        // Map to flat structure
+        const jobs = (data || []).map((j: any) => ({
+          ...j,
+          client_name: j.clients?.users?.name || "Unknown",
+          property_address: j.clients?.property_address || "",
+          crew_name: j.crew?.name || null
+        }));
+
         return new Response(
-          JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers },
+          JSON.stringify({ ok: true, jobs }),
+          { status: 200, headers },
         );
       }
 
@@ -2672,9 +2911,51 @@ async function handler(req: Request): Promise<Response> {
       const body = await req.json();
 
       if (!dbConnected) {
+        console.warn("⚠️ DB not connected. Attempting fallback for Job Update...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        const updateData: any = {};
+        if (body.client_id !== undefined) updateData.client_id = body.client_id;
+        if (body.crew_id !== undefined) updateData.crew_id = body.crew_id || null;
+        if (body.scheduled_date !== undefined) updateData.scheduled_date = body.scheduled_date;
+        if (body.scheduled_time !== undefined) updateData.scheduled_time = body.scheduled_time || null;
+        if (body.services !== undefined) updateData.services = body.services;
+        if (body.notes !== undefined) updateData.notes = body.notes;
+        if (body.status !== undefined) updateData.status = body.status;
+
+        if (Object.keys(updateData).length === 0) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "No fields to update" }),
+            { status: 400, headers },
+          );
+        }
+
+        const { data, error } = await adminClient
+          .from('jobs')
+          .update(updateData)
+          .eq('id', jobId)
+          .select()
+          .single();
+
+        if (error) {
+          console.error("Fallback update job failed:", error);
+          return new Response(
+            JSON.stringify({ ok: false, error: "Failed to update job (Fallback)" }),
+            { status: 500, headers },
+          );
+        }
+
         return new Response(
-          JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers },
+          JSON.stringify({ ok: true, job_id: data.id }),
+          { status: 200, headers },
         );
       }
 
@@ -2860,9 +3141,71 @@ async function handler(req: Request): Promise<Response> {
       }
 
       if (!dbConnected) {
+        console.warn("⚠️ DB not connected. Attempting fallback for Invoice Creation...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        // 1. Get Count for Invoice Number
+        const { count } = await adminClient
+          .from('invoices')
+          .select('*', { count: 'exact', head: true });
+
+        const nextCount = (count || 0) + 1;
+        const invoiceNumber = `INV-${String(nextCount).padStart(5, "0")}`;
+
+        // 2. Insert Invoice
+        const { data: newInv, error: invError } = await adminClient
+          .from('invoices')
+          .insert({
+            client_id: body.client_id,
+            invoice_number: invoiceNumber,
+            amount: parseFloat(body.amount),
+            due_date: body.due_date,
+            line_items: body.line_items || [],
+            status: 'unpaid'
+          })
+          .select('id')
+          .single();
+
+        if (invError || !newInv) {
+          console.error("Fallback invoice insert failed:", invError);
+          return new Response(
+            JSON.stringify({ ok: false, error: "Failed to create invoice (Fallback)" }),
+            { status: 500, headers },
+          );
+        }
+
+        // 3. Update Client Balance (Manual approach since no atomic increment via API easily)
+        // Note: Potential race condition but acceptable for fallback mode
+        const { data: clientData } = await adminClient
+          .from('clients')
+          .select('balance_due')
+          .eq('id', body.client_id)
+          .single();
+
+        const currentBal = clientData?.balance_due || 0;
+        const newBal = currentBal + parseFloat(body.amount);
+
+        await adminClient
+          .from('clients')
+          .update({ balance_due: newBal })
+          .eq('id', body.client_id);
+
+        console.log(`[server] Invoice created via Fallback: ${invoiceNumber}`);
         return new Response(
-          JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers },
+          JSON.stringify({
+            ok: true,
+            invoice_id: newInv.id,
+            invoice_number: invoiceNumber,
+          }),
+          { status: 201, headers },
         );
       }
 
@@ -2929,9 +3272,55 @@ async function handler(req: Request): Promise<Response> {
 
     try {
       if (!dbConnected) {
+        console.warn("⚠️ DB not connected. Attempting fallback for Invoice List...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        const searchParams = url.searchParams;
+        const client_id = searchParams.get("client_id");
+        const status = searchParams.get("status");
+
+        let query = adminClient
+          .from('invoices')
+          // deeply nested select to mimic the SQL join
+          .select('*, clients(property_address, users(name))')
+          .order('created_at', { ascending: false });
+
+        if (client_id) {
+          query = query.eq('client_id', client_id);
+        }
+        if (status) {
+          query = query.eq('status', status);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+          console.error("Fallback list invoices failed:", error);
+          return new Response(
+            JSON.stringify({ ok: false, error: "Failed to list invoices (Fallback)" }),
+            { status: 500, headers },
+          );
+        }
+
+        // Map nested structure to flat structure expected by UI
+        // SQL was: client_name (from users), property_address (from clients)
+        const invoices = (data || []).map((inv: any) => ({
+          ...inv,
+          client_name: inv.clients?.users?.name || "Unknown",
+          property_address: inv.clients?.property_address || ""
+        }));
+
         return new Response(
-          JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers },
+          JSON.stringify({ ok: true, invoices }),
+          { status: 200, headers },
         );
       }
 
