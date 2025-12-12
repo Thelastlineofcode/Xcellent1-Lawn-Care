@@ -3080,9 +3080,35 @@ async function handler(req: Request): Promise<Response> {
 
     try {
       if (!dbConnected) {
+        console.warn("⚠️ DB not connected. Attempting fallback for Crew List...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        const { data, error } = await adminClient
+          .from('users')
+          .select('id, name, email, phone, status')
+          .eq('role', 'crew')
+          .eq('status', 'active');
+
+        if (error) {
+          console.error("Fallback list crew failed:", error);
+          // Return empty structure instead of error for resilience
+          return new Response(
+            JSON.stringify({ ok: true, crew: [] }),
+            { status: 200, headers },
+          );
+        }
+
         return new Response(
-          JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers },
+          JSON.stringify({ ok: true, crew: data }),
+          { status: 200, headers },
         );
       }
 
@@ -3884,9 +3910,62 @@ async function handler(req: Request): Promise<Response> {
       }
 
       if (!dbConnected) {
+        console.warn("⚠️ DB not connected. Attempting fallback for Waitlist Signup...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        // Check for existing email in waitlist
+        const check = await adminClient
+          .from('waitlist')
+          .select('id')
+          .eq('email', body.email)
+          .maybeSingle();
+
+        if (check.data) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "This email is already registered or on the waitlist" }),
+            { status: 409, headers },
+          );
+        }
+
+        const { data, error } = await adminClient
+          .from('waitlist')
+          .insert({
+            name: body.name,
+            email: body.email,
+            phone: body.phone,
+            property_address: body.property_address,
+            preferred_service_plan: body.preferred_service_plan || null,
+            notes: body.notes || "",
+            source: 'web',
+            status: 'pending'
+          })
+          .select()
+          .single();
+
+        if (error) {
+          console.error("Fallback waitlist signup failed:", error);
+          return new Response(
+            JSON.stringify({ ok: false, error: "Failed to join waitlist (Fallback)" }),
+            { status: 500, headers },
+          );
+        }
+
+        console.log(`[server] New waitlist entry (Fallback): ${data.id}`);
         return new Response(
-          JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers },
+          JSON.stringify({
+            ok: true,
+            message: "Successfully added to waitlist!",
+            id: data.id
+          }),
+          { status: 201, headers },
         );
       }
 
@@ -3965,9 +4044,42 @@ async function handler(req: Request): Promise<Response> {
 
     try {
       if (!dbConnected) {
+        console.warn("⚠️ DB not connected. Attempting fallback for Waitlist List...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        const searchParams = url.searchParams;
+        const status = searchParams.get("status");
+
+        let query = adminClient
+          .from('waitlist')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (status) {
+          query = query.eq('status', status);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+          console.error("Fallback list waitlist failed:", error);
+          return new Response(
+            JSON.stringify({ ok: false, error: "Failed to list waitlist (Fallback)" }),
+            { status: 500, headers },
+          );
+        }
+
         return new Response(
-          JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers },
+          JSON.stringify({ ok: true, waitlist: data }),
+          { status: 200, headers },
         );
       }
 
@@ -4041,9 +4153,44 @@ async function handler(req: Request): Promise<Response> {
       const body = await req.json();
 
       if (!dbConnected) {
+        console.warn("⚠️ DB not connected. Attempting fallback for Waitlist Update...");
+        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+        const adminClient = getSupabaseAdminClient();
+
+        if (!adminClient) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "Database unavailable and Admin API failed" }),
+            { status: 503, headers },
+          );
+        }
+
+        const updateData: any = {};
+        if (body.status !== undefined) updateData.status = body.status;
+        if (body.notes !== undefined) updateData.notes = body.notes;
+
+        if (Object.keys(updateData).length === 0) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "No fields to update" }),
+            { status: 400, headers },
+          );
+        }
+
+        const { error } = await adminClient
+          .from('waitlist')
+          .update(updateData)
+          .eq('id', waitlistId);
+
+        if (error) {
+          console.error("Fallback update waitlist failed:", error);
+          return new Response(
+            JSON.stringify({ ok: false, error: "Failed to update waitlist (Fallback)" }),
+            { status: 500, headers },
+          );
+        }
+
         return new Response(
-          JSON.stringify({ ok: false, error: "Database not connected" }),
-          { status: 503, headers },
+          JSON.stringify({ ok: true, message: "Waitlist entry updated successfully" }),
+          { status: 200, headers },
         );
       }
 
