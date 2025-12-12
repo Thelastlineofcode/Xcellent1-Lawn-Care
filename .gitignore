@@ -35,6 +35,8 @@ supabase
 # Logs
 *.log
 npm-debug.log*
+# Dev DB (local test data)
+ bmad/agents/dev_db.json
 
 # OS generated files
 Thumbs.db
