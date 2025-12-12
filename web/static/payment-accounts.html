@@ -225,6 +225,10 @@
                 <option value="cash_app">Cash App</option>
                 <option value="stripe">Stripe</option>
                 <option value="square">Square</option>
+                <option value="venmo">Venmo</option>
+                <option value="zelle">Zelle</option>
+                <option value="apple_pay">Apple Pay</option>
+                <option value="google_pay">Google Pay</option>
               </select>
               <small
                 id="method-info"
@@ -314,6 +318,10 @@
         cash_app: "Your Cash App $cashtag",
         stripe: "Your Stripe account email",
         square: "Your Square account email",
+        venmo: "Your Venmo username (e.g., @username)",
+        zelle: "Your Zelle-registered email or phone number",
+        apple_pay: "Apple Pay is a client-side instrument; use Stripe/Square for account linking",
+        google_pay: "Google Pay is a client-side instrument; use Stripe/Square for account linking",
       };
 
       function updateMethodInfo() {

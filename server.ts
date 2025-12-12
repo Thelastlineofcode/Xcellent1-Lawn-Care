@@ -2950,7 +2950,7 @@ async function handler(req: Request): Promise<Response> {
       }
 
       if (
-        !["paypal", "cash_app", "stripe", "square"].includes(
+        !["paypal", "cash_app", "stripe", "square", "venmo", "zelle", "apple_pay", "google_pay"].includes(
           body.payment_method,
         )
       ) {

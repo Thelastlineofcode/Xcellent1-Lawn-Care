@@ -46,8 +46,21 @@ Deno.test("Owner can add and list payment accounts", { permissions: { net: true 
   assert(tokenObj.access_token, "Got access token");
   const token = tokenObj.access_token;
 
-  // create payment account
-  const accountBody = { payment_method: 'paypal', account_identifier: 'owner+pay@example.com', account_name: 'PayPal Business', is_primary: true };
+  // create payment accounts for various methods
+  const methods = [
+    { payment_method: 'paypal', account_identifier: 'owner+pay@example.com', account_name: 'PayPal Business' },
+    { payment_method: 'venmo', account_identifier: 'venmoUser', account_name: 'Venmo Personal' },
+    { payment_method: 'zelle', account_identifier: 'zelle@example.com', account_name: 'Zelle Business' },
+  ];
+
+  for (const m of methods) {
+    const createRes = await fetch(`${BASE_URL}/api/owner/payment-accounts`, {
+      method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ ...m, is_primary: m.payment_method === 'paypal' })
+    });
+    assertEquals(createRes.status, 201);
+    const cr = await createRes.json();
+    assertEquals(cr.ok, true);
+  }
   const createRes = await fetch(`${BASE_URL}/api/owner/payment-accounts`, {
     method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(accountBody)
   });
