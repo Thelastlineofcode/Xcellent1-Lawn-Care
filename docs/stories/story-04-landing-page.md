@@ -20,8 +20,8 @@ related_frs: [FR-002]
   `web/tests/waitlist_e2e_test.ts` to validate the flow by posting to `/api/waitlist`.
 
 ### Review Follow-ups (AI)
-- [ ] [High] Remove `web/static/landing-skeleton.html` from `web/static/` or move it into `web/static/archive/` [file: web/static/landing-skeleton.html]
-- [ ] [Med] Clarify endpoint intent & update tasks: either wire waitlist form to `/api/leads` or update the task to reference `/api/waitlist` (AC matches current UI). Update tests accordingly.
+- [x] [High] Remove `web/static/landing-skeleton.html` from `web/static/` or move it into `web/static/archive/` [file: web/static/landing-skeleton.html]
+- [x] [Med] Clarify endpoint intent & update tasks: updated story to use `/api/waitlist` and ensured `web/tests/waitlist_e2e_test.ts` validates the flow. (PR updated)
 - [ ] [Low] Add test coverage asserting GSAP `gsap.from` call exists or verifying the animation script loads on the page.
 
 ## Acceptance Criteria
@@ -58,8 +58,8 @@ Landing page implementation is largely correct: the canonical `home.html` integr
 
 - AC3: No duplicate or outdated skeleton landing page files under `web/static/` — PARTIAL / MISSING
   - Evidence:
-    - `web/static/landing-skeleton.html` exists and is a redirect file to `home.html`: `web/static/landing-skeleton.html` [landing-skeleton.html#L1-L8].
-    - There is an archived copy at `web/static/archive/landing-skeleton.html` which is the expected location for reference material. The presence of a deprecated redirect file in `web/static/` should be removed to avoid confusion.
+    - The duplicate `web/static/landing-skeleton.html` has been removed from the project root and archived at `web/static/archive/landing-skeleton-deprecated-2025-12-11.html`.
+  - Status: IMPLEMENTED
 
 ### Tasks / Subtasks Validation
 - Integrate landing UI into `home.html` — VERIFIED
