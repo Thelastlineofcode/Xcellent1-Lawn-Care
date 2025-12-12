@@ -33,7 +33,53 @@
         "created_at": "2025-12-10T06:24:23.293Z"
       },
       "type": "QUOTE_PROPOSED"
+    },
+    {
+      "id": "evt_1765521491976",
+      "type": "WAITLIST_SIGNUP",
+      "created_at": "2025-12-12T06:38:11.976Z",
+      "payload": {
+        "id": "wait_1765521491973",
+        "name": "E2E Test User",
+        "email": "e2e-waitlist@example.com",
+        "service": "weekly",
+        "notes": "",
+        "created_at": "2025-12-12T06:38:11.973Z"
+      },
+      "status": "pending"
+    },
+    {
+      "id": "evt_1765521679647",
+      "type": "WAITLIST_SIGNUP",
+      "created_at": "2025-12-12T06:41:19.647Z",
+      "payload": {
+        "id": "wait_1765521679643",
+        "name": "E2E Test User",
+        "email": "e2e-waitlist@example.com",
+        "service": "weekly",
+        "notes": "",
+        "created_at": "2025-12-12T06:41:19.643Z"
+      },
+      "status": "pending"
     }
   ],
-  "invoices": []
+  "invoices": [],
+  "waitlist": [
+    {
+      "id": "wait_1765521491973",
+      "name": "E2E Test User",
+      "email": "e2e-waitlist@example.com",
+      "service": "weekly",
+      "notes": "",
+      "created_at": "2025-12-12T06:38:11.973Z"
+    },
+    {
+      "id": "wait_1765521679643",
+      "name": "E2E Test User",
+      "email": "e2e-waitlist@example.com",
+      "service": "weekly",
+      "notes": "",
+      "created_at": "2025-12-12T06:41:19.643Z"
+    }
+  ]
 }
