@@ -32,13 +32,20 @@ async function serveFile(path: string) {
   try {
     const data = await Deno.readFile(path);
     const mimeType = getMimeType(path);
-    return new Response(data, {
-      status: 200,
-      headers: {
-        "content-type": mimeType,
-        "cache-control": "public, max-age=3600",
-      },
-    });
+    const headers: Record<string, string> = {
+      "content-type": mimeType,
+    };
+
+    // For HTML files, set cache-control headers to prevent stale login/config data
+    if (mimeType.includes("text/html")) {
+      headers["cache-control"] = "no-cache, no-store, must-revalidate";
+      headers["pragma"] = "no-cache";
+      headers["expires"] = "0";
+    } else {
+      headers["cache-control"] = "public, max-age=3600";
+    }
+
+    return new Response(data, { status: 200, headers });
   } catch (err) {
     return new Response("Not found", { status: 404 });
   }
@@ -47,7 +54,12 @@ async function serveFile(path: string) {
 function jsonResponse(obj: unknown, status = 200) {
   return new Response(JSON.stringify(obj), {
     status,
-    headers: { "content-type": "application/json; charset=utf-8" },
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "access-control-allow-origin": "*",
+      "access-control-allow-methods": "GET, POST, OPTIONS, PATCH, DELETE",
+      "access-control-allow-headers": "Authorization, Content-Type",
+    },
   });
 }
 
@@ -63,9 +75,11 @@ serve(
 
     // Serve static assets
     if (req.method === "GET" && pathname === "/") {
-      return serveFile(
-        new URL("./static/index.html", import.meta.url).pathname,
-      );
+      // Redirect root to canonical home path
+      return new Response(null, {
+        status: 302,
+        headers: { Location: "/static/home.html" },
+      });
     }
     if (req.method === "GET" && pathname === "/dashboard") {
       return serveFile(
@@ -217,6 +231,154 @@ serve(
         console.error("/api/status error", _err);
         return jsonResponse({ ok: false, error: String(_err) }, 500);
       }
+    }
+
+    // API: owner invite validation (basic stub) - return 404 for unknown tokens
+    if (req.method === "GET" && pathname.startsWith("/api/owner/invite/")) {
+      try {
+        const token = pathname.replace("/api/owner/invite/", "");
+        if (!token || token.length < 5) {
+          return jsonResponse({ ok: false, error: "Not found" }, 404);
+        }
+        // For now, we don't manage invitations here; return 404 for unknown token
+        return jsonResponse({ ok: false, error: "Not found" }, 404);
+      } catch (err) {
+        console.error("/api/owner/invite error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
+      }
+    }
+
+      // API: owner invoices - list/create
+      if (pathname === "/api/owner/invoices") {
+        try {
+          const { authenticateRequest } = await import("../supabase_auth.ts");
+          const authRes = await authenticateRequest(req);
+          if (!authRes || authRes.profile.role !== "owner") {
+            return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+          }
+          if (req.method === "GET") {
+            const { supabaseSelect } = await import("../bmad/agents/lib/supabase.ts");
+            const invoices = await supabaseSelect("invoices", "select=*");
+            return jsonResponse({ ok: true, invoices });
+          }
+          if (req.method === "POST") {
+            const body = await req.json();
+            const { supabaseInsert } = await import("../bmad/agents/lib/supabase.ts");
+            const created = await supabaseInsert("invoices", body);
+            return jsonResponse({ ok: true, invoice: created });
+          }
+          return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
+        } catch (err) {
+          console.error("/api/owner/invoices error", err);
+          return jsonResponse({ ok: false, error: String(err) }, 500);
+        }
+      }
+
+    // API: owner metrics endpoint - requires Authorization Bearer token
+    if (req.method === "GET" && pathname === "/api/owner/metrics") {
+      try {
+        // lazy import auth helper
+        const { authenticateRequest } = await import("../supabase_auth.ts");
+        const auth = await authenticateRequest(req);
+        if (!auth) return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+
+        // Build small metrics object; in real app we'd query RLS-protected resources
+        const metrics = {
+          ok: true,
+          owner: auth.profile.email,
+          revenue_this_month: 0,
+          jobs_this_week: 0,
+          active_crew: 0,
+          accounts_receivable: 0,
+          new_applications: 0,
+        };
+        return jsonResponse(metrics);
+      } catch (err) {
+        console.error("/api/owner/metrics error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
+      }
+    }
+
+    // API: owner clients (/api/owner/clients) - list/create
+    if (pathname === "/api/owner/clients") {
+      try {
+        const { authenticateRequest } = await import("../supabase_auth.ts");
+        const authRes = await authenticateRequest(req);
+        if (!authRes || authRes.profile.role !== "owner") {
+          return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        }
+
+        if (req.method === "GET") {
+          const { supabaseSelect } = await import("../bmad/agents/lib/supabase.ts");
+          const clients = await supabaseSelect("clients", "select=*");
+          return jsonResponse({ ok: true, clients });
+        }
+
+        if (req.method === "POST") {
+          const body = await req.json();
+          const { supabaseInsert } = await import("../bmad/agents/lib/supabase.ts");
+          const resInsert = await supabaseInsert("clients", body);
+          return jsonResponse({ ok: true, client: resInsert });
+        }
+
+        return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
+      } catch (err) {
+        console.error("/api/owner/clients error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
+      }
+    }
+
+    // API: owner client by id
+    if (pathname.startsWith("/api/owner/clients/")) {
+      try {
+        const { authenticateRequest } = await import("../supabase_auth.ts");
+        const authRes = await authenticateRequest(req);
+        if (!authRes || authRes.profile.role !== "owner") {
+          return jsonResponse({ ok: false, error: "Unauthorized" }, 401);
+        }
+        const parts = pathname.split("/");
+        const clientId = parts[parts.length - 1];
+        if (req.method === "PATCH") {
+          const body = await req.json();
+          const { supabaseUpdate } = await import("../bmad/agents/lib/supabase.ts");
+          const updated = await supabaseUpdate("clients", "id", clientId, body);
+          return jsonResponse({ ok: true, client: updated });
+        }
+        return jsonResponse({ ok: false, error: "Method Not Allowed" }, 405);
+      } catch (err) {
+        console.error("/api/owner/clients/:id error", err);
+        return jsonResponse({ ok: false, error: String(err) }, 500);
+      }
+    }
+
+    // Runtime config JS for client-side (inject NEXT_PUBLIC_* values)
+    if (req.method === "GET" && pathname === "/config.js") {
+      // Only expose NEXT_PUBLIC_* and non-sensitive runtime settings
+      const env = (Deno.env.toObject && Deno.env.toObject()) || {};
+      const publicEnv: Record<string, string> = {};
+      Object.keys(env).forEach((k) => {
+        if (k.startsWith("NEXT_PUBLIC_")) publicEnv[k] = env[k];
+      });
+      // Add helpful, non-sensitive settings
+      publicEnv["APP_ENV"] = Deno.env.get("APP_ENV") || "development";
+      // Ensure the Next public keys are always present (fall back to server-side keys or placeholder)
+      publicEnv["NEXT_PUBLIC_SUPABASE_URL"] = publicEnv["NEXT_PUBLIC_SUPABASE_URL"] || Deno.env.get("NEXT_PUBLIC_SUPABASE_URL") || Deno.env.get("SUPABASE_URL") || "https://utivthfrwgtjatsusopw.supabase.co";
+      publicEnv["NEXT_PUBLIC_SUPABASE_ANON_KEY"] = publicEnv["NEXT_PUBLIC_SUPABASE_ANON_KEY"] || Deno.env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_ANON_KEY") || "YOUR_SUPABASE_ANON_KEY_HERE";
+
+      const js = `window.__ENV = ${JSON.stringify(publicEnv)};`;
+      return new Response(js, {
+        status: 200,
+        headers: {
+          "content-type": "application/javascript",
+          "cache-control": "no-cache, no-store, must-revalidate",
+        },
+      });
+    }
+
+    // Health endpoint
+    if (req.method === "GET" && pathname === "/health") {
+      const { hasRealSupabase } = await import("../bmad/agents/lib/supabase.ts");
+      return jsonResponse({ ok: true, time: new Date().toISOString(), supabase: hasRealSupabase() });
     }
 
     return new Response("Not found", { status: 404 });

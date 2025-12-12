@@ -89,8 +89,39 @@ async function updateOutboxEvent(id: string, patch: Record<string, unknown>) {
 
 export {
   post as supabaseInsert,
+  // Add generic select/update helpers
+  supabaseSelect,
+  supabaseUpdate,
   getLeadById,
   fetchPendingOutbox,
   updateOutboxEvent,
   hasRealSupabase,
 };
+async function supabaseSelect(table: string, params?: string) {
+  if (!hasRealSupabase()) return [];
+  const url = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${table}${params ? `?${params}` : ""}`;
+  const res = await fetch(url, { headers: headers() });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Supabase GET ${table} failed: ${res.status} ${text}`);
+  }
+  return await res.json();
+}
+
+async function supabaseUpdate(table: string, idName: string, idValue: string, patch: Record<string, unknown>) {
+  if (!hasRealSupabase()) {
+    // not implemented in stub
+    return { id: idValue };
+  }
+  const url = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${table}?${encodeURIComponent(idName)}=eq.${encodeURIComponent(idValue)}`;
+  const res = await fetch(url, {
+    method: "PATCH",
+    headers: headers(),
+    body: JSON.stringify(patch),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Supabase PATCH ${table} failed: ${res.status} ${text}`);
+  }
+  return await res.json().catch(() => ({ id: idValue }));
+}
