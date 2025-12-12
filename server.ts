@@ -30,8 +30,7 @@ if (APP_ENV === "production") {
   }
   if (missingVars.length > 0) {
     console.error(
-      `❌ Production environment requires the following environment variables: ${
-        missingVars.join(", ")
+      `❌ Production environment requires the following environment variables: ${missingVars.join(", ")
       }`,
     );
     console.error(
@@ -348,11 +347,10 @@ async function handler(req: Request): Promise<Response> {
       Deno.env.get("SUPABASE_ANON_KEY") ||
       "";
 
-    const js = `window.__ENV = { NEXT_PUBLIC_SUPABASE_URL: ${
-      JSON.stringify(
-        publicUrl,
-      )
-    }, NEXT_PUBLIC_SUPABASE_ANON_KEY: ${JSON.stringify(publicAnon)} };`;
+    const js = `window.__ENV = { NEXT_PUBLIC_SUPABASE_URL: ${JSON.stringify(
+      publicUrl,
+    )
+      }, NEXT_PUBLIC_SUPABASE_ANON_KEY: ${JSON.stringify(publicAnon)} };`;
 
     return new Response(js, {
       status: 200,
@@ -547,9 +545,9 @@ async function handler(req: Request): Promise<Response> {
           status: 200,
           headers: {
             "Content-Type": contentTypes[ext] || "application/octet-stream",
-            "Cache-Control": ext === "html"
-              ? "no-cache"
-              : "public, max-age=31536000",
+            "Cache-Control": (ext === "html" || ext === "css" || ext === "js" || ext === "json")
+              ? "no-cache, must-revalidate"
+              : "public, max-age=86400",
           },
         });
       } catch (_error) {
@@ -650,8 +648,7 @@ async function handler(req: Request): Promise<Response> {
         });
 
         console.log(
-          `[server] ${
-            isApplication ? "Application" : "Lead"
+          `[server] ${isApplication ? "Application" : "Lead"
           } created (in-memory): ${id}`,
         );
         return new Response(JSON.stringify({ ok: true, id }), {
@@ -2011,8 +2008,7 @@ async function handler(req: Request): Promise<Response> {
           paramCount++;
           userParams.push(userId);
           await db.queryObject(
-            `UPDATE users SET ${
-              userUpdates.join(", ")
+            `UPDATE users SET ${userUpdates.join(", ")
             } WHERE id = $${paramCount}`,
             userParams,
           );
@@ -2059,8 +2055,7 @@ async function handler(req: Request): Promise<Response> {
         paramCount++;
         clientParams.push(clientId);
         await db.queryObject(
-          `UPDATE clients SET ${
-            clientUpdates.join(", ")
+          `UPDATE clients SET ${clientUpdates.join(", ")
           } WHERE id = $${paramCount}`,
           clientParams,
         );
@@ -2547,9 +2542,8 @@ async function handler(req: Request): Promise<Response> {
         `SELECT COUNT(*) as count FROM invoices`,
       );
       const count = (invoiceCount.rows[0] as any).count;
-      const invoiceNumber = `INV-${
-        String(parseInt(count) + 1).padStart(5, "0")
-      }`;
+      const invoiceNumber = `INV-${String(parseInt(count) + 1).padStart(5, "0")
+        }`;
 
       // Create invoice
       const result = await db.queryObject(
@@ -3361,9 +3355,8 @@ async function handler(req: Request): Promise<Response> {
       paramCount++;
       params.push(waitlistId);
 
-      const query = `UPDATE waitlist SET ${
-        updates.join(", ")
-      } WHERE id = $${paramCount} RETURNING id`;
+      const query = `UPDATE waitlist SET ${updates.join(", ")
+        } WHERE id = $${paramCount} RETURNING id`;
       const result = await db.queryObject(query, params);
 
       if (result.rows.length === 0) {
