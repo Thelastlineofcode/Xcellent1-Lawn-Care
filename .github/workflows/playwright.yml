@@ -1,0 +1,39 @@
+name: Playwright E2E
+
+on:
+  pull_request:
+    branches: [ main, "bmm/**", "feat/**", "fix/**", "chore/**" ]
+  push:
+    branches: [ main ]
+
+jobs:
+  playwright-tests:
+    if: ${{ secrets.SUPABASE_URL && secrets.SUPABASE_SERVICE_ROLE_KEY && secrets.SUPABASE_ANON_KEY }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps
+      - name: Start Deno server
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL || '' }}
+          APP_ENV: test
+        run: |
+          deno run --allow-net --allow-read --allow-env --allow-run --allow-write web/server.ts &
+          sleep 2
+      - name: Run Playwright E2E tests
+        env:
+          TEST_BASE_URL: http://127.0.0.1:8000
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npm run test:playwright

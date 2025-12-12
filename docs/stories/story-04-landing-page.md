@@ -23,6 +23,9 @@ related_frs: [FR-002]
 - [x] [High] Remove `web/static/landing-skeleton.html` from `web/static/` or move it into `web/static/archive/` [file: web/static/landing-skeleton.html]
 - [x] [Med] Clarify endpoint intent & update tasks: updated story to use `/api/waitlist` and ensured `web/tests/waitlist_e2e_test.ts` validates the flow. (PR updated)
 - [ ] [Low] Add test coverage asserting GSAP `gsap.from` call exists or verifying the animation script loads on the page.
+ - [x] [Low] Add test coverage asserting GSAP `gsap.from` call exists or verifying the animation script loads on the page (`web/tests/gsap_presence_test.ts`).
+### CI / Playwright
+- A Playwright E2E workflow was added: `.github/workflows/playwright.yml`. It runs Playwright tests when SUPABASE secrets are available on the runner. The owner login E2E spec is at `web/tests/e2e/owner-login.spec.ts`.
 
 ## Acceptance Criteria
 
