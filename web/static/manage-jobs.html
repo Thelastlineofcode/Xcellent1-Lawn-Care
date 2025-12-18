@@ -59,6 +59,26 @@
 
     <div id="status-message" role="alert" aria-live="polite"></div>
 
+    <!-- Quick Stats Bar -->
+    <div class="stats-row" style="margin-bottom: 1.5rem;">
+      <div class="stat-card">
+        <h3>Today's Jobs</h3>
+        <div class="number" id="stat-today">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>Pending</h3>
+        <div class="number" id="stat-pending" style="color: #ffc107;">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>In Progress</h3>
+        <div class="number" id="stat-active" style="color: #4285f4;">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>Completed</h3>
+        <div class="number" id="stat-completed" style="color: #28a745;">0</div>
+      </div>
+    </div>
+
     <div id="jobs-grid" class="jobs-grid">
       <div class="loading-container">
         <div class="spinner"></div>
@@ -285,6 +305,18 @@
     // Render jobs
     function renderJobs(jobs) {
       const grid = document.getElementById("jobs-grid");
+
+      // Update stats
+      const today = new Date().toISOString().split('T')[0];
+      const todaysJobs = jobs.filter(j => j.scheduled_date === today).length;
+      const pending = jobs.filter(j => j.status === 'pending').length;
+      const active = jobs.filter(j => j.status === 'active').length;
+      const completed = jobs.filter(j => j.status === 'completed').length;
+
+      document.getElementById('stat-today').textContent = todaysJobs;
+      document.getElementById('stat-pending').textContent = pending;
+      document.getElementById('stat-active').textContent = active;
+      document.getElementById('stat-completed').textContent = completed;
 
       if (jobs.length === 0) {
         grid.innerHTML = `

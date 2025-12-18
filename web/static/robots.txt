@@ -1,0 +1,20 @@
+# Xcellent1 Lawn Care - Robots.txt
+# https://xcellent1lawncare.com
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://xcellent1lawncare.com/sitemap.xml
+
+# Disallow admin/portal pages
+Disallow: /login.html
+Disallow: /owner.html
+Disallow: /owner-setup.html
+Disallow: /crew.html
+Disallow: /client.html
+Disallow: /dashboard.html
+Disallow: /manage-*.html
+Disallow: /payment-accounts.html
+Disallow: /pending-payments.html
+Disallow: /portal-index.html
