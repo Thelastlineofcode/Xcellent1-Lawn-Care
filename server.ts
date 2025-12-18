@@ -5,10 +5,11 @@ import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
   return Number(this);
 };
 import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
-import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 import { authenticateRequest, getSupabaseClient } from "./supabase_auth.ts";
 import { buildOwnerInvitationEmail, sendEmail } from "./email-service.ts";
+
+import { db, initDB } from "./src/db/client.ts";
 
 // Database connection
 // Prefer using an environment variable for DATABASE_URL. Avoid hardcoding
@@ -16,12 +17,6 @@ import { buildOwnerInvitationEmail, sendEmail } from "./email-service.ts";
 // SUPABASE variables to be set and will fail fast to avoid any fallback mode.
 const DATABASE_URL = Deno.env.get("DATABASE_URL") || "";
 const APP_ENV = (Deno.env.get("APP_ENV") || "development").toLowerCase();
-
-// Create client only when a DATABASE_URL is provided
-let db: Client | null = null;
-if (DATABASE_URL) {
-  db = new Client(DATABASE_URL);
-}
 
 // Safety: In production mode we disallow running the server without a DB
 if (APP_ENV === "production") {
@@ -49,69 +44,21 @@ let dbConnected = false;
 
 // Connect to database
 async function connectDB() {
+  // Clean up existing connection if re-initializing (rare in this setup)
+  // In our new singleton model, initDB handles idempotent checks,
+  // but here we just call initDB
   try {
-    if (!db) {
-      console.log("ℹ️ No DATABASE_URL provided - skipping DB connection");
-      return;
+    if (DATABASE_URL) {
+      await initDB(DATABASE_URL, APP_ENV === "production");
+      dbConnected = true;
+      console.log("✅ Connected to Supabase PostgreSQL (via src/db/client.ts)");
+    } else {
+      console.log("ℹ️ No DATABASE_URL provided - running in offline mode");
     }
-    await db.connect();
-    dbConnected = true;
-    console.log("✅ Connected to Supabase PostgreSQL");
   } catch (err) {
     console.error("❌ Failed to connect to database:", err);
-
-    // Retry with TLS verification disabled if it looks like a certificate error
-    if (err instanceof Error && (err.message.includes("peer certificate") || err.message.includes("startup: N"))) {
-      console.log("⚠️ Retrying with TLS enabled but verification disabled (enforce: false)...");
-      try {
-        if (db) await db.end(); // ensure closed
-
-        // Parse DATABASE_URL manually to allow passing object config with enforce: false
-        const dbUrl = new URL(DATABASE_URL);
-        const config = {
-          user: dbUrl.username,
-          password: dbUrl.password,
-          database: dbUrl.pathname.slice(1), // remove leading '/'
-          hostname: dbUrl.hostname,
-          port: dbUrl.port ? parseInt(dbUrl.port) : 5432,
-          tls: {
-            enabled: true,
-            enforce: false, // Disables certificate verification
-          },
-        };
-
-        db = new Client(config);
-        await db.connect();
-        dbConnected = true;
-        console.log("✅ Connected to Supabase PostgreSQL (TLS verification disabled)");
-        return;
-      } catch (retryErr) {
-        console.error("❌ Retry with TLS verification disabled failed:", retryErr);
-
-        // If that failed, try the old "disable" method as a last resort
-        console.log("⚠️ Retrying with TLS disabled (last resort)...");
-        try {
-          if (db) await db.end();
-          const separator = DATABASE_URL.includes("?") ? "&" : "?";
-          const noTlsUrl = DATABASE_URL + separator + "sslmode=disable";
-
-          db = new Client(noTlsUrl);
-          await db.connect();
-          dbConnected = true;
-          console.log("✅ Connected to Supabase PostgreSQL (TLS disabled)");
-          return;
-        } catch (lastErr) {
-          console.error("❌ Retry with TLS disabled failed:", lastErr);
-        }
-      }
-    }
-
-    if (APP_ENV === "production") {
-      console.error("❌ CRITICAL: Database connection failed in production. Exiting...");
-      Deno.exit(1);
-    }
-
-    console.log("⚠️ Running in fallback mode (in-memory storage)");
+    dbConnected = false;
+    if (APP_ENV === "production") Deno.exit(1);
   }
 }
 
@@ -123,6 +70,10 @@ let eventCounter = 1;
 
 // Rate Limiting Map
 const rateLimits = new Map<string, { count: number; resetTime: number }>();
+
+import { getSecurityHeaders, requireAuth } from "./src/middleware/auth.ts";
+
+// [REMOVED DUPLICATE saveBase64Image function]
 
 const REGEX_RIVER_PARISHES = [
   /laplace/i, /norco/i, /reserve/i, /garyville/i, /edgard/i, /mount\s?air/i,
@@ -148,80 +99,7 @@ const PRICING_CONFIG = {
   },
 };
 
-function getSecurityHeaders(req: Request) {
-  const origin = req.headers.get("Origin") || "";
-  const allowedOrigins = [
-    "http://localhost:8000",
-    "http://0.0.0.0:8000",
-    "https://xcellent1lawncare.com",
-    "https://www.xcellent1lawncare.com",
-  ];
 
-  const isAllowed = allowedOrigins.includes(origin) ||
-    origin.endsWith(".fly.dev");
-
-  // Restricted CORS: only allow if it's in the whitelist or it's a development environment
-  // with a specific override. Otherwise, deny undefined origins in production.
-  const corsOrigin = isAllowed ? origin : (APP_ENV === "development" ? "*" : "null");
-
-  return {
-    "Access-Control-Allow-Origin": corsOrigin,
-    "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers":
-      "Content-Type, Authorization, x-client-info, apikey",
-    "Content-Type": "application/json",
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
-    "Referrer-Policy": "same-origin",
-    "X-XSS-Protection": "1; mode=block",
-  };
-}
-
-// Authentication middleware helper
-async function requireAuth(
-  req: Request,
-  allowedRoles?: string[],
-): Promise<
-  { authorized: false; response: Response } | { authorized: true; auth: any }
-> {
-  const auth = await authenticateRequest(req);
-
-  if (!auth) {
-    return {
-      authorized: false,
-      response: new Response(
-        JSON.stringify({ ok: false, error: "Unauthorized - please log in" }),
-        {
-          status: 401,
-          headers: getSecurityHeaders(req),
-        },
-      ),
-    };
-  }
-
-  // Check role-based authorization if roles specified
-  if (allowedRoles && !allowedRoles.includes(auth.profile.role)) {
-    return {
-      authorized: false,
-      response: new Response(
-        JSON.stringify({
-          ok: false,
-          error: "Forbidden - insufficient permissions",
-        }),
-        {
-          status: 403,
-          headers: getSecurityHeaders(req),
-        },
-      ),
-    };
-  }
-
-  return {
-    authorized: true,
-    auth,
-  };
-}
 
 // Helper: save base64 image to file
 async function saveBase64Image(
@@ -826,7 +704,7 @@ async function handler(req: Request): Promise<Response> {
       );
     } catch (error) {
       return new Response(
-        JSON.stringify({ ok: false, error: error.message }),
+        JSON.stringify({ ok: false, error: (error as Error).message }),
         { status: 500, headers: getSecurityHeaders(req) },
       );
     }

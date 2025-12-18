@@ -154,15 +154,13 @@ export async function verifySupabaseJWT(
       }
     }
 
-    // Last resort: decode if previously requested
+    // Last resort: Fail safe.
+    // Do NOT decode without verification.
     if (!SUPABASE_JWT_SECRET && !_supabase) {
-      try {
-        // Insecure decode for dev only
-        const payload = decodeJwt(token)[1] as AuthUser;
-        return payload;
-      } catch {
-        return null;
-      }
+      console.error(
+        "[supabase_auth] Critical: Missing SUPABASE_JWT_SECRET and internal client. Rejecting token.",
+      );
+      return null;
     }
 
     return null;

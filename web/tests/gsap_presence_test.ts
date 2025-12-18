@@ -13,7 +13,7 @@ serverTest("GSAP presence check on home.html", async () => {
   assert(doc, "home.html parsed");
   const scripts = Array.from(doc.querySelectorAll("script"));
   const hasGsapScript = scripts.some((s) =>
-    s.getAttribute("src") && s.getAttribute("src").includes("gsap")
+    s.getAttribute("src")?.includes("gsap")
   );
   assert(hasGsapScript, "GSAP script should be included on home.html");
   // Verify animation usage

@@ -145,7 +145,7 @@ export class TestFixture {
       await this.dbClient.queryObject(`DELETE FROM job_photos`);
       await this.dbClient.queryObject(`DELETE FROM payments`);
     } catch (err) {
-      console.warn("Cleanup warning (can be ignored if foreign keys handled):", err.message);
+      console.warn("Cleanup warning (can be ignored if foreign keys handled):", (err as Error).message);
     }
 
     // Reset tracking arrays

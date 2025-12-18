@@ -4,13 +4,14 @@ import { testFixture } from "./support/fixtures/test-fixture.ts";
 
 serverTest("Waitlist submission returns 201 and created id", async () => {
   const BASE_URL = Deno.env.get("TEST_BASE_URL") || "http://localhost:8000";
+  const uniqueId = Date.now();
   const res = await fetch(`${BASE_URL}/api/waitlist`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       name: "Test Waitlist",
       phone: "555-0123",
-      email: "waitlist@example.com",
+      email: `waitlist-${uniqueId}@example.com`,
       property_address: "123 Main St",
       service: "weekly",
     }),

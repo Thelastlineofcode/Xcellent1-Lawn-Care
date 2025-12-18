@@ -27,9 +27,10 @@ serverTest("E2E: waitlist form posts correct payload to API", async () => {
   );
 
   // Construct payload as the client would
+  const uniqueId = Date.now();
   const payload = {
     name: "E2E Test User",
-    email: "e2e-waitlist@example.com",
+    email: `e2e-waitlist-${uniqueId}@example.com`,
     phone: "555-0001",
     property_address: "456 E2E Drive",
     service: "weekly",

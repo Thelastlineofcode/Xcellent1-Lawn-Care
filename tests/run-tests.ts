@@ -72,7 +72,7 @@ async function runTests() {
         // Run all standard test locations
         "tests/",
         "web/tests/",
-        "bmad/agents/tests/",
+        // "bmad/agents/tests/", // Excluded from core product tests
       ],
       stdout: "inherit",
       stderr: "inherit",

@@ -15,7 +15,7 @@ databaseTest("RLS integration - owners and crew access", async () => {
   const clientA = await testFixture.createTestClientForOwner(ownerA.id!);
 
   // Create a job for clientA assigned to crew
-  const jobA = await testFixture.createTestJob(clientA.id, {
+  const jobA = await testFixture.createTestJob(clientA.id!, {
     crew_id: crew.id,
   });
 
