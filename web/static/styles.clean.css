@@ -281,12 +281,13 @@ a:hover {
   display: flex;
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
 }
 
 .form-field,
 .form-select {
   flex: 1;
-  padding: var(--spacing-md);
+  padding: 0.75rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-md);
   font-size: var(--font-size-base);
