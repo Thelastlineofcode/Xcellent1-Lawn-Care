@@ -1,391 +1,379 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Applications & Recruits - Xcellent1 Lawn Care"
-    />
-    <meta name="theme-color" content="#10b981" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>Applications | Xcellent1 Owner</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
-    <link rel="stylesheet" href="styles.clean.css" />
-    <link rel="stylesheet" href="admin.css" />
-    <style>
-      .applications-container {
-        max-width: 1000px;
-        margin: 2rem auto;
-      }
 
-      .filter-bar {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Applications & Recruits - Xcellent1 Lawn Care" />
+  <meta name="theme-color" content="#10b981" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Applications | Xcellent1 Owner</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
+  <link rel="stylesheet" href="styles.clean.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <!-- Load runtime config from server -->
+  <script src="/config.js"></script>
+  <style>
+    .applications-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+    }
 
-      .application-card {
-        background: var(--color-bg-secondary);
-        border: 1px solid var(--color-border);
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: start;
-      }
+    .filter-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
 
-      .application-card.hired {
-        border-left: 4px solid var(--color-success);
-        background: linear-gradient(
-          90deg,
+    .application-card {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+    }
+
+    .application-card.hired {
+      border-left: 4px solid var(--color-success);
+      background: linear-gradient(90deg,
           rgba(16, 185, 129, 0.05) 0%,
-          transparent
-        );
-      }
+          transparent);
+    }
 
-      .application-card.rejected {
-        border-left: 4px solid var(--color-error);
-        background: linear-gradient(
-          90deg,
+    .application-card.rejected {
+      border-left: 4px solid var(--color-error);
+      background: linear-gradient(90deg,
           rgba(239, 68, 68, 0.05) 0%,
-          transparent
-        );
-      }
+          transparent);
+    }
 
-      .app-info {
-        flex: 1;
-      }
+    .app-info {
+      flex: 1;
+    }
 
-      .app-name {
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-      }
+    .app-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
 
+    .app-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 480px) {
       .app-details {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin: 1rem 0;
-        font-size: 0.9rem;
+        grid-template-columns: 1fr;
       }
+    }
 
-      .app-detail-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
+    .app-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-      .app-detail-item strong {
-        color: var(--color-text-secondary);
-        min-width: 60px;
-      }
+    .app-detail-item strong {
+      color: var(--color-text-secondary);
+      min-width: 60px;
+    }
 
-      .app-notes {
-        background: var(--color-bg-tertiary);
-        padding: 1rem;
-        border-radius: 6px;
-        margin-top: 1rem;
-        font-size: 0.9rem;
-        color: var(--color-text-secondary);
-      }
+    .app-notes {
+      background: var(--color-bg-tertiary);
+      padding: 1rem;
+      border-radius: 6px;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+    }
 
-      .app-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        min-width: 150px;
-      }
+    .app-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-width: 150px;
+    }
 
-      .app-actions button {
-        margin: 0;
-      }
+    .app-actions button {
+      margin: 0;
+    }
 
-      .status-badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-      }
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
 
-      .status-pending {
-        background: var(--color-warning-light);
-        color: var(--color-warning-dark);
-      }
+    .status-pending {
+      background: var(--color-warning-light);
+      color: var(--color-warning-dark);
+    }
 
-      .status-screening {
-        background: #dbeafe;
-        color: #1e40af;
-      }
+    .status-screening {
+      background: #dbeafe;
+      color: #1e40af;
+    }
 
-      .status-interview {
-        background: #e0e7ff;
-        color: #3730a3;
-      }
+    .status-interview {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
 
-      .status-offer {
-        background: #dbeafe;
-        color: #1e40af;
-      }
+    .status-offer {
+      background: #dbeafe;
+      color: #1e40af;
+    }
 
-      .status-hired {
-        background: var(--color-success-light);
-        color: var(--color-success-dark);
-      }
+    .status-hired {
+      background: var(--color-success-light);
+      color: var(--color-success-dark);
+    }
 
-      .status-rejected {
-        background: var(--color-error-light);
-        color: var(--color-error-dark);
-      }
+    .status-rejected {
+      background: var(--color-error-light);
+      color: var(--color-error-dark);
+    }
 
-      .status-select {
-        padding: 0.5rem;
-        border: 1px solid var(--color-border);
-        border-radius: 4px;
-        font-size: 0.9rem;
-        background: var(--color-bg-primary);
-        color: var(--color-text-primary);
-      }
+    .status-select {
+      padding: 0.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+    }
 
-      .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: var(--color-text-secondary);
-      }
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--color-text-secondary);
+    }
 
-      .source-badge {
-        display: inline-block;
-        padding: 0.15rem 0.5rem;
-        background: var(--color-bg-tertiary);
-        border-radius: 4px;
-        font-size: 0.8rem;
-        margin-left: 0.5rem;
-      }
+    .source-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      background: var(--color-bg-tertiary);
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+    }
 
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
-      }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
 
-      .stat-box {
-        background: var(--color-bg-secondary);
-        padding: 1.5rem;
-        border-radius: 8px;
-        text-align: center;
-      }
+    .stat-box {
+      background: var(--color-bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+    }
 
-      .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--color-success);
-        margin-bottom: 0.5rem;
-      }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-success);
+      margin-bottom: 0.5rem;
+    }
 
-      .stat-label {
-        font-size: 0.9rem;
-        color: var(--color-text-secondary);
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-      <div class="navbar-brand">
-        <img
-          src="images/xcellent1-logo-transparent.png"
-          alt="Xcellent1 logo"
-          class="navbar-logo"
-        />
-        <div class="navbar-title">
-          <span class="navbar-name">XCELLENT1</span>
-          <span class="navbar-tagline">LAWN CARE</span>
-        </div>
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+      <div class="navbar-title">
+        <span class="navbar-name">XCELLENT1</span>
+        <span class="navbar-tagline">LAWN CARE</span>
       </div>
-      <div class="navbar-links">
-        <a href="owner.html" class="navbar-link">Dashboard</a>
-        <a href="manage-clients.html" class="navbar-link">Clients</a>
-        <a href="manage-jobs.html" class="navbar-link">Jobs</a>
-        <a href="manage-invoices.html" class="navbar-link">Invoices</a>
-        <a href="manage-applications.html" class="navbar-link active"
-        >Applications</a>
-        <button onclick="logout()" class="btn btn-sm">Logout</button>
-      </div>
-    </nav>
+    </div>
+    <div class="navbar-links">
+      <a href="owner.html" class="navbar-link">Dashboard</a>
+      <a href="manage-clients.html" class="navbar-link">Clients</a>
+      <a href="manage-jobs.html" class="navbar-link">Jobs</a>
+      <a href="manage-invoices.html" class="navbar-link">Invoices</a>
+      <a href="manage-applications.html" class="navbar-link active">Applications</a>
+      <button onclick="logout()" class="btn btn-sm">Logout</button>
+    </div>
+  </nav>
 
-    <!-- Page Header -->
-    <div class="page-header">
-      <div class="container">
-        <div class="page-title">Applications & Recruits</div>
-        <div class="page-breadcrumb">
-          <a href="owner.html">Dashboard</a> / Applications
-        </div>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <div class="page-title">Applications & Recruits</div>
+      <div class="page-breadcrumb">
+        <a href="owner.html">Dashboard</a> / Applications
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container applications-container">
+    <div id="status-message" role="alert" aria-live="polite"></div>
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-number" id="stat-total">0</div>
+        <div class="stat-label">Total Applications</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="stat-pending">0</div>
+        <div class="stat-label">Pending Review</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="stat-hired">0</div>
+        <div class="stat-label">Hired</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="stat-rejected">0</div>
+        <div class="stat-label">Rejected</div>
       </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="container applications-container">
-      <div id="status-message" role="alert" aria-live="polite"></div>
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <select class="filter-select" id="status-filter" onchange="filterApplications()">
+        <option value="">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="screening">Screening</option>
+        <option value="interview">Interview</option>
+        <option value="offer">Offer</option>
+        <option value="hired">Hired</option>
+        <option value="rejected">Rejected</option>
+      </select>
+      <select class="filter-select" id="source-filter" onchange="filterApplications()">
+        <option value="">All Sources</option>
+        <option value="careers">Careers Page</option>
+        <option value="web">Web Form</option>
+        <option value="referral">Referral</option>
+      </select>
+    </div>
 
-      <!-- Statistics -->
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-number" id="stat-total">0</div>
-          <div class="stat-label">Total Applications</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-number" id="stat-pending">0</div>
-          <div class="stat-label">Pending Review</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-number" id="stat-hired">0</div>
-          <div class="stat-label">Hired</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-number" id="stat-rejected">0</div>
-          <div class="stat-label">Rejected</div>
-        </div>
+    <!-- Applications List -->
+    <div id="applications-list">
+      <div style="text-align: center; padding: 2rem; color: var(--color-text-secondary)">
+        <div class="spinner"></div>
+        <div>Loading applications...</div>
       </div>
+    </div>
+  </main>
 
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <select
-          class="filter-select"
-          id="status-filter"
-          onchange="filterApplications()"
-        >
-          <option value="">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="screening">Screening</option>
-          <option value="interview">Interview</option>
-          <option value="offer">Offer</option>
-          <option value="hired">Hired</option>
-          <option value="rejected">Rejected</option>
-        </select>
-        <select
-          class="filter-select"
-          id="source-filter"
-          onchange="filterApplications()"
-        >
-          <option value="">All Sources</option>
-          <option value="careers">Careers Page</option>
-          <option value="web">Web Form</option>
-          <option value="referral">Referral</option>
-        </select>
-      </div>
+  <script src="app.js"></script>
+  <script type="module">
+    import { logout, requireAuth } from "./auth-helper.js";
 
-      <!-- Applications List -->
-      <div id="applications-list">
-        <div
-          style="text-align: center; padding: 2rem; color: var(--color-text-secondary)"
-        >
-          <div class="spinner"></div>
-          <div>Loading applications...</div>
-        </div>
-      </div>
-    </main>
+    // Require owner authentication
+    const userProfile = await requireAuth("owner");
+    window.ownerProfile = userProfile;
+  </script>
+  <script>
+    let applicationsData = [];
 
-    <script src="app.js"></script>
-    <script type="module">
-      import { logout, requireAuth } from "./auth-helper.js";
+    const statusLabels = {
+      pending: "Pending Review",
+      screening: "Screening",
+      interview: "Interview",
+      offer: "Offer Made",
+      hired: "Hired ✓",
+      rejected: "Rejected",
+    };
 
-      // Require owner authentication
-      const userProfile = await requireAuth("owner");
-      window.ownerProfile = userProfile;
-    </script>
-    <script>
-      let applicationsData = [];
+    const sourceLabels = {
+      careers: "Careers Page",
+      web: "Web Form",
+      referral: "Referral",
+    };
 
-      const statusLabels = {
-        pending: "Pending Review",
-        screening: "Screening",
-        interview: "Interview",
-        offer: "Offer Made",
-        hired: "Hired ✓",
-        rejected: "Rejected",
-      };
+    async function loadApplications() {
+      try {
+        const token = window.supabaseSession?.access_token;
+        if (!token) {
+          throw new Error("No authentication token");
+        }
 
-      const sourceLabels = {
-        careers: "Careers Page",
-        web: "Web Form",
-        referral: "Referral",
-      };
+        const response = await fetch("/api/owner/applications", {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
 
-      async function loadApplications() {
-        try {
-          const token = window.supabaseSession?.access_token;
-          if (!token) {
-            throw new Error("No authentication token");
-          }
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
 
-          const response = await fetch("/api/owner/applications", {
-            headers: {
-              "Authorization": `Bearer ${token}`,
-            },
-          });
-
-          if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
-          }
-
-          const data = await response.json();
-          if (!data.ok) {
-            throw new Error(
-              data.error || "Failed to fetch applications",
-            );
-          }
-
-          applicationsData = data.applications || [];
-          updateStatistics();
-          renderApplications(applicationsData);
-        } catch (err) {
-          console.error("Failed to load applications:", err);
-          showMessage(
-            "⚠️ Unable to load applications. Please refresh the page.",
-            "warning",
+        const data = await response.json();
+        if (!data.ok) {
+          throw new Error(
+            data.error || "Failed to fetch applications",
           );
-          document.getElementById("applications-list").innerHTML = `
+        }
+
+        applicationsData = data.applications || [];
+        updateStatistics();
+        renderApplications(applicationsData);
+      } catch (err) {
+        console.error("Failed to load applications:", err);
+        showMessage(
+          "⚠️ Unable to load applications. Please refresh the page.",
+          "warning",
+        );
+        document.getElementById("applications-list").innerHTML = `
             <div class="empty-state">
               <div style="color: var(--color-text-secondary); margin: 1rem 0;">
                 No applications found or unable to load.
               </div>
             </div>
           `;
-        }
       }
+    }
 
-      function updateStatistics() {
-        const stats = {
-          total: applicationsData.length,
-          pending:
-            applicationsData.filter((a) => a.status === "pending")
-              .length,
-          hired:
-            applicationsData.filter((a) => a.status === "hired").length,
-          rejected:
-            applicationsData.filter((a) => a.status === "rejected")
-              .length,
-        };
+    function updateStatistics() {
+      const stats = {
+        total: applicationsData.length,
+        pending:
+          applicationsData.filter((a) => a.status === "pending")
+            .length,
+        hired:
+          applicationsData.filter((a) => a.status === "hired").length,
+        rejected:
+          applicationsData.filter((a) => a.status === "rejected")
+            .length,
+      };
 
-        document.getElementById("stat-total").textContent = stats.total;
-        document.getElementById("stat-pending").textContent =
-          stats.pending;
-        document.getElementById("stat-hired").textContent = stats.hired;
-        document.getElementById("stat-rejected").textContent =
-          stats.rejected;
-      }
+      document.getElementById("stat-total").textContent = stats.total;
+      document.getElementById("stat-pending").textContent =
+        stats.pending;
+      document.getElementById("stat-hired").textContent = stats.hired;
+      document.getElementById("stat-rejected").textContent =
+        stats.rejected;
+    }
 
-      function renderApplications(applications) {
-        const container = document.getElementById("applications-list");
+    function renderApplications(applications) {
+      const container = document.getElementById("applications-list");
 
-        if (applications.length === 0) {
-          container.innerHTML = `
+      if (applications.length === 0) {
+        container.innerHTML = `
             <div class="empty-state">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 80px; height: 80px; margin: 0 auto 1rem; opacity: 0.5;">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -394,19 +382,17 @@
               <p>No job applications to display with the current filters.</p>
             </div>
           `;
-          return;
-        }
+        return;
+      }
 
-        container.innerHTML = applications.map((app) => `
+      container.innerHTML = applications.map((app) => `
           <div class="application-card ${app.status}">
             <div class="app-info">
               <div class="app-name">
                 ${app.name}
-                <span class="status-badge status-${app.status}">${
-          statusLabels[app.status] || app.status
+                <span class="status-badge status-${app.status}">${statusLabels[app.status] || app.status
         }</span>
-                <span class="source-badge">${
-          sourceLabels[app.source] || app.source
+                <span class="source-badge">${sourceLabels[app.source] || app.source
         }</span>
               </div>
               
@@ -425,14 +411,13 @@
                 </div>
               </div>
 
-              ${
-          app.notes
-            ? `
+              ${app.notes
+          ? `
                 <div class="app-notes">
                   <strong>Notes:</strong> ${app.notes}
                 </div>
               `
-            : ""
+          : ""
         }
             </div>
 
@@ -451,80 +436,80 @@
             </div>
           </div>
         `).join("");
-      }
+    }
 
-      function filterApplications() {
-        const statusFilter =
-          document.getElementById("status-filter").value;
-        const sourceFilter =
-          document.getElementById("source-filter").value;
+    function filterApplications() {
+      const statusFilter =
+        document.getElementById("status-filter").value;
+      const sourceFilter =
+        document.getElementById("source-filter").value;
 
-        const filtered = applicationsData.filter((app) => {
-          const matchesStatus = !statusFilter ||
-            app.status === statusFilter;
-          const matchesSource = !sourceFilter ||
-            app.source === sourceFilter;
-          return matchesStatus && matchesSource;
-        });
+      const filtered = applicationsData.filter((app) => {
+        const matchesStatus = !statusFilter ||
+          app.status === statusFilter;
+        const matchesSource = !sourceFilter ||
+          app.source === sourceFilter;
+        return matchesStatus && matchesSource;
+      });
 
-        renderApplications(filtered);
-      }
+      renderApplications(filtered);
+    }
 
-      async function updateApplicationStatus(applicationId, newStatus) {
-        if (!newStatus) return;
+    async function updateApplicationStatus(applicationId, newStatus) {
+      if (!newStatus) return;
 
-        try {
-          const token = window.supabaseSession?.access_token;
-          const response = await fetch(
-            `/api/owner/applications/${applicationId}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ status: newStatus }),
+      try {
+        const token = window.supabaseSession?.access_token;
+        const response = await fetch(
+          `/api/owner/applications/${applicationId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
             },
-          );
-
-          const data = await response.json();
-          if (data.ok) {
-            showMessage(
-              `✓ Application status updated to ${
-                statusLabels[newStatus]
-              }!`,
-              "success",
-            );
-            await loadApplications();
-          } else {
-            throw new Error(data.error || "Failed to update");
-          }
-        } catch (err) {
-          console.error("Error:", err);
-          showMessage(`✗ ${err.message}`, "error");
-        }
-      }
-
-      function contactApplicant(email, name) {
-        window.open(
-          `mailto:${email}?subject=Xcellent1 Lawn Care - Interview Request for ${name}`,
-          "_blank",
+            body: JSON.stringify({ status: newStatus }),
+          },
         );
+
+        const data = await response.json();
+        if (data.ok) {
+          showMessage(
+            `✓ Application status updated to ${statusLabels[newStatus]
+            }!`,
+            "success",
+          );
+          await loadApplications();
+        } else {
+          throw new Error(data.error || "Failed to update");
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        showMessage(`✗ ${err.message}`, "error");
       }
+    }
 
-      function showMessage(message, type = "info") {
-        const container = document.getElementById("status-message");
-        container.className = `message message-${type}`;
-        container.textContent = message;
-        container.style.display = "block";
+    function contactApplicant(email, name) {
+      window.open(
+        `mailto:${email}?subject=Xcellent1 Lawn Care - Interview Request for ${name}`,
+        "_blank",
+      );
+    }
 
-        setTimeout(() => {
-          container.style.display = "none";
-        }, 5000);
-      }
+    function showMessage(message, type = "info") {
+      const container = document.getElementById("status-message");
+      container.className = `message message-${type}`;
+      container.textContent = message;
+      container.style.display = "block";
 
-      // Initial load
-      loadApplications();
-    </script>
-  </body>
+      setTimeout(() => {
+        container.style.display = "none";
+      }, 5000);
+    }
+
+    // Initial load
+    loadApplications();
+  </script>
+</body>
+
 </html>

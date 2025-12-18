@@ -26,7 +26,7 @@ databaseTest("RLS integration - owners and crew access", async () => {
 
   // OwnerB should NOT see ownerA's jobs
   await db.queryObject("BEGIN");
-  await db.queryObject("SET LOCAL request.jwt.claims.sub = $1", [ownerB.id]);
+  await db.queryObject("SELECT set_config('request.jwt.claims.sub', $1, true)", [ownerB.id]);
   const resB = await db.queryObject(
     `SELECT id FROM jobs WHERE client_id = $1`,
     [clientA.id],
@@ -36,7 +36,7 @@ databaseTest("RLS integration - owners and crew access", async () => {
 
   // OwnerA should see the job
   await db.queryObject("BEGIN");
-  await db.queryObject("SET LOCAL request.jwt.claims.sub = $1", [ownerA.id]);
+  await db.queryObject("SELECT set_config('request.jwt.claims.sub', $1, true)", [ownerA.id]);
   const resA = await db.queryObject(
     `SELECT id FROM jobs WHERE client_id = $1`,
     [clientA.id],
@@ -46,7 +46,7 @@ databaseTest("RLS integration - owners and crew access", async () => {
 
   // Crew should only see assigned jobs when crew_id matches
   await db.queryObject("BEGIN");
-  await db.queryObject("SET LOCAL request.jwt.claims.sub = $1", [crew.id]);
+  await db.queryObject("SELECT set_config('request.jwt.claims.sub', $1, true)", [crew.id]);
   const resCrew = await db.queryObject(
     `SELECT id FROM jobs WHERE crew_id = $1`,
     [crew.id],

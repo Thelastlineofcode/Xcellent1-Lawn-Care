@@ -106,6 +106,11 @@ async function connectDB() {
       }
     }
 
+    if (APP_ENV === "production") {
+      console.error("❌ CRITICAL: Database connection failed in production. Exiting...");
+      Deno.exit(1);
+    }
+
     console.log("⚠️ Running in fallback mode (in-memory storage)");
   }
 }
@@ -119,6 +124,30 @@ let eventCounter = 1;
 // Rate Limiting Map
 const rateLimits = new Map<string, { count: number; resetTime: number }>();
 
+const REGEX_RIVER_PARISHES = [
+  /laplace/i, /norco/i, /reserve/i, /garyville/i, /edgard/i, /mount\s?air/i,
+  /luling/i, /destrehan/i, /hahnville/i, /paradis/i, /killona/i, /st\.\s?rose/i,
+  /boutte/i, /lutcher/i, /gramercy/i, /convent/i, /paulina/i, /vacherie/i,
+  /st\.\s?james/i, /river\s?parish/i, /st\.?\s?john/i, /st\.?\s?charles/i,
+  /st\.?\s?james/i,
+];
+
+const PRICING_CONFIG = {
+  base: {
+    weekly: 75,
+    "flower-bed": 150,
+    "spring-cleaning": 120,
+    "leaf-debris": 100,
+    tractor: 200,
+    default: 50,
+  },
+  multipliers: {
+    large: 1.5,
+    medium: 1.2,
+    small: 0.8,
+  },
+};
+
 function getSecurityHeaders(req: Request) {
   const origin = req.headers.get("Origin") || "";
   const allowedOrigins = [
@@ -127,10 +156,13 @@ function getSecurityHeaders(req: Request) {
     "https://xcellent1lawncare.com",
     "https://www.xcellent1lawncare.com",
   ];
+
   const isAllowed = allowedOrigins.includes(origin) ||
     origin.endsWith(".fly.dev");
-  // For testing purposes, allow "*" if no origin is specified
-  const corsOrigin = isAllowed ? origin : (origin === "" ? "*" : "null");
+
+  // Restricted CORS: only allow if it's in the whitelist or it's a development environment
+  // with a specific override. Otherwise, deny undefined origins in production.
+  const corsOrigin = isAllowed ? origin : (APP_ENV === "development" ? "*" : "null");
 
   return {
     "Access-Control-Allow-Origin": corsOrigin,
@@ -222,7 +254,11 @@ async function handler(req: Request): Promise<Response> {
 
   // Allow strict static file access (images/css) to bypass strict limits if needed,
   // but 300 req/min is generous for a user.
-  if (limit.count > 300) {
+  // 225. Route-Specific Rate Limiting
+  const isHeavyRoute = url.pathname === "/api/v1/quotes/estimate" || url.pathname.startsWith("/api/owner/");
+  const limitThreshold = isHeavyRoute ? 60 : 300; // 60 req/min for sensitive routes, 300 for others
+
+  if (limit.count > limitThreshold) {
     return new Response(
       JSON.stringify({ ok: false, error: "Too Many Requests" }),
       {
@@ -253,33 +289,8 @@ async function handler(req: Request): Promise<Response> {
           { status: 400, headers },
         );
       }
-      // Service area validation (River Parishes: St. John the Baptist, St. Charles, St. James)
-      const allowedAreas = [
-        /laplace/i,
-        /norco/i,
-        /reserve/i,
-        /garyville/i,
-        /edgard/i,
-        /mount\s?air/i,
-        /luling/i,
-        /destrehan/i,
-        /hahnville/i,
-        /paradis/i,
-        /killona/i,
-        /st\.\s?rose/i,
-        /boutte/i,
-        /lutcher/i,
-        /gramercy/i,
-        /convent/i,
-        /paulina/i,
-        /vacherie/i,
-        /st\.\s?james/i,
-        /river\s?parish/i,
-        /st\.?\s?john/i,
-        /st\.?\s?charles/i,
-        /st\.?\s?james/i,
-      ];
-      const inArea = allowedAreas.some((r) => r.test(address));
+      // Service area validation (River Parishes)
+      const inArea = REGEX_RIVER_PARISHES.some((r) => r.test(address));
       if (!inArea) {
         return new Response(
           JSON.stringify({
@@ -290,29 +301,26 @@ async function handler(req: Request): Promise<Response> {
           { status: 400, headers },
         );
       }
-      // Simple price heuristics (can be replaced with more advanced logic)
-      let base = 50;
-      if (serviceType === "weekly") base = 75;
-      if (serviceType === "flower-bed") base = 150;
-      if (serviceType === "spring-cleaning") base = 120;
-      if (serviceType === "leaf-debris") base = 100;
-      if (serviceType === "tractor") base = 200;
+      // Simple price heuristics
+      const base = PRICING_CONFIG.base[serviceType as keyof typeof PRICING_CONFIG.base] || PRICING_CONFIG.base.default;
+
       // Adjust for lawn size
       let multiplier = 1;
-      if (lawnSize > 4000) multiplier = 1.5;
-      else if (lawnSize > 2500) multiplier = 1.2;
-      else if (lawnSize < 1000) multiplier = 0.8;
+      if (lawnSize > 4000) multiplier = PRICING_CONFIG.multipliers.large;
+      else if (lawnSize > 2500) multiplier = PRICING_CONFIG.multipliers.medium;
+      else if (lawnSize < 1000) multiplier = PRICING_CONFIG.multipliers.small;
+
       const priceLow = Math.round(base * multiplier);
       const priceHigh = Math.round(priceLow * 1.25);
       // Notes for user
       let notes = "";
       if (serviceType === "weekly") {
         notes = "Includes mowing, edging, and blowing.";
-      }
-      if (serviceType === "flower-bed") {
+      } else if (serviceType === "flower-bed") {
         notes = "Includes weed removal and bed prep.";
+      } else if (serviceType === "tractor") {
+        notes = "Heavy-duty lot clearing.";
       }
-      if (serviceType === "tractor") notes = "Heavy-duty lot clearing.";
       // Return result
       return new Response(
         JSON.stringify({
@@ -544,9 +552,10 @@ async function handler(req: Request): Promise<Response> {
 
         // Fallback Supabase check
         if (!invite) {
-          const { _supabaseAdmin } = await import("./supabase_auth.ts");
-          if (_supabaseAdmin) {
-            const { data } = await _supabaseAdmin
+          const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+          const adminClient = getSupabaseAdminClient();
+          if (adminClient) {
+            const { data } = await adminClient
               .from("owner_invitations")
               .select("id, email, name, phone, status, expires_at")
               .eq("invitation_token", token)
@@ -667,13 +676,17 @@ async function handler(req: Request): Promise<Response> {
           }
         } else {
           // Fallback: Use Supabase Admin Client (HTTP)
-          const { _supabaseAdmin } = await import("./supabase_auth.ts");
-          if (!_supabaseAdmin) {
-            return new Response(JSON.stringify({ ok: false, error: "Database unavailable" }), { status: 503, headers });
+          const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
+          const adminClient = getSupabaseAdminClient();
+          if (!adminClient) {
+            return new Response(
+              JSON.stringify({ ok: false, error: "Supabase not configured" }),
+              { status: 500, headers },
+            );
           }
 
           // 3a. Upsert user
-          const { data: userRow, error: userError } = await _supabaseAdmin
+          const { data: userRow, error: userError } = await adminClient
             .from('users')
             .upsert({
               auth_user_id: authUserId,
@@ -692,7 +705,7 @@ async function handler(req: Request): Promise<Response> {
           }
 
           // 3b. Update invitation
-          const { error: inviteError } = await _supabaseAdmin
+          const { error: inviteError } = await adminClient
             .from('owner_invitations')
             .update({
               status: 'accepted',

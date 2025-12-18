@@ -17,6 +17,8 @@ export class TestFixture {
   private createdClients: string[] = [];
   private createdJobs: string[] = [];
   private createdInvoices: string[] = [];
+  private createdWaitlist: string[] = [];
+  private createdApplications: string[] = [];
 
   async connect() {
     const DATABASE_URL = Deno.env.get("DATABASE_URL");
@@ -38,8 +40,8 @@ export class TestFixture {
     const user = role === "owner"
       ? createOwner()
       : role === "crew"
-      ? createCrew()
-      : createClient();
+        ? createCrew()
+        : createClient();
 
     if (this.dbClient) {
       // Insert into database
@@ -71,18 +73,14 @@ export class TestFixture {
       // Insert client into database
       const result = await this.dbClient.queryObject(
         `
-        INSERT INTO clients (user_id, property_address, name, email, phone, service_plan, notes)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO clients (user_id, property_address, service_plan)
+        VALUES ($1, $2, $3)
         RETURNING id
       `,
         [
           userId || null,
           clientData.property_address,
-          clientData.name,
-          clientData.email,
-          clientData.phone,
           clientData.service_plan,
-          clientData.notes,
         ],
       );
 
@@ -116,7 +114,7 @@ export class TestFixture {
           jobData.client_id,
           (jobData as any).crew_id || null,
           jobData.scheduled_date,
-          JSON.stringify(jobData.services),
+          jobData.services,
           jobData.status,
           jobData.notes,
         ],
@@ -135,28 +133,19 @@ export class TestFixture {
     if (!this.dbClient) return;
 
     // Clean up in reverse order to maintain referential integrity
-    for (const invoiceId of this.createdInvoices) {
-      await this.dbClient.queryObject(`DELETE FROM invoices WHERE id = $1`, [
-        invoiceId,
-      ]);
-    }
-
-    for (const jobId of this.createdJobs) {
-      await this.dbClient.queryObject(`DELETE FROM jobs WHERE id = $1`, [
-        jobId,
-      ]);
-    }
-
-    for (const clientId of this.createdClients) {
-      await this.dbClient.queryObject(`DELETE FROM clients WHERE id = $1`, [
-        clientId,
-      ]);
-    }
-
-    for (const userId of this.createdUsers) {
-      await this.dbClient.queryObject(`DELETE FROM users WHERE id = $1`, [
-        userId,
-      ]);
+    // Thorough cleanup - delete everything from these tables to ensure a clean slate
+    // The order matters for foreign keys, or we can use CASCADE if available
+    try {
+      await this.dbClient.queryObject(`DELETE FROM invoices`);
+      await this.dbClient.queryObject(`DELETE FROM jobs`);
+      await this.dbClient.queryObject(`DELETE FROM clients`);
+      await this.dbClient.queryObject(`DELETE FROM users`);
+      await this.dbClient.queryObject(`DELETE FROM waitlist`);
+      await this.dbClient.queryObject(`DELETE FROM applications`);
+      await this.dbClient.queryObject(`DELETE FROM job_photos`);
+      await this.dbClient.queryObject(`DELETE FROM payments`);
+    } catch (err) {
+      console.warn("Cleanup warning (can be ignored if foreign keys handled):", err.message);
     }
 
     // Reset tracking arrays
@@ -169,6 +158,14 @@ export class TestFixture {
   // Utility methods
   trackInvoice(id: string) {
     this.createdInvoices.push(id);
+  }
+
+  trackWaitlist(id: string) {
+    this.createdWaitlist.push(id);
+  }
+
+  trackApplication(id: string) {
+    this.createdApplications.push(id);
   }
 
   getCreatedUsers() {

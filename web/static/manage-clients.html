@@ -1,572 +1,516 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Xcellent1 Lawn Care - Client Management"
-    />
-    <meta name="theme-color" content="#10b981" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>Client Management | Xcellent1 Owner</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
-    <link rel="stylesheet" href="styles.clean.css" />
-    <link rel="stylesheet" href="admin.css" />
-  </head>
 
-  <body>
-    <!-- Load runtime config from server -->
-    <script src="/config.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Xcellent1 Lawn Care - Client Management" />
+  <meta name="theme-color" content="#10b981" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Client Management | Xcellent1 Owner</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
+  <link rel="stylesheet" href="styles.clean.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <!-- Load runtime config from server -->
+  <script src="/config.js"></script>
+</head>
 
-    <!-- Authentication Check -->
-    <script type="module">
-      import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
+<body>
 
-      const _env = (typeof window !== "undefined" && window.__ENV) ||
-        {};
-      const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL ||
-        "https://utivthfrwgtjatsusopw.supabase.co";
-      const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-        "YOUR_SUPABASE_ANON_KEY_HERE";
+  <!-- Authentication Check -->
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
-      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const _env = (typeof window !== "undefined" && window.__ENV) ||
+      {};
+    const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL ||
+      "https://utivthfrwgtjatsusopw.supabase.co";
+    const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      "YOUR_SUPABASE_ANON_KEY_HERE";
 
-      // Check authentication and role
-      async function checkAuth() {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        if (!session) {
-          window.location.href = "login.html";
-          return;
-        }
+    // Check authentication and role
+    async function checkAuth() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-        const { data: profile, error } = await supabase
-          .from("users")
-          .select("id, name, email, role, status")
-          .eq("auth_user_id", session.user.id)
-          .single();
-
-        if (error || !profile || profile.role !== "owner") {
-          await supabase.auth.signOut();
-          alert("Access denied. This page is only for owners.");
-          window.location.href = "login.html";
-          return;
-        }
-
-        if (profile.status !== "active") {
-          await supabase.auth.signOut();
-          alert("Your account is not active. Please contact support.");
-          window.location.href = "login.html";
-          return;
-        }
-
-        window.userProfile = profile;
-        window.supabaseSession = session;
-        window.supabaseClient = supabase;
+      if (!session) {
+        window.location.href = "login.html";
+        return;
       }
 
-      checkAuth();
+      const { data: profile, error } = await supabase
+        .from("users")
+        .select("id, name, email, role, status")
+        .eq("auth_user_id", session.user.id)
+        .single();
 
-      window.logout = async function () {
+      if (error || !profile || profile.role !== "owner") {
         await supabase.auth.signOut();
+        alert("Access denied. This page is only for owners.");
         window.location.href = "login.html";
-      };
-    </script>
+        return;
+      }
 
-    <!-- Navigation -->
-    <nav class="navbar">
-      <div class="navbar-brand">
-        <img
-          src="images/xcellent1-logo-transparent.png"
-          alt="Xcellent1 logo"
-          class="navbar-logo"
-        />
-        <div class="navbar-title">
-          <span class="navbar-name">XCELLENT1</span>
-          <span class="navbar-tagline">LAWN CARE</span>
-        </div>
-      </div>
-      <div class="navbar-links">
-        <a href="owner.html" class="navbar-link">Dashboard</a>
-        <a href="manage-clients.html" class="navbar-link active">Clients</a>
-        <a href="manage-jobs.html" class="navbar-link">Jobs</a>
-        <a href="manage-invoices.html" class="navbar-link">Invoices</a>
-        <a href="payment-accounts.html" class="navbar-link">Payments</a>
-        <button onclick="logout()" class="btn btn-sm">Logout</button>
-      </div>
-    </nav>
+      if (profile.status !== "active") {
+        await supabase.auth.signOut();
+        alert("Your account is not active. Please contact support.");
+        window.location.href = "login.html";
+        return;
+      }
 
-    <!-- Page Header -->
-    <div class="page-header">
-      <div class="container">
-        <div class="page-title">Client Management</div>
-        <div class="page-breadcrumb">
-          <a href="owner.html">Dashboard</a> / Clients
+      window.userProfile = profile;
+      window.supabaseSession = session;
+      window.supabaseClient = supabase;
+    }
+
+    checkAuth();
+
+    window.logout = async function () {
+      await supabase.auth.signOut();
+      window.location.href = "login.html";
+    };
+  </script>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+      <div class="navbar-title">
+        <span class="navbar-name">XCELLENT1</span>
+        <span class="navbar-tagline">LAWN CARE</span>
+      </div>
+    </div>
+    <div class="navbar-links">
+      <a href="owner.html" class="navbar-link">Dashboard</a>
+      <a href="manage-clients.html" class="navbar-link active">Clients</a>
+      <a href="manage-jobs.html" class="navbar-link">Jobs</a>
+      <a href="manage-invoices.html" class="navbar-link">Invoices</a>
+      <a href="payment-accounts.html" class="navbar-link">Payments</a>
+      <button onclick="logout()" class="btn btn-sm">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <div class="page-title">Client Management</div>
+      <div class="page-breadcrumb">
+        <a href="owner.html">Dashboard</a> / Clients
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Client List View -->
+    <div id="client-list-view">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" class="search-input"
+            placeholder="Search by name, email, or address..." />
         </div>
+        <select id="status-filter" class="filter-select">
+          <option value="">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="paused">Paused</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button id="btn-add-client" class="btn-add">➕ Add Client</button>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading" class="loading">
+        <div>Loading clients...</div>
+      </div>
+
+      <!-- Clients Table -->
+      <div id="clients-table-wrapper" class="clients-table-container">
+        <table class="clients-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Service Plan</th>
+              <th>Balance</th>
+              <th>Jobs</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="clients-tbody">
+            <!-- Populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h3>No clients found</h3>
+        <p>Add your first client to get started!</p>
       </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="container">
-      <!-- Client List View -->
-      <div id="client-list-view">
-        <!-- Toolbar -->
-        <div class="toolbar">
-          <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input
-              type="text"
-              id="search-input"
-              class="search-input"
-              placeholder="Search by name, email, or address..."
-            />
+    <!-- Client Details View -->
+    <div id="client-details-view" class="client-details">
+      <div class="detail-header">
+        <button id="btn-back" class="btn btn-secondary">
+          ← Back to List
+        </button>
+        <button id="btn-edit-client" class="btn btn-primary">
+          Edit Client
+        </button>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Client Information</div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Name</div>
+            <div class="detail-value" id="detail-name">-</div>
           </div>
-          <select id="status-filter" class="filter-select">
-            <option value="">All Statuses</option>
-            <option value="active">Active</option>
-            <option value="paused">Paused</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-          <button id="btn-add-client" class="btn-add">➕ Add Client</button>
-        </div>
-
-        <!-- Loading State -->
-        <div id="loading" class="loading">
-          <div>Loading clients...</div>
-        </div>
-
-        <!-- Clients Table -->
-        <div id="clients-table-wrapper" class="clients-table-container">
-          <table class="clients-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Service Plan</th>
-                <th>Balance</th>
-                <th>Jobs</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="clients-tbody">
-              <!-- Populated by JavaScript -->
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Empty State -->
-        <div id="empty-state" class="empty-state">
-          <div class="empty-icon">📋</div>
-          <h3>No clients found</h3>
-          <p>Add your first client to get started!</p>
+          <div class="detail-item">
+            <div class="detail-label">Email</div>
+            <div class="detail-value" id="detail-email">-</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Phone</div>
+            <div class="detail-value" id="detail-phone">-</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Status</div>
+            <div class="detail-value" id="detail-status">-</div>
+          </div>
         </div>
       </div>
 
-      <!-- Client Details View -->
-      <div id="client-details-view" class="client-details">
-        <div class="detail-header">
-          <button id="btn-back" class="btn btn-secondary">
-            ← Back to List
-          </button>
-          <button id="btn-edit-client" class="btn btn-primary">
-            Edit Client
-          </button>
-        </div>
-
-        <div class="detail-section">
-          <div class="detail-section-title">Client Information</div>
-          <div class="detail-grid">
-            <div class="detail-item">
-              <div class="detail-label">Name</div>
-              <div class="detail-value" id="detail-name">-</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">Email</div>
-              <div class="detail-value" id="detail-email">-</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">Phone</div>
-              <div class="detail-value" id="detail-phone">-</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">Status</div>
-              <div class="detail-value" id="detail-status">-</div>
-            </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Property Information</div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Address</div>
+            <div class="detail-value" id="detail-address">-</div>
           </div>
-        </div>
-
-        <div class="detail-section">
-          <div class="detail-section-title">Property Information</div>
-          <div class="detail-grid">
-            <div class="detail-item">
-              <div class="detail-label">Address</div>
-              <div class="detail-value" id="detail-address">-</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">City</div>
-              <div class="detail-value" id="detail-city">-</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">State</div>
-              <div class="detail-value" id="detail-state">-</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">ZIP</div>
-              <div class="detail-value" id="detail-zip">-</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">Service Plan</div>
-              <div class="detail-value" id="detail-plan">-</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">Balance Due</div>
-              <div class="detail-value" id="detail-balance">-</div>
-            </div>
+          <div class="detail-item">
+            <div class="detail-label">City</div>
+            <div class="detail-value" id="detail-city">-</div>
           </div>
-        </div>
-
-        <div class="detail-section">
-          <div class="detail-section-title">Job History</div>
-          <div id="detail-jobs">No jobs yet</div>
-        </div>
-
-        <div class="detail-section">
-          <div class="detail-section-title">Invoices</div>
-          <div id="detail-invoices">No invoices yet</div>
+          <div class="detail-item">
+            <div class="detail-label">State</div>
+            <div class="detail-value" id="detail-state">-</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">ZIP</div>
+            <div class="detail-value" id="detail-zip">-</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Service Plan</div>
+            <div class="detail-value" id="detail-plan">-</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Balance Due</div>
+            <div class="detail-value" id="detail-balance">-</div>
+          </div>
         </div>
       </div>
-    </main>
 
-    <!-- Add/Edit Client Modal -->
-    <div id="client-modal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="modal-title">Add Client</h2>
-          <button class="modal-close" id="modal-close">×</button>
-        </div>
-        <form id="client-form">
-          <div class="modal-body">
-            <!-- Client Information -->
-            <h3>Client Information</h3>
+      <div class="detail-section">
+        <div class="detail-section-title">Job History</div>
+        <div id="detail-jobs">No jobs yet</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Invoices</div>
+        <div id="detail-invoices">No invoices yet</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add/Edit Client Modal -->
+  <div id="client-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Add Client</h2>
+        <button class="modal-close" id="modal-close">×</button>
+      </div>
+      <form id="client-form">
+        <div class="modal-body">
+          <!-- Client Information -->
+          <h3>Client Information</h3>
+          <div class="form-group">
+            <label class="form-label">
+              Name <span class="form-required">*</span>
+            </label>
+            <input type="text" id="form-name" name="name" class="form-input" required placeholder="John Doe" />
+          </div>
+
+          <div class="form-row">
             <div class="form-group">
               <label class="form-label">
-                Name <span class="form-required">*</span>
+                Email <span class="form-required">*</span>
               </label>
-              <input
-                type="text"
-                id="form-name"
-                name="name"
-                class="form-input"
-                required
-                placeholder="John Doe"
-              />
+              <input type="email" id="form-email" name="email" class="form-input" required
+                placeholder="john@example.com" />
             </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">
-                  Email <span class="form-required">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="form-email"
-                  name="email"
-                  class="form-input"
-                  required
-                  placeholder="john@example.com"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Phone</label>
-                <input
-                  type="tel"
-                  id="form-phone"
-                  name="phone"
-                  class="form-input"
-                  placeholder="(555) 123-4567"
-                />
-              </div>
-            </div>
-
-            <!-- Property Information -->
-            <h3 style="margin-top: 1.5rem">Property Information</h3>
             <div class="form-group">
-              <label class="form-label">
-                Address <span class="form-required">*</span>
-              </label>
-              <input
-                type="text"
-                id="form-address"
-                name="property_address"
-                class="form-input"
-                required
-                placeholder="123 Main Street"
-              />
+              <label class="form-label">Phone</label>
+              <input type="tel" id="form-phone" name="phone" class="form-input" placeholder="(555) 123-4567" />
             </div>
+          </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">City</label>
-                <input
-                  type="text"
-                  id="form-city"
-                  name="property_city"
-                  class="form-input"
-                  placeholder="LaPlace"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">State</label>
-                <input
-                  type="text"
-                  id="form-state"
-                  name="property_state"
-                  class="form-input"
-                  placeholder="LA"
-                  maxlength="2"
-                />
-              </div>
+          <!-- Property Information -->
+          <h3 style="margin-top: 1.5rem">Property Information</h3>
+          <div class="form-group">
+            <label class="form-label">
+              Address <span class="form-required">*</span>
+            </label>
+            <input type="text" id="form-address" name="property_address" class="form-input" required
+              placeholder="123 Main Street" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <input type="text" id="form-city" name="property_city" class="form-input" placeholder="LaPlace" />
             </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">ZIP Code</label>
-                <input
-                  type="text"
-                  id="form-zip"
-                  name="property_zip"
-                  class="form-input"
-                  placeholder="70068"
-                  maxlength="10"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Service Plan</label>
-                <select id="form-plan" name="service_plan" class="form-select">
-                  <option value="weekly">Weekly</option>
-                  <option value="biweekly">Bi-weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="seasonal">Seasonal</option>
-                  <option value="one-time">One-time</option>
-                </select>
-              </div>
+            <div class="form-group">
+              <label class="form-label">State</label>
+              <input type="text" id="form-state" name="property_state" class="form-input" placeholder="LA"
+                maxlength="2" />
             </div>
+          </div>
 
-            <div class="form-group" id="status-group" style="display: none">
-              <label class="form-label">Status</label>
-              <select id="form-status" name="status" class="form-select">
-                <option value="active">Active</option>
-                <option value="paused">Paused</option>
-                <option value="cancelled">Cancelled</option>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">ZIP Code</label>
+              <input type="text" id="form-zip" name="property_zip" class="form-input" placeholder="70068"
+                maxlength="10" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Service Plan</label>
+              <select id="form-plan" name="service_plan" class="form-select">
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Bi-weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="seasonal">Seasonal</option>
+                <option value="one-time">One-time</option>
               </select>
             </div>
-
-            <div id="form-error" class="form-error" style="display: none"></div>
           </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="btn-cancel">
-              Cancel
-            </button>
-            <button type="submit" class="btn btn-primary" id="btn-submit">
-              Save Client
-            </button>
+          <div class="form-group" id="status-group" style="display: none">
+            <label class="form-label">Status</label>
+            <select id="form-status" name="status" class="form-select">
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
           </div>
-        </form>
-      </div>
+
+          <div id="form-error" class="form-error" style="display: none"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" id="btn-submit">
+            Save Client
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <!-- JavaScript -->
-    <script type="module">
-      import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
+  <!-- JavaScript -->
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 
-      const _env = (typeof window !== "undefined" && window.__ENV) ||
-        {};
-      const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL ||
-        "https://utivthfrwgtjatsusopw.supabase.co";
-      const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-        "YOUR_SUPABASE_ANON_KEY_HERE";
+    const _env = (typeof window !== "undefined" && window.__ENV) ||
+      {};
+    const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL ||
+      "https://utivthfrwgtjatsusopw.supabase.co";
+    const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      "YOUR_SUPABASE_ANON_KEY_HERE";
 
-      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      // Get API base URL
-      const API_BASE = window.location.origin;
+    // Get API base URL
+    const API_BASE = window.location.origin;
 
-      // State
-      let clients = [];
-      let currentClient = null;
-      let editMode = false;
+    // State
+    let clients = [];
+    let currentClient = null;
+    let editMode = false;
 
-      // DOM Elements
-      const searchInput = document.getElementById("search-input");
-      const statusFilter = document.getElementById("status-filter");
-      const btnAddClient = document.getElementById("btn-add-client");
-      const clientsTbody = document.getElementById("clients-tbody");
-      const loading = document.getElementById("loading");
-      const tableWrapper = document.getElementById(
-        "clients-table-wrapper",
-      );
-      const emptyState = document.getElementById("empty-state");
-      const clientModal = document.getElementById("client-modal");
-      const modalClose = document.getElementById("modal-close");
-      const btnCancel = document.getElementById("btn-cancel");
-      const clientForm = document.getElementById("client-form");
-      const formError = document.getElementById("form-error");
-      const btnSubmit = document.getElementById("btn-submit");
-      const modalTitle = document.getElementById("modal-title");
-      const statusGroup = document.getElementById("status-group");
+    // DOM Elements
+    const searchInput = document.getElementById("search-input");
+    const statusFilter = document.getElementById("status-filter");
+    const btnAddClient = document.getElementById("btn-add-client");
+    const clientsTbody = document.getElementById("clients-tbody");
+    const loading = document.getElementById("loading");
+    const tableWrapper = document.getElementById(
+      "clients-table-wrapper",
+    );
+    const emptyState = document.getElementById("empty-state");
+    const clientModal = document.getElementById("client-modal");
+    const modalClose = document.getElementById("modal-close");
+    const btnCancel = document.getElementById("btn-cancel");
+    const clientForm = document.getElementById("client-form");
+    const formError = document.getElementById("form-error");
+    const btnSubmit = document.getElementById("btn-submit");
+    const modalTitle = document.getElementById("modal-title");
+    const statusGroup = document.getElementById("status-group");
 
-      // Client details view
-      const clientListView = document.getElementById(
-        "client-list-view",
-      );
-      const clientDetailsView = document.getElementById(
-        "client-details-view",
-      );
-      const btnBack = document.getElementById("btn-back");
-      const btnEditClient = document.getElementById("btn-edit-client");
+    // Client details view
+    const clientListView = document.getElementById(
+      "client-list-view",
+    );
+    const clientDetailsView = document.getElementById(
+      "client-details-view",
+    );
+    const btnBack = document.getElementById("btn-back");
+    const btnEditClient = document.getElementById("btn-edit-client");
 
-      // Load clients
-      async function loadClients() {
-        try {
-          loading.style.display = "block";
-          tableWrapper.style.display = "none";
-          emptyState.style.display = "none";
+    // Load clients
+    async function loadClients() {
+      try {
+        loading.style.display = "block";
+        tableWrapper.style.display = "none";
+        emptyState.style.display = "none";
 
-          const session = window.supabaseSession;
-          if (!session) {
-            throw new Error("Not authenticated");
-          }
-
-          const searchTerm = searchInput.value;
-          const status = statusFilter.value;
-
-          let url = `${API_BASE}/api/owner/clients`;
-          const params = new URLSearchParams();
-          if (searchTerm) params.append("search", searchTerm);
-          if (status) params.append("status", status);
-          if (params.toString()) url += `?${params.toString()}`;
-
-          const response = await fetch(url, {
-            headers: {
-              Authorization: `Bearer ${session.access_token}`,
-            },
-          });
-
-          if (!response.ok) {
-            throw new Error("Failed to load clients");
-          }
-
-          const data = await response.json();
-          clients = data.clients || [];
-
-          renderClients();
-        } catch (error) {
-          console.error("Error loading clients:", error);
-          alert("Failed to load clients. Please try again.");
-        } finally {
-          loading.style.display = "none";
+        const session = window.supabaseSession;
+        if (!session) {
+          throw new Error("Not authenticated");
         }
+
+        const searchTerm = searchInput.value;
+        const status = statusFilter.value;
+
+        let url = `${API_BASE}/api/owner/clients`;
+        const params = new URLSearchParams();
+        if (searchTerm) params.append("search", searchTerm);
+        if (status) params.append("status", status);
+        if (params.toString()) url += `?${params.toString()}`;
+
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load clients");
+        }
+
+        const data = await response.json();
+        clients = data.clients || [];
+
+        renderClients();
+      } catch (error) {
+        console.error("Error loading clients:", error);
+        alert("Failed to load clients. Please try again.");
+      } finally {
+        loading.style.display = "none";
+      }
+    }
+
+    // Render clients table
+    function renderClients() {
+      if (clients.length === 0) {
+        emptyState.style.display = "block";
+        tableWrapper.style.display = "none";
+        return;
       }
 
-      // Render clients table
-      function renderClients() {
-        if (clients.length === 0) {
-          emptyState.style.display = "block";
-          tableWrapper.style.display = "none";
-          return;
-        }
+      emptyState.style.display = "none";
+      tableWrapper.style.display = "block";
 
-        emptyState.style.display = "none";
-        tableWrapper.style.display = "block";
-
-        clientsTbody.innerHTML = clients
-          .map((client) => {
-            const balanceClass = parseFloat(client.balance_due) > 0
-              ? "balance-positive"
-              : "balance-zero";
-            return `
+      clientsTbody.innerHTML = clients
+        .map((client) => {
+          const balanceClass = parseFloat(client.balance_due) > 0
+            ? "balance-positive"
+            : "balance-zero";
+          return `
             <tr onclick="viewClient('${client.id}')">
               <td>${client.name || "-"}</td>
               <td>${client.property_address || "-"}</td>
               <td>${formatPlan(client.service_plan)}</td>
-              <td class="${balanceClass}">$${
-              parseFloat(client.balance_due || 0).toFixed(2)
+              <td class="${balanceClass}">$${parseFloat(client.balance_due || 0).toFixed(2)
             }</td>
-              <td>${client.completed_jobs || 0} / ${
-              client.total_jobs || 0
+              <td>${client.completed_jobs || 0} / ${client.total_jobs || 0
             }</td>
               <td><span class="status-badge status-${client.status}">${client.status}</span></td>
             </tr>
           `;
-          })
-          .join("");
-      }
+        })
+        .join("");
+    }
 
-      // Format service plan
-      function formatPlan(plan) {
-        const plans = {
-          weekly: "Weekly",
-          biweekly: "Bi-weekly",
-          monthly: "Monthly",
-          seasonal: "Seasonal",
-          "one-time": "One-time",
-        };
-        return plans[plan] || plan;
-      }
+    // Format service plan
+    function formatPlan(plan) {
+      const plans = {
+        weekly: "Weekly",
+        biweekly: "Bi-weekly",
+        monthly: "Monthly",
+        seasonal: "Seasonal",
+        "one-time": "One-time",
+      };
+      return plans[plan] || plan;
+    }
 
-      // View client details
-      window.viewClient = async function (clientId) {
-        try {
-          const session = window.supabaseSession;
-          if (!session) return;
+    // View client details
+    window.viewClient = async function (clientId) {
+      try {
+        const session = window.supabaseSession;
+        if (!session) return;
 
-          const response = await fetch(
-            `${API_BASE}/api/owner/clients/${clientId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${session.access_token}`,
-              },
+        const response = await fetch(
+          `${API_BASE}/api/owner/clients/${clientId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
             },
-          );
+          },
+        );
 
-          if (!response.ok) {
-            throw new Error("Failed to load client details");
-          }
+        if (!response.ok) {
+          throw new Error("Failed to load client details");
+        }
 
-          const data = await response.json();
-          currentClient = data.client;
+        const data = await response.json();
+        currentClient = data.client;
 
-          // Populate details view
-          document.getElementById("detail-name").textContent =
-            currentClient.name || "-";
-          document.getElementById("detail-email").textContent =
-            currentClient.email || "-";
-          document.getElementById("detail-phone").textContent =
-            currentClient.phone || "-";
-          document.getElementById("detail-status").innerHTML =
-            `<span class="status-badge status-${currentClient.status}">${currentClient.status}</span>`;
-          document.getElementById("detail-address").textContent =
-            currentClient.property_address || "-";
-          document.getElementById("detail-city").textContent =
-            currentClient.property_city || "-";
-          document.getElementById("detail-state").textContent =
-            currentClient.property_state || "-";
-          document.getElementById("detail-zip").textContent =
-            currentClient.property_zip || "-";
-          document.getElementById("detail-plan").textContent =
-            formatPlan(currentClient.service_plan);
-          document.getElementById("detail-balance").textContent = `$${
-            parseFloat(currentClient.balance_due || 0).toFixed(2)
+        // Populate details view
+        document.getElementById("detail-name").textContent =
+          currentClient.name || "-";
+        document.getElementById("detail-email").textContent =
+          currentClient.email || "-";
+        document.getElementById("detail-phone").textContent =
+          currentClient.phone || "-";
+        document.getElementById("detail-status").innerHTML =
+          `<span class="status-badge status-${currentClient.status}">${currentClient.status}</span>`;
+        document.getElementById("detail-address").textContent =
+          currentClient.property_address || "-";
+        document.getElementById("detail-city").textContent =
+          currentClient.property_city || "-";
+        document.getElementById("detail-state").textContent =
+          currentClient.property_state || "-";
+        document.getElementById("detail-zip").textContent =
+          currentClient.property_zip || "-";
+        document.getElementById("detail-plan").textContent =
+          formatPlan(currentClient.service_plan);
+        document.getElementById("detail-balance").textContent = `$${parseFloat(currentClient.balance_due || 0).toFixed(2)
           }`;
 
-          // Show jobs
-          const jobsDiv = document.getElementById("detail-jobs");
-          if (data.jobs && data.jobs.length > 0) {
-            jobsDiv.innerHTML = `
+        // Show jobs
+        const jobsDiv = document.getElementById("detail-jobs");
+        if (data.jobs && data.jobs.length > 0) {
+          jobsDiv.innerHTML = `
             <table class="clients-table">
               <thead>
                 <tr>
@@ -577,39 +521,36 @@
                 </tr>
               </thead>
               <tbody>
-                ${
-              data.jobs
-                .map(
-                  (job) => `
+                ${data.jobs
+              .map(
+                (job) => `
                   <tr>
-                    <td>${
-                    new Date(job.scheduled_date).toLocaleDateString()
+                    <td>${new Date(job.scheduled_date).toLocaleDateString()
                   }</td>
-                    <td>${
-                    Array.isArray(job.services)
-                      ? job.services.join(", ")
-                      : job.services
+                    <td>${Array.isArray(job.services)
+                    ? job.services.join(", ")
+                    : job.services
                   }</td>
                     <td>${job.crew_name || "-"}</td>
                     <td><span class="status-badge status-${job.status}">${job.status}</span></td>
                   </tr>
                 `,
-                )
-                .join("")
+              )
+              .join("")
             }
               </tbody>
             </table>
           `;
-          } else {
-            jobsDiv.textContent = "No jobs yet";
-          }
+        } else {
+          jobsDiv.textContent = "No jobs yet";
+        }
 
-          // Show invoices
-          const invoicesDiv = document.getElementById(
-            "detail-invoices",
-          );
-          if (data.invoices && data.invoices.length > 0) {
-            invoicesDiv.innerHTML = `
+        // Show invoices
+        const invoicesDiv = document.getElementById(
+          "detail-invoices",
+        );
+        if (data.invoices && data.invoices.length > 0) {
+          invoicesDiv.innerHTML = `
             <table class="clients-table">
               <thead>
                 <tr>
@@ -620,176 +561,175 @@
                 </tr>
               </thead>
               <tbody>
-                ${
-              data.invoices
-                .map(
-                  (invoice) => `
+                ${data.invoices
+              .map(
+                (invoice) => `
                   <tr>
                     <td>${invoice.invoice_number}</td>
                     <td>$${parseFloat(invoice.amount).toFixed(2)}</td>
-                    <td>${
-                    new Date(invoice.due_date).toLocaleDateString()
+                    <td>${new Date(invoice.due_date).toLocaleDateString()
                   }</td>
                     <td><span class="status-badge status-${invoice.status}">${invoice.status}</span></td>
                   </tr>
                 `,
-                )
-                .join("")
+              )
+              .join("")
             }
               </tbody>
             </table>
           `;
-          } else {
-            invoicesDiv.textContent = "No invoices yet";
-          }
-
-          // Switch views
-          clientListView.style.display = "none";
-          clientDetailsView.classList.add("active");
-        } catch (error) {
-          console.error("Error loading client details:", error);
-          alert("Failed to load client details.");
-        }
-      };
-
-      // Back to list
-      btnBack.addEventListener("click", () => {
-        clientDetailsView.classList.remove("active");
-        clientListView.style.display = "block";
-        currentClient = null;
-      });
-
-      // Edit client
-      btnEditClient.addEventListener("click", () => {
-        if (!currentClient) return;
-        editMode = true;
-        openModal(currentClient);
-      });
-
-      // Open modal
-      function openModal(client = null) {
-        if (client) {
-          // Edit mode
-          modalTitle.textContent = "Edit Client";
-          document.getElementById("form-name").value = client.name ||
-            "";
-          document.getElementById("form-email").value = client.email ||
-            "";
-          document.getElementById("form-phone").value = client.phone ||
-            "";
-          document.getElementById("form-address").value =
-            client.property_address || "";
-          document.getElementById("form-city").value =
-            client.property_city || "";
-          document.getElementById("form-state").value =
-            client.property_state || "";
-          document.getElementById("form-zip").value =
-            client.property_zip || "";
-          document.getElementById("form-plan").value =
-            client.service_plan || "weekly";
-          document.getElementById("form-status").value =
-            client.status || "active";
-          statusGroup.style.display = "block";
-          editMode = true;
         } else {
-          // Add mode
-          modalTitle.textContent = "Add Client";
-          clientForm.reset();
-          statusGroup.style.display = "none";
-          editMode = false;
+          invoicesDiv.textContent = "No invoices yet";
         }
-        formError.style.display = "none";
-        clientModal.classList.add("active");
-      }
 
-      // Close modal
-      function closeModal() {
-        clientModal.classList.remove("active");
+        // Switch views
+        clientListView.style.display = "none";
+        clientDetailsView.classList.add("active");
+      } catch (error) {
+        console.error("Error loading client details:", error);
+        alert("Failed to load client details.");
+      }
+    };
+
+    // Back to list
+    btnBack.addEventListener("click", () => {
+      clientDetailsView.classList.remove("active");
+      clientListView.style.display = "block";
+      currentClient = null;
+    });
+
+    // Edit client
+    btnEditClient.addEventListener("click", () => {
+      if (!currentClient) return;
+      editMode = true;
+      openModal(currentClient);
+    });
+
+    // Open modal
+    function openModal(client = null) {
+      if (client) {
+        // Edit mode
+        modalTitle.textContent = "Edit Client";
+        document.getElementById("form-name").value = client.name ||
+          "";
+        document.getElementById("form-email").value = client.email ||
+          "";
+        document.getElementById("form-phone").value = client.phone ||
+          "";
+        document.getElementById("form-address").value =
+          client.property_address || "";
+        document.getElementById("form-city").value =
+          client.property_city || "";
+        document.getElementById("form-state").value =
+          client.property_state || "";
+        document.getElementById("form-zip").value =
+          client.property_zip || "";
+        document.getElementById("form-plan").value =
+          client.service_plan || "weekly";
+        document.getElementById("form-status").value =
+          client.status || "active";
+        statusGroup.style.display = "block";
+        editMode = true;
+      } else {
+        // Add mode
+        modalTitle.textContent = "Add Client";
         clientForm.reset();
-        formError.style.display = "none";
+        statusGroup.style.display = "none";
         editMode = false;
       }
+      formError.style.display = "none";
+      clientModal.classList.add("active");
+    }
 
-      // Event listeners
-      btnAddClient.addEventListener("click", () => openModal());
-      modalClose.addEventListener("click", closeModal);
-      btnCancel.addEventListener("click", closeModal);
+    // Close modal
+    function closeModal() {
+      clientModal.classList.remove("active");
+      clientForm.reset();
+      formError.style.display = "none";
+      editMode = false;
+    }
 
-      // Handle form submit
-      clientForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        formError.style.display = "none";
-        btnSubmit.disabled = true;
-        btnSubmit.textContent = "Saving...";
+    // Event listeners
+    btnAddClient.addEventListener("click", () => openModal());
+    modalClose.addEventListener("click", closeModal);
+    btnCancel.addEventListener("click", closeModal);
 
-        try {
-          const session = window.supabaseSession;
-          if (!session) {
-            throw new Error("Not authenticated");
-          }
+    // Handle form submit
+    clientForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      formError.style.display = "none";
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = "Saving...";
 
-          const formData = new FormData(clientForm);
-          const data = Object.fromEntries(formData.entries());
+      try {
+        const session = window.supabaseSession;
+        if (!session) {
+          throw new Error("Not authenticated");
+        }
 
-          let response;
-          if (editMode && currentClient) {
-            // Update existing client
-            response = await fetch(
-              `${API_BASE}/api/owner/clients/${currentClient.id}`,
-              {
-                method: "PATCH",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${session.access_token}`,
-                },
-                body: JSON.stringify(data),
-              },
-            );
-          } else {
-            // Create new client
-            response = await fetch(`${API_BASE}/api/owner/clients`, {
-              method: "POST",
+        const formData = new FormData(clientForm);
+        const data = Object.fromEntries(formData.entries());
+
+        let response;
+        if (editMode && currentClient) {
+          // Update existing client
+          response = await fetch(
+            `${API_BASE}/api/owner/clients/${currentClient.id}`,
+            {
+              method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${session.access_token}`,
               },
               body: JSON.stringify(data),
-            });
-          }
-
-          if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || "Failed to save client");
-          }
-
-          // Success!
-          closeModal();
-          await loadClients();
-
-          // If we were in details view, go back to list
-          if (clientDetailsView.classList.contains("active")) {
-            btnBack.click();
-          }
-        } catch (error) {
-          console.error("Error saving client:", error);
-          formError.textContent = error.message;
-          formError.style.display = "block";
-        } finally {
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = "Save Client";
+            },
+          );
+        } else {
+          // Create new client
+          response = await fetch(`${API_BASE}/api/owner/clients`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify(data),
+          });
         }
-      });
 
-      // Search and filter
-      searchInput.addEventListener("input", () => {
-        clearTimeout(window.searchTimeout);
-        window.searchTimeout = setTimeout(loadClients, 300);
-      });
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || "Failed to save client");
+        }
 
-      statusFilter.addEventListener("change", loadClients);
+        // Success!
+        closeModal();
+        await loadClients();
 
-      // Initial load
-      loadClients();
-    </script>
-  </body>
+        // If we were in details view, go back to list
+        if (clientDetailsView.classList.contains("active")) {
+          btnBack.click();
+        }
+      } catch (error) {
+        console.error("Error saving client:", error);
+        formError.textContent = error.message;
+        formError.style.display = "block";
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = "Save Client";
+      }
+    });
+
+    // Search and filter
+    searchInput.addEventListener("input", () => {
+      clearTimeout(window.searchTimeout);
+      window.searchTimeout = setTimeout(loadClients, 300);
+    });
+
+    statusFilter.addEventListener("change", loadClients);
+
+    // Initial load
+    loadClients();
+  </script>
+</body>
+
 </html>

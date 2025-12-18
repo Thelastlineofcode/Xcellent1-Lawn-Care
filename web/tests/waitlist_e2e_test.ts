@@ -5,6 +5,7 @@ import {
 } from "https://deno.land/std@0.203.0/testing/asserts.ts";
 import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
 import { getTestUrl } from "../../tests/test-config.ts";
+import { testFixture } from "../../tests/support/fixtures/test-fixture.ts";
 
 serverTest("E2E: waitlist form posts correct payload to API", async () => {
   // Load static HTML and parse DOM
@@ -44,4 +45,5 @@ serverTest("E2E: waitlist form posts correct payload to API", async () => {
   assertEquals(res.status, 201);
   assertEquals(json.ok, true);
   assert(json.id, "response contains id");
+  testFixture.trackWaitlist(json.id);
 });

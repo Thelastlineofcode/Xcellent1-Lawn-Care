@@ -1,151 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Hiring manager dashboard - review worker applications, track crew jobs, upload photos"
-    />
-    <meta name="theme-color" content="#10b981" />
-    <title>Hiring Dashboard | Xcellent1 Lawn Care</title>
-    <link rel="stylesheet" href="styles.clean.css" />
-    <link rel="stylesheet" href="admin.css" />
-    <link rel="manifest" href="manifest.json" />
-  </head>
-  <body>
-    <nav class="navbar">
-      <div class="navbar-brand">
-        <img
-          src="images/xcellent1-logo-transparent.png"
-          alt="Xcellent1 logo"
-          class="navbar-logo"
-        />
-        <div class="navbar-title">
-          <span class="navbar-name">XCELLENT1</span>
-          <span class="navbar-tagline">LAWN CARE</span>
-        </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Hiring manager dashboard - review worker applications, track crew jobs, upload photos" />
+  <meta name="theme-color" content="#10b981" />
+  <title>Hiring Dashboard | Xcellent1 Lawn Care</title>
+  <link rel="stylesheet" href="styles.clean.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="manifest" href="manifest.json" />
+  <!-- Load runtime config from server -->
+  <script src="/config.js"></script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+      <div class="navbar-title">
+        <span class="navbar-name">XCELLENT1</span>
+        <span class="navbar-tagline">LAWN CARE</span>
       </div>
-      <div class="navbar-links">
-        <a href="home.html" class="navbar-link">Home</a>
-        <a href="shop.html" class="navbar-link">Shop</a>
-        <a href="careers.html" class="navbar-link">Careers</a>
-        <a href="login.html" class="navbar-login">Login</a>
-      </div>
-    </nav>
+    </div>
+    <div class="navbar-links">
+      <a href="home.html" class="navbar-link">Home</a>
+      <a href="shop.html" class="navbar-link">Shop</a>
+      <a href="careers.html" class="navbar-link">Careers</a>
+      <a href="login.html" class="navbar-login">Login</a>
+    </div>
+  </nav>
 
-    <main class="container" id="dashboard">
-      <div class="dashboard-header">
-        <div>
-          <h1>📄 Hiring Manager Dashboard</h1>
-          <p class="refresh-indicator">
-            <span class="dot"></span>
-            Auto-refreshing every 20s
-          </p>
-        </div>
-      </div>
-
-      <!-- KPI Stats -->
-      <div class="dashboard-stats" id="stats">
-        <div class="stat-card">
-          <p class="stat-value" id="stat-leads">0</p>
-          <p class="stat-label">Applications Received</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-value" id="stat-events">0</p>
-          <p class="stat-label">Pending Events</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-value" id="stat-photos">0</p>
-          <p class="stat-label">Job Photos</p>
-        </div>
-      </div>
-
-      <div id="dashboard-status" role="alert" aria-live="polite"></div>
-
-      <!-- Applications Section -->
-      <section class="mb-lg">
-        <div class="card-header">
-          <h2>💼 Worker Applications</h2>
-          <p class="text-muted">
-            Review applicants from the <a href="/">careers page</a>
-          </p>
-        </div>
-        <div id="leads-list">
-          <div class="loading-container">
-            <span class="spinner"></span>
-            <span>Loading applications...</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Outbox Events -->
-      <section class="mb-lg">
-        <div class="card-header">
-          <h2>📋 Work Queue</h2>
-        </div>
-        <div id="outbox-list">
-          <div class="loading-container">
-            <span class="spinner"></span>
-            <span>Loading events...</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Photo Upload (Crew Use) -->
-      <section class="card">
-        <h2>📸 Crew: Upload Job Photo</h2>
-        <p class="text-muted mb-md">
-          Field crews can upload before/after photos for completed jobs.
+  <main class="container" id="dashboard">
+    <div class="dashboard-header">
+      <div>
+        <h1>📄 Hiring Manager Dashboard</h1>
+        <p class="refresh-indicator">
+          <span class="dot"></span>
+          Auto-refreshing every 20s
         </p>
-        <div id="upload-status" role="alert" aria-live="polite"></div>
-        <form id="upload-form" class="mt-md" action="#">
-          <div class="form-group">
-            <label for="jobId">Job ID <span class="required">*</span></label>
-            <input
-              type="text"
-              id="jobId"
-              name="jobId"
-              required
-              placeholder="e.g., job-001"
-            />
-            <small class="text-muted">From work order or route sheet</small>
-          </div>
-          <div class="form-group">
-            <label for="photo-file">Photo <span class="required">*</span>
-              <span class="text-muted">(max 5MB)</span></label>
-            <input
-              type="file"
-              id="photo-file"
-              name="photo"
-              accept="image/*"
-              capture="environment"
-              required
-            />
-            <small class="text-muted">Take photo or choose from gallery</small>
-          </div>
-          <div id="photo-preview"></div>
-          <button type="submit" id="upload-btn" class="btn">
-            📤 Upload Photo
-          </button>
-        </form>
-      </section>
-    </main>
+      </div>
+    </div>
 
-    <footer class="text-center mt-lg text-muted">
-      <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
-      <p><small>Powered by BMAD Recruitment Platform</small></p>
-    </footer>
+    <!-- KPI Stats -->
+    <div class="dashboard-stats" id="stats">
+      <div class="stat-card">
+        <p class="stat-value" id="stat-leads">0</p>
+        <p class="stat-label">Applications Received</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-value" id="stat-events">0</p>
+        <p class="stat-label">Pending Events</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-value" id="stat-photos">0</p>
+        <p class="stat-label">Job Photos</p>
+      </div>
+    </div>
 
-    <script src="app.js"></script>
-    <script type="module">
-      import { logout, requireAuth } from "auth-helper.js";
+    <div id="dashboard-status" role="alert" aria-live="polite"></div>
 
-      // Require owner authentication for hiring dashboard
-      const userProfile = await requireAuth("owner");
+    <!-- Applications Section -->
+    <section class="mb-lg">
+      <div class="card-header">
+        <h2>💼 Worker Applications</h2>
+        <p class="text-muted">
+          Review applicants from the <a href="/">careers page</a>
+        </p>
+      </div>
+      <div id="leads-list">
+        <div class="loading-container">
+          <span class="spinner"></span>
+          <span>Loading applications...</span>
+        </div>
+      </div>
+    </section>
 
-      // Export for use in other scripts
-      window.ownerProfile = userProfile;
-    </script>
-  </body>
+    <!-- Outbox Events -->
+    <section class="mb-lg">
+      <div class="card-header">
+        <h2>📋 Work Queue</h2>
+      </div>
+      <div id="outbox-list">
+        <div class="loading-container">
+          <span class="spinner"></span>
+          <span>Loading events...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Photo Upload (Crew Use) -->
+    <section class="card">
+      <h2>📸 Crew: Upload Job Photo</h2>
+      <p class="text-muted mb-md">
+        Field crews can upload before/after photos for completed jobs.
+      </p>
+      <div id="upload-status" role="alert" aria-live="polite"></div>
+      <form id="upload-form" class="mt-md" action="#">
+        <div class="form-group">
+          <label for="jobId">Job ID <span class="required">*</span></label>
+          <input type="text" id="jobId" name="jobId" required placeholder="e.g., job-001" />
+          <small class="text-muted">From work order or route sheet</small>
+        </div>
+        <div class="form-group">
+          <label for="photo-file">Photo <span class="required">*</span>
+            <span class="text-muted">(max 5MB)</span></label>
+          <input type="file" id="photo-file" name="photo" accept="image/*" capture="environment" required />
+          <small class="text-muted">Take photo or choose from gallery</small>
+        </div>
+        <div id="photo-preview"></div>
+        <button type="submit" id="upload-btn" class="btn">
+          📤 Upload Photo
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="text-center mt-lg text-muted">
+    <p>&copy; 2025 Xcellent1 Lawn Care. All rights reserved.</p>
+    <p><small>Powered by BMAD Recruitment Platform</small></p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script type="module">
+    import { logout, requireAuth } from "auth-helper.js";
+
+    // Require owner authentication for hiring dashboard
+    const userProfile = await requireAuth("owner");
+
+    // Export for use in other scripts
+    window.ownerProfile = userProfile;
+  </script>
+</body>
+
 </html>

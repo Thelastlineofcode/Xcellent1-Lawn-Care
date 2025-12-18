@@ -1,5 +1,6 @@
-import { serverTest } from "./test-config.ts";
 import { assertEquals } from "https://deno.land/std@0.203.0/testing/asserts.ts";
+import { serverTest } from "./test-config.ts";
+import { testFixture } from "./support/fixtures/test-fixture.ts";
 
 serverTest("Waitlist submission returns 201 and created id", async () => {
   const BASE_URL = Deno.env.get("TEST_BASE_URL") || "http://localhost:8000";
@@ -18,4 +19,5 @@ serverTest("Waitlist submission returns 201 and created id", async () => {
   assertEquals(res.status, 201);
   assertEquals(json.ok, true);
   if (!json.id) throw new Error("No id returned from waitlist API");
+  testFixture.trackWaitlist(json.id);
 });
