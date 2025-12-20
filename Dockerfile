@@ -11,5 +11,8 @@ RUN mkdir -p web/uploads
 # Expose port
 EXPOSE 8000
 
+# Cache dependencies
+RUN deno cache server.ts
+
 # Run the server
 CMD ["deno", "run", "--allow-net", "--allow-read", "--allow-write", "--allow-env", "server.ts"]

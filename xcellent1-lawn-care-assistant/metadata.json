@@ -1,0 +1,8 @@
+{
+  "name": "Xcellent1 Lawn Care Assistant",
+  "description": "A comprehensive lawn care companion for South Louisiana. Diagnose lawn health with AI, design your dream landscape, and track seasonal maintenance.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

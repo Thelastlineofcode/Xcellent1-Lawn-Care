@@ -4,10 +4,12 @@
     "dev": "deno run --allow-net --allow-read --allow-write --allow-env --watch server.ts",
     "check": "deno check server.ts",
     "test": "deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts",
-    "test:prod": "BASE_URL=https://xcellent1-lawn-care-rpneaa.fly.dev deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts"
+    "test:prod": "BASE_URL=https://xcellent1-lawn-care-rpneaa.fly.dev deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts",
+    "test:gcp": "deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts"
   },
   "imports": {
-    "$dotenv/": "https://deno.land/std@0.210.0/dotenv/"
+    "$dotenv/": "https://deno.land/std@0.210.0/dotenv/",
+    "@google-cloud/vertexai": "npm:@google-cloud/vertexai@0.4.0"
   },
   "compilerOptions": {
     "strict": true,
@@ -40,5 +42,6 @@
         "adjacent-overload-signatures"
       ]
     }
-  }
+  },
+  "nodeModulesDir": "auto"
 }

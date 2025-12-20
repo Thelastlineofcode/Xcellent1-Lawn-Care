@@ -346,6 +346,49 @@ deno task start
    railway up
    ```
 
+### Deploy to GCP Cloud Run (Recommended)
+
+**Project**: `gen-lang-client-0072608241`
+
+1. **Install and authenticate gcloud CLI**
+   ```bash
+   # Install: https://cloud.google.com/sdk/docs/install
+   gcloud auth login
+   gcloud config set project gen-lang-client-0072608241
+   ```
+
+2. **Enable required APIs**
+   ```bash
+   gcloud services enable run.googleapis.com artifactregistry.googleapis.com cloudbuild.googleapis.com secretmanager.googleapis.com
+   ```
+
+3. **Create Artifact Registry repository**
+   ```bash
+   gcloud artifacts repositories create xcellent1 --repository-format=docker --location=us-central1
+   ```
+
+4. **Set up secrets in Secret Manager**
+   ```bash
+   echo -n "your-database-url" | gcloud secrets create DATABASE_URL --data-file=-
+   echo -n "your-supabase-url" | gcloud secrets create SUPABASE_URL --data-file=-
+   echo -n "your-anon-key" | gcloud secrets create SUPABASE_ANON_KEY --data-file=-
+   echo -n "your-jwt-secret" | gcloud secrets create SUPABASE_JWT_SECRET --data-file=-
+   ```
+
+5. **Deploy using script**
+   ```bash
+   ./scripts/deploy_gcp.sh
+   ```
+
+6. **Or use GitHub Actions**
+   - Configure repository secrets: `GCP_SA_KEY`, `DATABASE_URL`, etc.
+   - Push to `main` branch to trigger `deploy-gcp-cloudrun.yml`
+
+7. **Test deployment**
+   ```bash
+   curl https://xcellent1-lawn-care-<hash>-uc.a.run.app/health
+   ```
+
 ---
 
 ## 📚 API Documentation

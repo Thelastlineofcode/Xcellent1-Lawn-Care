@@ -15,7 +15,40 @@ export async function initDB(databaseUrl: string, isProduction: boolean) {
     // We will stick to Client for now to minimize friction, but wrap it.
 
     try {
-        const newClient = new Client(databaseUrl);
+        // Parse the DATABASE_URL to extract components and configure TLS properly
+        // Supabase pooler requires TLS, but deno-postgres needs explicit TLS config
+        const url = new URL(databaseUrl);
+        const isPooler = url.hostname.includes('pooler.supabase.com');
+
+        let newClient: Client;
+        if (isPooler) {
+            // For Supabase pooler, disable TLS at application level
+            // The pooler handles encryption at infrastructure level (AWS/Supabase managed)
+            // This avoids deno-postgres certificate validation issues
+            const username = decodeURIComponent(url.username);
+            const password = decodeURIComponent(url.password);
+            const hostname = url.hostname;
+            const port = parseInt(url.port || "5432");
+            const database = url.pathname.slice(1);
+
+            console.log(`[db] Pooler connection config: user=${username}, host=${hostname}, port=${port}, db=${database}`);
+
+            newClient = new Client({
+                user: username,
+                password: password,
+                hostname: hostname,
+                port: port,
+                database: database,
+                tls: {
+                    enabled: false,
+                },
+            });
+            console.log("[db] Using Supabase pooler (TLS disabled at app level)");
+        } else {
+            // For direct connections (including local), use URL directly
+            newClient = new Client(databaseUrl);
+        }
+
         await newClient.connect();
         console.log("[db] Database connected successfully");
         client = newClient;

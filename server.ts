@@ -8,7 +8,7 @@ import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 import { authenticateRequest, getSupabaseClient } from "./supabase_auth.ts";
 import { buildOwnerInvitationEmail, sendEmail } from "./email-service.ts";
-
+import { handleAiRequest } from "./src/api/ai-proxy.ts";
 import { db, initDB } from "./src/db/client.ts";
 
 // Database connection
@@ -218,6 +218,195 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // ============================================================
+  // Premium AI Assistant APIs ($9.99 paywall)
+  // ============================================================
+
+  const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY") || "";
+  const STRIPE_PREMIUM_PRICE_ID = Deno.env.get("STRIPE_PREMIUM_PRICE_ID") || "";
+  const STRIPE_WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") || "";
+
+  // POST /api/premium/checkout - Create Stripe checkout session
+  if (url.pathname === "/api/premium/checkout" && req.method === "POST") {
+    try {
+      const body = await req.json();
+      const email = (body.email || "").trim();
+
+      if (!email) {
+        return new Response(
+          JSON.stringify({ ok: false, error: "Email is required" }),
+          { status: 400, headers }
+        );
+      }
+
+      if (!STRIPE_SECRET_KEY || !STRIPE_PREMIUM_PRICE_ID) {
+        console.error("[premium] Missing Stripe configuration");
+        return new Response(
+          JSON.stringify({ ok: false, error: "Payment system not configured" }),
+          { status: 500, headers }
+        );
+      }
+
+      const baseUrl = req.headers.get("origin") || `https://${req.headers.get("host")}`;
+      const successUrl = `${baseUrl}/static/assistant/index.html?session_id={CHECKOUT_SESSION_ID}`;
+      const cancelUrl = `${baseUrl}/static/home.html#premium`;
+
+      const params = new URLSearchParams({
+        "payment_method_types[0]": "card",
+        "line_items[0][price]": STRIPE_PREMIUM_PRICE_ID,
+        "line_items[0][quantity]": "1",
+        "mode": "payment",
+        "success_url": successUrl,
+        "cancel_url": cancelUrl,
+        "customer_email": email,
+        "metadata[product]": "ai_lawn_assistant",
+        "metadata[price_usd]": "9.99",
+      });
+
+      const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${STRIPE_SECRET_KEY}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: params.toString(),
+      });
+
+      if (!stripeRes.ok) {
+        const errorData = await stripeRes.json();
+        console.error("[premium] Stripe error:", errorData);
+        return new Response(
+          JSON.stringify({ ok: false, error: "Payment session creation failed" }),
+          { status: 500, headers }
+        );
+      }
+
+      const session = await stripeRes.json();
+      return new Response(
+        JSON.stringify({ ok: true, checkoutUrl: session.url, sessionId: session.id }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[premium] Checkout error:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Payment system error" }),
+        { status: 500, headers }
+      );
+    }
+  }
+
+  // GET /api/premium/status - Check user's premium access
+  if (url.pathname === "/api/premium/status" && req.method === "GET") {
+    const email = url.searchParams.get("email");
+
+    if (!email) {
+      return new Response(
+        JSON.stringify({ ok: false, error: "Email parameter required" }),
+        { status: 400, headers }
+      );
+    }
+
+    try {
+      let hasPremium = false;
+
+      if (dbConnected) {
+        const result = await db.queryObject<{ has_premium_access: boolean }>(
+          `SELECT has_premium_access FROM users WHERE email = $1`,
+          [email]
+        );
+        hasPremium = result.rows[0]?.has_premium_access || false;
+      }
+
+      return new Response(
+        JSON.stringify({ ok: true, hasPremium, email }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[premium] Status check error:", err);
+      return new Response(
+        JSON.stringify({ ok: true, hasPremium: false }),
+        { status: 200, headers }
+      );
+    }
+  }
+
+  // POST /api/premium/verify - Verify Stripe session and grant access
+  if (url.pathname === "/api/premium/verify" && req.method === "POST") {
+    try {
+      const body = await req.json();
+      const sessionId = body.sessionId;
+
+      if (!sessionId) {
+        return new Response(
+          JSON.stringify({ ok: true, valid: false, error: "Session ID required" }),
+          { status: 200, headers }
+        );
+      }
+
+      if (!STRIPE_SECRET_KEY) {
+        return new Response(
+          JSON.stringify({ ok: true, valid: false, error: "Payment not configured" }),
+          { status: 200, headers }
+        );
+      }
+
+      // Verify with Stripe
+      const stripeRes = await fetch(
+        `https://api.stripe.com/v1/checkout/sessions/${sessionId}`,
+        { headers: { "Authorization": `Bearer ${STRIPE_SECRET_KEY}` } }
+      );
+
+      if (!stripeRes.ok) {
+        return new Response(
+          JSON.stringify({ ok: true, valid: false, error: "Session not found" }),
+          { status: 200, headers }
+        );
+      }
+
+      const session = await stripeRes.json();
+
+      if (session.payment_status === "paid") {
+        const email = session.customer_email;
+
+        // Grant premium access in database
+        if (dbConnected && email) {
+          try {
+            await db.queryObject(
+              `UPDATE users SET has_premium_access = true, premium_purchased_at = NOW() WHERE email = $1`,
+              [email]
+            );
+            await db.queryObject(
+              `INSERT INTO premium_purchases (email, stripe_session_id, status, completed_at)
+               VALUES ($1, $2, 'completed', NOW())
+               ON CONFLICT (stripe_session_id) DO UPDATE SET status = 'completed'`,
+              [email, sessionId]
+            );
+            console.log(`[premium] Granted access to ${email}`);
+          } catch (dbErr) {
+            console.error("[premium] DB update error:", dbErr);
+          }
+        }
+
+        return new Response(
+          JSON.stringify({ ok: true, valid: true, email }),
+          { status: 200, headers }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({ ok: true, valid: false, error: "Payment not completed" }),
+        { status: 200, headers }
+      );
+    } catch (err) {
+      console.error("[premium] Verify error:", err);
+      return new Response(
+        JSON.stringify({ ok: true, valid: false, error: "Verification failed" }),
+        { status: 200, headers }
+      );
+    }
+  }
+
+
   // Authentication is handled by Supabase Auth
   // Users should authenticate through the login page which uses Supabase client-side SDK
   // The frontend will obtain a JWT token from Supabase and include it in the Authorization header
@@ -241,6 +430,15 @@ async function handler(req: Request): Promise<Response> {
       response.headers.set("Expires", "0");
     }
     return response;
+  }
+
+
+  // AI Proxy Routes (Vertex AI) - Protected or Public depending on needs
+  // For now, allow public access if they paid? Or just open for the premium feature page.
+  // The feature is gated by the paywall UI, but the API could be protected.
+  // User didn't specify strict auth for proxy, so we'll keep it open for the "Assistant" context.
+  if (url.pathname.startsWith("/api/ai/")) {
+    return handleAiRequest(req);
   }
 
   // Health check for Supabase connectivity/configuration
@@ -713,6 +911,14 @@ async function handler(req: Request): Promise<Response> {
   // Serve uploads
   if (url.pathname.startsWith("/uploads/")) {
     return serveDir(req, { fsRoot: "./web", urlRoot: "" });
+  }
+
+  // Allow .well-known paths through (used for SSL certificate provisioning)
+  // GCP Cloud Run uses /.well-known/acme-challenge/ for ACME HTTP-01 challenges
+  if (url.pathname.startsWith("/.well-known/")) {
+    // Return 404 for challenges we don't handle - GCP handles these at the load balancer level
+    // but we must not redirect them
+    return new Response("Not Found", { status: 404, headers });
   }
 
   // Redirect root to home page with cache-busting

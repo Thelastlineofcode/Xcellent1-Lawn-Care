@@ -780,6 +780,147 @@
 
   <!-- Product catalog moved to shop.html -->
 
+  <!-- Premium AI Lawn Care Assistant CTA -->
+  <section id="premium" class="premium-assistant-section" aria-labelledby="premium-title" style="
+    padding: 4rem 1rem;
+    background: linear-gradient(135deg, #1a4d2e 0%, #0d3320 50%, #1a4d2e 100%);
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  ">
+    <!-- Decorative background pattern -->
+    <div style="position: absolute; inset: 0; opacity: 0.1; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"40\" fill=\"none\" stroke=\"white\" stroke-width=\"1\"/></svg>'); background-size: 80px;"></div>
+    
+    <div style="max-width: 900px; margin: 0 auto; position: relative; z-index: 1;">
+      <!-- Badge -->
+      <div style="display: inline-block; background: rgba(16, 185, 129, 0.3); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: 999px; padding: 0.5rem 1.5rem; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 600;">
+        🤖 NEW: AI-Powered Lawn Assistant
+      </div>
+      
+      <h2 id="premium-title" style="font-size: 2.5rem; margin-bottom: 1rem; line-height: 1.2;">
+        Your Personal Lawn Care AI
+      </h2>
+      <p style="font-size: 1.2rem; opacity: 0.95; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+        Diagnose lawn problems, design your dream landscape, and get personalized maintenance schedules — all powered by AI.
+      </p>
+
+      <!-- Features Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; text-align: left;">
+        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Lawn Analyzer</h3>
+          <p style="font-size: 0.9rem; opacity: 0.85;">Snap a photo — AI diagnoses pests, diseases, and issues instantly</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎨</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Design Visualizer</h3>
+          <p style="font-size: 0.9rem; opacity: 0.85;">Upload your yard — get native Louisiana plant suggestions</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">📅</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Smart Scheduler</h3>
+          <p style="font-size: 0.9rem; opacity: 0.85;">Get personalized monthly care tasks for Zone 9a</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">💬</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">AI Chat Expert</h3>
+          <p style="font-size: 0.9rem; opacity: 0.85;">Ask anything about St. Augustine, Bermuda, Zoysia grasses</p>
+        </div>
+      </div>
+
+      <!-- Price and CTA -->
+      <div style="background: rgba(255,255,255,0.15); border-radius: 16px; padding: 2rem; max-width: 500px; margin: 0 auto;">
+        <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;">
+          $9<span style="font-size: 1.5rem; opacity: 0.8;">.99</span>
+        </div>
+        <p style="margin-bottom: 1.5rem; opacity: 0.9;">One-time payment • Lifetime access</p>
+        
+        <!-- Email input and checkout button -->
+        <form id="premium-checkout-form" onsubmit="return handlePremiumCheckout(event)" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <input 
+            type="email" 
+            id="premium-email" 
+            name="email" 
+            placeholder="Enter your email" 
+            required
+            style="padding: 0.875rem 1rem; border-radius: 8px; border: none; font-size: 1rem; width: 100%; box-sizing: border-box;"
+          >
+          <button type="submit" id="premium-checkout-btn" style="
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+          ">
+            🚀 Unlock AI Assistant
+          </button>
+        </form>
+        <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 1rem;">
+          Secure checkout powered by Stripe • Includes booking CTAs for Xcellent1 services
+        </p>
+      </div>
+
+      <!-- Social proof -->
+      <p style="margin-top: 2rem; font-size: 0.95rem; opacity: 0.85;">
+        🌿 Perfect for South Louisiana homeowners in the River Parishes
+      </p>
+    </div>
+  </section>
+
+  <script>
+    async function handlePremiumCheckout(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('premium-email');
+      const submitBtn = document.getElementById('premium-checkout-btn');
+      const email = emailInput.value.trim();
+      
+      if (!email) {
+        alert('Please enter your email address');
+        return false;
+      }
+
+      // Disable button and show loading
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '⏳ Processing...';
+
+      try {
+        const response = await fetch('/api/premium/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (data.ok && data.checkoutUrl) {
+          // Redirect to Stripe checkout
+          window.location.href = data.checkoutUrl;
+        } else {
+          alert(data.error || 'Unable to start checkout. Please try again.');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '🚀 Unlock AI Assistant';
+        }
+      } catch (err) {
+        console.error('Checkout error:', err);
+        alert('Connection error. Please check your internet and try again.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '🚀 Unlock AI Assistant';
+      }
+
+      return false;
+    }
+  </script>
+
+
   <!-- Service Inquiry Modal -->
   <div id="service-modal" class="modal">
     <div class="modal-content">
