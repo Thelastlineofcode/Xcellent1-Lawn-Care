@@ -135,22 +135,51 @@ function isValidPhone(phone: string): boolean {
   return re.test(phone) && phone.replace(/\\D/g, "").length >= 10;
 }
 
-// Rate limiting (simple in-memory)
-const rateLimitStore: Record<string, number[]> = {};
-function checkRateLimit(ip: string, limit = 5, windowMs = 60000): boolean {
+// Rate limiting (simple in-memory with lazy cleanup)
+const rateLimitStore = new Map<string, number[]>();
+let cleanupCounter = 0;
+const CLEANUP_THRESHOLD = 500; // Check for cleanup every 500 requests
+const MAX_IDLE_TIME = 300000; // 5 minutes: safe upper bound for any reasonable rate limit window
+
+function cleanupRateLimitStore() {
   const now = Date.now();
-  if (!rateLimitStore[ip]) {
-    rateLimitStore[ip] = [];
+  for (const [ip, timestamps] of rateLimitStore.entries()) {
+    if (timestamps.length === 0) {
+      rateLimitStore.delete(ip);
+      continue;
+    }
+    // If the last request was more than MAX_IDLE_TIME ago, the whole entry is stale
+    const lastTimestamp = timestamps[timestamps.length - 1];
+    if (now - lastTimestamp > MAX_IDLE_TIME) {
+      rateLimitStore.delete(ip);
+    }
+  }
+}
+
+function checkRateLimit(ip: string, limit = 5, windowMs = 60000): boolean {
+  // Lazy cleanup trigger
+  cleanupCounter++;
+  if (cleanupCounter > CLEANUP_THRESHOLD) {
+    cleanupCounter = 0;
+    cleanupRateLimitStore();
   }
 
-  // Remove old requests outside window
-  rateLimitStore[ip] = rateLimitStore[ip].filter((t) => now - t < windowMs);
+  const now = Date.now();
+  if (!rateLimitStore.has(ip)) {
+    rateLimitStore.set(ip, []);
+  }
 
-  if (rateLimitStore[ip].length >= limit) {
+  let timestamps = rateLimitStore.get(ip)!;
+
+  // Remove old requests outside window
+  timestamps = timestamps.filter((t) => now - t < windowMs);
+  rateLimitStore.set(ip, timestamps);
+
+  if (timestamps.length >= limit) {
     return false;
   }
 
-  rateLimitStore[ip].push(now);
+  timestamps.push(now);
   return true;
 }
 
