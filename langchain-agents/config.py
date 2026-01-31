@@ -19,6 +19,7 @@ class Config:
     # Zoho
     ZOHO_API_KEY = os.getenv("ZOHO_API_KEY")
     ZOHO_FROM_EMAIL = os.getenv("ZOHO_FROM_EMAIL", "info@xcellent1lawncare.com")
+    ZOHO_FROM_NAME = os.getenv("ZOHO_FROM_NAME", "Xcellent1 Lawn Care")
 
     # Business Pricing
     BASE_PRICE_PER_SQFT = float(os.getenv("BASE_PRICE_PER_SQFT", "0.02"))
