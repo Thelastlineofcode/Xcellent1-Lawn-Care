@@ -124,15 +124,15 @@ function error(message: string, status = 400) {
 }
 
 // Validate email
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function isValidEmail(email: string): boolean {
-  const re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
-  return re.test(email);
+  return EMAIL_REGEX.test(email);
 }
 
 // Validate phone (basic)
+const PHONE_REGEX = /^[\d\s()+-]+$/;
 function isValidPhone(phone: string): boolean {
-  const re = /^[\\d\\s()+-]+$/;
-  return re.test(phone) && phone.replace(/\\D/g, "").length >= 10;
+  return PHONE_REGEX.test(phone) && phone.replace(/\D/g, "").length >= 10;
 }
 
 // Rate limiting (simple in-memory)
