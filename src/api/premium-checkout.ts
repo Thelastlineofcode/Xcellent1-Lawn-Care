@@ -91,11 +91,11 @@ export async function createPremiumCheckout(
 /**
  * Verify Stripe webhook signature
  */
-export function verifyStripeWebhook(
+export async function verifyStripeWebhook(
     payload: string,
     signature: string,
     webhookSecret: string
-): boolean {
+): Promise<boolean> {
     // Stripe uses HMAC-SHA256 for webhook signatures
     // Format: t=timestamp,v1=signature
     const parts = signature.split(",");
@@ -117,16 +117,37 @@ export function verifyStripeWebhook(
     // Compute expected signature
     const signedPayload = `${timestamp}.${payload}`;
     const encoder = new TextEncoder();
-    const key = encoder.encode(webhookSecret);
-    const data = encoder.encode(signedPayload);
+    const keyData = encoder.encode(webhookSecret);
+    const payloadData = encoder.encode(signedPayload);
 
-    // Use SubtleCrypto for HMAC (available in Deno)
-    // Note: This is async in real usage, simplified here
-    // For production, use proper async verification
+    try {
+        const key = await crypto.subtle.importKey(
+            "raw",
+            keyData,
+            { name: "HMAC", hash: "SHA-256" },
+            false,
+            ["verify"]
+        );
 
-    // For now, return true and let Stripe session verification handle security
-    // TODO: Implement proper HMAC verification
-    return true;
+        // Convert hex signature to Uint8Array
+        if (sig.length % 2 !== 0) return false;
+        const sigBytes = new Uint8Array(sig.length / 2);
+        for (let i = 0; i < sig.length; i += 2) {
+            const byte = parseInt(sig.substring(i, i + 2), 16);
+            if (isNaN(byte)) return false;
+            sigBytes[i / 2] = byte;
+        }
+
+        return await crypto.subtle.verify(
+            "HMAC",
+            key,
+            sigBytes,
+            payloadData
+        );
+    } catch (error) {
+        console.error("[premium] HMAC verification failed:", error);
+        return false;
+    }
 }
 
 /**
@@ -179,7 +200,7 @@ export async function checkPremiumAccess(
     }
 
     try {
-        const result = await db.queryObject<{ has_premium_access: boolean }>(
+        const result = await db.queryObject(
             `SELECT has_premium_access FROM users WHERE email = $1`,
             [email]
         );
