@@ -10,6 +10,7 @@ import { authenticateRequest, getSupabaseClient } from "./supabase_auth.ts";
 import { buildOwnerInvitationEmail, sendEmail } from "./email-service.ts";
 import { handleAiRequest } from "./src/api/ai-proxy.ts";
 import { db, initDB } from "./src/db/client.ts";
+import { LRUCache } from "./src/utils/lru.ts";
 
 // Database connection
 // Prefer using an environment variable for DATABASE_URL. Avoid hardcoding
@@ -69,7 +70,7 @@ let leadCounter = 1;
 let eventCounter = 1;
 
 // Rate Limiting Map
-const rateLimits = new Map<string, { count: number; resetTime: number }>();
+const rateLimits = new LRUCache<string, { count: number; resetTime: number }>(10000);
 
 import { getSecurityHeaders, requireAuth } from "./src/middleware/auth.ts";
 
