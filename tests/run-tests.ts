@@ -38,7 +38,7 @@ async function runTests() {
     } else {
       // 1. Start Server locally
       console.log("Starting local server...");
-      const serverCommand = new Deno.Command("deno", {
+      const serverCommand = new Deno.Command(Deno.execPath(), {
         args: [
           "run",
           "--allow-net",
@@ -62,7 +62,7 @@ async function runTests() {
 
     // 3. Run Deno Tests
     console.log(`Running Deno tests against ${baseUrl}...`);
-    const testCommand = new Deno.Command("deno", {
+    const testCommand = new Deno.Command(Deno.execPath(), {
       args: [
         "test",
         "--allow-net",
@@ -86,7 +86,7 @@ async function runTests() {
 
     // 4. Run User Journey Test (Standalone Script)
     console.log("Running User Journey Test...");
-    const journeyCommand = new Deno.Command("deno", {
+    const journeyCommand = new Deno.Command(Deno.execPath(), {
       args: ["run", "--allow-net", "--allow-env", "user_journey_test.js"],
       stdout: "inherit",
       stderr: "inherit",
