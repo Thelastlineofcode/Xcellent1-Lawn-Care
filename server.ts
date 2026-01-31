@@ -6,7 +6,7 @@ import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
 };
 import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
-import { authenticateRequest, getSupabaseClient } from "./supabase_auth.ts";
+import { authenticateRequest, getSupabaseClient, getSupabaseAdminClient } from "./supabase_auth.ts";
 import { buildOwnerInvitationEmail, sendEmail } from "./email-service.ts";
 import { handleAiRequest } from "./src/api/ai-proxy.ts";
 import { db, initDB } from "./src/db/client.ts";
@@ -537,7 +537,6 @@ async function handler(req: Request): Promise<Response> {
         // Fallback: Use Supabase Admin Client if DB failed/unconnected
         if (!invite) {
           console.log("DEBUG: Falling back to Supabase Admin check for token:", token);
-          const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
           const adminClient = getSupabaseAdminClient();
           if (adminClient) {
             const { data, error } = await adminClient
@@ -628,7 +627,6 @@ async function handler(req: Request): Promise<Response> {
 
         // Fallback Supabase check
         if (!invite) {
-          const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
           const adminClient = getSupabaseAdminClient();
           if (adminClient) {
             const { data } = await adminClient
@@ -752,7 +750,6 @@ async function handler(req: Request): Promise<Response> {
           }
         } else {
           // Fallback: Use Supabase Admin Client (HTTP)
-          const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
           const adminClient = getSupabaseAdminClient();
           if (!adminClient) {
             return new Response(
@@ -1641,7 +1638,6 @@ async function handler(req: Request): Promise<Response> {
         });
       } else {
         console.warn("⚠️ DB not connected. Attempting fallback for Job Completion...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
@@ -2165,7 +2161,6 @@ async function handler(req: Request): Promise<Response> {
 
       if (!dbConnected) {
         console.warn("⚠️ DB not connected. Attempting fallback to Supabase Admin Client for Client Creation...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
@@ -2687,7 +2682,6 @@ async function handler(req: Request): Promise<Response> {
 
       if (!dbConnected) {
         console.warn("⚠️ DB not connected. Attempting fallback for Job Creation...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
@@ -2774,7 +2768,6 @@ async function handler(req: Request): Promise<Response> {
     try {
       if (!dbConnected) {
         console.warn("⚠️ DB not connected. Attempting fallback for Job List...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
@@ -3009,7 +3002,6 @@ async function handler(req: Request): Promise<Response> {
 
       if (!dbConnected) {
         console.warn("⚠️ DB not connected. Attempting fallback for Job Update...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
@@ -3178,7 +3170,6 @@ async function handler(req: Request): Promise<Response> {
     try {
       if (!dbConnected) {
         console.warn("⚠️ DB not connected. Attempting fallback for Crew List...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
@@ -3265,7 +3256,6 @@ async function handler(req: Request): Promise<Response> {
 
       if (!dbConnected) {
         console.warn("⚠️ DB not connected. Attempting fallback for Invoice Creation...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
@@ -3396,7 +3386,6 @@ async function handler(req: Request): Promise<Response> {
     try {
       if (!dbConnected) {
         console.warn("⚠️ DB not connected. Attempting fallback for Invoice List...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
@@ -4008,7 +3997,6 @@ async function handler(req: Request): Promise<Response> {
 
       if (!dbConnected) {
         console.warn("⚠️ DB not connected. Attempting fallback for Waitlist Signup...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
@@ -4142,7 +4130,6 @@ async function handler(req: Request): Promise<Response> {
     try {
       if (!dbConnected) {
         console.warn("⚠️ DB not connected. Attempting fallback for Waitlist List...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
@@ -4251,7 +4238,6 @@ async function handler(req: Request): Promise<Response> {
 
       if (!dbConnected) {
         console.warn("⚠️ DB not connected. Attempting fallback for Waitlist Update...");
-        const { getSupabaseAdminClient } = await import("./supabase_auth.ts");
         const adminClient = getSupabaseAdminClient();
 
         if (!adminClient) {
