@@ -2450,9 +2450,11 @@ async function handler(req: Request): Promise<Response> {
 
       const client = clientResult.rows[0];
 
-      // Get job history
-      const jobsResult = await db.queryObject(
-        `SELECT
+      // Fetch jobs, invoices, and payments in parallel
+      const [jobsResult, invoicesResult, paymentsResult] = await Promise.all([
+        // Get job history
+        db.queryObject(
+          `SELECT
           j.id,
           j.scheduled_date,
           j.scheduled_time,
@@ -2465,12 +2467,11 @@ async function handler(req: Request): Promise<Response> {
         WHERE j.client_id = $1
         ORDER BY j.scheduled_date DESC
         LIMIT 50`,
-        [clientId],
-      );
-
-      // Get invoices
-      const invoicesResult = await db.queryObject(
-        `SELECT
+          [clientId],
+        ),
+        // Get invoices
+        db.queryObject(
+          `SELECT
           i.id,
           i.invoice_number,
           i.amount,
@@ -2482,12 +2483,11 @@ async function handler(req: Request): Promise<Response> {
         WHERE i.client_id = $1
         ORDER BY i.created_at DESC
         LIMIT 50`,
-        [clientId],
-      );
-
-      // Get payments
-      const paymentsResult = await db.queryObject(
-        `SELECT
+          [clientId],
+        ),
+        // Get payments
+        db.queryObject(
+          `SELECT
           p.id,
           p.amount,
           p.payment_method,
@@ -2499,8 +2499,9 @@ async function handler(req: Request): Promise<Response> {
         WHERE p.client_id = $1
         ORDER BY p.created_at DESC
         LIMIT 50`,
-        [clientId],
-      );
+          [clientId],
+        ),
+      ]);
 
       return new Response(
         JSON.stringify({
