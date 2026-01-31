@@ -2367,10 +2367,18 @@ async function handler(req: Request): Promise<Response> {
           c.balance_due,
           c.status,
           c.created_at,
-          (SELECT COUNT(*) FROM jobs WHERE client_id = c.id) as total_jobs,
-          (SELECT COUNT(*) FROM jobs WHERE client_id = c.id AND status = 'completed') as completed_jobs
+          COALESCE(j.total_jobs, 0) as total_jobs,
+          COALESCE(j.completed_jobs, 0) as completed_jobs
         FROM clients c
         JOIN users u ON c.user_id = u.id
+        LEFT JOIN (
+          SELECT
+            client_id,
+            COUNT(*) as total_jobs,
+            COUNT(*) FILTER (WHERE status = 'completed') as completed_jobs
+          FROM jobs
+          GROUP BY client_id
+        ) j ON c.id = j.client_id
         WHERE 1=1
       `;
 
