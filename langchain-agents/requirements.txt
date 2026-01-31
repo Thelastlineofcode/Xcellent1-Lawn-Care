@@ -4,3 +4,4 @@ python-dotenv>=1.0.0
 # langchain and community packages are optional heavy deps; add when enabling LLMs
 # langchain>=0.0.361
 # langchain-community>=0.0.5
+supabase
