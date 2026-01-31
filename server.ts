@@ -75,13 +75,7 @@ import { getSecurityHeaders, requireAuth } from "./src/middleware/auth.ts";
 
 // [REMOVED DUPLICATE saveBase64Image function]
 
-const REGEX_RIVER_PARISHES = [
-  /laplace/i, /norco/i, /reserve/i, /garyville/i, /edgard/i, /mount\s?air/i,
-  /luling/i, /destrehan/i, /hahnville/i, /paradis/i, /killona/i, /st\.\s?rose/i,
-  /boutte/i, /lutcher/i, /gramercy/i, /convent/i, /paulina/i, /vacherie/i,
-  /st\.\s?james/i, /river\s?parish/i, /st\.?\s?john/i, /st\.?\s?charles/i,
-  /st\.?\s?james/i,
-];
+const REGEX_RIVER_PARISHES_OPTIMIZED = /laplace|norco|reserve|garyville|edgard|mount\s?air|luling|destrehan|hahnville|paradis|killona|st\.\s?rose|boutte|lutcher|gramercy|convent|paulina|vacherie|st\.\s?james|river\s?parish|st\.?\s?john|st\.?\s?charles|st\.?\s?james/i;
 
 const PRICING_CONFIG = {
   base: {
@@ -168,7 +162,7 @@ async function handler(req: Request): Promise<Response> {
         );
       }
       // Service area validation (River Parishes)
-      const inArea = REGEX_RIVER_PARISHES.some((r) => r.test(address));
+      const inArea = REGEX_RIVER_PARISHES_OPTIMIZED.test(address);
       if (!inArea) {
         return new Response(
           JSON.stringify({
