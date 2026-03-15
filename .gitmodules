@@ -3,3 +3,4 @@
 	url = https://github.com/modelcontextprotocol/servers.git
 	branch = main
 	shallow = true
+    update = none
