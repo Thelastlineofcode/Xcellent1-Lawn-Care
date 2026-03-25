@@ -194,3 +194,44 @@ export function buildOwnerInvitationEmail(
 </html>
   `;
 }
+
+export function buildWaitlistConfirmationEmail(
+  name: string,
+  preferredServicePlan: string,
+): string {
+  const safeName = name || "there";
+  const plan = preferredServicePlan || "weekly";
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    .header { background: linear-gradient(135deg, #3b832a 0%, #2d6520 100%); color: white; padding: 24px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { background: white; padding: 24px; border-radius: 0 0 8px 8px; }
+    .highlight { background: #f0f8ed; border-left: 4px solid #3b832a; padding: 12px; margin: 20px 0; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>You're on the waitlist 🌱</h1>
+      <p>Thanks for choosing Xcellent1 Lawn Care</p>
+    </div>
+    <div class="content">
+      <p>Hi ${safeName},</p>
+      <p>We received your request and added you to our service waitlist.</p>
+      <div class="highlight">
+        <strong>Preferred service plan:</strong> ${plan}
+      </div>
+      <p>A team member will contact you soon to confirm details and schedule your first visit.</p>
+      <p>Questions? Reply to this email or call <strong>(504) 875-8079</strong>.</p>
+      <p>— The Xcellent1 Team</p>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+}

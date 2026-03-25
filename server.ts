@@ -7,7 +7,11 @@ import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.203.0/http/file_server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.0";
 import { authenticateRequest, getSupabaseClient } from "./supabase_auth.ts";
-import { buildOwnerInvitationEmail, sendEmail } from "./email-service.ts";
+import {
+  buildOwnerInvitationEmail,
+  buildWaitlistConfirmationEmail,
+  sendEmail,
+} from "./email-service.ts";
 import { handleAiRequest } from "./src/api/ai-proxy.ts";
 import { db, initDB } from "./src/db/client.ts";
 
@@ -4056,6 +4060,21 @@ async function handler(req: Request): Promise<Response> {
         }
 
         console.log(`[server] New waitlist entry (Fallback): ${data.id}`);
+
+        const fallbackEmailSent = await sendEmail({
+          to: body.email.trim(),
+          subject: "You're on the Xcellent1 Lawn Care waitlist",
+          html: buildWaitlistConfirmationEmail(
+            body.name.trim(),
+            body.preferred_service_plan || "weekly",
+          ),
+        });
+        if (!fallbackEmailSent) {
+          console.warn(
+            `[server] Waitlist confirmation email failed for ${body.email} (fallback mode)`,
+          );
+        }
+
         return new Response(
           JSON.stringify({
             ok: true,
@@ -4116,6 +4135,20 @@ async function handler(req: Request): Promise<Response> {
 
       const waitlistId = (result.rows[0] as any).id;
       console.log(`[server] New waitlist entry: ${waitlistId} - ${body.name}`);
+
+      const emailSent = await sendEmail({
+        to: body.email.trim(),
+        subject: "You're on the Xcellent1 Lawn Care waitlist",
+        html: buildWaitlistConfirmationEmail(
+          body.name.trim(),
+          body.preferred_service_plan || "weekly",
+        ),
+      });
+      if (!emailSent) {
+        console.warn(
+          `[server] Waitlist confirmation email failed for ${body.email}`,
+        );
+      }
 
       return new Response(
         JSON.stringify({

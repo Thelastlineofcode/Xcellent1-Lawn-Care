@@ -9,8 +9,10 @@ related_frs: [FR-002]
 
 ## Tasks
 
-- Implement waitlist form frontend and submission endpoint.
-- Store leads in Supabase and send confirmation email.
+- [x] Implement waitlist form frontend and submission endpoint.
+- [x] Store leads in Supabase.
+- [x] Send waitlist confirmation email on successful signup.
+- [x] Add coverage for waitlist confirmation email template helper.
 
 ## Acceptance Criteria
 
