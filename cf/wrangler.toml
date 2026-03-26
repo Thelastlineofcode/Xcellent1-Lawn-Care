@@ -4,3 +4,4 @@ compatibility_date = "2024-01-01"
 
 [vars]
 ENVIRONMENT = "production"
+ORIGIN_URL = "https://xcellent1-lawn-care-rpneaa.fly.dev"

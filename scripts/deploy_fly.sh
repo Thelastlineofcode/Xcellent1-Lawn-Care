@@ -9,6 +9,14 @@ if [[ -z "${APP_ENV:-}" ]]; then
   exit 1
 fi
 
+required_vars=(DATABASE_URL SUPABASE_URL SUPABASE_ANON_KEY SUPABASE_JWT_SECRET)
+for key in "${required_vars[@]}"; do
+  if [[ -z "${!key:-}" ]]; then
+    echo "$key not set. Aborting deploy."
+    exit 1
+  fi
+done
+
 echo "Starting predeploy checks..."
 ./scripts/predeploy_check.sh
 
@@ -20,7 +28,11 @@ fi
 
 # Example: set secrets that are required; adjust as needed
 echo "Setting DATABASE_URL and SUPABASE env on Fly..."
-flyctl secrets set DATABASE_URL="$DATABASE_URL" SUPABASE_URL="$SUPABASE_URL" SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" SUPABASE_JWT_SECRET="$SUPABASE_JWT_SECRET" --app ${FLY_APP_NAME:-}
+if [[ -n "${FLY_APP_NAME:-}" ]]; then
+  flyctl secrets set DATABASE_URL="$DATABASE_URL" SUPABASE_URL="$SUPABASE_URL" SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" SUPABASE_JWT_SECRET="$SUPABASE_JWT_SECRET" --app "$FLY_APP_NAME"
+else
+  flyctl secrets set DATABASE_URL="$DATABASE_URL" SUPABASE_URL="$SUPABASE_URL" SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" SUPABASE_JWT_SECRET="$SUPABASE_JWT_SECRET"
+fi
 
 echo "Deploying to Fly.io (remote-only)"
 if [[ -n "${FLY_APP_NAME:-}" ]]; then

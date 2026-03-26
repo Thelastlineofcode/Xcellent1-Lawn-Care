@@ -1,6 +1,6 @@
 # Deployment Guide - Xcellent1 Lawn Care
 
-## Quick Deploy to Production
+## Quick Deploy to Production (Fly.io + Cloudflare)
 
 ### Prerequisites
 
@@ -9,11 +9,17 @@
 - ✅ Database migrations run
 - ✅ Code tested and committed
 
-### Deploy Command
+### Deploy Commands
 
 ```bash
-# From project root
-fly deploy --ha=false
+# 1) Deploy backend on Fly
+APP_ENV=production FLY_APP_NAME=<your-fly-app> ./scripts/deploy_fly.sh
+
+# 2) Deploy Cloudflare worker proxy to front the Fly app
+ORIGIN_URL=https://<your-fly-app>.fly.dev ./scripts/deploy_cloudflare.sh
+
+# Optional: one command for both
+APP_ENV=production FLY_APP_NAME=<your-fly-app> ORIGIN_URL=https://<your-fly-app>.fly.dev ./scripts/deploy_edge_stack.sh
 ```
 
 ### Post-Deployment Verification

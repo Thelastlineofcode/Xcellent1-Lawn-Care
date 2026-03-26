@@ -1,12 +1,17 @@
-const ORIGIN = "https://xcellent1lawncare.com";
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    const originBase = (env.ORIGIN_URL || "").trim();
+    if (!originBase) {
+      return new Response(
+        "Missing ORIGIN_URL worker variable. Set it to your Fly app URL.",
+        { status: 500 },
+      );
+    }
 
     // Serve static files from web/static if available
     // Otherwise proxy to origin
-    const originUrl = ORIGIN + url.pathname + url.search;
+    const originUrl = originBase + url.pathname + url.search;
 
     const originRequest = new Request(originUrl, {
       method: request.method,

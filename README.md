@@ -183,7 +183,7 @@ Or create users manually:
 
 ---
 
-## 🚢 Production Deployments (Fly.io)
+## 🚢 Production Deployments (Fly.io + Cloudflare)
 
 When deploying to production with Fly.io, the app must run in production mode
 and **cannot** use the local file-backed fallback. Use `APP_ENV=production` and
@@ -203,10 +203,29 @@ flyctl secrets set DATABASE_URL="postgresql://user:pass@..." \
    --app <your-fly-app>
 ```
 
-Then deploy with our helper (CI or local):
+Deploy backend to Fly with our helper (CI or local):
 
 ```bash
 APP_ENV=production FLY_APP_NAME=<your-fly-app> ./scripts/deploy_fly.sh
+```
+
+Deploy Cloudflare Worker (proxy in `cf/`) and point it to your Fly origin:
+
+```bash
+ORIGIN_URL=https://<your-fly-app>.fly.dev ./scripts/deploy_cloudflare.sh
+```
+
+Deploy both in sequence:
+
+```bash
+APP_ENV=production \
+FLY_APP_NAME=<your-fly-app> \
+DATABASE_URL=... \
+SUPABASE_URL=... \
+SUPABASE_ANON_KEY=... \
+SUPABASE_JWT_SECRET=... \
+ORIGIN_URL=https://<your-fly-app>.fly.dev \
+./scripts/deploy_edge_stack.sh
 ```
 
 For CI/CD: Use the `deploy-flyio.yml` GitHub Actions workflow. Ensure these
