@@ -1,0 +1,11 @@
+name = "xcellent1lawncare"
+main = "worker.js"
+compatibility_date = "2026-03-15"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./web/static"
+binding = "ASSETS"
+
+[build]
+command = ""

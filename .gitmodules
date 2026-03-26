@@ -1,0 +1,6 @@
+[submodule "mcp-server"]
+	path = mcp-server
+	url = https://github.com/modelcontextprotocol/servers.git
+	branch = main
+	shallow = true
+    update = none

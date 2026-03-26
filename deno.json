@@ -1,0 +1,47 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-read --allow-write --allow-env server.ts",
+    "dev": "deno run --allow-net --allow-read --allow-write --allow-env --watch server.ts",
+    "check": "deno check server.ts",
+    "test": "deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts",
+    "test:prod": "BASE_URL=https://xcellent1-lawn-care-rpneaa.fly.dev deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts",
+    "test:gcp": "deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts"
+  },
+  "imports": {
+    "$dotenv/": "https://deno.land/std@0.210.0/dotenv/",
+    "@google-cloud/vertexai": "npm:@google-cloud/vertexai@0.4.0"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true
+  },
+  "fmt": {
+    "options": {}
+  },
+  "lint": {
+    "exclude": [
+      "web/static/**",
+      "web/tests/**",
+      "bmad/agents/archived/langchain-integration/**",
+      "bmad/agents/archived/langchain_integration/**",
+      "bmad/bmb/**",
+      "bmad/**/workflows/**",
+      "bmad/**/installer-templates/**",
+      ".venv/**",
+      "**/*.py"
+    ],
+    "rules": {
+      "exclude": [
+        "no-import-prefix",
+        "no-inner-declarations",
+        "no-explicit-any",
+        "require-await",
+        "no-unused-vars",
+        "no-redeclare",
+        "adjacent-overload-signatures"
+      ]
+    }
+  },
+  "nodeModulesDir": "auto"
+}

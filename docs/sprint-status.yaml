@@ -1,0 +1,186 @@
+generated: "2025-12-09T00:00:00Z"
+sprint:
+  id: sprint-2025-12-09-01
+  name: "Sprint 1 - Foundation & Core Flows"
+  start_date: "2025-12-09"
+  end_date: "2025-12-23"
+  cadence: "2 weeks"
+  goal: "Deliver core Supabase foundation, auth/roles, storage for job photos, and initial customer acquisition pages so owner can onboard first customers and crew can start using mobile workflows."
+  status: active
+
+team:
+  - role: product
+    owner: The Last Line of Code
+  - role: dev
+    members: [alex, pat, sam]
+
+commitments:
+  - story_id: story-01-setup-supabase
+    title: "Setup Supabase Project & Schema"
+    epic: epic-01-foundation
+    points: 3
+    file: docs/stories/story-01-setup-supabase.md
+    status: done
+    assignee: alex
+    done_by: alex
+    done_at: "2025-12-10"
+
+  - story_id: story-02-auth-and-roles
+    title: "Authentication and Roles (Owner/Manager/Crew)"
+    epic: epic-01-foundation
+    points: 3
+    file: docs/stories/story-02-auth-and-roles.md
+    status: done
+    assignee: pat
+    done_by: pat
+    done_at: "2025-12-10"
+
+  - story_id: story-03-storage-job-photos
+    title: "Configure Storage for Job Photos"
+    epic: epic-01-foundation
+    points: 2
+    file: docs/stories/story-03-storage-job-photos.md
+    status: done
+    assignee: sam
+    done_by: sam
+    done_at: "2025-12-10"
+
+  - story_id: story-04-landing-page
+    title: "Landing Page Implementation"
+    epic: epic-02-customer-acquisition
+    points: 2
+    file: docs/stories/story-04-landing-page.md
+    status: done
+    done_by: alex
+    done_at: "2025-12-11"
+    assignee: alex
+
+  - story_id: story-05-waitlist-form
+    title: "Waitlist & Booking Form"
+    epic: epic-02-customer-acquisition
+    points: 3
+    file: docs/stories/story-05-waitlist-form.md
+    status: in-progress
+    assignee: pat
+
+  - story_id: story-06-crew-job-list
+    title: "Crew Job List Screen"
+    epic: epic-03-crew-mobile
+    points: 3
+    file: docs/stories/story-06-crew-job-list.md
+    status: in-progress
+    assignee: sam
+
+  - story_id: story-07-job-photo-upload
+    title: "Job Photo Upload and Attachments"
+    epic: epic-03-crew-mobile
+    points: 3
+    file: docs/stories/story-07-job-photo-upload.md
+    status: in-progress
+    assignee: sam
+
+  - story_id: story-12-recurring-jobs
+    title: "Recurring Jobs & Schedules"
+    epic: epic-06-scheduling
+    points: 5
+    file: docs/stories/story-12-recurring-jobs.md
+    status: planned
+    assignee: alex
+
+  - story_id: story-13-time-slot-management
+    title: "Time Slot Management & Conflicts"
+    epic: epic-06-scheduling
+    points: 3
+    file: docs/stories/story-13-time-slot-management.md
+    status: planned
+    assignee: pat
+
+  - story_id: story-14-rescheduling
+    title: "Rescheduling & Notifications"
+    epic: epic-06-scheduling
+    points: 3
+    file: docs/stories/story-14-rescheduling.md
+    status: planned
+    assignee: pat
+
+  - story_id: story-15-email-integration
+    title: "Email Integration (SendGrid)"
+    epic: epic-07-notifications
+    points: 3
+    file: docs/stories/story-15-email-integration.md
+    status: planned
+    assignee: sam
+
+  - story_id: story-16-sms-integration
+    title: "SMS Integration (Twilio)"
+    epic: epic-07-notifications
+    points: 3
+    file: docs/stories/story-16-sms-integration.md
+    status: planned
+    assignee: alex
+
+  - story_id: story-17-in-app-notifications
+    title: "In-app Notifications"
+    epic: epic-07-notifications
+    points: 3
+    file: docs/stories/story-17-in-app-notifications.md
+    status: planned
+    assignee: pat
+
+  - story_id: story-18-service-worker
+    title: "Service Worker & Asset Caching"
+    epic: epic-08-offline
+    points: 3
+    file: docs/stories/story-18-service-worker.md
+    status: planned
+    assignee: alex
+
+  - story_id: story-19-offline-queue-sync
+    title: "Offline Queue & Sync for Crew Photos"
+    epic: epic-08-offline
+    points: 5
+    file: docs/stories/story-19-offline-queue-sync.md
+    status: planned
+    assignee: sam
+
+  - story_id: story-20-revenue-exports
+    title: "Revenue Export & CSV"
+    epic: epic-09-analytics
+    points: 3
+    file: docs/stories/story-20-revenue-exports.md
+    status: planned
+    assignee: alex
+
+  - story_id: story-21-crew-performance
+    title: "Crew Performance Metrics"
+    epic: epic-09-analytics
+    points: 3
+    file: docs/stories/story-21-crew-performance.md
+    status: planned
+    assignee: pat
+
+  - story_id: story-22-ci-test-migrations
+    title: "CI Test Migrations"
+    epic: epic-10-ci-observability
+    points: 3
+    file: docs/stories/story-22-ci-test-migrations.md
+    status: planned
+    assignee: alex
+
+  - story_id: story-23-logging-monitoring
+    title: "Logging and Monitoring"
+    epic: epic-10-ci-observability
+    points: 3
+    file: docs/stories/story-23-logging-monitoring.md
+    status: planned
+    assignee: pat
+
+metrics:
+  planned_points: 55
+  velocity_forecast: 30
+
+notes: |
+  - This sprint seeds core work to enable owner onboarding and basic crew mobile flows.
+  - Update story `status` fields as work progresses. Use `docs/sprint-status.yaml` as the single source of truth for implementation tracking.
+  - Sprint moved to implementation: top priority stories set to `in-progress` and assignees names added.
+  - Update statuses to `done` once story acceptance criteria are met and PRs merged.

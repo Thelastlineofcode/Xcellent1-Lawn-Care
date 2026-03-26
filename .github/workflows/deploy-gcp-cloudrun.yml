@@ -1,0 +1,107 @@
+name: Deploy & Test (GCP Cloud Run)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      gcp_region:
+        description: "GCP Region"
+        required: false
+        default: "us-central1"
+
+env:
+  GCP_PROJECT_ID: gen-lang-client-0072608241
+  GCP_REGION: ${{ github.event.inputs.gcp_region || 'us-central1' }}
+  SERVICE_NAME: xcellent1-lawn-care
+  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
+
+jobs:
+  predeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+      - name: Run linter & tests (unit)
+        env:
+          APP_ENV: staging
+        run: |
+          deno lint --config=deno.json
+          deno test --allow-read --no-check
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: predeploy
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      service_url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/xcellent1/server:${{ github.sha }} .
+          docker build -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/xcellent1/server:latest .
+          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/xcellent1/server:${{ github.sha }}
+          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/xcellent1/server:latest
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/xcellent1/server:${{ github.sha }} \
+            --region ${{ env.GCP_REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8000 \
+            --memory 256Mi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 10 \
+            --set-env-vars "APP_ENV=production" \
+            --set-secrets "DATABASE_URL=DATABASE_URL:latest,SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_ANON_KEY=SUPABASE_ANON_KEY:latest,SUPABASE_JWT_SECRET=SUPABASE_JWT_SECRET:latest"
+          
+          SERVICE_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --region ${{ env.GCP_REGION }} --format 'value(status.url)')
+          echo "url=$SERVICE_URL" >> $GITHUB_OUTPUT
+          echo "Deployed to: $SERVICE_URL"
+
+  postdeploy-tests:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+      - name: Health check
+        run: |
+          echo "Testing health endpoint at: ${{ needs.deploy.outputs.service_url }}"
+          curl -f "${{ needs.deploy.outputs.service_url }}/health" || exit 1
+      - name: Integration / E2E tests against deployed host
+        env:
+          TEST_BASE_URL: ${{ needs.deploy.outputs.service_url }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SUPABASE_JWT_SECRET: ${{ secrets.SUPABASE_JWT_SECRET }}
+        run: |
+          deno test web/tests/quote_api_test.ts --allow-net --allow-read --allow-env
+          deno test web/tests/waitlist_e2e_test.ts --allow-net --allow-read --allow-env

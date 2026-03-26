@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Xcellent1 Lawn Care crew dashboard - today's jobs, navigation, photo upload" />
+  <meta name="theme-color" content="#10b981" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Today's Route | Xcellent1 Crew</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
+  <link rel="stylesheet" href="styles.clean.css" />
+  <!-- Load runtime config from server -->
+  <script src="/config.js"></script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+      <div class="navbar-title">
+        <span class="navbar-name">XCELLENT1</span>
+        <span class="navbar-tagline">LAWN CARE</span>
+      </div>
+    </div>
+    <div class="navbar-links">
+      <a href="home.html" class="navbar-link">Home</a>
+      <a href="shop.html" class="navbar-link">Shop</a>
+      <a href="careers.html" class="navbar-link">Careers</a>
+      <a href="login.html" class="navbar-login">Login</a>
+    </div>
+  </nav>
+  <!-- Crew Portal Header -->
+  <div style="display: none">Crew Portal</div>
+  <div class="crew-header">
+    <div class="crew-header-top">
+      <div class="greeting" id="crew-greeting">Good morning, Marcus 👋</div>
+      <button onclick="logout()" class="btn-logout">
+        Logout
+      </button>
+    </div>
+    <div class="route-summary">
+      <div class="route-summary-item">
+        <span>📅</span>
+        <span id="route-date">Today</span>
+      </div>
+      <div class="route-summary-item">
+        <span>🚩</span>
+        <span><strong id="jobs-completed">0</strong>/<strong id="jobs-total">0</strong>
+          Complete</span>
+      </div>
+      <div class="route-summary-item">
+        <span>📍</span>
+        <span id="route-miles">0 mi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container crew-container">
+    <div id="crew-status" role="alert" aria-live="polite"></div>
+
+    <!-- Today's Jobs -->
+    <div id="jobs-list">
+      <div class="loading-container">
+        <span class="spinner"></span>
+        <span>Loading today's route...</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active">
+      <span class="nav-icon">🏠</span>
+      <span>Today</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nav-icon">📅</span>
+      <span>Schedule</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+  <!-- Photo Upload Modal -->
+  <div id="photo-modal" class="photo-modal">
+    <div class="photo-modal-header">
+      <div class="photo-modal-title" id="photo-modal-title">
+        Upload Job Photo
+      </div>
+      <button class="photo-modal-close" onclick="closePhotoUpload()">
+        &times;
+      </button>
+    </div>
+    <div class="photo-modal-body">
+      <input type="file" id="photo-input" accept="image/*" capture="environment" class="hidden" />
+      <div id="photo-preview" class="camera-preview hidden">
+      </div>
+      <div class="photo-type-selector">
+        <button class="photo-type-btn selected" data-type="before" onclick="selectPhotoType('before')">
+          Before
+        </button>
+        <button class="photo-type-btn" data-type="after" onclick="selectPhotoType('after')">
+          After
+        </button>
+      </div>
+      <button class="btn btn-full-width" onclick="triggerCamera()">
+        📸 Take Photo
+      </button>
+      <button id="upload-photo-btn" class="btn btn-full-width hidden" onclick="uploadPhoto()">
+        📤 Upload Photo
+      </button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script type="module">
+    import { logout, requireAuth } from "auth-helper.js";
+
+    // Require crew authentication
+    const userProfile = await requireAuth("crew", ".greeting");
+
+    // Export for use in other scripts
+    window.crewProfile = userProfile;
+  </script>
+  <script>
+    // Crew Dashboard Logic
+    const CREW_ID = window.crewProfile?.id || "crew_marcus_01"; // Get from auth
+    let currentJob = null;
+    let photoType = "before";
+    let capturedPhoto = null;
+    let jobsData = [];
+
+    // Fetch crew jobs from API
+    async function fetchCrewJobs() {
+      try {
+        const token = window.supabaseSession?.access_token;
+        if (!token) {
+          throw new Error("No authentication token");
+        }
+
+        const response = await fetch(`/api/crew/${CREW_ID}/jobs`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (!data.ok) {
+          throw new Error(data.error || "Failed to fetch jobs");
+        }
+
+        return data.jobs || [];
+      } catch (err) {
+        console.error("Failed to fetch crew jobs:", err);
+        showMessage(
+          "crew-status",
+          "⚠️ Unable to load jobs. Please refresh the page.",
+          "warning",
+          5000,
+        );
+        return [];
+      }
+    }
+
+    // Load crew jobs
+    async function loadCrewJobs() {
+      // Fetch jobs from API
+      const apiJobs = await fetchCrewJobs();
+
+      // Transform API data to match expected format
+      jobsData = apiJobs.map((job) => ({
+        id: job.id,
+        time: job.scheduled_time || "TBD",
+        client: job.client_name || "Unknown Client",
+        address: job.property_address?.split(",")[0] || "",
+        city: job.property_address?.split(",").slice(1).join(",") ||
+          "",
+        services: typeof job.services === "string"
+          ? job.services.split(",")
+          : Array.isArray(job.services)
+            ? job.services
+            : [],
+        notes: job.notes || "",
+        duration: job.estimated_duration || 60,
+        status: job.status || "pending",
+      }));
+      const now = new Date();
+      const hour = now.getHours();
+      const greeting = hour < 12
+        ? "Good morning"
+        : hour < 18
+          ? "Good afternoon"
+          : "Good evening";
+      document.getElementById("crew-greeting").textContent =
+        greeting + ", Marcus 👋";
+
+      const dateStr = now.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      });
+      document.getElementById("route-date").textContent = dateStr;
+
+      // Calculate stats
+      const completed =
+        jobsData.filter((j) => j.status === "completed").length;
+      document.getElementById("jobs-completed").textContent =
+        completed;
+      document.getElementById("jobs-total").textContent =
+        jobsData.length;
+      document.getElementById("route-miles").textContent = "0 mi"; // TODO: Calculate route distance
+
+      renderJobs(jobsData);
+    }
+
+    // Render job list
+    function renderJobs(jobs) {
+      const container = document.getElementById("jobs-list");
+      if (jobs.length === 0) {
+        container.innerHTML =
+          '<div class="empty-state"><p class="text-muted">🎉 No jobs today! Enjoy your day off.</p></div>';
+        return;
+      }
+
+      container.innerHTML = jobs
+        .map((job) => {
+          const activeClass = job.status === "active" ? "active" : "";
+          const completedClass = job.status === "completed"
+            ? "completed"
+            : "";
+
+          return `
+          <div class="job-card ${activeClass} ${completedClass}">
+            <div class="job-header">
+              <div>
+                <div class="job-number">Job ${job.id.split("-")[1]
+            }</div>
+                <div class="job-time">${job.time}</div>
+              </div>
+              <div class="job-status ${job.status}">${job.status}</div>
+            </div>
+            
+            <div class="client-info">
+              <div class="client-name">👤 ${job.client}</div>
+              <div class="client-address">
+                <span>📍</span>
+                <span>${job.address}<br>${job.city}</span>
+              </div>
+            </div>
+            
+            <div class="service-list">
+              ${job.services
+              .map(
+                (service) => `
+                <div class="service-item">
+                  <input type="checkbox" id="${job.id}-${service}" ${job.status === "completed" ? "checked disabled" : ""
+                  }>
+                  <label for="${job.id}-${service}">${service}</label>
+                </div>
+              `,
+              )
+              .join("")
+            }
+            </div>
+            
+            ${job.notes
+              ? `<div class="card job-notes"><strong>⚠️ Note:</strong> ${job.notes}</div>`
+              : ""
+            }
+            
+            <div class="job-actions">
+              <button class="btn btn-navigate" onclick="navigateToJob('${job.address}, ${job.city}')">
+                🧭 Navigate
+              </button>
+              ${job.status !== "completed"
+              ? `
+                <button class="btn btn-complete" onclick="openPhotoUpload('${job.id}')">
+                  ✓ Complete
+                </button>
+              `
+              : `
+                <button class="btn" disabled>
+                  ✓ Done
+                </button>
+              `
+            }
+            </div>
+          </div>
+        `;
+        })
+        .join("");
+    }
+
+    // Navigation
+    function navigateToJob(address) {
+      const encoded = encodeURIComponent(address);
+      const googleMapsUrl =
+        `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
+      const appleMapsUrl = `maps://maps.apple.com/?daddr=${encoded}`;
+
+      // Try Apple Maps on iOS, Google Maps otherwise
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      window.location.href = isIOS ? appleMapsUrl : googleMapsUrl;
+    }
+
+    // Photo upload flow
+    function openPhotoUpload(jobId) {
+      currentJob = jobId;
+      document.getElementById("photo-modal-title").textContent =
+        `Upload Photos - ${jobId}`;
+      document.getElementById("photo-modal").classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closePhotoUpload() {
+      document.getElementById("photo-modal").classList.remove(
+        "active",
+      );
+      document.body.style.overflow = "";
+      document.getElementById("photo-preview").style.display = "none";
+      document.getElementById("upload-photo-btn").style.display =
+        "none";
+      capturedPhoto = null;
+    }
+
+    function selectPhotoType(type) {
+      photoType = type;
+      document.querySelectorAll(".photo-type-btn").forEach((btn) => {
+        btn.classList.toggle("selected", btn.dataset.type === type);
+      });
+    }
+
+    function triggerCamera() {
+      document.getElementById("photo-input").click();
+    }
+
+    // Handle photo selection
+    document.getElementById("photo-input").addEventListener(
+      "change",
+      (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          capturedPhoto = evt.target.result;
+          const preview = document.getElementById("photo-preview");
+          preview.innerHTML =
+            `<img src="${evt.target.result}" alt="Photo preview">`;
+          preview.style.display = "block";
+          document.getElementById("upload-photo-btn").style.display =
+            "block";
+        };
+        reader.readAsDataURL(file);
+      },
+    );
+
+    // Upload photo
+    async function uploadPhoto() {
+      if (!capturedPhoto || !currentJob) return;
+
+      const btn = document.getElementById("upload-photo-btn");
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Uploading...';
+
+      try {
+        // Replace with actual API call
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+
+        // Mark job as completed
+        const job = jobsData.find((j) => j.id === currentJob);
+        if (job) job.status = "completed";
+
+        renderJobs(jobsData);
+        closePhotoUpload();
+
+        showMessage(
+          "crew-status",
+          `✓ ${photoType === "before" ? "Before" : "After"
+          } photo uploaded for ${currentJob}!`,
+          "success",
+          3000,
+        );
+      } catch (err) {
+        showMessage(
+          "crew-status",
+          "✗ Upload failed. Please try again.",
+          "error",
+          5000,
+        );
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = "📤 Upload Photo";
+      }
+    }
+
+    // Bottom nav handlers
+    document.querySelectorAll(".nav-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        document
+          .querySelectorAll(".nav-btn")
+          .forEach((b) => b.classList.remove("active"));
+        e.currentTarget.classList.add("active");
+      });
+    });
+
+    // Initial load
+    loadCrewJobs();
+
+    // Refresh every 5 minutes
+    setInterval(loadCrewJobs, 300000);
+  </script>
+</body>
+
+</html>

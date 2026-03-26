@@ -1,0 +1,61 @@
+name: Deno CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+      - name: Run deno lint
+        run: deno lint --config=deno.json
+
+  deno-tests:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+      - name: Run Deno tests
+        run: deno test --allow-net --allow-read --allow-env --no-check
+      - name: Run Deno type checking
+        run: deno check server.ts
+
+  python-tests:
+    runs-on: ubuntu-latest
+    # Disabled by default: AI/LangChain prototype tests are gated behind ENABLE_AI_TESTS env variable to avoid running experimental code in CI
+    if: ${{ env.ENABLE_AI_TESTS == 'true' }}
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Create venv
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+      - name: Install Python requirements
+        run: |
+          source .venv/bin/activate
+          pip install -r bmad/agents/langchain-integration/requirements.txt
+      - name: Run pytest for LangChain prototype
+        run: |
+          source .venv/bin/activate
+          PYTHONPATH=bmad pytest bmad/agents/langchain-integration/tests -q
+        # Execution will be skipped unless ENABLE_AI_TESTS in CI is set to 'true' and explicit permission is granted

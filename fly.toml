@@ -1,0 +1,22 @@
+# fly.toml app configuration file generated for xcellent1-lawn-care-rpneaa on 2025-11-08T02:15:27Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'xcellent1-lawn-care-rpneaa'
+primary_region = 'dfw'
+
+[build]
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 256
