@@ -1,3 +1,14 @@
+---
+id: xcellent1-custom-webapp-spec
+title: Xcellent1 Lawn Care — Custom Web App Spec
+category: architecture
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, spec, webapp, architecture, laplace, louisiana, saas]
+---
+
 # Xcellent1 — Web App Spec (summary)
 
 This short spec summarizes the core features required for a business management
