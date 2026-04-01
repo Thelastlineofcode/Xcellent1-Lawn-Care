@@ -1,5 +1,6 @@
 name = "xcellent1lawncare"
 main = "worker.js"
+account_id = "dd775982eb4b6299c264a3fa12696eb9"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
