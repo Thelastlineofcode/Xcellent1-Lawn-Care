@@ -1,8 +1,13 @@
-const FLY_BACKEND = "https://xcellent1-lawn-care-rpneaa.fly.dev";
+const FLY_BACKEND = "https://xcellent1-lawn-care-new.fly.dev";
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    // Handle root path redirect to home page
+    if (url.pathname === "/") {
+      return Response.redirect("/home.html", 302);
+    }
 
     // Route /api/* to Fly.io backend
     if (url.pathname.startsWith("/api/")) {
