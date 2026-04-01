@@ -1,3 +1,14 @@
+---
+id: xcellent1-security
+title: Xcellent1 Lawn Care — Security
+category: security
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, security, supabase, rls, jwt, laplace, louisiana]
+---
+
 # Security Overview
 
 Xcellent1 Lawn Care implements several best-practice security measures to
