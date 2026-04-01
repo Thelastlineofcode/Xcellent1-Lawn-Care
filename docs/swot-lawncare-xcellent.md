@@ -1,3 +1,14 @@
+---
+id: xcellent1-swot
+title: Xcellent1 Lawn Care — SWOT Analysis
+category: research
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, swot, analysis, strategy, laplace, louisiana]
+---
+
 # Lawn Care Business SWOT Analysis – Xcellent 1 Lawn Care (Laplace, LA)
 
 ## Strengths
