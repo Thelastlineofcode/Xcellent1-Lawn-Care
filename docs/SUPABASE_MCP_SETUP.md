@@ -1,3 +1,14 @@
+---
+id: xcellent1-supabase-mcp
+title: Xcellent1 Lawn Care — Supabase MCP Setup
+category: ops
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, supabase, mcp, ops, setup, laplace, louisiana]
+---
+
 # Supabase MCP Server Setup
 
 ## What is this?
