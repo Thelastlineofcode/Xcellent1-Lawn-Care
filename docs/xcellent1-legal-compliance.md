@@ -1,3 +1,14 @@
+---
+id: xcellent1-legal
+title: Xcellent1 Lawn Care — Legal Compliance
+category: security
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, legal, compliance, louisiana, laplace, llc]
+---
+
 # Legal, Compliance, and Licensing Guide – Xcellent 1 Lawn Care (Louisiana, 2025)
 
 ## State of Louisiana – Lawn/Landscape Business Requirements
