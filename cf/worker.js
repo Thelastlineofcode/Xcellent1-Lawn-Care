@@ -1,27 +1,36 @@
-const ORIGIN = "https://xcellent1lawncare.com";
+const FLY_BACKEND = "https://xcellent1-lawn-care-rpneaa.fly.dev";
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Serve static files from web/static if available
-    // Otherwise proxy to origin
-    const originUrl = ORIGIN + url.pathname + url.search;
+    // Route /api/* to Fly.io backend
+    if (url.pathname.startsWith("/api/")) {
+      const backendUrl = (env.FLY_BACKEND_URL || FLY_BACKEND) + url.pathname + url.search;
+      const backendReq = new Request(backendUrl, {
+        method: request.method,
+        headers: request.headers,
+        body: ["GET", "HEAD"].includes(request.method) ? undefined : request.body,
+        redirect: "follow",
+      });
+      try {
+        const resp = await fetch(backendReq);
+        const newResp = new Response(resp.body, resp);
+        newResp.headers.set("X-Powered-By", "Xcellent1-Worker");
+        return newResp;
+      } catch (e) {
+        return new Response(JSON.stringify({ error: "Backend unavailable", detail: e.message }), {
+          status: 502,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
 
-    const originRequest = new Request(originUrl, {
-      method: request.method,
-      headers: request.headers,
-      body: request.body,
-      redirect: "follow",
-    });
-
+    // Fallback: serve static assets
     try {
-      const response = await fetch(originRequest);
-      const newResponse = new Response(response.body, response);
-      newResponse.headers.set("X-Powered-By", "Xcellent1-Worker");
-      return newResponse;
-    } catch (e) {
-      return new Response("Service temporarily unavailable", { status: 503 });
+      return await env.ASSETS.fetch(request);
+    } catch (_) {
+      return new Response("Not found", { status: 404 });
     }
   },
 };
