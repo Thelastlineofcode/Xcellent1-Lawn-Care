@@ -1,3 +1,14 @@
+---
+id: xcellent1-api-wiring
+title: Xcellent1 Lawn Care — API Wiring
+category: api
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, api, deno, endpoints, laplace, louisiana]
+---
+
 # API Wiring Documentation
 
 > Complete API endpoint mapping and data flow documentation for Xcellent1 Lawn
