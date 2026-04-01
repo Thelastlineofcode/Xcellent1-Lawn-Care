@@ -1,3 +1,14 @@
+---
+id: xcellent1-financial-kpis
+title: Xcellent1 Lawn Care — Financial KPIs
+category: research
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, financial, kpis, revenue, laplace, louisiana, saas]
+---
+
 # Industry Benchmarks and Financial KPIs – Xcellent 1 Lawn Care Context (2025)
 
 ## Market Benchmarks (Landscaping & Lawn Care)
