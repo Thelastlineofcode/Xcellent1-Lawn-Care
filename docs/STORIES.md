@@ -1,3 +1,14 @@
+---
+id: xcellent1-stories
+title: Xcellent1 Lawn Care — User Stories
+category: ops
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, stories, user-stories, agile, laplace, louisiana]
+---
+
 # User Stories - Xcellent1 Lawn Care
 
 ## Overview
