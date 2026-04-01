@@ -1,3 +1,14 @@
+---
+id: xcellent1-e2e-testing
+title: Xcellent1 Lawn Care — E2E Testing Summary
+category: runbook
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, e2e, testing, runbook, laplace, louisiana]
+---
+
 # E2E Testing & Security Implementation Summary
 
 ## ✅ Completed
