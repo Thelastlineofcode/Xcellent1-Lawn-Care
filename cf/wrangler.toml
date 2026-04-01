@@ -1,6 +1,8 @@
 name = "xcellent1lawncare"
 main = "worker.js"
-compatibility_date = "2024-01-01"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
 
 [vars]
+FLY_BACKEND_URL = "https://xcellent1-lawn-care-rpneaa.fly.dev"
 ENVIRONMENT = "production"
