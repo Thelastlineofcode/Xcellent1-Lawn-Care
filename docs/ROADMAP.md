@@ -1,3 +1,14 @@
+---
+id: xcellent1-roadmap
+title: Xcellent1 Lawn Care — Roadmap
+category: architecture
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, roadmap, laplace, louisiana, saas]
+---
+
 # Product Roadmap - Xcellent1 Lawn Care
 
 ## Vision
