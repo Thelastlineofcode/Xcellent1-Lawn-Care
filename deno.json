@@ -23,6 +23,7 @@
     "exclude": [
       "web/static/**",
       "web/tests/**",
+      "tests/**",
       "xcellent1-lawn-care-assistant/**",
       "bmad/agents/archived/langchain-integration/**",
       "bmad/agents/archived/langchain_integration/**",
