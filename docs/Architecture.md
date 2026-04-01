@@ -1,3 +1,14 @@
+---
+id: xcellent1-architecture
+title: Xcellent1 Lawn Care — Architecture Overview
+category: architecture
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, architecture, deno, supabase, laplace, louisiana]
+---
+
 # Xcellent1 Lawn Care - Architecture Overview
 
 ## Overview
