@@ -1,3 +1,14 @@
+---
+id: xcellent1-deployment
+title: Xcellent1 Lawn Care — Deployment Guide
+category: ops
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, deployment, flyio, gcp, deno, ops, laplace, louisiana]
+---
+
 # Deployment Guide - Xcellent1 Lawn Care
 
 ## Quick Deploy to Production
