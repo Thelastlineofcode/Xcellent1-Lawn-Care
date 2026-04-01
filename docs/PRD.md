@@ -1,3 +1,14 @@
+---
+id: xcellent1-prd
+title: Xcellent1 Lawn Care — Product Requirements Document
+category: architecture
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, prd, requirements, laplace, louisiana, saas]
+---
+
 # Xcellent1 Lawn Care - Product Requirements Document
 
 **Author:** The Last Line of Code **Date:** 2025-12-09 **Version:** 1.0
