@@ -1,3 +1,14 @@
+---
+id: xcellent1-prod-readiness
+title: Xcellent1 Lawn Care — Production Readiness Checklist
+category: runbook
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, production, checklist, runbook, laplace, louisiana]
+---
+
 # Production Readiness Checklist
 
 ## Xcellent1 Lawn Care - Final Pre-Launch Review
