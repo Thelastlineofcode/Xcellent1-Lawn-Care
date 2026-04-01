@@ -1,3 +1,14 @@
+---
+id: xcellent1-user-flows
+title: Xcellent1 Lawn Care — User Flows
+category: architecture
+owner: rick
+version: 1
+last_updated: 2026-04-01
+qdrant_collection: doc_sections
+tags: [xcellent1, user-flows, owner, crew, client, laplace, louisiana]
+---
+
 # Xcellent1 Lawn Care - User Flows
 
 This document outlines the primary user journeys for the three main roles in the
