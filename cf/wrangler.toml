@@ -9,5 +9,5 @@ directory = "../web/static"
 binding = "ASSETS"
 
 [vars]
-FLY_BACKEND_URL = "https://xcellent1-lawn-care-rpneaa.fly.dev"
+FLY_BACKEND_URL = "https://xcellent1-lawn-care-new.fly.dev"
 ENVIRONMENT = "production"
