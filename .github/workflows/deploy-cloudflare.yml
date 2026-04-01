@@ -4,9 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - "worker.js"
-      - "wrangler.toml"
-      - "web/static/**"
+      - "cf/worker.js"
+      - "cf/wrangler.toml"
+      - "cf/**"
   workflow_dispatch:
 
 jobs:
@@ -21,4 +21,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: cf
           command: deploy
