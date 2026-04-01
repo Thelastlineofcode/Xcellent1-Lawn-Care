@@ -1317,20 +1317,19 @@
       return false;
     }
 
+    const _env = (typeof window !== "undefined" && window.__ENV) || {};
+    const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL ||
+      "https://utivthfrwgtjatsusopw.supabase.co";
+    const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      "sb_publishable_nX8IeSiT3FJ3iL2GJbf_vA_Jj90PMvt";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     async function handleGoogleSignIn() {
       const messageDiv = document.getElementById("login-message");
       messageDiv.textContent = "Redirecting to Google...";
       messageDiv.style.color = "#059669";
 
-      const supabaseUrl = "https://utivthfrwgtjatsusopw.supabase.co";
-      const supabaseKey =
-        "sb_publishable_nX8IeSiT3FJ3iL2GJbf_vA_Jj90PMvt";
-      const supabase = window.supabase.createClient(
-        supabaseUrl,
-        supabaseKey,
-      );
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: window.location.origin,
@@ -1356,16 +1355,8 @@
         );
       }
 
-      const supabaseUrl = "https://utivthfrwgtjatsusopw.supabase.co";
-      const supabaseKey =
-        "sb_publishable_nX8IeSiT3FJ3iL2GJbf_vA_Jj90PMvt";
-      const supabase = window.supabase.createClient(
-        supabaseUrl,
-        supabaseKey,
-      );
-
       supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === "SIGNED_IN" && session?.provider_token) {
+        if (event === "SIGNED_IN" && session) {
           if (session.user.email !== "lacardiofrancis@gmail.com") {
             await supabase.auth.signOut();
             alert("Access denied. This service is restricted.");

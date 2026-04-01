@@ -8,6 +8,11 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // Handle root path redirect to home page
+    if (url.pathname === "/") {
+      return Response.redirect("/home.html", 302);
+    }
+
     // Proxy /api/* to Fly.io backend
     if (url.pathname.startsWith("/api/")) {
       const backendUrl = new URL(url.pathname + url.search, FLY_BACKEND);
