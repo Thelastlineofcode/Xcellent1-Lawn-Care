@@ -2,9 +2,9 @@
 id: xcellent1-erc-flow
 title: ERC Flow — Empathize, Realize, Conceptualize (Xcellent1)
 category: architecture
-owner: rick
-version: 1
-last_updated: 2026-04-01
+owner: travone
+version: 2
+last_updated: 2026-04-02
 qdrant_collection: doc_sections
 tags: [erc, flow, empathize, realize, conceptualize, phase-gate, xcellent1]
 ---
@@ -26,7 +26,7 @@ Empathize is the problem discovery phase. No spec is written, no code is touched
 **Required artifacts:**
 - `problem_statement` — what is broken and for whom (owner, crew, or client)
 - `pain_data` — observed evidence (user reports, operational failures, missing features)
-- `root_cause` — why it’s happening, not just what
+- `root_cause` — why it's happening, not just what
 
 **Xcellent1 examples:**
 - Problem: Crew cannot upload before/after photos from mobile
