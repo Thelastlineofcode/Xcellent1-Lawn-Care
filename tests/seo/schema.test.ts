@@ -1,5 +1,3 @@
-import { assertEquals, assertExists, assertStringIncludes } from "@std/assert";
-
 const BASE_URL = Deno.env.get("TEST_BASE_URL") || "http://localhost:8000";
 
 async function fetchHtml(path: string): Promise<string> {
@@ -71,7 +69,9 @@ Deno.test({
     ];
     
     for (const city of targetCities) {
-      assertStringIncludes(html, city, `Schema should include areaServed: ${city}`);
+      if (!html.includes(city)) {
+        throw new Error(`Schema should include areaServed: ${city}`);
+      }
     }
   },
 });
