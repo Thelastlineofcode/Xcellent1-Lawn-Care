@@ -25,6 +25,17 @@ features deployed and operational.
 
 ---
 
+## 👁️ Owner Vision (Updated 2026-04-01)
+
+Based on the owner's (LaCardio) vision interview, the platform is moving toward **passive accountability**.
+
+**Key Pillars:**
+1. **The "Red Code" Dashboard**: "The app got you in red" — automated crew performance flags visible directly to workers.
+2. **Standardized Procedures**: "Creating kind of like a procedure" — move from binary job completion to step-by-step SOP enforcement.
+3. **Owner Distance**: "Viewing the business from a distance" — zero-confrontation management where the app handles the "tough conversations" about performance.
+
+---
+
 ## ✅ COMPLETE FEATURES
 
 ### 🔐 Authentication & Security

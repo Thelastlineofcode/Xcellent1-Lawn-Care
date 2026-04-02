@@ -147,6 +147,21 @@ run smoothly whether automation is present or not.
     - Hiring priority: P2
     - FTE estimate: Small: 0 (owner does it) ; Medium: 0.2–0.5
 
+11) Agent: Automated Accountability Agent (NEW!)
+    - Staff role: Performance & Compliance Monitor
+    - Responsibilities: a. Monitor crew performance metrics (on-time arrival, job
+      completion rate, photo compliance). b. Automatically toggle crew status
+      indicators (Green/Yellow/Red) based on owner-defined thresholds. c.
+      Surface performance flags directly to crew via PWA to eliminate the need
+      for direct owner-to-crew confrontation. d. "The app got you in red" logic
+      enforcement.
+    - Required skills: logic gating, threshold management, empathetic but firm
+      automated messaging.
+    - KPIs: reduction in manual owner-crew performance discussions, crew
+      compliance rate, "time-in-green" average.
+    - Hiring priority: P1
+    - FTE estimate: Small: Automated (0.1 audit) ; Medium: 0.2 (HR shared)
+
 3. Suggested team structure and hiring roadmap (first 6 months)
 
 - Phase A (MVP ops, 0–3 months): Hire Intake Specialist (part-time / shared),
