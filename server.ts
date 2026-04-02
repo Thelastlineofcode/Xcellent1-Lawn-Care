@@ -1243,6 +1243,71 @@ async function handler(req: Request): Promise<Response> {
     }
   }
 
+  // GET /api/crew/performance (crew self-view)
+  if (url.pathname === "/api/crew/performance" && req.method === "GET") {
+    // Require crew authentication
+    const authCheck = await requireAuth(req, ["crew"]);
+    if (!authCheck.authorized) return (authCheck as any).response;
+
+    try {
+      if (!dbConnected) {
+        // Safe mock for demo mode
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            status: "green",
+            period_start: null,
+            period_end: null,
+            jobs_completed: 0,
+            jobs_on_time: 0,
+            quality_score: null,
+          }),
+          { status: 200, headers },
+        );
+      }
+
+      const crewUserId = authCheck.auth.profile.id;
+
+      // Latest calculated row for this crew member
+      const result = await db.queryObject(
+        `
+          SELECT status, period_start, period_end, jobs_completed, jobs_on_time, quality_score, calculated_at
+          FROM performance_scores
+          WHERE worker_id = $1
+          ORDER BY calculated_at DESC
+          LIMIT 1
+        `,
+        [crewUserId],
+      );
+
+      if (result.rows.length === 0) {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            status: "green",
+            period_start: null,
+            period_end: null,
+            jobs_completed: 0,
+            jobs_on_time: 0,
+            quality_score: null,
+          }),
+          { status: 200, headers },
+        );
+      }
+
+      return new Response(JSON.stringify({ ok: true, ...result.rows[0] }), {
+        status: 200,
+        headers,
+      });
+    } catch (err) {
+      console.error("[server] Error getting crew performance:", err);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Internal server error" }),
+        { status: 500, headers },
+      );
+    }
+  }
+
   // GET /api/owner/metrics (business KPIs)
   if (url.pathname === "/api/owner/metrics" && req.method === "GET") {
     // Require owner authentication

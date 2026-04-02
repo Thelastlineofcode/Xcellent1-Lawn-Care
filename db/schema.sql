@@ -131,6 +131,55 @@ CREATE TABLE IF NOT EXISTS payment_accounts (
   UNIQUE(user_id, payment_method, account_identifier)
 );
 
+-- =============================================================
+-- Webapp Platform (Issue #27) schema additions (Module 1 + 3)
+-- =============================================================
+
+-- Worker applications (public intake)
+CREATE TABLE IF NOT EXISTS worker_applications (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  auth_user_id UUID,
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  email TEXT,
+  equipment_owned JSONB DEFAULT '[]',
+  availability JSONB DEFAULT '{}',
+  service_areas TEXT[] DEFAULT '{}',
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  applied_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Crew performance scores (calculated periodically)
+CREATE TABLE IF NOT EXISTS performance_scores (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  worker_id UUID REFERENCES users(id),
+  period_start DATE NOT NULL,
+  period_end DATE NOT NULL,
+  jobs_completed INT DEFAULT 0,
+  jobs_on_time INT DEFAULT 0,
+  quality_score DECIMAL(4,2),
+  status TEXT DEFAULT 'green' CHECK (status IN ('green', 'yellow', 'red')),
+  calculated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Notification audit log (source of truth for dedupe)
+CREATE TABLE IF NOT EXISTS notifications_log (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  recipient_type TEXT CHECK (recipient_type IN ('owner', 'crew', 'customer')),
+  recipient_id UUID,
+  channel TEXT CHECK (channel IN ('sms', 'email', 'push')),
+  event_type TEXT NOT NULL,
+  ref_id TEXT,
+  payload JSONB DEFAULT '{}',
+  sent_at TIMESTAMPTZ DEFAULT NOW(),
+  status TEXT DEFAULT 'sent' CHECK (status IN ('sent', 'failed', 'bounced'))
+);
+
+-- Extend jobs table for comms + tracking
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS completion_photo_url TEXT;
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS crew_en_route_at TIMESTAMPTZ;
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS started_at TIMESTAMPTZ;
+
 -- Outbox events table (event sourcing)
 CREATE TABLE IF NOT EXISTS outbox_events (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -164,6 +213,42 @@ CREATE INDEX IF NOT EXISTS idx_payment_accounts_user ON payment_accounts(user_id
 CREATE INDEX IF NOT EXISTS idx_payment_accounts_method ON payment_accounts(payment_method);
 CREATE INDEX IF NOT EXISTS idx_payment_accounts_primary ON payment_accounts(user_id, is_primary) WHERE is_primary = TRUE;
 
+-- Webapp Platform indexes
+CREATE INDEX IF NOT EXISTS idx_performance_scores_worker ON performance_scores(worker_id, period_start);
+CREATE INDEX IF NOT EXISTS idx_notifications_log_event ON notifications_log(event_type, sent_at);
+CREATE INDEX IF NOT EXISTS idx_worker_applications_status ON worker_applications(status);
+
+-- Dedupe: avoid sending the same notification twice for same ref
+CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications_log_dedupe
+  ON notifications_log(event_type, channel, recipient_type, ref_id)
+  WHERE ref_id IS NOT NULL;
+
+-- Enable Supabase Realtime on key tables.
+-- Guarded so running this schema in non-Supabase Postgres doesn't error.
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
+    -- jobs
+    IF to_regclass('public.jobs') IS NOT NULL THEN
+      BEGIN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.jobs;
+      EXCEPTION WHEN duplicate_object THEN
+        -- already added
+      END;
+    END IF;
+
+    -- leads (only if the table exists in this project)
+    IF to_regclass('public.leads') IS NOT NULL THEN
+      BEGIN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.leads;
+      EXCEPTION WHEN duplicate_object THEN
+        -- already added
+      END;
+    END IF;
+  END IF;
+END;
+$$;
+
 -- Row Level Security (RLS) policies
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
@@ -173,6 +258,9 @@ ALTER TABLE job_photos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE payment_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE worker_applications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE performance_scores ENABLE ROW LEVEL SECURITY;
+ALTER TABLE notifications_log ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for role-based access
 -- Helper function to get user role from auth.uid()
@@ -233,6 +321,38 @@ CREATE POLICY "Clients can view own payments" ON payments FOR SELECT
 -- Payment accounts policies
 CREATE POLICY "Owners can manage their payment accounts" ON payment_accounts FOR ALL
   USING (user_id IN (SELECT id FROM users WHERE auth_user_id = auth.uid()));
+
+-- Worker applications policies
+CREATE POLICY "owner_can_view_all_applications" ON worker_applications
+  FOR SELECT USING (auth.user_role() = 'owner');
+
+CREATE POLICY "applicant_can_view_own" ON worker_applications
+  FOR SELECT USING (auth.uid() = auth_user_id);
+
+CREATE POLICY "public_can_insert_worker_applications" ON worker_applications
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "owner_can_update_applications" ON worker_applications
+  FOR UPDATE USING (auth.user_role() = 'owner');
+
+-- Performance scores policies
+CREATE POLICY "owner_can_view_all_scores" ON performance_scores
+  FOR SELECT USING (auth.user_role() = 'owner');
+
+CREATE POLICY "crew_can_view_own_scores" ON performance_scores
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1
+      FROM users u
+      WHERE u.id = performance_scores.worker_id
+        AND u.auth_user_id = auth.uid()
+        AND u.role = 'crew'
+    )
+  );
+
+-- Notifications log policies
+CREATE POLICY "owner_can_view_notifications" ON notifications_log
+  FOR SELECT USING (auth.user_role() = 'owner');
 
 -- Insert demo data (optional)
 INSERT INTO users (email, phone, name, role) VALUES
