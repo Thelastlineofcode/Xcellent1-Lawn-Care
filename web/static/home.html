@@ -47,16 +47,15 @@
   <link rel="icon" type="image/png" sizes="192x192" href="images/xcellent1-icon-192.png" />
   <link rel="apple-touch-icon" sizes="192x192" href="images/xcellent1-icon-192.png" />
   <meta name="theme-color" content="#3b832a" />
-  <!-- Structured Data for Local Business -->
+  <!-- Structured Data for SEO and Voice Search -->
   <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "LocalBusiness",
+        "@type": "LawnCareService",
         "name": "Xcellent1 Lawn Care",
-        "description": "Professional lawn care services in the River Parishes, Louisiana. Serving LaPlace, Reserve, Garyville, Gramercy, Lutcher and surrounding areas.",
+        "image": "https://xcellent1lawncare.com/static/images/xcellent1-logo-transparent.png",
         "url": "https://xcellent1lawncare.com/",
         "telephone": "+1-504-875-8079",
-        "email": "info@xcellent1lawn.com",
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "LaPlace",
@@ -70,43 +69,62 @@
           "longitude": -90.4682
         },
         "areaServed": [
-          { "@type": "Place", "name": "LaPlace, Louisiana" },
-          { "@type": "Place", "name": "Reserve, Louisiana" },
-          { "@type": "Place", "name": "Garyville, Louisiana" },
-          { "@type": "Place", "name": "Gramercy, Louisiana" },
-          { "@type": "Place", "name": "Lutcher, Louisiana" },
-          { "@type": "Place", "name": "River Parishes, Louisiana" }
+          "LaPlace, LA",
+          "Norco, LA",
+          "Destrehan, LA",
+          "Luling, LA",
+          "St. Rose, LA"
         ],
         "openingHoursSpecification": [
           {
             "@type": "OpeningHoursSpecification",
-            "dayOfWeek": [
-              "Monday",
-              "Tuesday",
-              "Wednesday",
-              "Thursday",
-              "Friday"
-            ],
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
             "opens": "07:00",
             "closes": "18:00"
           },
           {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": "Saturday",
-            "opens": "08:00",
-            "closes": "16:00"
+            "opens": "07:00",
+            "closes": "14:00"
           }
         ],
+        "priceRange": "$$",
         "sameAs": [
           "https://g.page/r/CZbYqiFFQ57SEBM"
-        ],
-        "serviceType": [
-          "Lawn Mowing",
-          "Landscaping",
-          "Yard Cleanup",
-          "Bush Hogging",
-          "Flower Bed Maintenance",
-          "Spring Cleaning"
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Who does lawn care near me in LaPlace Louisiana?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Xcellent1 Lawn Care serves LaPlace, Norco, Destrehan, Luling, and St. Rose. Call or book online for a free quote."}
+          },
+          {
+            "@type": "Question",
+            "name": "How much does lawn mowing cost in LaPlace LA?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Xcellent1 Lawn Care offers competitive rates for residential and commercial lawn mowing in the LaPlace area. Request a free quote online."}
+          },
+          {
+            "@type": "Question",
+            "name": "Is Xcellent1 Lawn Care available on weekends?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Yes. Xcellent1 Lawn Care serves clients Monday through Saturday in LaPlace and surrounding areas."}
+          },
+          {
+            "@type": "Question",
+            "name": "Does Xcellent1 offer fertilization and aeration in Louisiana?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Yes. Xcellent1 provides fertilization, aeration, and full lawn care services tuned to Louisiana's warm-season grass types including St. Augustine, Bermuda, and Zoysia."}
+          },
+          {
+            "@type": "Question",
+            "name": "How do I book a lawn care service in Norco or Destrehan LA?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Book online at https://xcellent1lawncare.com or call +1-504-875-8079. Xcellent1 serves Norco, Destrehan, LaPlace, and surrounding St. John and St. Charles Parish communities."}
+          }
         ]
       }
     </script>

@@ -4,7 +4,8 @@
     "dev": "deno run --allow-net --allow-read --allow-write --allow-env --watch server.ts",
     "check": "deno check server.ts",
     "test": "deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts",
-    "test:prod": "BASE_URL=https://xcellent1-lawn-care-rpneaa.fly.dev deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts",
+    "test:prod": "BASE_URL=https://xcellent1-lawn-care-new.fly.dev deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts",
+    "test:seo": "BASE_URL=https://xcellent1lawncare.com deno test --allow-net --allow-read tests/seo/schema.test.ts",
     "test:gcp": "deno run --allow-run --allow-net --allow-read --allow-write --allow-env tests/run-tests.ts"
   },
   "imports": {
