@@ -39,6 +39,16 @@
         Logout
       </button>
     </div>
+    <div class="route-summary" style="margin-top: 0.75rem">
+      <div class="route-summary-item">
+        <span>🟢</span>
+        <span><strong id="crew-performance-status">Loading</strong></span>
+      </div>
+      <div class="route-summary-item">
+        <span>📅</span>
+        <span id="performance-period">This period</span>
+      </div>
+    </div>
     <div class="route-summary">
       <div class="route-summary-item">
         <span>📅</span>
@@ -128,7 +138,9 @@
   </script>
   <script>
     // Crew Dashboard Logic
-    const CREW_ID = window.crewProfile?.id || "crew_marcus_01"; // Get from auth
+    function getCrewId() {
+      return window.crewProfile?.id || "crew_marcus_01";
+    }
     let currentJob = null;
     let photoType = "before";
     let capturedPhoto = null;
@@ -142,7 +154,7 @@
           throw new Error("No authentication token");
         }
 
-        const response = await fetch(`/api/crew/${CREW_ID}/jobs`, {
+        const response = await fetch(`/api/crew/${getCrewId()}/jobs`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -170,8 +182,53 @@
       }
     }
 
+    async function fetchCrewPerformance() {
+      try {
+        const token = window.supabaseSession?.access_token;
+        if (!token) throw new Error("No authentication token");
+
+        const response = await fetch(`/api/crew/performance`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) throw new Error(`API error: ${response.status}`);
+        const data = await response.json();
+        if (!data.ok) throw new Error(data.error || "Failed to fetch performance");
+        return data;
+      } catch (err) {
+        console.error("Failed to fetch crew performance:", err);
+        return null;
+      }
+    }
+
+    function renderCrewPerformance(perf) {
+      const statusEl = document.getElementById("crew-performance-status");
+      const periodEl = document.getElementById("performance-period");
+      if (!statusEl || !periodEl) return;
+
+      if (!perf) {
+        statusEl.textContent = "Unknown";
+        periodEl.textContent = "";
+        return;
+      }
+
+      const status = (perf.status || "green").toString().toLowerCase();
+      const icon = status === "red" ? "🔴" : status === "yellow" ? "🟡" : "🟢";
+      statusEl.textContent = `${icon} ${status.toUpperCase()}`;
+
+      const ps = perf.period_start;
+      const pe = perf.period_end;
+      periodEl.textContent = ps && pe ? `${ps} to ${pe}` : "";
+    }
+
     // Load crew jobs
     async function loadCrewJobs() {
+      // Fetch and render performance status (self-view)
+      const perf = await fetchCrewPerformance();
+      renderCrewPerformance(perf);
+
       // Fetch jobs from API
       const apiJobs = await fetchCrewJobs();
 
@@ -412,11 +469,35 @@
       });
     });
 
-    // Initial load
-    loadCrewJobs();
+    async function waitForCrewAuth(maxWaitMs = 10000) {
+      const start = Date.now();
+      while (Date.now() - start < maxWaitMs) {
+        if (window.supabaseSession?.access_token && window.crewProfile?.id) return true;
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      return false;
+    }
 
-    // Refresh every 5 minutes
-    setInterval(loadCrewJobs, 300000);
+    // Initial load
+    (async () => {
+      const ready = await waitForCrewAuth();
+      if (!ready) {
+        showMessage(
+          "crew-status",
+          "⚠️ Authentication not ready. Please refresh the page.",
+          "warning",
+          5000,
+        );
+        return;
+      }
+
+      loadCrewJobs();
+
+      // Refresh every 5 minutes
+      setInterval(loadCrewJobs, 300000);
+    })();
+
+    // Note: interval started after auth readiness
   </script>
 </body>
 
