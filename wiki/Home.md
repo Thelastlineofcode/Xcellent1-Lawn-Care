@@ -3,7 +3,7 @@ id: xcellent1-wiki-home
 title: Xcellent1 Lawn Care — Wiki Home
 category: architecture
 owner: travone
-version: 2
+version: 3
 last_updated: 2026-04-02
 qdrant_collection: doc_sections
 tags: [xcellent1, lawn-care, wiki, home, overview, river-parishes, laplace]
@@ -25,8 +25,8 @@ Xcellent1 is a real commercial lawn care SaaS operation built for a River Parish
 **Three user roles:** Owner · Crew · Client
 
 **Phases 1–3:** Shipped and operational.  
-**Current:** Phase 4 — E2E testing + mobile crew UX.  
-**Upcoming:** Phase 5 — AI agent integration, in-app training modules, licensure-gated SOPs.
+**Phase 4:** 🟡 In Progress — Event notifications, crew checklists, lead scoring (spec: `wiki/webapp-platform.md` — `erc:conceptualize`, signed off, ~21hr build).  
+**Phase 5:** 📋 Planned — AI agent integration, in-app training modules, licensure-gated SOPs.
 
 ---
 
@@ -37,9 +37,9 @@ Xcellent1 is a real commercial lawn care SaaS operation built for a River Parish
 | Lacardio | Lead Field Operator | Landscaping only (pesticide/irrigation/arborist: pending) | `staff/lacardio/SOPs_ERC_v1.1.md` |
 
 **Lacardio's current licensed scope:** Mowing, edging, trimming, mulching, planting, sod installation, cleanup, hardscape blowing.  
-**Locked services (license required):** Pesticide application (LDAF), irrigation (LA Plumbing Board), tree work (LA Horticulture Commission), commercial fertilizer (LDAF).  
+**Locked services (license required):** Pesticide (LDAF), irrigation (LA Plumbing Board), tree work (LA Horticulture Commission), commercial fertilizer (LDAF).  
 
-See `staff/lacardio/SOPs_ERC_v1.1.md` for full field operating procedures with ERC efficiency notes.
+See `staff/lacardio/SOPs_ERC_v1.1.md` for full field SOPs with ERC efficiency notes.
 
 ---
 
@@ -51,25 +51,23 @@ See `staff/lacardio/SOPs_ERC_v1.1.md` for full field operating procedures with E
 | ERC Flow | `wiki/erc-flow.md` | Phase-gated development discipline |
 | Docs Standard | `wiki/docs-standard.md` | Frontmatter contract for all wiki docs |
 | SOP (Dev) | `wiki/SOP.md` | Developer/project SOP — issue PRD template, merge criteria |
+| Webapp Platform | `wiki/webapp-platform.md` | Full Phase 4–5 module specs + IDE agent build prompt |
 | Gig Worker Model | `wiki/gig-worker-model.md` | Crew contractor model and compensation |
 | Stripe Integration | `wiki/stripe-integration.md` | Payment processing setup |
 | Voice SEO | `wiki/voice-seo-positioning.md` | Local SEO strategy for River Parishes market |
-| Webapp Platform | `wiki/webapp-platform.md` | Frontend platform decisions |
 | Owner Interview | `wiki/owner-interview-2026-04-01.md` | Business owner discovery session notes |
 
 **Staff Docs:**
 
 | File | Purpose |
 |---|---|
-| `staff/lacardio/SOPs_ERC_v1.1.md` | Lacardio field SOPs — all 15 procedures, River Parishes ERC |
+| `staff/lacardio/SOPs_ERC_v1.1.md` | Lacardio field SOPs — 15 procedures, River Parishes ERC |
 | `staff/agents_to_staff.md` | Agent-to-staff mapping and role definitions |
 | `staff/jds/` | Job descriptions |
 
 ---
 
 ## ERC Phase Summary
-
-All features and issues must pass three gates before code ships:
 
 | Phase | Label | Gate | What Happens |
 |---|---|---|---|
@@ -78,7 +76,7 @@ All features and issues must pass three gates before code ships:
 | Conceptualize | `erc:conceptualize` | ≥90 pts | Architecture approved, @travone sign-off, ready to build |
 | Blocked | `erc:blocked` | — | Gate failed, needs rework |
 
-See `wiki/erc-flow.md` for the full phase definitions.
+See `wiki/erc-flow.md` for full phase definitions.
 
 ---
 
@@ -101,45 +99,48 @@ Deno Server (server.ts) — port 8000
     |       ├— /api/crew/*       # Crew-only endpoints
     |       └— /api/client/*     # Client-only endpoints
     |
+    +—— Notification Worker (fly.toml process)
+    |       └— polls outbox_events every 30s → Twilio / SendGrid / Realtime
+    |
     v
-Supabase (PostgreSQL + Auth + Storage)
-    ├— Database: clients, jobs, invoices, payments, waitlist
+Supabase (PostgreSQL + Auth + Storage + Realtime)
+    ├— Database: clients, jobs, invoices, payments, photos, outbox_events
     ├— Auth: JWT with RLS policies
     └— Storage: job-photos bucket
 ```
 
 ---
 
+## Build Status — Phase 4
+
+| Module | ERC Phase | Ready | Est. |
+|---|---|---|---|
+| M1 — Owner Command Center | Conceptualize ✅ | Ready to build | 6.5 hr |
+| M2 — Customer Portal | Conceptualize ✅ | Ready to build | 5 hr |
+| M3 — Crew Self-Service | Conceptualize ✅ | Ready to build | 7 hr |
+| M4 — Lead Intelligence | Conceptualize ✅ | Ready to build | 2.5 hr |
+| M5 — Training System | Empathize ⏳ | Next sprint | TBD |
+
+**IDE agent prompt:** bottom of `wiki/webapp-platform.md`
+
+---
+
 ## Key Docs
 
-- `staff/lacardio/SOPs_ERC_v1.1.md` — Lacardio field operating procedures (River Parishes)
-- `docs/LACARDIO_DASHBOARD_GUIDE.md` — Owner dashboard guide
+- `wiki/webapp-platform.md` — Phase 4–5 full spec + IDE agent prompt (**start here**)
+- `staff/lacardio/SOPs_ERC_v1.1.md` — Lacardio field operating procedures
 - `db/schema.sql` — Full PostgreSQL schema
-- `db/SETUP_SUPABASE_STORAGE.md` — Storage bucket setup
-- `PHASES_1-3_COMPLETE.md` — Complete API docs + testing checklist
-- `SOP.md` — Developer project SOP (issue PRD, merge criteria, mobile rules)
+- `db/migrations/001_phase4_additions.sql` — Phase 4 schema additions (create before building)
+- `PHASES_1-3_COMPLETE.md` — Completed API docs
+- `SOP.md` — Developer project SOP
 
 ---
 
 ## RicksGarage Integration
 
-- **RicksGarage project page:** `wiki/projects/xcellent1.md`
-- **Agent context:** `RicksGarage/Xcellent1-Lawn-Care/`
 - **Issue prefix:** `X1-###`
 - **ERC enforcement:** Labels + CI gate (see `wiki/erc-flow.md`)
-- **Perplexity Space:** Xcellent1 Lawn Care (this wiki serves as the knowledge base)
-
----
-
-## Phase Roadmap
-
-| Phase | Status | Key Features |
-|---|---|---|
-| 1 | ✅ Complete | Client CRUD, job scheduling, invoicing |
-| 2 | ✅ Complete | Waitlist pipeline, client self-service payments |
-| 3 | ✅ Complete | Before/after photo upload, payment verification |
-| 4 | 🟡 In Progress | E2E tests, mobile crew UX, photo integration |
-| 5 | 📋 Planned | AI agent integration, in-app training modules, licensure-gated SOPs for crew |
+- **Perplexity Space:** Xcellent1 Lawn Care (this wiki is the knowledge base)
 
 ---
 
@@ -154,4 +155,4 @@ Supabase (PostgreSQL + Auth + Storage)
 ---
 
 *Governed by RicksGarage ERC framework. Every issue must pass Empathize → Realize → Conceptualize before code ships.*  
-*Field operations governed by `staff/lacardio/SOPs_ERC_v1.1.md`. Updated 2026-04-02.*
+*Field operations: `staff/lacardio/SOPs_ERC_v1.1.md` | Last updated: 2026-04-02*
