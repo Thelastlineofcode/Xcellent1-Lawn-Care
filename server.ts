@@ -10,6 +10,7 @@ import { authenticateRequest, getSupabaseClient } from "./supabase_auth.ts";
 import { buildOwnerInvitationEmail, sendEmail } from "./email-service.ts";
 import { handleAiRequest } from "./src/api/ai-proxy.ts";
 import { db, initDB } from "./src/db/client.ts";
+import { getSchemaScripts } from "./src/schema.ts";
 
 // Database connection
 // Prefer using an environment variable for DATABASE_URL. Avoid hardcoding
@@ -935,11 +936,19 @@ async function handler(req: Request): Promise<Response> {
   }
 
   // Serve HTML files from root path (e.g., /home.html -> /web/static/home.html)
+  // Inject JSON-LD schema for SEO/voice search
   if (url.pathname.endsWith(".html") && !url.pathname.startsWith("/static/")) {
     try {
       const filePath = `./web/static${url.pathname}`;
-      const file = await Deno.readFile(filePath);
-      return new Response(file, {
+      let htmlContent = await Deno.readTextFile(filePath);
+      
+      // Inject SEO schemas into <head> if not already present
+      const schemaScripts = getSchemaScripts();
+      if (!htmlContent.includes('"@type": "LawnCareService"') && !htmlContent.includes('"@type": "FAQPage"')) {
+        htmlContent = htmlContent.replace("<head>", `<head>\n${schemaScripts}`);
+      }
+      
+      return new Response(new TextEncoder().encode(htmlContent), {
         status: 200,
         headers: {
           "Content-Type": "text/html",
