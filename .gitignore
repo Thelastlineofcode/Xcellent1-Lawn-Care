@@ -30,7 +30,11 @@ build/
 .deno/
 
 # Supabase CLI binary (downloaded)
+# NOTE: This repo also uses `supabase/` for edge functions + migrations.
+# Ignore the binary but keep the directory tracked.
 supabase
+!supabase/
+!supabase/**
 
 # Logs
 *.log
