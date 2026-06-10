@@ -10,6 +10,3 @@ binding = "ASSETS"
 [build]
 command = ""
 
-[vars]
-FLY_BACKEND_URL = "https://xcellent1-lawn-care-rpneaa.fly.dev"
-

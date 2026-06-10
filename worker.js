@@ -1,15 +1,11 @@
 // Xcellent1 Lawn Care - Cloudflare Worker
-// Static assets via ASSETS binding
-// /api/* routes proxied to Fly.io backend
-
-const FLY_BACKEND = "https://xcellent1-lawn-care-rpneaa.fly.dev";
+// Static assets via ASSETS binding. Pure static site — no backend.
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
     // Force HTTPS — redirect HTTP to HTTPS
-    // Cloudflare sets x-forwarded-proto for connections through their proxy
     const forwardedProto = request.headers.get("x-forwarded-proto") || url.protocol.slice(0, -1);
     if (forwardedProto === "http") {
       return Response.redirect(
@@ -21,25 +17,6 @@ export default {
     // Handle root path redirect to home page
     if (url.pathname === "/") {
       return Response.redirect("/home.html", 302);
-    }
-
-    // Proxy /api/* to Fly.io backend
-    if (url.pathname.startsWith("/api/")) {
-      const backendUrl = new URL(url.pathname + url.search, FLY_BACKEND);
-      const proxyRequest = new Request(backendUrl, {
-        method: request.method,
-        headers: request.headers,
-        body: request.method !== "GET" && request.method !== "HEAD" ? request.body : null,
-        redirect: "follow",
-      });
-      try {
-        return await fetch(proxyRequest);
-      } catch (e) {
-        return new Response(JSON.stringify({ error: "Backend unavailable" }), {
-          status: 502,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
     }
 
     // Serve static assets for everything else
