@@ -8,6 +8,16 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // Force HTTPS — redirect HTTP to HTTPS
+    // Cloudflare sets x-forwarded-proto for connections through their proxy
+    const forwardedProto = request.headers.get("x-forwarded-proto") || url.protocol.slice(0, -1);
+    if (forwardedProto === "http") {
+      return Response.redirect(
+        `https://${url.hostname}${url.pathname}${url.search}`,
+        301
+      );
+    }
+
     // Handle root path redirect to home page
     if (url.pathname === "/") {
       return Response.redirect("/home.html", 302);
