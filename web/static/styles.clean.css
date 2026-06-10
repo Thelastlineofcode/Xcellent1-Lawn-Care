@@ -202,7 +202,7 @@ a:hover {
   padding: var(--spacing-2xl) var(--spacing-md);
   background:
     linear-gradient(180deg, rgba(1, 39, 20, 0.6), rgba(59, 131, 42, 0.5)),
-    url("images/CoverPhoto.png") center/cover no-repeat;
+    url("images/CoverPhoto.webp") center/cover no-repeat;
   color: #ffffff;
   position: relative;
 }
