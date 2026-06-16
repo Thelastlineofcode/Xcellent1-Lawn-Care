@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lawn Care Blog | Xcellent1 Lawn Care — River Parishes, LA</title>
+  <meta name="description" content="Expert lawn care guides for South Louisiana homeowners. Grass types, mowing, fertilizing, weed control, watering, and seasonal tips for the River Parishes." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Xcellent1 Lawn Care" />
+  <meta property="og:url" content="https://xcellent1lawncare.com/blog" />
+  <meta property="og:title" content="Lawn Care Blog | Xcellent1 Lawn Care" />
+  <meta property="og:description" content="Expert lawn care guides for South Louisiana homeowners. Grass types, mowing, fertilizing, weed control, watering, and seasonal tips." />
+  <meta property="og:image" content="https://xcellent1lawncare.com/images/xcellent1-logo-transparent.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Lawn Care Blog | Xcellent1 Lawn Care" />
+  <meta name="twitter:description" content="Expert lawn care guides for South Louisiana homeowners." />
+  <meta name="twitter:image" content="https://xcellent1lawncare.com/images/xcellent1-logo-transparent.png" />
+  <link rel="canonical" href="https://xcellent1lawncare.com/blog" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
+  <link rel="stylesheet" href="styles.clean.css" />
+  <meta name="theme-color" content="#3b832a" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Xcellent1 Lawn Care Blog",
+    "description": "Expert lawn care guides for South Louisiana homeowners.",
+    "url": "https://xcellent1lawncare.com/blog",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Xcellent1 Lawn Care",
+      "url": "https://xcellent1lawncare.com"
+    }
+  }
+  </script>
+  <style>
+    .blog-index-hero {
+      background: linear-gradient(135deg, rgba(22, 101, 52, 0.95), rgba(16, 185, 129, 0.85)), url("images/lawnservices.jpg") center/cover;
+      padding: 5rem 1rem 4rem;
+      text-align: center;
+      color: #fff;
+    }
+    .blog-index-hero h1 { font-size: 2.75rem; margin-bottom: 0.75rem; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+    .blog-index-hero p { font-size: 1.15rem; opacity: 0.95; max-width: 600px; margin: 0 auto; }
+    .blog-index-container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .category-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center; }
+    .category-tab { padding: 0.5rem 1.25rem; border-radius: 20px; border: 2px solid #e5e7eb; background: #fff; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; color: #374151; }
+    .category-tab:hover { border-color: #10b981; color: #10b981; }
+    .category-tab.active { background: #10b981; color: #fff; border-color: #10b981; }
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+    .blog-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s; border: 1px solid #e5e7eb; }
+    .blog-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+    .blog-card-image { height: 200px; background-size: cover; background-position: center; display: flex; align-items: flex-start; padding: 0.75rem; }
+    .blog-card-tag { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600; background: rgba(255,255,255,0.9); color: #047857; }
+    .blog-card-body { padding: 1.25rem; }
+    .blog-card-meta { display: flex; gap: 1rem; font-size: 0.85rem; color: #6b7280; margin-bottom: 0.5rem; }
+    .blog-card h2 { font-size: 1.2rem; margin: 0 0 0.5rem; line-height: 1.4; }
+    .blog-card h2 a { color: #1f2937; text-decoration: none; }
+    .blog-card h2 a:hover { color: #10b981; }
+    .blog-card p { color: #6b7280; font-size: 0.95rem; line-height: 1.6; margin: 0 0 1rem; }
+    .blog-card .read-more { color: #10b981; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.95rem; }
+    .blog-card .read-more:hover { gap: 0.5rem; }
+    .blog-card.featured { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; }
+    .blog-card.featured .blog-card-image { height: 100%; min-height: 300px; }
+    .blog-card.featured .blog-card-body { padding: 2rem; display: flex; flex-direction: column; justify-content: center; }
+    .blog-card.featured h2 { font-size: 1.5rem; }
+    @media (max-width: 768px) {
+      .blog-index-hero h1 { font-size: 2rem; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .blog-card.featured { grid-template-columns: 1fr; }
+      .blog-card.featured .blog-card-image { min-height: 200px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+      <div class="navbar-title">
+        <span class="navbar-name">XCELLENT1</span>
+        <span class="navbar-tagline">LAWN CARE</span>
+      </div>
+    </div>
+    <div class="navbar-links">
+      <a href="home.html" class="navbar-link">Home</a>
+      <a href="shop.html" class="navbar-link">Shop</a>
+      <a href="careers.html" class="navbar-link">Careers</a>
+      <a href="login.html" class="navbar-login">Login</a>
+    </div>
+  </nav>
+
+  <header class="blog-index-hero">
+    <h1>📖 Lawn Care Blog</h1>
+    <p>Expert guides for South Louisiana homeowners — from the pros at Xcellent1 Lawn Care</p>
+  </header>
+
+  <div class="blog-index-container">
+
+    <!-- Category Tabs -->
+    <div class="category-tabs">
+      <span class="category-tab active" data-cat="all">All Guides</span>
+      <span class="category-tab" data-cat="grass">Grass &amp; Soil</span>
+      <span class="category-tab" data-cat="seasonal">Seasonal</span>
+      <span class="category-tab" data-cat="maintenance">Maintenance</span>
+      <span class="category-tab" data-cat="installation">Installation</span>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="blog-grid" id="blogGrid">
+
+      <!-- FEATURED: Grass Types -->
+      <article class="blog-card featured" data-cat="grass">
+        <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1558904541-efa843a96f01?w=800&amp;q=80')">
+          <span class="blog-card-tag">🌿 Grass &amp; Soil</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-meta"><span>📅 November 2025</span><span>📖 12 min read</span></div>
+          <h2><a href="blog-grass-types.html">Best Grass Types for LaPlace, Louisiana</a></h2>
+          <p>St. Augustine, Bermuda, Zoysia, and Centipede — which warm-season grass is right for your River Parishes lawn? Compare shade tolerance, drought resistance, maintenance needs, and cost.</p>
+          <a href="blog-grass-types.html" class="read-more">Read Full Guide →</a>
+        </div>
+      </article>
+
+      <!-- Seasonal Tips -->
+      <article class="blog-card" data-cat="seasonal">
+        <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=800&amp;q=80')">
+          <span class="blog-card-tag">🌸 Seasonal</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-meta"><span>📅 November 2025</span><span>📖 8 min read</span></div>
+          <h2><a href="blog-seasonal-tips.html">Seasonal Lawn Care Tips for Louisiana</a></h2>
+          <p>Month-by-month lawn care calendar for the River Parishes. What to do in spring, summer, fall, and winter to keep your lawn thriving year-round.</p>
+          <a href="blog-seasonal-tips.html" class="read-more">Read Full Guide →</a>
+        </div>
+      </article>
+
+      <!-- Watering Guide -->
+      <article class="blog-card" data-cat="maintenance">
+        <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&amp;q=80')">
+          <span class="blog-card-tag">💧 Maintenance</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-meta"><span>📅 November 2025</span><span>📖 8 min read</span></div>
+          <h2><a href="blog-watering-guide.html">Louisiana Lawn Watering Guide</a></h2>
+          <p>Deep watering 1-2x per week beats daily sprinkling. Learn when, how long, and how much to water your South Louisiana lawn for deep root growth.</p>
+          <a href="blog-watering-guide.html" class="read-more">Read Full Guide →</a>
+        </div>
+      </article>
+
+      <!-- Fertilizing Guide -->
+      <article class="blog-card" data-cat="maintenance">
+        <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&amp;q=80')">
+          <span class="blog-card-tag">🧪 Maintenance</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-meta"><span>📅 November 2025</span><span>📖 10 min read</span></div>
+          <h2><a href="blog-fertilizing-guide.html">How to Fertilize a Louisiana Lawn</a></h2>
+          <p>Soil testing, N-P-K ratios, application timing, and organic options for warm-season grasses in South Louisiana's humid climate.</p>
+          <a href="blog-fertilizing-guide.html" class="read-more">Read Full Guide →</a>
+        </div>
+      </article>
+
+      <!-- Mowing Guide -->
+      <article class="blog-card" data-cat="maintenance">
+        <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1536657464919-892534f60c6c?w=800&amp;q=80')">
+          <span class="blog-card-tag">✂️ Maintenance</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-meta"><span>📅 November 2025</span><span>📖 8 min read</span></div>
+          <h2><a href="blog-mowing-height-guide.html">Mowing Height &amp; Edging for South Louisiana Lawns</a></h2>
+          <p>Cut height, frequency, edging, and blade sharpness — the right mowing habits keep St. Augustine and Bermuda thick and weed-resistant.</p>
+          <a href="blog-mowing-height-guide.html" class="read-more">Read Full Guide →</a>
+        </div>
+      </article>
+
+      <!-- Weed Control -->
+      <article class="blog-card" data-cat="maintenance">
+        <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1559561853-2cf7a5a6d1b1?w=800&amp;q=80')">
+          <span class="blog-card-tag">🌱 Maintenance</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-meta"><span>📅 November 2025</span><span>📖 9 min read</span></div>
+          <h2><a href="blog-weed-control-guide.html">Weed Control for River Parishes Lawns</a></h2>
+          <p>Crabgrass, nutsedge, dollarweed, and broadleaf weeds — identification, pre-emergent timing, and post-emergent treatment for South Louisiana.</p>
+          <a href="blog-weed-control-guide.html" class="read-more">Read Full Guide →</a>
+        </div>
+      </article>
+
+      <!-- Pest & Disease -->
+      <article class="blog-card" data-cat="maintenance">
+        <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1625245490954-2c1f2a92a0f5?w=800&amp;q=80')">
+          <span class="blog-card-tag">🐛 Maintenance</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-meta"><span>📅 November 2025</span><span>📖 8 min read</span></div>
+          <h2><a href="blog-pest-disease-guide.html">Pest &amp; Disease Guide for Louisiana Lawns</a></h2>
+          <p>Chinch bugs, armyworms, grubs, brown patch, and large patch — spot the signs and treat before these common South Louisiana lawn problems spread.</p>
+          <a href="blog-pest-disease-guide.html" class="read-more">Read Full Guide →</a>
+        </div>
+      </article>
+
+      <!-- Shade & Drainage -->
+      <article class="blog-card" data-cat="grass">
+        <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&amp;q=80')">
+          <span class="blog-card-tag">🌳 Grass &amp; Soil</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-meta"><span>📅 November 2025</span><span>📖 7 min read</span></div>
+          <h2><a href="blog-shade-drainage-guide.html">Shade, Drainage &amp; Tree Competition in Louisiana Lawns</a></h2>
+          <p>Fix the problems that kill grass in South Louisiana: shade from live oaks, poor drainage, tree root competition, and compacted soil.</p>
+          <a href="blog-shade-drainage-guide.html" class="read-more">Read Full Guide →</a>
+        </div>
+      </article>
+
+      <!-- Sod Installation -->
+      <article class="blog-card" data-cat="installation">
+        <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&amp;q=80')">
+          <span class="blog-card-tag">🟢 Installation</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-meta"><span>📅 November 2025</span><span>📖 8 min read</span></div>
+          <h2><a href="blog-sod-installation-guide.html">Sod Installation Guide for South Louisiana</a></h2>
+          <p>When sod makes sense, how to prep the yard, install it correctly, and keep new sod alive through a Louisiana summer.</p>
+          <a href="blog-sod-installation-guide.html" class="read-more">Read Full Guide →</a>
+        </div>
+      </article>
+
+      <!-- Storm Recovery -->
+      <article class="blog-card" data-cat="seasonal">
+        <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1547683905-f686c993aae5?w=800&amp;q=80')">
+          <span class="blog-card-tag">⛈️ Seasonal</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-meta"><span>📅 November 2025</span><span>📖 7 min read</span></div>
+          <h2><a href="blog-storm-recovery-guide.html">Storm Recovery &amp; Cleanup for South Louisiana Lawns</a></h2>
+          <p>How to clean up debris, manage flooding, deal with saltwater intrusion, and help your lawn recover after hurricanes and heavy storms.</p>
+          <a href="blog-storm-recovery-guide.html" class="read-more">Read Full Guide →</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <footer class="blog-footer">
+    <p><strong>© 2025 Xcellent1 Lawn Care</strong></p>
+    <p style="font-size: 0.9rem; opacity: 0.8">Serving the River Parishes, Louisiana</p>
+  </footer>
+
+  <script>
+    // Category filtering
+    document.querySelectorAll('.category-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        const cat = this.dataset.cat;
+        document.querySelectorAll('#blogGrid .blog-card').forEach(card => {
+          if (cat === 'all' || card.dataset.cat === cat) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
