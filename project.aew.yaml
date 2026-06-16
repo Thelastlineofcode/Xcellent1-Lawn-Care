@@ -1,0 +1,186 @@
+## Xcellent1 Lawn Care — AEW Project Manifest
+## Owner: Travone Butler | Maintained by: Ann
+## BMAD anti-bloat rule: this file is the single source of truth for BMAD stage state.
+## Do not duplicate these fields into separate prose docs. Generate prose from here.
+
+project:
+  id: xcellent1
+  name: Xcellent1 Lawn Care
+  layer: AEW Layer 3 — BUILD
+  identity: lawn care operations platform — owner management, crew dispatch, invoicing, waitlist
+  brand_axiom: |
+    Xcellent1 is not a booking app. It is an operations platform for independent lawn care owners.
+    All tools (portal, crew, invoicing, waitlist, agents) serve a single goal: make the owner's
+    business run without the owner doing operational work.
+
+# ─────────────────────────────────────────────
+# B — Business
+# ─────────────────────────────────────────────
+business:
+  summary: |
+    Xcellent1 provides lawn care owners with a complete operations platform: owner portal,
+    crew management, Stripe invoicing, waitlist management, SEO blog pipeline, and AI-assisted
+    dispatch. Revenue is subscription-based with premium AI add-ons.
+  revenue_model: SaaS subscription + premium AI features
+  pricing:
+    starter: portal + crew + waitlist ($29/mo)
+    pro: starter + invoicing + dispatch ($59/mo)
+    premium: pro + AI agent dispatch + analytics ($99/mo)
+  active_lane: owner operations + agent-assisted dispatch (concurrent BMAD tracks)
+  risk_register:
+    - id: R1
+      risk: Supabase project reachability degraded — connection drops affecting owner portal
+      severity: high
+      status: resolved
+      mitigation: Database connection pooling configured; health checks running
+    - id: R2
+      risk: Stripe webhook delivery gaps — missed payment confirmations
+      severity: critical
+      status: resolved
+      mitigation: Webhook retry logic + idempotency keys implemented
+    - id: R3
+      risk: Deno deploy cold starts >5s impacting SEO blog pages
+      severity: medium
+      status: active
+      mitigation: Consider Fly.io warm instances for production endpoints
+
+# ─────────────────────────────────────────────
+# M — Mission
+# ─────────────────────────────────────────────
+mission:
+  icp: |
+    Independent lawn care business owners (1-10 crews) who currently manage jobs, payments,
+    and crew scheduling manually or across disjoint tools. They want a single platform that
+    handles everything without needing technical skills.
+  gtm: |
+    Facebook/Nextdoor organic — local SEO targeting service areas. Owner referral incentive
+    program. Stripe integration as trust signal. Blog SEO pipeline drives inbound owner leads.
+  launch_gate: Phases 1-3 complete (owner portal, crew, invoicing)
+  time_windows:
+    window1:
+      dates: Q1 2026
+      objective: core operations live
+      focus: owner portal, crew management, basic invoicing, waitlist system
+    window2:
+      dates: Q2 2026
+      objective: revenue operations
+      focus: Stripe billing complete, premium AI dispatch, SEO blog pipeline
+    window3:
+      dates: Q3 2026
+      objective: scale and automation
+      focus: agent-assisted dispatch, multi-location, mobile owner experience
+
+# ─────────────────────────────────────────────
+# A — Architecture
+# ─────────────────────────────────────────────
+architecture:
+  type: hybrid cloud — Fly.io backend + Supabase database + Cloudflare edge
+  layers:
+    frontend:
+      stack: Deno + TypeScript + vanilla HTML/CSS/JS + Markdoc
+      platform: Fly.io
+      path: web/
+      deployment: Dockerfile + fly.toml
+      features: owner portal, crew dashboard, invoicing UI, waitlist, SEO blog
+    backend:
+      stack: Deno + TypeScript
+      platform: Fly.io
+      url: https://xcellent1-lawn-care-rpneaa.fly.dev
+      path: server.ts
+      status: healthy — all endpoints live
+    database:
+      primary: Supabase PostgreSQL
+      schema: db/schema.sql
+      extensions: pgcrypto, pg_stat_statements
+      migrations: db/migrations/
+    agents:
+      system: LangChain + Python agents (AGENTS.md roster)
+      deployment: Dockerfile.agents via Fly.io
+      path: langchain-agents/
+      features: dispatch assistant, owner support, content generation
+    cdn_edge:
+      provider: Cloudflare Workers
+      paths: worker.js, cf/worker.js
+      purpose: auth token verification, request routing, edge caching
+  data_flow:
+    - owner signup → Supabase auth → portal access
+    - crew assignment → jobs table → crew dashboard
+    - payment → Stripe Checkout → webhook → invoices table
+    - waitlist signup → waitlist table → owner notification
+    - blog content → Markdoc → Deno SSR → SEO-optimized HTML
+  known_gaps:
+    - Mobile owner experience is browser-only (no native app)
+    - Agent dispatch is scaffolded but not fully wired to live dispatch loop
+    - Multi-location support requires schema changes
+    - Temp-service fallback is still informal; staffing resilience depends on manual follow-up.
+    - Live auth and mobile smoke on owner, crew, client, and hiring flows still need real-device validation.
+    - Applicant source tagging and follow-up tracking are not yet enforced end-to-end.
+
+
+# ─────────────────────────────────────────────
+# D — Delivery
+# ─────────────────────────────────────────────
+delivery:
+  active_sprint: Window 2 (Q2 2026 — revenue operations)
+
+  milestones:
+    - id: M1
+      name: Owner portal
+      status: live
+      completion_pct: 100
+      acceptance: Owner can manage crew, view jobs, process payments
+    - id: M2
+      name: Crew management
+      status: live
+      completion_pct: 100
+      acceptance: Crew can view assigned jobs, update status, clock time
+    - id: M3
+      name: Stripe invoicing
+      status: live
+      completion_pct: 90
+      acceptance: Invoices generated, paid, reconciled automatically
+    - id: M4
+      name: Waitlist system
+      status: live
+      completion_pct: 100
+      acceptance: Waitlist signups captured, owners notified
+    - id: M5
+      name: SEO blog pipeline
+      status: active
+      completion_pct: 95
+      acceptance: South Louisiana blog hub live, complete article library in place, and articles driving local organic traffic
+    - id: M6
+      name: Agent dispatch
+      status: active
+      completion_pct: 40
+      acceptance: AI assistant can route jobs to crew based on skills/location
+    - id: M7
+      name: Worker acquisition funnel
+      status: active
+      completion_pct: 60
+      acceptance: Careers page, applications dashboard, temp-service fallback, and response SLA all work as one hiring system
+
+
+  sops:
+    - id: SOP-1
+      name: Deploy backend to Fly.io
+      steps:
+        - git add -p && git commit -m "deploy: <description>"
+        - fly deploy --remote-only
+        - curl https://xcellent1-lawn-care-rpneaa.fly.dev/health — expect 200
+    - id: SOP-2
+      name: Run database migrations
+      steps:
+        - cd db/
+        - psql "$DATABASE_URL" -f migrations/<filename>.sql
+        - verify schema with \dt
+
+  kpis:
+    - metric: Owner portal uptime
+      target: 99.9%
+    - metric: Payment processing < 3s
+      target: p95 < 3s
+    - metric: Blog articles indexed per week
+      target: 4+
+    - metric: Agent dispatch accuracy
+      target: >80% correct job routing
