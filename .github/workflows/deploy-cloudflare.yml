@@ -7,6 +7,7 @@ on:
       - "cf/worker.js"
       - "cf/wrangler.toml"
       - "cf/**"
+      - "web/static/**"
   workflow_dispatch:
 
 jobs:
