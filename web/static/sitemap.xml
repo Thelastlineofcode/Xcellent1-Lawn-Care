@@ -3,13 +3,19 @@
   <!-- Main Pages -->
   <url>
     <loc>https://xcellent1lawncare.com/</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://xcellent1lawncare.com/shop</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://xcellent1lawncare.com/careers</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -17,25 +23,25 @@
   <!-- Location Pages - River Parishes -->
   <url>
     <loc>https://xcellent1lawncare.com/locations/laplace</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://xcellent1lawncare.com/locations/reserve</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://xcellent1lawncare.com/locations/garyville</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://xcellent1lawncare.com/locations/edgard</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -43,13 +49,13 @@
   <!-- Location Pages - St. Charles Parish -->
   <url>
     <loc>https://xcellent1lawncare.com/locations/luling</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://xcellent1lawncare.com/locations/killona</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -57,19 +63,19 @@
   <!-- Location Pages - St. James Parish -->
   <url>
     <loc>https://xcellent1lawncare.com/locations/gramercy</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://xcellent1lawncare.com/locations/lutcher</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://xcellent1lawncare.com/locations/vacherie</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -77,13 +83,13 @@
   <!-- Location Pages - Ascension Parish -->
   <url>
     <loc>https://xcellent1lawncare.com/locations/gonzales</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://xcellent1lawncare.com/locations/donaldsonville</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -91,28 +97,76 @@
   <!-- Location Pages - Terrebonne Parish -->
   <url>
     <loc>https://xcellent1lawncare.com/locations/houma</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Blog Posts -->
   <url>
-    <loc>https://xcellent1lawncare.com/blog-grass-types</loc>
-    <lastmod>2024-12-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://xcellent1lawncare.com/blog</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://xcellent1lawncare.com/blog-seasonal-tips</loc>
-    <lastmod>2024-12-18</lastmod>
+    <loc>https://xcellent1lawncare.com/blog-grass-types</loc>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://xcellent1lawncare.com/blog-watering-guide</loc>
-    <lastmod>2024-12-18</lastmod>
+    <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://xcellent1lawncare.com/blog-seasonal-tips</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://xcellent1lawncare.com/blog-fertilizing-guide</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://xcellent1lawncare.com/blog-mowing-height-guide</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://xcellent1lawncare.com/blog-weed-control-guide</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://xcellent1lawncare.com/blog-pest-disease-guide</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://xcellent1lawncare.com/blog-storm-recovery-guide</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://xcellent1lawncare.com/blog-sod-installation-guide</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://xcellent1lawncare.com/blog-shade-drainage-guide</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
