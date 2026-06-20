@@ -821,11 +821,45 @@
         .join("");
     }
 
-    // Initial load
-    loadOwnerDashboard();
+    // Wait for auth to populate supabase session/client before doing any work.
+    async function waitForOwnerAuth(maxWaitMs = 10000) {
+      const start = Date.now();
+      while (Date.now() - start < maxWaitMs) {
+        if (window.supabaseSession?.access_token && window.supabaseClient) return true;
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      return false;
+    }
 
-    // Auto-refresh every 60 seconds
-    setInterval(loadOwnerDashboard, 60000);
+    (async () => {
+      const ready = await waitForOwnerAuth();
+      if (!ready) {
+        console.warn("Owner auth not ready; skipping realtime init");
+        return;
+      }
+
+      // Initial load
+      loadOwnerDashboard();
+
+      // Auto-refresh every 60 seconds
+      setInterval(loadOwnerDashboard, 60000);
+
+      // Supabase Realtime WebSocket for live job updates
+      window.supabaseClient
+        .channel("owner-jobs-realtime")
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "jobs" },
+          (_payload) => {
+            loadOwnerDashboard();
+          },
+        )
+        // Note: leads table exists in some DB schemas but not all environments.
+        // Keep job updates realtime; leads insert can be added back once confirmed.
+        .subscribe((status) => {
+          console.log("Realtime subscription status:", status);
+        });
+    })();
   </script>
 </body>
 
