@@ -333,7 +333,6 @@
         <a href="home.html" class="navbar-link">Home</a>
         <a href="home.html#services" class="navbar-link">Services</a>
         <a href="careers.html" class="navbar-link active">Careers</a>
-        <a href="login.html" class="navbar-login">Login</a>
       </div>
     </nav>
 
@@ -497,7 +496,6 @@
           <a href="home.html">Home</a>
           <a href="home.html#services">Services</a>
           <a href="careers.html">Careers</a>
-          <a href="login.html">Login</a>
         </div>
         <p class="footer-copy">
           © 2025 Xcellent1 Lawn Care LLC. All rights reserved.
@@ -517,32 +515,25 @@
           email: data.get("email"),
         };
 
-        try {
-          // TODO: Update this endpoint when backend is ready
-          const res = await fetch("/api/careers/apply", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-
-          if (res.ok) {
-            alert(
-              "Thank you for applying! We will review your application and be in touch soon.",
-            );
-            form.reset();
-          } else {
-            alert(
-              "Error submitting application. Please try again or call us directly.",
-            );
-          }
-        } catch (err) {
-          // Fallback for now - just show success
-          console.error(err);
-          alert(
-            "Thank you for applying! We will review your application and be in touch soon.",
-          );
-          form.reset();
+        const subject = "Job Application - " + (payload.position || "Lawn Care Crew");
+        const body = [
+          "New job application from xcellent1lawncare.com",
+          "",
+          "Position: " + (payload.position || ""),
+          "Name: " + (payload.name || ""),
+          "Phone: " + (payload.phone || ""),
+          "Email: " + (payload.email || ""),
+        ].join("\n");
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isMobile) {
+          window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
+        } else {
+          window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
+            encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
         }
+        alert("Thanks for applying! We're opening your " + (isMobile ? "text messages" : "email app") +
+          " to send your application — or call (504) 875-8079.");
+        form.reset();
         return false;
       }
     </script>

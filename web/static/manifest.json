@@ -1,7 +1,7 @@
 {
   "name": "Xcellent1 Lawn Care",
   "short_name": "Xcellent1",
-  "description": "Field service management for lawn care crews",
+  "description": "Professional lawn care in LaPlace & the River Parishes, Louisiana. Licensed & insured. Free quotes — call (504) 875-8079.",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -21,12 +21,12 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["business", "productivity", "utilities"],
+  "categories": ["business", "lifestyle", "utilities"],
   "shortcuts": [
     {
-      "name": "New Lead",
-      "short_name": "Lead",
-      "url": "index.html",
+      "name": "Get a Free Quote",
+      "short_name": "Free Quote",
+      "url": "index.html#quote",
       "icons": [
         {
           "src": "images/xcellent1-icon-192.png",
@@ -35,9 +35,9 @@
       ]
     },
     {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "url": "dashboard.html",
+      "name": "Our Services",
+      "short_name": "Services",
+      "url": "index.html#services",
       "icons": [
         {
           "src": "images/xcellent1-icon-192.png",

@@ -14,11 +14,6 @@ export default {
       );
     }
 
-    // Handle root path redirect to home page
-    if (url.pathname === "/") {
-      return Response.redirect("/home.html", 302);
-    }
-
     // Serve static assets for everything else
     try {
       return await env.ASSETS.fetch(request);
