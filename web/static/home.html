@@ -42,12 +42,13 @@
   <link rel="preload" as="image" href="images/CoverPhoto.webp" type="image/webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
   <link rel="stylesheet" href="styles.clean.css" />
+  <link rel="stylesheet" href="styles.premium.css" />
   <link rel="icon" type="image/png" sizes="192x192" href="images/xcellent1-icon-192.png" />
   <link rel="apple-touch-icon" sizes="192x192" href="images/xcellent1-icon-192.png" />
-  <meta name="theme-color" content="#3b832a" />
+  <meta name="theme-color" content="#0c2418" />
   <!-- Structured Data for SEO and Voice Search -->
   <script type="application/ld+json">
       {
@@ -390,6 +391,7 @@
 
   <!-- Shop banner removed from homepage; catalog lives at shop.html -->
   <section class="hero-home">
+    <p class="hero-eyebrow">Licensed &amp; insured · LaPlace &amp; the River Parishes · Since 2023</p>
     <h1 class="hero-title">Xcellent1 Lawn Care</h1>
     <p class="subtitle">
       Professional Lawn Care for the River Parishes
@@ -565,7 +567,7 @@
     </div>
     <div class="blog-grid">
       <article class="blog-card">
-        <div class="blog-image" data-bg="https://images.unsplash.com/photo-1558904541-efa843a96f01?w=800&amp;q=80">
+        <div class="blog-image" data-bg="images/lawnservices.jpg">
         </div>
         <div class="blog-content">
           <div class="blog-date">November 2025</div>
@@ -577,7 +579,7 @@
         </div>
       </article>
       <article class="blog-card">
-        <div class="blog-image" data-bg="https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=800&amp;q=80">
+        <div class="blog-image" data-bg="images/springcleaning.webp">
         </div>
         <div class="blog-content">
           <div class="blog-date">November 2025</div>
@@ -589,7 +591,7 @@
         </div>
       </article>
       <article class="blog-card">
-        <div class="blog-image" data-bg="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&amp;q=80">
+        <div class="blog-image" data-bg="images/flowerbedcleanup.webp">
         </div>
         <div class="blog-content">
           <div class="blog-date">November 2025</div>
@@ -842,7 +844,7 @@
           style="display: inline-flex; align-items: center; gap: 0.5rem; background: white; color: #059669; padding: 1rem 2rem; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1.1rem">
           📞 (504) 875-8079
         </a>
-        <a href="mailto:info@xcellent1lawn.com"
+        <a href="mailto:info@xcellent1lawncare.com"
           style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.2); color: white; padding: 1rem 2rem; border-radius: 8px; font-weight: 600; text-decoration: none">
           ✉️ Email Us
         </a>
@@ -855,145 +857,6 @@
 
   <!-- Product catalog moved to shop.html -->
 
-  <!-- Premium AI Lawn Care Assistant CTA -->
-  <section id="premium" class="premium-assistant-section" aria-labelledby="premium-title" style="
-    padding: 4rem 1rem;
-    background: linear-gradient(135deg, #1a4d2e 0%, #0d3320 50%, #1a4d2e 100%);
-    text-align: center;
-    color: white;
-    position: relative;
-    overflow: hidden;
-  ">
-    <!-- Decorative background pattern -->
-    <div style="position: absolute; inset: 0; opacity: 0.1; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"40\" fill=\"none\" stroke=\"white\" stroke-width=\"1\"/></svg>'); background-size: 80px;"></div>
-    
-    <div style="max-width: 900px; margin: 0 auto; position: relative; z-index: 1;">
-      <!-- Badge -->
-      <div style="display: inline-block; background: rgba(16, 185, 129, 0.3); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: 999px; padding: 0.5rem 1.5rem; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 600;">
-        🤖 NEW: AI-Powered Lawn Assistant
-      </div>
-      
-      <h2 id="premium-title" style="font-size: 2.5rem; margin-bottom: 1rem; line-height: 1.2;">
-        Your Personal Lawn Care AI
-      </h2>
-      <p style="font-size: 1.2rem; opacity: 0.95; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-        Diagnose lawn problems, design your dream landscape, and get personalized maintenance schedules — all powered by AI.
-      </p>
-
-      <!-- Features Grid -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; text-align: left;">
-        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Lawn Analyzer</h3>
-          <p style="font-size: 0.9rem; opacity: 0.85;">Snap a photo — AI diagnoses pests, diseases, and issues instantly</p>
-        </div>
-        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎨</div>
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Design Visualizer</h3>
-          <p style="font-size: 0.9rem; opacity: 0.85;">Upload your yard — get native Louisiana plant suggestions</p>
-        </div>
-        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">📅</div>
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Smart Scheduler</h3>
-          <p style="font-size: 0.9rem; opacity: 0.85;">Get personalized monthly care tasks for Zone 9a</p>
-        </div>
-        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">💬</div>
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">AI Chat Expert</h3>
-          <p style="font-size: 0.9rem; opacity: 0.85;">Ask anything about St. Augustine, Bermuda, Zoysia grasses</p>
-        </div>
-      </div>
-
-      <!-- Price and CTA -->
-      <div style="background: rgba(255,255,255,0.15); border-radius: 16px; padding: 2rem; max-width: 500px; margin: 0 auto;">
-        <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;">
-          $9<span style="font-size: 1.5rem; opacity: 0.8;">.99</span>
-        </div>
-        <p style="margin-bottom: 1.5rem; opacity: 0.9;">One-time payment • Lifetime access</p>
-        
-        <!-- Email input and checkout button -->
-        <form id="premium-checkout-form" onsubmit="return handlePremiumCheckout(event)" style="display: flex; flex-direction: column; gap: 0.75rem;">
-          <input 
-            type="email" 
-            id="premium-email" 
-            name="email" 
-            placeholder="Enter your email" 
-            required
-            style="padding: 0.875rem 1rem; border-radius: 8px; border: none; font-size: 1rem; width: 100%; box-sizing: border-box;"
-          >
-          <button type="submit" id="premium-checkout-btn" style="
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            border: none;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-          ">
-            🚀 Unlock AI Assistant
-          </button>
-        </form>
-        <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 1rem;">
-          Secure checkout powered by Stripe • Includes booking CTAs for Xcellent1 services
-        </p>
-      </div>
-
-      <!-- Social proof -->
-      <p style="margin-top: 2rem; font-size: 0.95rem; opacity: 0.85;">
-        🌿 Perfect for South Louisiana homeowners in the River Parishes
-      </p>
-    </div>
-  </section>
-
-  <script>
-    async function handlePremiumCheckout(e) {
-      e.preventDefault();
-      const emailInput = document.getElementById('premium-email');
-      const submitBtn = document.getElementById('premium-checkout-btn');
-      const email = emailInput.value.trim();
-      
-      if (!email) {
-        alert('Please enter your email address');
-        return false;
-      }
-
-      // Disable button and show loading
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '⏳ Processing...';
-
-      try {
-        const response = await fetch('/api/premium/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await response.json();
-
-        if (data.ok && data.checkoutUrl) {
-          // Redirect to Stripe checkout
-          window.location.href = data.checkoutUrl;
-        } else {
-          alert(data.error || 'Unable to start checkout. Please try again.');
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '🚀 Unlock AI Assistant';
-        }
-      } catch (err) {
-        console.error('Checkout error:', err);
-        alert('Connection error. Please check your internet and try again.');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '🚀 Unlock AI Assistant';
-      }
-
-      return false;
-    }
-  </script>
 
 
   <!-- Service Inquiry Modal -->
@@ -1168,7 +1031,7 @@
             <a href="tel:5048758079" style="color: #10b981">(504) 875-8079</a>
           </p>
           <p style="margin-bottom: 0.5rem">
-            <a href="mailto:info@xcellent1lawn.com" style="color: #10b981">info@xcellent1lawn.com</a>
+            <a href="mailto:info@xcellent1lawncare.com" style="color: #10b981">info@xcellent1lawncare.com</a>
           </p>
           <p style="font-size: 0.9rem; opacity: 0.8">
             📍 LaPlace, Louisiana 70068
@@ -1201,9 +1064,9 @@
             </a>
           </p>
           <p style="margin-bottom: 0.5rem">
-            <a href="https://maps.app.goo.gl/xcellent1lawn" target="_blank" rel="noopener noreferrer"
+            <a href="#service-areas"
               style="color: #10b981; display: inline-flex; align-items: center; gap: 0.25rem">
-              📍 Get Directions
+              📍 Service Areas
             </a>
           </p>
           <p>
@@ -1397,14 +1260,14 @@
       "https://utivthfrwgtjatsusopw.supabase.co";
     const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
       "sb_publishable_nX8IeSiT3FJ3iL2GJbf_vA_Jj90PMvt";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function handleGoogleSignIn() {
       const messageDiv = document.getElementById("login-message");
       messageDiv.textContent = "Redirecting to Google...";
       messageDiv.style.color = "#059669";
 
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await sbClient.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: window.location.origin,
@@ -1430,10 +1293,10 @@
         );
       }
 
-      supabase.auth.onAuthStateChange(async (event, session) => {
+      sbClient.auth.onAuthStateChange(async (event, session) => {
         if (event === "SIGNED_IN" && session) {
           if (session.user.email !== "lacardiofrancis@gmail.com") {
-            await supabase.auth.signOut();
+            await sbClient.auth.signOut();
             alert("Access denied. This service is restricted.");
             window.location.href = "/";
           } else {

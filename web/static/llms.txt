@@ -5,7 +5,7 @@
 Xcellent1 Lawn Care is a local, owner-operated lawn and landscaping service based in LaPlace, Louisiana, serving the River Parishes (St. John the Baptist and St. Charles Parish) and surrounding communities. Residential and commercial. Service Monday–Saturday.
 
 - Phone: (504) 875-8079 (+1-504-875-8079)
-- Email: info@xcellent1lawn.com
+- Email: info@xcellent1lawncare.com
 - Website: https://xcellent1lawncare.com
 - Service area: LaPlace, Reserve, Garyville, Gramercy, Lutcher, Norco, Destrehan, Luling, St. Rose, Edgard, Vacherie, Killona, Donaldsonville, Gonzales, Houma, LA
 
@@ -14,7 +14,6 @@ Xcellent1 Lawn Care is a local, owner-operated lawn and landscaping service base
 - Landscaping & yard maintenance
 - Bush hogging / overgrown lot clearing
 - Sod installation, weed control, fertilizing
-- AI Lawn Care Assistant — diagnose lawn problems, plan landscaping, get maintenance schedules
 
 ## Key pages
 - [Home](https://xcellent1lawncare.com/home.html): services, service area, free quote request
