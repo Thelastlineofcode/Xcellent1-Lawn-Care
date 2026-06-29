@@ -17,7 +17,6 @@ Xcellent1 Lawn Care is a local, owner-operated lawn and landscaping service base
 
 ## Key pages
 - [Home](https://xcellent1lawncare.com/home.html): services, service area, free quote request
-- [Shop](https://xcellent1lawncare.com/shop.html): lawn care products
 - [Careers](https://xcellent1lawncare.com/careers.html): hiring crew / gig workers
 - [Blog](https://xcellent1lawncare.com/blog.html): Louisiana lawn care guides
 - [Sitemap](https://xcellent1lawncare.com/sitemap.xml)
