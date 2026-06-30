@@ -460,7 +460,7 @@
       </p>
     </div>
     <div class="services-grid">
-      <div class="service-card" onclick="openServiceModal('Weekly Lawn Maintenance')">
+      <div class="service-card" onclick="openServiceModal('Weekly Lawn Maintenance')" role="button" tabindex="0" aria-label="View Weekly Lawn Maintenance details">
         <div class="service-image bg-service-lawn" role="img" aria-label="Weekly Lawn Maintenance">
           <noscript>
             <img src="images/lawnservices.jpg" alt="Weekly Lawn Maintenance" />
@@ -479,7 +479,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Flower Bed Clean Out & Weed Removal')">
+      <div class="service-card" onclick="openServiceModal('Flower Bed Clean Out & Weed Removal')" role="button" tabindex="0" aria-label="View Flower Bed Clean Out & Weed Removal details">
         <div class="service-image bg-service-flowerbed" role="img" aria-label="Flower Bed Clean Out & Weed Removal">
           <noscript>
             <img src="images/flowerbedcleanup.webp" alt="Flower Bed Clean Out & Weed Removal" />
@@ -498,7 +498,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Spring Cleaning')" style="cursor: pointer">
+      <div class="service-card" onclick="openServiceModal('Spring Cleaning')" style="cursor: pointer" role="button" tabindex="0" aria-label="View Spring Cleaning details">
         <div class="service-image bg-service-spring" role="img" aria-label="Spring Cleaning">
           <noscript>
             <img src="images/springcleaning.webp" alt="Spring Cleaning" />
@@ -517,7 +517,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Leaf & Debris Removal')" style="cursor: pointer">
+      <div class="service-card" onclick="openServiceModal('Leaf & Debris Removal')" style="cursor: pointer" role="button" tabindex="0" aria-label="View Leaf & Debris Removal details">
         <div class="service-image bg-service-leaf" role="img" aria-label="Leaf & Debris Removal">
           <noscript>
             <img src="images/lawnservices.jpg" alt="Leaf & Debris Removal" />
@@ -536,7 +536,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Tractor / Bush Hog Services')" style="cursor: pointer">
+      <div class="service-card" onclick="openServiceModal('Tractor / Bush Hog Services')" style="cursor: pointer" role="button" tabindex="0" aria-label="View Tractor / Bush Hog Services details">
         <div class="service-image bg-service-bushhog" role="img" aria-label="Tractor / Bush Hog Services">
           <noscript>
             <img src="images/bushhog.webp" alt="Tractor / Bush Hog Services" />
@@ -1249,6 +1249,18 @@
       document.getElementById("service-modal").style.display = "none";
       document.getElementById("service-inquiry-form").reset();
     }
+
+    // Keyboard support for interactive cards
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll('.service-card[role="button"]').forEach(card => {
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+          }
+        });
+      });
+    });
 
     async function handleServiceInquiry(e) {
       e.preventDefault();
