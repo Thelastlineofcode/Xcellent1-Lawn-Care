@@ -997,13 +997,13 @@
 
 
   <!-- Service Inquiry Modal -->
-  <div id="service-modal" class="modal">
+  <div id="service-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-service-title">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-service-title">
           Request Service
         </h2>
-        <button onclick="closeServiceModal()" class="modal-close">
+        <button onclick="closeServiceModal()" class="modal-close" aria-label="Close">
           &times;
         </button>
       </div>
@@ -1038,11 +1038,11 @@
   </div>
 
   <!-- Login Modal -->
-  <div id="login-modal" class="modal">
+  <div id="login-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
     <div class="modal-content" style="max-width: 400px">
       <div class="modal-header">
-        <h2>Dashboard Access</h2>
-        <button onclick="closeLoginModal()" class="modal-close">
+        <h2 id="login-modal-title">Dashboard Access</h2>
+        <button onclick="closeLoginModal()" class="modal-close" aria-label="Close">
           &times;
         </button>
       </div>
@@ -1237,17 +1237,25 @@
   <script src="app.js"></script>
 
   <script>
+    let modalTrigger = null;
+
     function openServiceModal(serviceName) {
+      modalTrigger = document.activeElement;
       document.getElementById("modal-service-title").textContent =
         serviceName;
       document.getElementById("inquiry-service").value = serviceName;
       const modal = document.getElementById("service-modal");
       modal.style.display = "flex";
+      modal.querySelector("input, button, select")?.focus();
     }
 
     function closeServiceModal() {
       document.getElementById("service-modal").style.display = "none";
       document.getElementById("service-inquiry-form").reset();
+      if (modalTrigger) {
+        modalTrigger.focus();
+        modalTrigger = null;
+      }
     }
 
     async function handleServiceInquiry(e) {
@@ -1311,16 +1319,22 @@
 
     // Login modal functions
     function openLoginModal() {
+      modalTrigger = document.activeElement;
       document.getElementById("login-modal").style.display = "flex";
       document.getElementById("login-step-1").style.display = "block";
       document.getElementById("login-step-2").style.display = "none";
       document.getElementById("login-message").textContent = "";
       document.getElementById("login-role-form").reset();
       document.getElementById("login-auth-form").reset();
+      document.getElementById("login-modal").querySelector("input, button, select")?.focus();
     }
 
     function closeLoginModal() {
       document.getElementById("login-modal").style.display = "none";
+      if (modalTrigger) {
+        modalTrigger.focus();
+        modalTrigger = null;
+      }
     }
 
     function showLoginStep(step) {
@@ -1470,6 +1484,20 @@
           "active",
         );
       });
+    });
+
+    // Handle Escape key to close modals
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        const serviceModal = document.getElementById("service-modal");
+        const loginModal = document.getElementById("login-modal");
+        if (serviceModal && serviceModal.style.display === "flex") {
+          closeServiceModal();
+        }
+        if (loginModal && loginModal.style.display === "flex") {
+          closeLoginModal();
+        }
+      }
     });
 
     // GSAP Animations

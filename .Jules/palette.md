@@ -1,0 +1,3 @@
+## 2025-05-15 - Accessible Modal Pattern for Vanilla HTML
+**Learning:** In projects without a UI framework (like React or Vue), modals often lack critical accessibility features. A standard accessible modal requires `role="dialog"`, `aria-modal="true"`, and manual focus management. Key steps include saving the trigger element's focus, shifting focus to the modal's first interactive element on open, and restoring focus to the trigger on close.
+**Action:** Implement a reusable JavaScript pattern that handles `Escape` key listeners and focus restoration to ensure keyboard and screen reader compatibility in static HTML environments.
