@@ -460,7 +460,7 @@
       </p>
     </div>
     <div class="services-grid">
-      <div class="service-card" onclick="openServiceModal('Weekly Lawn Maintenance')">
+      <div class="service-card" onclick="openServiceModal('Weekly Lawn Maintenance')" role="button" tabindex="0">
         <div class="service-image bg-service-lawn" role="img" aria-label="Weekly Lawn Maintenance">
           <noscript>
             <img src="images/lawnservices.jpg" alt="Weekly Lawn Maintenance" />
@@ -479,7 +479,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Flower Bed Clean Out & Weed Removal')">
+      <div class="service-card" onclick="openServiceModal('Flower Bed Clean Out & Weed Removal')" role="button" tabindex="0">
         <div class="service-image bg-service-flowerbed" role="img" aria-label="Flower Bed Clean Out & Weed Removal">
           <noscript>
             <img src="images/flowerbedcleanup.webp" alt="Flower Bed Clean Out & Weed Removal" />
@@ -498,7 +498,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Spring Cleaning')" style="cursor: pointer">
+      <div class="service-card" onclick="openServiceModal('Spring Cleaning')" role="button" tabindex="0">
         <div class="service-image bg-service-spring" role="img" aria-label="Spring Cleaning">
           <noscript>
             <img src="images/springcleaning.webp" alt="Spring Cleaning" />
@@ -517,7 +517,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Leaf & Debris Removal')" style="cursor: pointer">
+      <div class="service-card" onclick="openServiceModal('Leaf & Debris Removal')" role="button" tabindex="0">
         <div class="service-image bg-service-leaf" role="img" aria-label="Leaf & Debris Removal">
           <noscript>
             <img src="images/lawnservices.jpg" alt="Leaf & Debris Removal" />
@@ -536,7 +536,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Tractor / Bush Hog Services')" style="cursor: pointer">
+      <div class="service-card" onclick="openServiceModal('Tractor / Bush Hog Services')" role="button" tabindex="0">
         <div class="service-image bg-service-bushhog" role="img" aria-label="Tractor / Bush Hog Services">
           <noscript>
             <img src="images/bushhog.webp" alt="Tractor / Bush Hog Services" />
@@ -997,13 +997,13 @@
 
 
   <!-- Service Inquiry Modal -->
-  <div id="service-modal" class="modal">
+  <div id="service-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-service-title">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-service-title">
           Request Service
         </h2>
-        <button onclick="closeServiceModal()" class="modal-close">
+        <button onclick="closeServiceModal()" class="modal-close" aria-label="Close">
           &times;
         </button>
       </div>
@@ -1038,11 +1038,11 @@
   </div>
 
   <!-- Login Modal -->
-  <div id="login-modal" class="modal">
+  <div id="login-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-login-title">
     <div class="modal-content" style="max-width: 400px">
       <div class="modal-header">
-        <h2>Dashboard Access</h2>
-        <button onclick="closeLoginModal()" class="modal-close">
+        <h2 id="modal-login-title">Dashboard Access</h2>
+        <button onclick="closeLoginModal()" class="modal-close" aria-label="Close">
           &times;
         </button>
       </div>
@@ -1243,6 +1243,10 @@
       document.getElementById("inquiry-service").value = serviceName;
       const modal = document.getElementById("service-modal");
       modal.style.display = "flex";
+      // Focus first input
+      setTimeout(() => {
+        modal.querySelector("input, select, textarea")?.focus();
+      }, 10);
     }
 
     function closeServiceModal() {
@@ -1311,12 +1315,17 @@
 
     // Login modal functions
     function openLoginModal() {
-      document.getElementById("login-modal").style.display = "flex";
+      const modal = document.getElementById("login-modal");
+      modal.style.display = "flex";
       document.getElementById("login-step-1").style.display = "block";
       document.getElementById("login-step-2").style.display = "none";
       document.getElementById("login-message").textContent = "";
       document.getElementById("login-role-form").reset();
       document.getElementById("login-auth-form").reset();
+      // Focus first available input/radio
+      setTimeout(() => {
+        modal.querySelector("input, select, textarea")?.focus();
+      }, 10);
     }
 
     function closeLoginModal() {
@@ -1537,7 +1546,7 @@
         });
       });
 
-      // Section headers
+    // Section headers
       gsap.utils.toArray(".section-header").forEach((header) => {
         gsap.from(header, {
           scrollTrigger: {
@@ -1550,6 +1559,26 @@
           opacity: 0,
           ease: "power2.out",
         });
+      });
+
+      // Accessibility: Keyboard support for service cards
+      document.querySelectorAll('.service-card').forEach(card => {
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+          }
+        });
+      });
+
+      // Accessibility: Global Escape key to close modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const serviceModal = document.getElementById('service-modal');
+          const loginModal = document.getElementById('login-modal');
+          if (serviceModal && serviceModal.style.display === 'flex') closeServiceModal();
+          if (loginModal && loginModal.style.display === 'flex') closeLoginModal();
+        }
       });
     });
   </script>
