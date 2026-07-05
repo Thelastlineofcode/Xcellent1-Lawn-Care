@@ -1,0 +1,3 @@
+## 2025-05-15 - [Accessibility Enhancements for Static Landing Page]
+**Learning:** For static HTML pages using non-semantic interactive elements (like `div` cards), adding `role="button"`, `tabindex="0"`, and explicit keyboard listeners is essential for screen reader and keyboard-only navigation. Additionally, state-indicating attributes like `aria-expanded` must be manually managed in JavaScript when toggling custom menus.
+**Action:** Always check for `onclick` handlers on non-semantic elements and ensure they have corresponding ARIA roles, tab indexing, and keyboard event support. Ensure modal close buttons have clear `aria-label="Close"`.
