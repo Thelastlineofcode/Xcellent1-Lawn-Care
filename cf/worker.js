@@ -31,7 +31,8 @@ export default {
       }
     }
 
-    // Fallback: serve static assets
+    // Fallback: serve static assets. Security headers (incl. CSP) are applied
+    // by the asset server via web/static/_headers.
     try {
       return await env.ASSETS.fetch(request);
     } catch (_) {
