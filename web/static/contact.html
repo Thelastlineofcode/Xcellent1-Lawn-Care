@@ -363,7 +363,7 @@
         });
       });
 
-      document.getElementById("contact-form").addEventListener("submit", function (e) {
+      document.getElementById("contact-form").addEventListener("submit", async function (e) {
         e.preventDefault();
         const f = e.target;
         const val = (sel) => { const el = f.querySelector(sel); return el ? el.value.trim() : ""; };
@@ -373,30 +373,54 @@
         const service = val("#service") || "General Inquiry";
         const address = val("#address");
         const message = val("#message");
-        const body = [
-          "New message from xcellent1lawncare.com contact form",
-          "",
-          "Name: " + name,
-          "Phone: " + phone,
-          "Email: " + email,
-          "Property Address: " + address,
-          "Service: " + service,
-          "Message: " + message,
-        ].join("\n");
-        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        if (isMobile) {
-          window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
-        } else {
-          window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
-            encodeURIComponent("Contact Request - " + (service || "General Inquiry")) + "&body=" + encodeURIComponent(body);
-        }
         const ok = document.getElementById("form-success");
-        if (ok) {
+        const btn = f.querySelector(".submit-btn");
+        const setNote = (html, bg, color) => {
+          if (!ok) return;
           ok.style.display = "block";
-          ok.textContent = "✅ Thanks, " + (name || "there") + "! We're opening your " +
-            (isMobile ? "messages" : "email app") + " to send your request — or call/text (504) 875-8079.";
+          ok.style.background = bg;
+          ok.style.color = color;
+          ok.innerHTML = html;
+        };
+        // If the API is unreachable, fall back to the user's mail/SMS app so no lead is ever lost.
+        const mailtoFallback = () => {
+          const body = [
+            "New message from xcellent1lawncare.com contact form", "",
+            "Name: " + name, "Phone: " + phone, "Email: " + email,
+            "Property Address: " + address, "Service: " + service, "Message: " + message,
+          ].join("\n");
+          const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+          if (isMobile) {
+            window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
+          } else {
+            window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
+              encodeURIComponent("Contact Request - " + service) + "&body=" + encodeURIComponent(body);
+          }
+          setNote("✅ Thanks, " + (name || "there") + "! We're opening your " +
+            (isMobile ? "messages" : "email app") + " to send your request — or call/text <a href=\"tel:5048758079\" style=\"color:#065f46\">(504) 875-8079</a>.",
+            "#d1fae5", "#065f46");
+        };
+        if (btn) { btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = "Sending…"; }
+        try {
+          const res = await fetch("/api/leads", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, phone, email, source: "contact", notes: "Service: " + service + "\nProperty: " + address + "\nMessage: " + message }),
+          });
+          let j = {};
+          try { j = await res.json(); } catch (_) {}
+          if (res.status === 201 && j.ok) {
+            setNote("✅ Thanks, " + (name || "there") + "! We got your request and will reach out shortly. Prefer to talk now? Call or text <a href=\"tel:5048758079\" style=\"color:#065f46\">(504) 875-8079</a>.",
+              "#d1fae5", "#065f46");
+            f.reset();
+          } else {
+            mailtoFallback();
+          }
+        } catch (err) {
+          mailtoFallback();
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || "Send Message"; }
         }
-        f.reset();
       });
     </script>
   </body>
