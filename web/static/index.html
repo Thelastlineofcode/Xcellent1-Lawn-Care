@@ -1387,7 +1387,7 @@
       const links = document.getElementById("navbar-links");
       const btn = document.querySelector(".mobile-menu-btn");
       const isActive = links.classList.toggle("active");
-      btn.setAttribute("aria-expanded", isActive);
+      btn.setAttribute("aria-expanded", isActive ? "true" : "false");
     }
 
     // Close mobile menu when clicking a link
