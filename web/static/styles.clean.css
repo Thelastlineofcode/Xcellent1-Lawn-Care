@@ -88,6 +88,11 @@ a:hover {
   color: var(--color-primary-dark);
 }
 
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 /* ==================== Layout ==================== */
 .container {
   max-width: 1200px;
