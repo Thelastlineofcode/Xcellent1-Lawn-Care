@@ -4,10 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>
-    Xcellent1 Lawn Care | Professional Lawn Services in LaPlace & River
-    Parishes, LA
-  </title>
+  <title>Lawn Care in LaPlace & River Parishes, LA | Xcellent1</title>
   <meta name="description"
     content="Xcellent1 Lawn Care offers professional lawn mowing, edging, trimming & landscaping in LaPlace, Reserve, Garyville & the River Parishes, Louisiana. Licensed & insured. Free quotes. Call (504) 875-8079." />
   <meta name="keywords"
@@ -34,30 +31,33 @@
   <meta name="twitter:image" content="https://xcellent1lawncare.com/images/xcellent1-logo-transparent.png" />
   <!-- Canonical -->
   <link rel="canonical" href="https://xcellent1lawncare.com/" />
+  <!-- Google Search Console verification: uncomment the line below and paste your token
+       (Search Console > add property https://xcellent1lawncare.com/ > HTML tag method). -->
+  <!-- <meta name="google-site-verification" content="PASTE_TOKEN_HERE" /> -->
   <!-- Geo Tags for Local SEO -->
   <meta name="geo.region" content="US-LA" />
   <meta name="geo.placename" content="LaPlace, Louisiana" />
   <meta name="geo.position" content="30.0655;-90.4682" />
   <meta name="ICBM" content="30.0655, -90.4682" />
+  <link rel="preload" as="image" href="images/CoverPhoto.webp" type="image/webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="image" href="images/CoverPhoto.webp" type="image/webp" fetchpriority="high">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
   <link rel="stylesheet" href="styles.clean.css" />
+  <link rel="stylesheet" href="styles.premium.css" />
   <link rel="icon" type="image/png" sizes="192x192" href="images/xcellent1-icon-192.png" />
   <link rel="apple-touch-icon" sizes="192x192" href="images/xcellent1-icon-192.png" />
-  <meta name="theme-color" content="#3b832a" />
-  <!-- Structured Data for Local Business -->
+  <meta name="theme-color" content="#0c2418" />
+  <!-- Structured Data for SEO and Voice Search -->
   <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "LocalBusiness",
+        "@type": "LawnCareService",
         "name": "Xcellent1 Lawn Care",
-        "description": "Professional lawn care services in the River Parishes, Louisiana. Serving LaPlace, Reserve, Garyville, Gramercy, Lutcher and surrounding areas.",
+        "image": "https://xcellent1lawncare.com/images/xcellent1-logo-transparent.png",
         "url": "https://xcellent1lawncare.com/",
         "telephone": "+1-504-875-8079",
-        "email": "info@xcellent1lawn.com",
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "LaPlace",
@@ -71,43 +71,110 @@
           "longitude": -90.4682
         },
         "areaServed": [
-          { "@type": "Place", "name": "LaPlace, Louisiana" },
-          { "@type": "Place", "name": "Reserve, Louisiana" },
-          { "@type": "Place", "name": "Garyville, Louisiana" },
-          { "@type": "Place", "name": "Gramercy, Louisiana" },
-          { "@type": "Place", "name": "Lutcher, Louisiana" },
-          { "@type": "Place", "name": "River Parishes, Louisiana" }
+          "LaPlace, LA",
+          "Norco, LA",
+          "Destrehan, LA",
+          "Luling, LA",
+          "St. Rose, LA"
         ],
         "openingHoursSpecification": [
           {
             "@type": "OpeningHoursSpecification",
-            "dayOfWeek": [
-              "Monday",
-              "Tuesday",
-              "Wednesday",
-              "Thursday",
-              "Friday"
-            ],
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
             "opens": "07:00",
             "closes": "18:00"
           },
           {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": "Saturday",
-            "opens": "08:00",
-            "closes": "16:00"
+            "opens": "07:00",
+            "closes": "14:00"
           }
         ],
+        "priceRange": "$$",
         "sameAs": [
           "https://g.page/r/CZbYqiFFQ57SEBM"
         ],
-        "serviceType": [
-          "Lawn Mowing",
-          "Landscaping",
-          "Yard Cleanup",
-          "Bush Hogging",
-          "Flower Bed Maintenance",
-          "Spring Cleaning"
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Lawn Care Services",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Weekly Lawn Maintenance",
+                "description": "Mowing, edging, trimming, and blowing on scheduled weekly visits throughout the River Parishes."
+              },
+              "priceSpecification": {"@type": "PriceSpecification", "price": "60", "priceCurrency": "USD", "minPrice": "60"}
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Flower Bed Clean Out & Weed Removal",
+                "description": "Thorough clean-outs, weed removal, and bed preparation using Louisiana-native plant recommendations."
+              },
+              "priceSpecification": {"@type": "PriceSpecification", "price": "150", "priceCurrency": "USD", "minPrice": "150"}
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Spring Cleaning",
+                "description": "Full spring refresh: debris removal, edging, mulching, and prepping your yard for the growing season."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Leaf & Debris Removal",
+                "description": "Seasonal cleanup to remove leaves, branches, and debris to keep landscapes healthy and tidy."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Tractor / Bush Hog Services",
+                "description": "Heavy-duty land clearing, pasture mowing, and overgrown lot maintenance using tractor-mounted bush hogs."
+              }
+            }
+          ]
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Who does lawn care near me in LaPlace Louisiana?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Xcellent1 Lawn Care serves LaPlace, Norco, Destrehan, Luling, and St. Rose. Call or book online for a free quote."}
+          },
+          {
+            "@type": "Question",
+            "name": "How much does lawn mowing cost in LaPlace LA?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Xcellent1 Lawn Care offers competitive rates for residential and commercial lawn mowing in the LaPlace area. Request a free quote online."}
+          },
+          {
+            "@type": "Question",
+            "name": "Is Xcellent1 Lawn Care available on weekends?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Yes. Xcellent1 Lawn Care serves clients Monday through Saturday in LaPlace and surrounding areas."}
+          },
+          {
+            "@type": "Question",
+            "name": "Does Xcellent1 offer fertilization and aeration in Louisiana?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Yes. Xcellent1 provides fertilization, aeration, and full lawn care services tuned to Louisiana's warm-season grass types including St. Augustine, Bermuda, and Zoysia."}
+          },
+          {
+            "@type": "Question",
+            "name": "How do I book a lawn care service in Norco or Destrehan LA?",
+            "acceptedAnswer": {"@type": "Answer", "text": "Book online at https://xcellent1lawncare.com or call +1-504-875-8079. Xcellent1 serves Norco, Destrehan, LaPlace, and surrounding St. John and St. Charles Parish communities."}
+          }
         ]
       }
     </script>
@@ -315,15 +382,17 @@
       ☰
     </button>
     <div class="navbar-links" id="navbar-links">
-      <a href="#services" class="navbar-link">Services</a>
-      <a href="#reviews" class="navbar-link">Reviews</a>
+      <a href="services.html" class="navbar-link">Services</a>
+      <a href="about.html" class="navbar-link">About</a>
+      <a href="contact.html" class="navbar-link">Contact</a>
       <a href="careers.html" class="navbar-link">Careers</a>
-      <a href="login.html" class="navbar-link" aria-label="Login">Login</a>
+      <a href="blog.html" class="navbar-link">Blog</a>
+      <a href="tel:5048758079" class="navbar-link" aria-label="Call (504) 875-8079">📞 (504) 875-8079</a>
     </div>
   </nav>
 
-  <!-- Shop banner removed from homepage; catalog lives at shop.html -->
   <section class="hero-home">
+    <p class="hero-eyebrow">Licensed &amp; insured · LaPlace &amp; the River Parishes · Since 2023</p>
     <h1 class="hero-title">Xcellent1 Lawn Care</h1>
     <p class="subtitle">
       Professional Lawn Care for the River Parishes
@@ -368,7 +437,7 @@
         </select>
         <input aria-label="Service Address" id="waitlist-address" name="property_address" type="text" class="form-field"
           placeholder="Property address" />
-        <button type="submit" class="waitlist-submit">Join Waitlist</button>
+        <button type="submit" class="waitlist-submit">Get My Free Quote</button>
       </div>
     </form>
     <script>
@@ -378,10 +447,44 @@
             .display = i === step ? "" : "none";
         }
       }
+      document.getElementById("waitlist-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const f = e.target;
+        const val = (sel) => { const el = f.querySelector(sel); return el ? el.value.trim() : ""; };
+        const name = val('[name="name"]');
+        const email = val('[name="email"]');
+        const phone = val('[name="phone"]');
+        const service = val('[name="service"]') || "Lawn Care";
+        const address = val('[name="property_address"]');
+        const body = [
+          "New quote request from xcellent1lawncare.com",
+          "",
+          "Name: " + name,
+          "Phone: " + phone,
+          "Email: " + email,
+          "Service Address: " + address,
+          "Service: " + service,
+        ].join("\n");
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isMobile) {
+          window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
+        } else {
+          window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
+            encodeURIComponent("Quote Request - " + service) + "&body=" + encodeURIComponent(body);
+        }
+        const ok = document.getElementById("waitlist-success");
+        if (ok) {
+          ok.classList.remove("hidden");
+          ok.textContent = "Thanks, " + (name || "there") + "! We're opening your " +
+            (isMobile ? "messages" : "email app") + " to send your request — or call/text (504) 875-8079.";
+        }
+        f.reset();
+        showWaitlistStep(1);
+      });
     </script>
     <div id="waitlist-status" class="waitlist-status"></div>
     <div id="waitlist-success" class="waitlist-success hidden">
-      Thank you for joining the waitlist! We'll be in touch soon.
+      Thanks! Your request is ready to send — or call/text (504) 875-8079 anytime.
     </div>
   </section>
 
@@ -492,43 +595,71 @@
     </div>
   </section>
 
+  <section id="gallery" class="gallery-section" aria-labelledby="gallery-title">
+    <div class="section-header">
+      <h2 id="gallery-title">Before &amp; After</h2>
+      <p>Real results from real properties in the River Parishes</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-pair">
+        <div class="gallery-photo">
+          <img src="images/instagram/flowerbed-before.webp" alt="Flower bed before service — weeds encroaching into mulch, undefined edge" loading="lazy" decoding="async" width="700" height="875">
+          <span class="gallery-tag gallery-tag-before">Before</span>
+        </div>
+        <div class="gallery-photo">
+          <img src="images/instagram/flowerbed-after.webp" alt="Flower bed after service — fresh mulch, clean edge, weeds cleared" loading="lazy" decoding="async" width="700" height="875">
+          <span class="gallery-tag gallery-tag-after">After</span>
+        </div>
+      </div>
+      <p class="gallery-caption">Flower bed re-edge &amp; clean-out — LaPlace, LA</p>
+    </div>
+  </section>
+
   <section id="blog" class="blog-section">
     <div class="section-header">
       <h2>Lawn Care Tips & Advice</h2>
-      <p>Free tips to keep your Louisiana lawn looking its best</p>
+      <p>Expert guides for South Louisiana homeowners — from the pros at Xcellent1</p>
     </div>
     <div class="blog-grid">
       <article class="blog-card">
-        <div class="blog-image" data-bg="https://images.unsplash.com/photo-1558904541-efa843a96f01?w=800&amp;q=80">
+        <div class="blog-image" data-bg="images/lawnservices.jpg">
         </div>
         <div class="blog-content">
           <div class="blog-date">November 2025</div>
           <h3 class="blog-title">Best Grass Types for LaPlace, Louisiana</h3>
           <p class="blog-excerpt">
-            St. Augustine, Bermuda, Zoysia, and Centipede grass thrive in
-            LaPlace's humid climate.
+            St. Augustine, Bermuda, Zoysia, and Centipede — which grass is right for your River Parishes lawn?
           </p>
-          <!-- removed nested navbar; global navbar at page top is authoritative -->
-          <p class="blog-excerpt">
-            Deep watering 1-2x/week beats daily sprinkling. Water early
-            morning.
-          </p>
-          <a href="blog-watering-guide.html" class="read-more">Read More &rarr;</a>
+          <a href="blog-grass-types.html" class="read-more">Read More &rarr;</a>
         </div>
       </article>
       <article class="blog-card">
-        <div class="blog-image" data-bg="https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=800&amp;q=80">
+        <div class="blog-image" data-bg="images/springcleaning.webp">
         </div>
         <div class="blog-content">
           <div class="blog-date">November 2025</div>
-          <h3 class="blog-title">Seasonal Lawn Care Tips</h3>
+          <h3 class="blog-title">Seasonal Lawn Care Tips for Louisiana</h3>
           <p class="blog-excerpt">
-            Learn how to keep your lawn healthy and beautiful through all four
-            seasons in Louisiana.
+            Month-by-month lawn care calendar for the River Parishes. Spring through winter.
           </p>
           <a href="blog-seasonal-tips.html" class="read-more">Read More &rarr;</a>
         </div>
       </article>
+      <article class="blog-card">
+        <div class="blog-image" data-bg="images/flowerbedcleanup.webp">
+        </div>
+        <div class="blog-content">
+          <div class="blog-date">November 2025</div>
+          <h3 class="blog-title">Louisiana Lawn Watering Guide</h3>
+          <p class="blog-excerpt">
+            Deep watering 1-2x/week beats daily sprinkling. Water early morning.
+          </p>
+          <a href="blog-watering-guide.html" class="read-more">Read More &rarr;</a>
+        </div>
+      </article>
+    </div>
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="blog.html" class="btn" style="display: inline-block;">View All Guides &rarr;</a>
     </div>
   </section>
 
@@ -768,7 +899,7 @@
           style="display: inline-flex; align-items: center; gap: 0.5rem; background: white; color: #059669; padding: 1rem 2rem; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1.1rem">
           📞 (504) 875-8079
         </a>
-        <a href="mailto:info@xcellent1lawn.com"
+        <a href="mailto:info@xcellent1lawncare.com"
           style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.2); color: white; padding: 1rem 2rem; border-radius: 8px; font-weight: 600; text-decoration: none">
           ✉️ Email Us
         </a>
@@ -779,147 +910,7 @@
     </div>
   </section>
 
-  <!-- Product catalog moved to shop.html -->
 
-  <!-- Premium AI Lawn Care Assistant CTA -->
-  <section id="premium" class="premium-assistant-section" aria-labelledby="premium-title" style="
-    padding: 4rem 1rem;
-    background: linear-gradient(135deg, #1a4d2e 0%, #0d3320 50%, #1a4d2e 100%);
-    text-align: center;
-    color: white;
-    position: relative;
-    overflow: hidden;
-  ">
-    <!-- Decorative background pattern -->
-    <div style="position: absolute; inset: 0; opacity: 0.1; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"40\" fill=\"none\" stroke=\"white\" stroke-width=\"1\"/></svg>'); background-size: 80px;"></div>
-    
-    <div style="max-width: 900px; margin: 0 auto; position: relative; z-index: 1;">
-      <!-- Badge -->
-      <div style="display: inline-block; background: rgba(16, 185, 129, 0.3); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: 999px; padding: 0.5rem 1.5rem; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 600;">
-        🤖 NEW: AI-Powered Lawn Assistant
-      </div>
-      
-      <h2 id="premium-title" style="font-size: 2.5rem; margin-bottom: 1rem; line-height: 1.2;">
-        Your Personal Lawn Care AI
-      </h2>
-      <p style="font-size: 1.2rem; opacity: 0.95; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-        Diagnose lawn problems, design your dream landscape, and get personalized maintenance schedules — all powered by AI.
-      </p>
-
-      <!-- Features Grid -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; text-align: left;">
-        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Lawn Analyzer</h3>
-          <p style="font-size: 0.9rem; opacity: 0.85;">Snap a photo — AI diagnoses pests, diseases, and issues instantly</p>
-        </div>
-        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎨</div>
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Design Visualizer</h3>
-          <p style="font-size: 0.9rem; opacity: 0.85;">Upload your yard — get native Louisiana plant suggestions</p>
-        </div>
-        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">📅</div>
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Smart Scheduler</h3>
-          <p style="font-size: 0.9rem; opacity: 0.85;">Get personalized monthly care tasks for Zone 9a</p>
-        </div>
-        <div style="background: rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">💬</div>
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">AI Chat Expert</h3>
-          <p style="font-size: 0.9rem; opacity: 0.85;">Ask anything about St. Augustine, Bermuda, Zoysia grasses</p>
-        </div>
-      </div>
-
-      <!-- Price and CTA -->
-      <div style="background: rgba(255,255,255,0.15); border-radius: 16px; padding: 2rem; max-width: 500px; margin: 0 auto;">
-        <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;">
-          $9<span style="font-size: 1.5rem; opacity: 0.8;">.99</span>
-        </div>
-        <p style="margin-bottom: 1.5rem; opacity: 0.9;">One-time payment • Lifetime access</p>
-        
-        <!-- Email input and checkout button -->
-        <form id="premium-checkout-form" onsubmit="return handlePremiumCheckout(event)" style="display: flex; flex-direction: column; gap: 0.75rem;">
-          <input 
-            type="email" 
-            id="premium-email" 
-            name="email" 
-            placeholder="Enter your email" 
-            required
-            style="padding: 0.875rem 1rem; border-radius: 8px; border: none; font-size: 1rem; width: 100%; box-sizing: border-box;"
-          >
-          <button type="submit" id="premium-checkout-btn" style="
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            border: none;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-          ">
-            🚀 Unlock AI Assistant
-          </button>
-        </form>
-        <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 1rem;">
-          Secure checkout powered by Stripe • Includes booking CTAs for Xcellent1 services
-        </p>
-      </div>
-
-      <!-- Social proof -->
-      <p style="margin-top: 2rem; font-size: 0.95rem; opacity: 0.85;">
-        🌿 Perfect for South Louisiana homeowners in the River Parishes
-      </p>
-    </div>
-  </section>
-
-  <script>
-    async function handlePremiumCheckout(e) {
-      e.preventDefault();
-      const emailInput = document.getElementById('premium-email');
-      const submitBtn = document.getElementById('premium-checkout-btn');
-      const email = emailInput.value.trim();
-      
-      if (!email) {
-        alert('Please enter your email address');
-        return false;
-      }
-
-      // Disable button and show loading
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '⏳ Processing...';
-
-      try {
-        const response = await fetch('/api/premium/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await response.json();
-
-        if (data.ok && data.checkoutUrl) {
-          // Redirect to Stripe checkout
-          window.location.href = data.checkoutUrl;
-        } else {
-          alert(data.error || 'Unable to start checkout. Please try again.');
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '🚀 Unlock AI Assistant';
-        }
-      } catch (err) {
-        console.error('Checkout error:', err);
-        alert('Connection error. Please check your internet and try again.');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '🚀 Unlock AI Assistant';
-      }
-
-      return false;
-    }
-  </script>
 
 
   <!-- Service Inquiry Modal -->
@@ -963,109 +954,6 @@
     </div>
   </div>
 
-  <!-- Login Modal -->
-  <div id="login-modal" class="modal">
-    <div class="modal-content" style="max-width: 400px">
-      <div class="modal-header">
-        <h2>Dashboard Access</h2>
-        <button onclick="closeLoginModal()" class="modal-close">
-          &times;
-        </button>
-      </div>
-
-      <!-- Login Step 1: Role Selection -->
-      <div id="login-step-1">
-        <p>
-          Select your dashboard to access.
-        </p>
-        <form id="login-role-form" action="#" onsubmit="return handleRoleSelection(event)">
-          <div style="margin-bottom: 1.5rem">
-            <div style="margin-bottom: 1rem">
-              <label class="radio-label">
-                <input type="radio" name="role" value="owner" required />
-                <span>
-                  <span class="radio-title">
-                    Owner Dashboard
-                  </span>
-                  <span class="radio-description">
-                    Business KPIs, crew management, revenue tracking
-                  </span>
-                </span>
-              </label>
-            </div>
-            <div style="margin-bottom: 1rem">
-              <label class="radio-label">
-                <input type="radio" name="role" value="crew" />
-                <span>
-                  <span class="radio-title">
-                    Crew Dashboard
-                  </span>
-                  <span class="radio-description">
-                    Today's jobs, navigation, photo uploads
-                  </span>
-                </span>
-              </label>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary">
-            Access Dashboard
-          </button>
-        </form>
-      </div>
-
-      <!-- Login Step 2: Owner Authentication -->
-      <div id="login-step-2" style="display: none">
-        <p>
-          Enter your credentials to access the owner dashboard.
-        </p>
-        <form id="login-auth-form" action="#" onsubmit="return handleOwnerLogin(event)">
-          <div class="form-group">
-            <label for="login-username">Username</label>
-            <input id="login-username" type="text" name="username" required autocomplete="username"
-              placeholder="Enter username" />
-          </div>
-          <div class="form-group">
-            <label for="login-password">Password</label>
-            <input id="login-password" type="password" name="password" required autocomplete="current-password"
-              placeholder="Enter password" />
-          </div>
-          <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem">
-            <button type="button" onclick="showLoginStep(1)" class="btn btn-secondary">
-              Back
-            </button>
-            <button type="submit" class="btn btn-primary">
-              Login
-            </button>
-          </div>
-        </form>
-        <div style="text-align: center; margin: 1rem 0; color: #64748b">
-          <hr style="border-top: 1px solid #e5e7eb; margin-bottom: 1rem">
-          <span>OR</span>
-        </div>
-        <button id="google-signin-btn" type="button" class="btn btn-google">
-          <svg style="margin-right: 0.5rem" width="20" height="20" viewBox="0 0 20 20" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M19.98 10.19C19.98 9.53 19.93 8.9 19.82 8.29H10.2V12.03H15.71C15.48 13.21 14.83 14.21 13.88 14.86V17.58H16.89C18.66 16.02 19.98 13.35 19.98 10.19Z"
-              fill="white" />
-            <path
-              d="M10.2 20C12.95 20 15.26 19.09 16.89 17.58L13.88 14.86C12.99 15.45 11.75 15.82 10.2 15.82C7.51 15.82 5.23 14.01 4.39 11.66H1.28V14.47C2.92 17.76 6.3 20 10.2 20Z"
-              fill="white" />
-            <path
-              d="M4.39 11.66C4.19 11.05 4.09 10.42 4.09 9.77C4.09 9.12 4.2 8.5 4.39 7.88V5.07H1.28C0.47 6.64 0 8.16 0 9.77C0 11.38 0.47 12.9 1.28 14.47L4.39 11.66Z"
-              fill="white" />
-            <path
-              d="M10.2 3.72C11.56 3.72 12.79 4.2 13.71 5.08L16.96 1.83C15.25 0.35 12.94 0 10.2 0C6.3 0 2.92 2.24 1.28 5.53L4.39 7.88C5.23 5.53 7.51 3.72 10.2 3.72Z"
-              fill="white" />
-          </svg>
-          Sign in with Google
-        </button>
-      </div>
-
-      <div id="login-message" style="margin-top: 1rem; text-align: center">
-      </div>
-    </div>
-  </div>
 
   <footer class="footer">
     <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem">
@@ -1094,7 +982,7 @@
             <a href="tel:5048758079" style="color: #10b981">(504) 875-8079</a>
           </p>
           <p style="margin-bottom: 0.5rem">
-            <a href="mailto:info@xcellent1lawn.com" style="color: #10b981">info@xcellent1lawn.com</a>
+            <a href="mailto:info@xcellent1lawncare.com" style="color: #10b981">info@xcellent1lawncare.com</a>
           </p>
           <p style="font-size: 0.9rem; opacity: 0.8">
             📍 LaPlace, Louisiana 70068
@@ -1127,9 +1015,9 @@
             </a>
           </p>
           <p style="margin-bottom: 0.5rem">
-            <a href="https://maps.app.goo.gl/xcellent1lawn" target="_blank" rel="noopener noreferrer"
+            <a href="#service-areas"
               style="color: #10b981; display: inline-flex; align-items: center; gap: 0.25rem">
-              📍 Get Directions
+              📍 Service Areas
             </a>
           </p>
           <p>
@@ -1144,10 +1032,10 @@
       <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 1.5rem; text-align: center">
         <p style="margin-bottom: 0.5rem">
           <a href="home.html" style="color: #10b981; margin: 0 0.5rem">Home</a> |
-          <a href="#services" style="color: #10b981; margin: 0 0.5rem">Services</a> |
-          <a href="#reviews" style="color: #10b981; margin: 0 0.5rem">Reviews</a> |
-          <a href="careers.html" style="color: #10b981; margin: 0 0.5rem">Careers</a> |
-          <a href="login.html" style="color: #10b981; margin: 0 0.5rem">Login</a>
+          <a href="services.html" style="color: #10b981; margin: 0 0.5rem">Services</a> |
+          <a href="about.html" style="color: #10b981; margin: 0 0.5rem">About</a> |
+          <a href="contact.html" style="color: #10b981; margin: 0 0.5rem">Contact</a> |
+          <a href="careers.html" style="color: #10b981; margin: 0 0.5rem">Careers</a>
         </p>
         <p class="copyright" style="font-size: 0.85rem; opacity: 0.8">
           &copy; 2025 Xcellent1 Lawn Care LLC. All rights reserved.
@@ -1155,12 +1043,6 @@
       </div>
     </div>
   </footer>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // NOTE: Inline waitlist handler removed; `web/static/app.js` handles submission and UX consistently across the app.
-    // If the inline handler is required during a transitional period, re-add a small wrapper that calls the centralized handler from app.js.
-  </script>
-  <script src="app.js"></script>
 
   <script>
     function openServiceModal(serviceName) {
@@ -1176,53 +1058,32 @@
       document.getElementById("service-inquiry-form").reset();
     }
 
-    async function handleServiceInquiry(e) {
+    function handleServiceInquiry(e) {
       e.preventDefault();
-      const form = document.getElementById("service-inquiry-form");
-      const data = new FormData(form);
-      const payload = {
-        firstName: data.get("firstName"),
-        lastName: data.get("lastName"),
-        phone: data.get("phone"),
-        email: data.get("email"),
-        address: data.get("address"),
-        service: data.get("service"),
-      };
-
-      try {
-        const res = await fetch("/api/service-inquiry", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        if (res.ok) {
-          const json = await res.json();
-          alert(
-            "Thank you! We have received your service request and will contact you within 24 hours.",
-          );
-          closeServiceModal();
-        } else {
-          // Backend returned error status
-          try {
-            const json = await res.json();
-            alert(
-              "Error: " + (json.error || "Unable to submit request"),
-            );
-          } catch {
-            alert(
-              "Error: Unable to submit request. Please try again later.",
-            );
-          }
-        }
-      } catch (err) {
-        console.error("Service inquiry error:", err);
-        // Graceful degradation - show success even if backend is unavailable
-        alert(
-          "Thank you for your interest! We're experiencing technical difficulties. Please call us directly at (504) 875-8079 or email info@xcellent1lawncare.com",
-        );
-        closeServiceModal();
+      const data = new FormData(document.getElementById("service-inquiry-form"));
+      const name = ((data.get("firstName") || "") + " " + (data.get("lastName") || "")).trim();
+      const service = data.get("service") || "Lawn Care";
+      const bodyLines = [
+        "New quote request from xcellent1lawncare.com",
+        "",
+        "Name: " + name,
+        "Phone: " + (data.get("phone") || ""),
+        "Email: " + (data.get("email") || ""),
+        "Service Address: " + (data.get("address") || ""),
+        "Service: " + service,
+      ];
+      const body = bodyLines.join("\n");
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isMobile) {
+        window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
+      } else {
+        window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
+          encodeURIComponent("Quote Request - " + service) +
+          "&body=" + encodeURIComponent(body);
       }
+      alert("Thanks! We're opening your " + (isMobile ? "text messages" : "email app") +
+        " to send your request. If it doesn't open, call or text (504) 875-8079.");
+      closeServiceModal();
       return false;
     }
 
@@ -1235,139 +1096,6 @@
         }
       });
 
-    // Login modal functions
-    function openLoginModal() {
-      document.getElementById("login-modal").style.display = "flex";
-      document.getElementById("login-step-1").style.display = "block";
-      document.getElementById("login-step-2").style.display = "none";
-      document.getElementById("login-message").textContent = "";
-      document.getElementById("login-role-form").reset();
-      document.getElementById("login-auth-form").reset();
-    }
-
-    function closeLoginModal() {
-      document.getElementById("login-modal").style.display = "none";
-    }
-
-    function showLoginStep(step) {
-      document.getElementById("login-step-1").style.display =
-        step === 1 ? "block" : "none";
-      document.getElementById("login-step-2").style.display =
-        step === 2 ? "block" : "none";
-      document.getElementById("login-message").textContent = "";
-    }
-
-    async function handleRoleSelection(e) {
-      e.preventDefault();
-      const form = document.getElementById("login-role-form");
-      const formData = new FormData(form);
-      const role = formData.get("role");
-
-      if (role === "owner") {
-        // Show owner login form
-        showLoginStep(2);
-      } else if (role === "crew") {
-        // Direct redirect for crew
-        const messageDiv = document.getElementById("login-message");
-        messageDiv.textContent = "Accessing crew dashboard...";
-        messageDiv.style.color = "#059669";
-        setTimeout(() => {
-          window.location.href = "crew.html";
-        }, 500);
-      }
-
-      return false;
-    }
-
-    async function handleOwnerLogin(e) {
-      e.preventDefault();
-      const form = document.getElementById("login-auth-form");
-      const formData = new FormData(form);
-      const username = formData.get("username");
-      const password = formData.get("password");
-      const messageDiv = document.getElementById("login-message");
-
-      messageDiv.textContent = "Authenticating...";
-      messageDiv.style.color = "#059669";
-
-      try {
-        const res = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        });
-
-        if (res.ok) {
-          const json = await res.json();
-          messageDiv.textContent = "Login successful! Redirecting...";
-          setTimeout(() => {
-            window.location.href = "owner.html";
-          }, 500);
-        } else {
-          const json = await res.json();
-          messageDiv.textContent = json.error ||
-            "Invalid credentials";
-          messageDiv.style.color = "#dc2626";
-        }
-      } catch (err) {
-        console.error("Login error:", err);
-        messageDiv.textContent = "Login failed. Please try again.";
-        messageDiv.style.color = "#dc2626";
-      }
-
-      return false;
-    }
-
-    const _env = (typeof window !== "undefined" && window.__ENV) || {};
-    const SUPABASE_URL = _env.NEXT_PUBLIC_SUPABASE_URL ||
-      "https://utivthfrwgtjatsusopw.supabase.co";
-    const SUPABASE_ANON_KEY = _env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-      "sb_publishable_nX8IeSiT3FJ3iL2GJbf_vA_Jj90PMvt";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    async function handleGoogleSignIn() {
-      const messageDiv = document.getElementById("login-message");
-      messageDiv.textContent = "Redirecting to Google...";
-      messageDiv.style.color = "#059669";
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
-
-      if (error) {
-        console.error("Error signing in with Google:", error);
-        messageDiv.textContent =
-          "Error with Google Sign-In. See console for details.";
-        messageDiv.style.color = "#dc2626";
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const googleSignInButton = document.getElementById(
-        "google-signin-btn",
-      );
-      if (googleSignInButton) {
-        googleSignInButton.addEventListener(
-          "click",
-          handleGoogleSignIn,
-        );
-      }
-
-      supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === "SIGNED_IN" && session) {
-          if (session.user.email !== "lacardiofrancis@gmail.com") {
-            await supabase.auth.signOut();
-            alert("Access denied. This service is restricted.");
-            window.location.href = "/";
-          } else {
-            window.location.href = "owner.html";
-          }
-        }
-      });
-    });
   </script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {

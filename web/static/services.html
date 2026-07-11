@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lawn Care Services | Xcellent1 Lawn Care — LaPlace & River Parishes, LA</title>
+    <meta name="description" content="Professional lawn care services in LaPlace & the River Parishes: lawn mowing, edging & trimming, landscaping, bush hogging, and overgrown lot clearing. Licensed & insured. Free quotes. Call (504) 875-8079." />
+    <meta name="keywords" content="lawn mowing LaPlace, landscaping River Parishes, bush hogging Louisiana, overgrown lot clearing, edging and trimming, lawn care services, Xcellent1 Lawn Care" />
+    <meta name="author" content="Xcellent1 Lawn Care" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Xcellent1 Lawn Care" />
+    <meta property="og:url" content="https://xcellent1lawncare.com/services" />
+    <meta property="og:title" content="Lawn Care Services | Xcellent1 Lawn Care" />
+    <meta property="og:description" content="Professional lawn mowing, edging & trimming, landscaping, bush hogging, and overgrown lot clearing in LaPlace & the River Parishes. Free quotes!" />
+    <meta property="og:image" content="https://xcellent1lawncare.com/images/xcellent1-logo-transparent.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Lawn Care Services | Xcellent1 Lawn Care" />
+    <meta name="twitter:description" content="Professional lawn care services in LaPlace & the River Parishes." />
+    <meta name="twitter:image" content="https://xcellent1lawncare.com/images/xcellent1-logo-transparent.png" />
+    <!-- Canonical -->
+    <link rel="canonical" href="https://xcellent1lawncare.com/services" />
+    <!-- Geo Tags for Local SEO -->
+    <meta name="geo.region" content="US-LA" />
+    <meta name="geo.placename" content="LaPlace, Louisiana" />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
+    <link rel="stylesheet" href="styles.clean.css" />
+    <link rel="stylesheet" href="styles.premium.css" />
+    <link rel="icon" type="image/png" sizes="192x192" href="images/xcellent1-icon-192.png" />
+    <meta name="theme-color" content="#0c2418" />
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "provider": {
+        "@type": "LocalBusiness",
+        "name": "Xcellent1 Lawn Care",
+        "url": "https://xcellent1lawncare.com"
+      },
+      "areaServed": ["LaPlace, LA", "Reserve, LA", "Garyville, LA", "Lutcher, LA", "Gramercy, LA", "Norco, LA", "Destrehan, LA", "Luling, LA", "Vacherie, LA", "Edgard, LA", "Killona, LA", "Gonzales, LA", "Donaldsonville, LA", "Houma, LA"]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://xcellent1lawncare.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Services", "item": "https://xcellent1lawncare.com/services"}
+      ]
+    }
+    </script>
+    <style>
+      /* Hero Section */
+      .services-hero {
+        background: linear-gradient(135deg, rgba(22, 101, 52, 0.95), rgba(16, 185, 129, 0.85)), url("images/lawnservices.jpg") center/cover;
+        padding: 4rem 1.5rem;
+        text-align: center;
+        color: white;
+      }
+      .services-hero h1 { font-size: 2.75rem; margin-bottom: 0.75rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+      .services-hero p { font-size: 1.15rem; opacity: 0.95; max-width: 650px; margin: 0 auto; }
+
+      /* Container */
+      .services-container { max-width: 1100px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+
+      /* Service Detail Card */
+      .service-detail {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 2.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .service-detail-image {
+        min-height: 280px;
+        background-size: cover;
+        background-position: center;
+      }
+      .service-detail-body { padding: 2rem; display: flex; flex-direction: column; justify-content: center; }
+      .service-detail-body h2 { font-size: 1.75rem; color: #166534; margin-bottom: 0.5rem; }
+      .service-detail-body .service-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+      .service-detail-body p { color: #4b5563; line-height: 1.7; margin-bottom: 1rem; }
+      .service-detail-body .price-note { font-size: 1.1rem; color: #10b981; font-weight: 600; margin-bottom: 1rem; }
+      .service-detail-body .btn-outline {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border: 2px solid #10b981;
+        color: #10b981;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        align-self: flex-start;
+      }
+      .service-detail-body .btn-outline:hover { background: #10b981; color: white; }
+      .service-detail:nth-child(even) .service-detail-image { order: 1; }
+
+      /* CTA Section */
+      .services-cta {
+        background: linear-gradient(135deg, #1b4d2f, #2d6520);
+        color: white;
+        padding: 3rem 1.5rem;
+        text-align: center;
+        border-radius: 16px;
+        margin-top: 2rem;
+      }
+      .services-cta h2 { font-size: 2rem; margin-bottom: 1rem; }
+      .services-cta p { font-size: 1.1rem; opacity: 0.95; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+      .services-cta a {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background: white;
+        color: #166534;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+        margin: 0.5rem;
+      }
+      .services-cta a:hover { background: #f3f4f6; transform: translateY(-2px); }
+      .services-cta .btn-secondary {
+        background: rgba(255,255,255,0.15);
+        color: white;
+      }
+      .services-cta .btn-secondary:hover { background: rgba(255,255,255,0.25); }
+
+      /* Blog Reference Section */
+      .blog-refs { margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e5e7eb; }
+      .blog-refs h3 { font-size: 1.5rem; color: #166534; margin-bottom: 1rem; }
+      .blog-ref-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+      .blog-ref-item {
+        background: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s;
+      }
+      .blog-ref-item:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+      .blog-ref-item a { color: #1f2937; text-decoration: none; font-weight: 600; display: block; }
+      .blog-ref-item a:hover { color: #10b981; }
+      .blog-ref-item span { font-size: 0.85rem; color: #6b7280; }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .service-detail { grid-template-columns: 1fr; }
+        .service-detail-image { min-height: 200px; }
+        .service-detail:nth-child(even) .service-detail-image { order: 0; }
+        .services-hero h1 { font-size: 2rem; }
+        .services-hero p { font-size: 1rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <a href="index.html">
+          <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
+        </a>
+        <div class="navbar-title">
+          <span class="navbar-name">XCELLENT1</span>
+          <span class="navbar-tagline">LAWN CARE</span>
+        </div>
+      </div>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">☰</button>
+      <div class="navbar-links" id="navbar-links">
+        <a href="index.html" class="navbar-link">Home</a>
+        <a href="services.html" class="navbar-link">Services</a>
+        <a href="about.html" class="navbar-link">About</a>
+        <a href="contact.html" class="navbar-link">Contact</a>
+        <a href="careers.html" class="navbar-link">Careers</a>
+        <a href="tel:5048758079" class="navbar-link" aria-label="Call (504) 875-8079">📞 (504) 875-8079</a>
+      </div>
+    </nav>
+
+    <section class="services-hero">
+      <h1>🌿 Our Services</h1>
+      <p>Professional lawn care services for the River Parishes — from routine maintenance to heavy clearing. Licensed, insured, and built for Louisiana.</p>
+    </section>
+
+    <div class="services-container">
+
+      <!-- Weekly Lawn Maintenance -->
+      <div class="service-detail">
+        <div class="service-detail-image" style="background-image: url('images/lawnservices.jpg'); background-color: #166534;" role="img" aria-label="Weekly lawn mowing and maintenance"></div>
+        <div class="service-detail-body">
+          <div class="service-icon">✂️</div>
+          <h2>Weekly Lawn Maintenance</h2>
+          <p>Precision mowing, edging, trimming, and blowing on a scheduled weekly or biweekly plan. We cut at the right height for your grass type — St. Augustine, Bermuda, or Zoysia — and keep your property looking sharp all season. Every visit includes clean edging along sidewalks and driveways, string trimming around fences and beds, and a full cleanup so nothing's left behind.</p>
+          <p class="price-note">Starting at $60 per visit</p>
+          <a href="contact.html" class="btn-outline">Request a Free Quote</a>
+        </div>
+      </div>
+
+      <!-- Edging & Trimming -->
+      <div class="service-detail">
+        <div class="service-detail-image" style="background-image: url('images/springcleaning.webp'); background-color: #1a4a2e;" role="img" aria-label="Edging and trimming detail"></div>
+        <div class="service-detail-body">
+          <div class="service-icon">🌳</div>
+          <h2>Edging & Trimming</h2>
+          <p>Crisp, clean edges that separate your lawn from walkways, driveways, and flower beds. We edge every 2–3 mowings to keep borders sharp and prevent grass from creeping into mulch or cracks. Paired with precision string trimming around trees, fences, posts, and structures — the detail work that makes a lawn look professionally maintained.</p>
+          <p>Includes hedge trimming for shrubs and low-hanging branches.</p>
+          <p class="price-note">Included in full-service packages</p>
+          <a href="contact.html" class="btn-outline">Request a Free Quote</a>
+        </div>
+      </div>
+
+      <!-- Landscaping -->
+      <div class="service-detail">
+        <div class="service-detail-image" style="background-image: url('images/RiverbedLandscaping.webp'); background-color: #2d6520;" role="img" aria-label="Landscaping project"></div>
+        <div class="service-detail-body">
+          <div class="service-icon">🌸</div>
+          <h2>Landscaping</h2>
+          <p>Full landscaping services including flower bed installation and clean-out, mulch and pine straw application, tree and shrub planting, sod installation, and drainage solutions. We use Louisiana-native plant recommendations to create landscapes that thrive in our climate. Whether you want a fresh look or just need beds cleaned out and refreshed, we've got you covered.</p>
+          <p class="price-note">Free estimates — call for details</p>
+          <a href="contact.html" class="btn-outline">Request a Free Quote</a>
+        </div>
+      </div>
+
+      <!-- Bush Hogging -->
+      <div class="service-detail">
+        <div class="service-detail-image" style="background-image: url('images/CoverPhoto.webp'); background-color: #3b832a;" role="img" aria-label="Bush hogging and heavy brush clearing"></div>
+        <div class="service-detail-body">
+          <div class="service-icon">🚜</div>
+          <h2>Bush Hogging / Tractor Work</h2>
+          <p>Heavy-duty brush cutting and field mowing with tractor-mounted equipment. Perfect for large properties, pastures, overgrown fields, and vacant lots. We handle thick vegetation, tall grass, brush, and saplings that standard mowers can't touch. Our bush hogging service clears acres quickly and leaves the property manageable for routine maintenance.</p>
+          <p class="price-note">Priced by acre — call for a quote</p>
+          <a href="contact.html" class="btn-outline">Request a Free Quote</a>
+        </div>
+      </div>
+
+      <!-- Overgrown Lot Clearing -->
+      <div class="service-detail">
+        <div class="service-detail-image" style="background-image: url('images/springcleaning.webp'); background-color: #0c2418;" role="img" aria-label="Overgrown lot clearing"></div>
+        <div class="service-detail-body">
+          <div class="service-icon">🏗️</div>
+          <h2>Overgrown Lot Clearing</h2>
+          <p>Full property clearing for lots that have been neglected — thick brush, vines, invasive weeds, debris, and small trees. We cut everything down, haul it away, and grade the lot if needed. This is the go-to service for vacant lots, investment properties, and landowners who need a fresh start on their acreage. After clearing, we can set up a regular maintenance schedule to keep it that way.</p>
+          <p class="price-note">Free on-site estimates</p>
+          <a href="contact.html" class="btn-outline">Request a Free Quote</a>
+        </div>
+      </div>
+
+      <!-- Service Areas Summary -->
+      <div class="services-cta">
+        <h2>Serving the River Parishes & Beyond</h2>
+        <p>We service LaPlace, Reserve, Garyville, Gramercy, Lutcher, Norco, Destrehan, Luling, St. Rose, Vacherie, Edgard, Killona, Gonzales, Donaldsonville, and Houma.</p>
+        <a href="contact.html">📞 Get a Free Quote</a>
+        <a href="index.html#service-areas" class="btn-secondary">📍 View Service Areas</a>
+      </div>
+
+      <!-- Blog References -->
+      <div class="blog-refs">
+        <h3>📖 Related Lawn Care Guides</h3>
+        <div class="blog-ref-list">
+          <div class="blog-ref-item">
+            <a href="blog-mowing-height-guide.html">Mowing Height & Edging Guide</a>
+            <span>Proper cutting heights for Louisiana grass types</span>
+          </div>
+          <div class="blog-ref-item">
+            <a href="blog-grass-types.html">Grass Types for Louisiana Lawns</a>
+            <span>St. Augustine, Bermuda, Zoysia — what works best</span>
+          </div>
+          <div class="blog-ref-item">
+            <a href="blog-sod-installation-guide.html">Sod Installation Guide</a>
+            <span>New lawn installation tips and best practices</span>
+          </div>
+          <div class="blog-ref-item">
+            <a href="blog-weed-control-guide.html">Weed Control Guide</a>
+            <span>Keep your lawn weed-free all season</span>
+          </div>
+          <div class="blog-ref-item">
+            <a href="blog-fertilizing-guide.html">Fertilizing Guide</a>
+            <span>Seasonal fertilizing for warm-season lawns</span>
+          </div>
+          <div class="blog-ref-item">
+            <a href="blog-storm-recovery-guide.html">Storm Recovery Guide</a>
+            <span>Post-hurricane lawn cleanup and recovery</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="footer">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem; text-align: left">
+          <!-- Company Info -->
+          <div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 1rem">🌱 Xcellent1 Lawn Care</h3>
+            <p style="margin-bottom: 0.5rem; opacity: 0.9">Professional lawn care services in the River Parishes, Louisiana</p>
+            <p style="font-size: 0.9rem; opacity: 0.8">Serving LaPlace, Reserve, Garyville, Gramercy, Lutcher, and surrounding areas</p>
+          </div>
+          <!-- Contact Info -->
+          <div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 1rem">📞 Contact Us</h3>
+            <p style="margin-bottom: 0.5rem"><a href="tel:5048758079" style="color: #10b981">(504) 875-8079</a></p>
+            <p style="margin-bottom: 0.5rem"><a href="mailto:info@xcellent1lawncare.com" style="color: #10b981">info@xcellent1lawncare.com</a></p>
+            <p style="font-size: 0.9rem; opacity: 0.8">📍 LaPlace, Louisiana 70068</p>
+          </div>
+          <!-- Business Hours -->
+          <div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 1rem">🕐 Business Hours</h3>
+            <p style="margin-bottom: 0.25rem; font-size: 0.9rem">Monday - Friday: 7:00 AM - 6:00 PM</p>
+            <p style="margin-bottom: 0.25rem; font-size: 0.9rem">Saturday: 8:00 AM - 4:00 PM</p>
+            <p style="font-size: 0.9rem; opacity: 0.8">Sunday: Closed</p>
+          </div>
+          <!-- Connect -->
+          <div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 1rem">🔗 Connect With Us</h3>
+            <p style="margin-bottom: 0.5rem"><a href="https://g.page/r/CZbYqiFFQ57SEBM/review" target="_blank" rel="noopener noreferrer" style="color: #10b981; display: inline-flex; align-items: center; gap: 0.25rem">⭐ Google Reviews</a></p>
+            <p style="margin-bottom: 0.5rem"><a href="index.html#service-areas" style="color: #10b981; display: inline-flex; align-items: center; gap: 0.25rem">📍 Service Areas</a></p>
+            <p><a href="https://g.page/r/CZbYqiFFQ57SEBM/review" target="_blank" rel="noopener noreferrer" style="color: #10b981">✍️ Leave a Review</a></p>
+          </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 1.5rem; text-align: center">
+          <p style="margin-bottom: 0.5rem">
+            <a href="index.html" style="color: #10b981; margin: 0 0.5rem">Home</a> |
+            <a href="services.html" style="color: #10b981; margin: 0 0.5rem">Services</a> |
+            <a href="about.html" style="color: #10b981; margin: 0 0.5rem">About</a> |
+            <a href="contact.html" style="color: #10b981; margin: 0 0.5rem">Contact</a> |
+            <a href="careers.html" style="color: #10b981; margin: 0 0.5rem">Careers</a>
+          </p>
+          <p class="copyright" style="font-size: 0.85rem; opacity: 0.8">&copy; 2025 Xcellent1 Lawn Care LLC. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function toggleMobileMenu() {
+        document.getElementById("navbar-links").classList.toggle("active");
+      }
+      document.querySelectorAll(".navbar-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          document.getElementById("navbar-links").classList.remove("active");
+        });
+      });
+    </script>
+  </body>
+</html>

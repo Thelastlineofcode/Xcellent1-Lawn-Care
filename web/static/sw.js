@@ -1,13 +1,13 @@
 // Service Worker for Xcellent1 Lawn Care PWA
 // Provides offline support and caching for static assets
 
-const CACHE_NAME = "xcellent1-v1.0.0";
+const CACHE_NAME = "xcellent1-v1.1.0";
 const STATIC_ASSETS = [
   "/",
   "index.html",
-  "dashboard.html",
+  "home.html",
   "styles.clean.css",
-  "app.js",
+  "styles.premium.css",
   "manifest.json",
 ];
 

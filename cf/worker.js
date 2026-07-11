@@ -4,9 +4,9 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Handle root path redirect to home page
+    // Handle root path redirect to index page
     if (url.pathname === "/") {
-      return Response.redirect("/home.html", 302);
+      return Response.redirect("/index.html", 302);
     }
 
     // Route /api/* to Fly.io backend
@@ -31,7 +31,8 @@ export default {
       }
     }
 
-    // Fallback: serve static assets
+    // Fallback: serve static assets. Security headers (incl. CSP) are applied
+    // by the asset server via web/static/_headers.
     try {
       return await env.ASSETS.fetch(request);
     } catch (_) {
