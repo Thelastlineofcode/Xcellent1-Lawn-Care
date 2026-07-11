@@ -4,9 +4,9 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Handle root path redirect to home page
+    // Handle root path redirect to index page
     if (url.pathname === "/") {
-      return Response.redirect("/home.html", 302);
+      return Response.redirect("/index.html", 302);
     }
 
     // Route /api/* to Fly.io backend
