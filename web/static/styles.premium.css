@@ -74,11 +74,13 @@ h1, h2, h3,
 .navbar-tagline { color: var(--x-gold); font-weight: 600; letter-spacing: 0.34em; font-size: 0.62rem; }
 .navbar-link { color: rgba(244, 241, 232, 0.82); font-weight: 600; position: relative; transition: color 0.2s; }
 .navbar-link:hover { color: var(--x-gold); }
+.navbar-link:focus { color: var(--x-gold); outline: none; }
 .navbar-link::after {
   content: ""; position: absolute; left: 0; bottom: -4px; height: 2px; width: 0;
   background: var(--x-gold); transition: width 0.25s;
 }
 .navbar-link:hover::after { width: 100%; }
+.navbar-link:focus::after { width: 100%; }
 
 /* ==================== Hero ==================== */
 .hero-home {
@@ -131,11 +133,13 @@ h1, h2, h3,
   color: #1a120a; box-shadow: 0 14px 30px -12px rgba(200, 137, 59, 0.7);
 }
 .hero-button.btn-primary:hover { transform: translateY(-2px); }
+.hero-button.btn-primary:focus { transform: translateY(-2px); outline: 2px solid var(--x-gold); outline-offset: 3px; }
 .hero-button.btn-secondary {
   background: rgba(255, 255, 255, 0.08); color: var(--x-paper);
   border: 1px solid rgba(244, 241, 232, 0.32);
 }
 .hero-button.btn-secondary:hover { background: rgba(255, 255, 255, 0.16); transform: translateY(-2px); }
+.hero-button.btn-secondary:focus { background: rgba(255, 255, 255, 0.16); transform: translateY(-2px); outline: 2px solid rgba(244, 241, 232, 0.5); outline-offset: 3px; }
 
 /* Waitlist card */
 .waitlist-form {
@@ -156,6 +160,7 @@ h1, h2, h3,
   font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
 }
 .waitlist-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -12px rgba(20, 80, 47, 0.6); }
+.waitlist-submit:focus { transform: translateY(-2px); box-shadow: 0 12px 26px -12px rgba(20, 80, 47, 0.6); outline: 2px solid var(--x-green); outline-offset: 2px; }
 .waitlist-success { color: var(--x-green-d); font-weight: 600; margin-top: 0.8rem; }
 
 /* ==================== Section headers ==================== */
@@ -175,11 +180,13 @@ h1, h2, h3,
   transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.3s;
 }
 .service-card:hover, .blog-card:hover, .card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.service-card:focus-within, .blog-card:focus-within, .card:focus-within { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
 .service-image, .blog-image {
   height: 200px; background-size: cover; background-position: center;
   transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .service-card:hover .service-image, .blog-card:hover .blog-image { transform: scale(1.06); }
+.service-card:focus-within .service-image, .blog-card:focus-within .blog-image { transform: scale(1.06); }
 .service-content, .blog-content { padding: clamp(1.25rem, 3vw, 1.75rem); }
 .service-content h3, .blog-title { color: var(--x-ink); font-size: 1.2rem; margin-bottom: 0.5rem; }
 .service-content p { color: var(--x-muted); }
@@ -216,11 +223,13 @@ h1, h2, h3,
   transition: transform 0.25s, border-color 0.25s;
 }
 .review-card:hover { transform: translateY(-4px); border-color: rgba(200, 137, 59, 0.4); }
+.review-card:focus-within { transform: translateY(-4px); border-color: rgba(200, 137, 59, 0.4); }
 .review-stars { color: var(--x-gold); font-size: 1.1rem; letter-spacing: 0.1em; }
 .review-text { color: #eef4ef; }
 .review-author { color: var(--x-gold); font-weight: 600; }
 .google-reviews-btn { background: var(--x-gold); color: #1a120a; border-radius: 999px; font-weight: 700; border: none; }
 .google-reviews-btn:hover { background: #fff; color: var(--x-ink); }
+.google-reviews-btn:focus { background: #fff; color: var(--x-ink); outline: 2px solid var(--x-green); outline-offset: 2px; }
 .reviews-footer a { color: var(--x-gold); }
 
 /* ==================== Service areas ==================== */
@@ -232,6 +241,7 @@ h1, h2, h3,
   border-radius: 999px; padding: clamp(0.5rem, 1.5vw, 0.6rem) clamp(0.9rem, 2.5vw, 1.2rem); font-weight: 600; transition: all 0.2s;
 }
 .area-badge:hover { background: var(--x-green-d); color: #fff; border-color: var(--x-green-d); transform: translateY(-2px); }
+.area-badge:focus { background: var(--x-green-d); color: #fff; border-color: var(--x-green-d); transform: translateY(-2px); outline: none; }
 .area-badge.secondary { background: transparent; color: var(--x-gold-d); border-style: dashed; }
 .service-areas-cta a { color: var(--x-green-d); font-weight: 700; }
 
@@ -243,6 +253,7 @@ h1, h2, h3,
   box-shadow: var(--shadow-sm); transition: transform 0.25s, box-shadow 0.25s; text-align: center;
 }
 .why-us-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.why-us-item:focus-within { transform: translateY(-4px); box-shadow: var(--shadow-md); }
 .why-us-icon {
   width: 62px; height: 62px; display: grid; place-items: center; margin: 0 auto 0.8rem;
   border-radius: 50%; background: rgba(200, 137, 59, 0.14); font-size: 1.7rem;
@@ -274,6 +285,7 @@ h1, h2, h3,
 }
 .radio-label { border: 1px solid var(--x-line); border-radius: 12px; }
 .radio-label:hover { border-color: var(--x-green); }
+.radio-label:focus-within { border-color: var(--x-green); }
 
 /* ==================== Footer ==================== */
 .footer { background: linear-gradient(160deg, #0c2418, #0a1f15); }
@@ -286,6 +298,7 @@ h1, h2, h3,
   color: #1a120a; box-shadow: 0 10px 30px -8px rgba(200, 137, 59, 0.6);
 }
 .sticky-call-btn:hover { background: var(--x-green-d); color: #fff; }
+.sticky-call-btn:focus { background: var(--x-green-d); color: #fff; outline: 2px solid var(--x-green); outline-offset: 2px; }
 
 /* ==================== Responsive ==================== */
 @media (max-width: 768px) {
