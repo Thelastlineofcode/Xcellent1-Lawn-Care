@@ -166,7 +166,7 @@ h1, h2, h3,
   background: linear-gradient(90deg, var(--x-gold), var(--x-green-2));
 }
 .section-header p { color: var(--x-muted); font-size: 1.05rem; }
-#services { padding: 4.5rem 1rem; }
+#services { padding: clamp(3.2rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem); }
 
 /* ==================== Cards (services / blog) ==================== */
 .service-card, .blog-card, .card {
@@ -180,7 +180,7 @@ h1, h2, h3,
   transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .service-card:hover .service-image, .blog-card:hover .blog-image { transform: scale(1.06); }
-.service-content, .blog-content { padding: 1.5rem; }
+.service-content, .blog-content { padding: clamp(1.25rem, 3vw, 1.75rem); }
 .service-content h3, .blog-title { color: var(--x-ink); font-size: 1.2rem; margin-bottom: 0.5rem; }
 .service-content p { color: var(--x-muted); }
 .service-content p:last-child { color: var(--x-gold-d); font-weight: 700; margin-top: 0.6rem; }
@@ -189,18 +189,30 @@ h1, h2, h3,
 .read-more { color: var(--x-green); font-weight: 700; }
 .blog-section { background: linear-gradient(180deg, #efeadd, #f4f1e8); }
 
+/* ==================== Before/After gallery ==================== */
+.gallery-section { background: var(--x-cream); padding: clamp(3.2rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem); }
+.gallery-grid { max-width: 900px; margin: 0 auto; }
+.gallery-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.gallery-photo { position: relative; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); }
+.gallery-photo img { display: block; width: 100%; height: auto; }
+.gallery-tag { position: absolute; top: 0.8rem; left: 0.8rem; padding: 0.35rem 0.9rem; border-radius: 999px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: #fff; }
+.gallery-tag-before { background: rgba(26, 18, 10, 0.75); }
+.gallery-tag-after { background: var(--x-green-d); }
+.gallery-caption { text-align: center; color: var(--x-muted); margin-top: 1rem; font-weight: 600; }
+@media (max-width: 640px) { .gallery-pair { grid-template-columns: 1fr; } }
+
 /* Generic buttons */
 .btn { border-radius: 999px; font-weight: 700; }
 .btn-primary { background: linear-gradient(135deg, var(--x-green-2), var(--x-green-d)); color: #fff; border: none; }
 .btn-secondary { background: #fff; color: var(--x-green-d); border: 1px solid var(--x-line); }
 
 /* ==================== Reviews ==================== */
-.reviews-section { background: linear-gradient(160deg, #0d2a1b, #0a2317); color: var(--x-paper); padding: 4.5rem 1rem; }
+.reviews-section { background: linear-gradient(160deg, #0d2a1b, #0a2317); color: var(--x-paper); padding: clamp(3.2rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem); }
 .reviews-title { color: var(--x-paper); }
 .reviews-subtitle { color: rgba(234, 243, 236, 0.75); }
 .review-card {
   background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(244, 241, 232, 0.14);
-  border-radius: var(--radius-lg); padding: 1.6rem; backdrop-filter: blur(6px);
+  border-radius: var(--radius-lg); padding: clamp(1.3rem, 3vw, 1.8rem); backdrop-filter: blur(6px);
   transition: transform 0.25s, border-color 0.25s;
 }
 .review-card:hover { transform: translateY(-4px); border-color: rgba(200, 137, 59, 0.4); }
@@ -212,19 +224,19 @@ h1, h2, h3,
 .reviews-footer a { color: var(--x-gold); }
 
 /* ==================== Service areas ==================== */
-.service-areas-section { background: var(--x-cream); padding: 4.5rem 1rem; }
+.service-areas-section { background: var(--x-cream); padding: clamp(3.2rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem); }
 .service-areas-title { color: var(--x-ink); }
 .service-areas-subtitle { color: var(--x-muted); }
 .area-badge {
   background: var(--x-paper); border: 1px solid var(--x-line); color: var(--x-ink);
-  border-radius: 999px; padding: 0.55rem 1.1rem; font-weight: 600; transition: all 0.2s;
+  border-radius: 999px; padding: clamp(0.5rem, 1.5vw, 0.6rem) clamp(0.9rem, 2.5vw, 1.2rem); font-weight: 600; transition: all 0.2s;
 }
 .area-badge:hover { background: var(--x-green-d); color: #fff; border-color: var(--x-green-d); transform: translateY(-2px); }
 .area-badge.secondary { background: transparent; color: var(--x-gold-d); border-style: dashed; }
 .service-areas-cta a { color: var(--x-green-d); font-weight: 700; }
 
 /* ==================== Why choose us ==================== */
-.why-us-section { background: linear-gradient(180deg, #fffdf8, #f4f1e8); padding: 4.5rem 1rem; }
+.why-us-section { background: linear-gradient(180deg, #fffdf8, #f4f1e8); padding: clamp(3.2rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem); }
 .why-us-title { color: var(--x-ink); text-align: center; }
 .why-us-item {
   background: var(--x-paper); border: 1px solid var(--x-line); border-radius: var(--radius-lg);
@@ -241,14 +253,14 @@ h1, h2, h3,
 .why-us-cta .btn-outline { border: 1px solid var(--x-green-d); color: var(--x-green-d); border-radius: 999px; }
 
 /* ==================== FAQ ==================== */
-.faq-section { background: var(--x-cream); padding: 4.5rem 1rem; }
+.faq-section { background: var(--x-cream); padding: clamp(3.2rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem); }
 .faq-title { color: var(--x-ink); }
 .faq-subtitle { color: var(--x-muted); }
 .faq-item { background: var(--x-paper); border: 1px solid var(--x-line); border-radius: 14px; margin-bottom: 0.7rem; overflow: hidden; }
-.faq-item summary { color: var(--x-ink); font-weight: 700; padding: 1.1rem 1.3rem; cursor: pointer; }
+.faq-item summary { color: var(--x-ink); font-weight: 700; padding: clamp(0.9rem, 2.5vw, 1.1rem) clamp(1rem, 3vw, 1.3rem); cursor: pointer; }
 .faq-item[open] { border-color: rgba(200, 137, 59, 0.45); }
 .faq-toggle { color: var(--x-gold-d); }
-.faq-answer { color: var(--x-muted); padding: 0 1.3rem 1.2rem; }
+.faq-answer { color: var(--x-muted); padding: 0 clamp(1rem, 3vw, 1.3rem) clamp(1rem, 2.5vw, 1.2rem); }
 
 /* ==================== Quote band ==================== */
 #quote { background: linear-gradient(135deg, #0d2a1b 0%, #14502f 100%) !important; }
@@ -278,5 +290,4 @@ h1, h2, h3,
 /* ==================== Responsive ==================== */
 @media (max-width: 768px) {
   .hero-home { padding: 4.5rem 1.1rem 3.5rem; }
-  .reviews-section, .service-areas-section, .why-us-section, .faq-section, #services { padding: 3.2rem 1rem; }
 }
