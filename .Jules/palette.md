@@ -1,0 +1,3 @@
+## 2025-05-15 - Modal and Navigation Accessibility
+**Learning:** For static HTML/JS projects, micro-UX improvements like focus management (capturing and restoring focus), Escape key listeners, and proper ARIA roles significantly enhance accessibility for keyboard and screen reader users with minimal code. Using `tabindex="0"` and `role="button"` on non-semantic interactive elements (like divs) requires manual handling of the Space key to prevent default scrolling.
+**Action:** Always implement 'Focus Lifecycle' for modals: capture active element before open, focus first input on open, and restore focus on close. Ensure non-semantic buttons handle both Enter and Space (with preventDefault for Space).
