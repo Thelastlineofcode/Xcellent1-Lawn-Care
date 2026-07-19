@@ -1595,3 +1595,15 @@ a:hover {
   color: var(--color-text-muted);
   line-height: 1.6;
 }
+
+/* Keyboard accessibility: visual focus indicators */
+.modal-close:focus-visible,
+.service-card:focus-visible,
+.form-group input:focus-visible,
+.form-group select:focus-visible,
+.form-group textarea:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
