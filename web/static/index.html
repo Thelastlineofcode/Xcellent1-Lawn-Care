@@ -497,7 +497,7 @@
       </p>
     </div>
     <div class="services-grid">
-      <div class="service-card" onclick="openServiceModal('Weekly Lawn Maintenance')">
+      <div class="service-card" tabindex="0" role="button" onclick="openServiceModal('Weekly Lawn Maintenance')">
         <div class="service-image bg-service-lawn" role="img" aria-label="Weekly Lawn Maintenance">
           <noscript>
             <img src="images/lawnservices.jpg" alt="Weekly Lawn Maintenance" />
@@ -516,7 +516,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Flower Bed Clean Out & Weed Removal')">
+      <div class="service-card" tabindex="0" role="button" onclick="openServiceModal('Flower Bed Clean Out & Weed Removal')">
         <div class="service-image bg-service-flowerbed" role="img" aria-label="Flower Bed Clean Out & Weed Removal">
           <noscript>
             <img src="images/flowerbedcleanup.webp" alt="Flower Bed Clean Out & Weed Removal" />
@@ -535,7 +535,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Spring Cleaning')" style="cursor: pointer">
+      <div class="service-card" tabindex="0" role="button" onclick="openServiceModal('Spring Cleaning')" style="cursor: pointer">
         <div class="service-image bg-service-spring" role="img" aria-label="Spring Cleaning">
           <noscript>
             <img src="images/springcleaning.webp" alt="Spring Cleaning" />
@@ -554,7 +554,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Leaf & Debris Removal')" style="cursor: pointer">
+      <div class="service-card" tabindex="0" role="button" onclick="openServiceModal('Leaf & Debris Removal')" style="cursor: pointer">
         <div class="service-image bg-service-leaf" role="img" aria-label="Leaf & Debris Removal">
           <noscript>
             <img src="images/lawnservices.jpg" alt="Leaf & Debris Removal" />
@@ -573,7 +573,7 @@
           </p>
         </div>
       </div>
-      <div class="service-card" onclick="openServiceModal('Tractor / Bush Hog Services')" style="cursor: pointer">
+      <div class="service-card" tabindex="0" role="button" onclick="openServiceModal('Tractor / Bush Hog Services')" style="cursor: pointer">
         <div class="service-image bg-service-bushhog" role="img" aria-label="Tractor / Bush Hog Services">
           <noscript>
             <img src="images/bushhog.webp" alt="Tractor / Bush Hog Services" />
@@ -914,13 +914,13 @@
 
 
   <!-- Service Inquiry Modal -->
-  <div id="service-modal" class="modal">
+  <div id="service-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-service-title">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-service-title">
           Request Service
         </h2>
-        <button onclick="closeServiceModal()" class="modal-close">
+        <button onclick="closeServiceModal()" class="modal-close" aria-label="Close">
           &times;
         </button>
       </div>
@@ -1045,17 +1045,28 @@
   </footer>
 
   <script>
+    let previousActiveElement;
+
     function openServiceModal(serviceName) {
+      previousActiveElement = document.activeElement;
       document.getElementById("modal-service-title").textContent =
         serviceName;
       document.getElementById("inquiry-service").value = serviceName;
       const modal = document.getElementById("service-modal");
       modal.style.display = "flex";
+
+      // Focus first interactive element in form
+      setTimeout(function() {
+        document.getElementById("firstName")?.focus();
+      }, 50);
     }
 
     function closeServiceModal() {
       document.getElementById("service-modal").style.display = "none";
       document.getElementById("service-inquiry-form").reset();
+      if (previousActiveElement && typeof previousActiveElement.focus === "function") {
+        previousActiveElement.focus();
+      }
     }
 
     function handleServiceInquiry(e) {
@@ -1095,6 +1106,28 @@
           closeServiceModal();
         }
       });
+
+    // Support keyboard accessibility for service-card triggers
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll('.service-card[role="button"]').forEach(function(el) {
+        el.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            el.click();
+          }
+        });
+      });
+    });
+
+    // Close modal when pressing Escape
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        const modal = document.getElementById("service-modal");
+        if (modal && modal.style.display === "flex") {
+          closeServiceModal();
+        }
+      }
+    });
 
   </script>
   <script>

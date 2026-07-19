@@ -1,0 +1,5 @@
+# Palette's UX and Accessibility Journal
+
+## 2026-07-19 - Standard Modal and Card trigger accessibility with Deno/Node compatibility
+**Learning:** In environments where both Deno and Node environments share the same Playwright config file, utilizing unconditional `Deno.env` calls breaks the NodeJS toolchain runner (resulting in `ReferenceError: Deno is not defined`). Checking `typeof Deno !== 'undefined'` preserves compatibility for both runtimes. Additionally, pairing `tabindex="0" role="button"` on non-semantic trigger elements with a robust 'Focus Lifecycle' is essential for full keyboard-navigable access.
+**Action:** Always check environment variable reference structures across multi-runtime test runners. Ensure any interactive `div` elements receive explicit focus attributes, keystroke listeners (Enter and Space), and that modal elements implement the standard WAI-ARIA Focus Lifecycle: active element capture, automatic first-input focus, Escape key listener, and focus restoration on close.
