@@ -1595,3 +1595,13 @@ a:hover {
   color: var(--color-text-muted);
   line-height: 1.6;
 }
+
+/* ==================== Keyboard Accessibility ==================== */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-primary, #10b981) !important;
+  outline-offset: 3px !important;
+}
