@@ -378,7 +378,7 @@
         <span class="navbar-tagline">LAWN CARE</span>
       </div>
     </div>
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu" aria-expanded="false">
       ☰
     </button>
     <div class="navbar-links" id="navbar-links">
@@ -914,13 +914,13 @@
 
 
   <!-- Service Inquiry Modal -->
-  <div id="service-modal" class="modal">
+  <div id="service-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-service-title">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-service-title">
           Request Service
         </h2>
-        <button onclick="closeServiceModal()" class="modal-close">
+        <button onclick="closeServiceModal()" class="modal-close" aria-label="Close">
           &times;
         </button>
       </div>
@@ -1045,18 +1045,38 @@
   </footer>
 
   <script>
+    let modalTriggerElement = null;
+
     function openServiceModal(serviceName) {
+      modalTriggerElement = document.activeElement;
       document.getElementById("modal-service-title").textContent =
         serviceName;
       document.getElementById("inquiry-service").value = serviceName;
       const modal = document.getElementById("service-modal");
       modal.style.display = "flex";
+      setTimeout(() => {
+        const firstInput = document.getElementById("firstName");
+        if (firstInput) firstInput.focus();
+      }, 50);
     }
 
     function closeServiceModal() {
       document.getElementById("service-modal").style.display = "none";
       document.getElementById("service-inquiry-form").reset();
+      if (modalTriggerElement && typeof modalTriggerElement.focus === "function") {
+        modalTriggerElement.focus();
+      }
     }
+
+    // Listen for Escape key to close the modal
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        const modal = document.getElementById("service-modal");
+        if (modal && modal.style.display === "flex") {
+          closeServiceModal();
+        }
+      }
+    });
 
     function handleServiceInquiry(e) {
       e.preventDefault();
@@ -1112,9 +1132,12 @@
   <script>
     // Mobile menu toggle
     function toggleMobileMenu() {
-      document.getElementById("navbar-links").classList.toggle(
-        "active",
-      );
+      const links = document.getElementById("navbar-links");
+      const btn = document.querySelector(".mobile-menu-btn");
+      const active = links.classList.toggle("active");
+      if (btn) {
+        btn.setAttribute("aria-expanded", active ? "true" : "false");
+      }
     }
 
     // Close mobile menu when clicking a link
@@ -1123,6 +1146,26 @@
         document.getElementById("navbar-links").classList.remove(
           "active",
         );
+        const btn = document.querySelector(".mobile-menu-btn");
+        if (btn) {
+          btn.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
+
+    // Make service cards keyboard accessible
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".service-card").forEach((card) => {
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("role", "button");
+
+        // Key listener for Space & Enter keys
+        card.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault(); // Prevents scroll on Space key
+            card.click();
+          }
+        });
       });
     });
 
