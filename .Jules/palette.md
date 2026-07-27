@@ -1,0 +1,3 @@
+## 2026-07-27 - Landing Page Component Accessibility (Mobile Menu and Service Inquiry Modal)
+**Learning:** Static landing pages (home.html and index.html) used manual JS state management for mobile menus and modals, leading to missing aria-expanded, dialog roles, and incomplete Focus Lifecycle tracking. Since there is no framework state (like React), custom vanilla JS event listeners and attribute updating must be utilized to maintain standard visual and screen-reader accessibility.
+**Action:** Always verify custom vanilla HTML/JS interactive components for aria-expanded toggles and focus preservation (capturing activeElement and restoring focus on close), especially when copies of identical landing pages (home.html/index.html) exist.
