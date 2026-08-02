@@ -181,6 +181,7 @@ h1, h2, h3,
 }
 .service-card:hover, .blog-card:hover, .card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
 .service-card:focus-within, .blog-card:focus-within, .card:focus-within { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.service-card:focus-visible, .blog-card:focus-visible, .card:focus-visible { transform: translateY(-6px); box-shadow: var(--shadow-lg); outline: 2px solid var(--x-green); outline-offset: 4px; }
 .service-image, .blog-image {
   height: 200px; background-size: cover; background-position: center;
   transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
