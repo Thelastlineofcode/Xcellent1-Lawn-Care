@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build": "echo 'No root build required'",
     "test:playwright": "npx playwright test --config web/tests/playwright.config.ts",
     "test:playwright:headed": "npx playwright test --headed"
   },
   "devDependencies": {
-    "@playwright/test": "^1.44.0"
+    "@playwright/test": "^1.44.0",
+    "wrangler": "^4.79.0"
   }
 }
