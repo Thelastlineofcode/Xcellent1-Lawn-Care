@@ -269,6 +269,7 @@ h1, h2, h3,
 .faq-subtitle { color: var(--x-muted); }
 .faq-item { background: var(--x-paper); border: 1px solid var(--x-line); border-radius: 14px; margin-bottom: 0.7rem; overflow: hidden; }
 .faq-item summary { color: var(--x-ink); font-weight: 700; padding: clamp(0.9rem, 2.5vw, 1.1rem) clamp(1rem, 3vw, 1.3rem); cursor: pointer; }
+.faq-item summary:focus-visible { outline: 2px solid var(--x-green); outline-offset: -2px; border-radius: 8px; }
 .faq-item[open] { border-color: rgba(200, 137, 59, 0.45); }
 .faq-toggle { color: var(--x-gold-d); }
 .faq-answer { color: var(--x-muted); padding: 0 clamp(1rem, 3vw, 1.3rem) clamp(1rem, 2.5vw, 1.2rem); }
