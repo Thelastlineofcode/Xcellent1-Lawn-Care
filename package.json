@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build": "echo 'No build required for static assets'",
     "test:playwright": "npx playwright test --config web/tests/playwright.config.ts",
     "test:playwright:headed": "npx playwright test --headed"
   },

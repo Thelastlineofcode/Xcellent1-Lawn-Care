@@ -1,0 +1,3 @@
+## 2025-05-18 - Modal Focus Lifecycle and ARIA Standards
+**Learning:** Dialog modals using non-semantic trigger elements (e.g., service cards with onclick handlers) require explicit ARIA attributes (role="dialog", aria-modal="true", aria-labelledby), focus capture on open, visual :focus-visible indicators for close buttons, Escape key listeners, and focus restoration to the trigger element upon closing.
+**Action:** When implementing or enhancing modal dialogues in raw HTML/JS landing pages, always ensure document.activeElement is saved before opening, target the first input or focusable element upon open, listen for keydown Escape events, and restore focus to trigger.

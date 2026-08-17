@@ -599,6 +599,12 @@ a:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
+.modal-close:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .modal form {
   padding: var(--spacing-xl);
 }
