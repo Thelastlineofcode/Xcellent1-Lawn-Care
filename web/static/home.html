@@ -914,13 +914,13 @@
 
 
   <!-- Service Inquiry Modal -->
-  <div id="service-modal" class="modal">
+  <div id="service-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-service-title">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-service-title">
           Request Service
         </h2>
-        <button onclick="closeServiceModal()" class="modal-close">
+        <button onclick="closeServiceModal()" class="modal-close" aria-label="Close">
           &times;
         </button>
       </div>
@@ -1045,18 +1045,37 @@
   </footer>
 
   <script>
+    let previousActiveElement = null;
+
     function openServiceModal(serviceName) {
+      previousActiveElement = document.activeElement;
       document.getElementById("modal-service-title").textContent =
         serviceName;
       document.getElementById("inquiry-service").value = serviceName;
       const modal = document.getElementById("service-modal");
       modal.style.display = "flex";
+      setTimeout(() => {
+        document.getElementById("firstName")?.focus();
+      }, 50);
     }
 
     function closeServiceModal() {
-      document.getElementById("service-modal").style.display = "none";
+      const modal = document.getElementById("service-modal");
+      modal.style.display = "none";
       document.getElementById("service-inquiry-form").reset();
+      if (previousActiveElement && typeof previousActiveElement.focus === "function") {
+        previousActiveElement.focus();
+      }
     }
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        const modal = document.getElementById("service-modal");
+        if (modal && modal.style.display === "flex") {
+          closeServiceModal();
+        }
+      }
+    });
 
     function handleServiceInquiry(e) {
       e.preventDefault();
