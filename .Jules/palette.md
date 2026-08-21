@@ -1,0 +1,3 @@
+## 2026-08-21 - Non-Framework Accessible Modal & Card Pattern
+**Learning:** In static HTML landing pages without React/UI frameworks, interactive cards opening modals require `role="button"` and `tabindex="0"` with Enter/Space keyboard listeners. For complete modal accessibility, `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` must be coupled with JS focus management (capturing `document.activeElement`, setting focus to first input, closing on Escape, and restoring focus on close).
+**Action:** When adding modals or card-based dialog triggers in static landing pages, implement both ARIA roles and JS focus lifecycle handling together across identical templates (e.g., `home.html` and `index.html`).
