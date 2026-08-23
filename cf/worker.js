@@ -6,7 +6,7 @@ export default {
 
     // Handle root path redirect to index page
     if (url.pathname === "/") {
-      return Response.redirect(new URL("/index.html", url).toString(), 302);
+      return Response.redirect("/index.html", 302);
     }
 
     // Route /api/* to Fly.io backend
