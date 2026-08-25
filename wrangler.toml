@@ -1,0 +1,12 @@
+name = "xcellent1lawncare"
+main = "cf/worker.js"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "web/static"
+binding = "ASSETS"
+
+[vars]
+FLY_BACKEND_URL = "https://xcellent1-lawn-care-new.fly.dev"
+ENVIRONMENT = "production"
