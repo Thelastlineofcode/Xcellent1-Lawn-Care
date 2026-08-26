@@ -378,7 +378,7 @@
         <span class="navbar-tagline">LAWN CARE</span>
       </div>
     </div>
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu" aria-expanded="false" aria-controls="navbar-links">
       ☰
     </button>
     <div class="navbar-links" id="navbar-links">
@@ -1112,17 +1112,18 @@
   <script>
     // Mobile menu toggle
     function toggleMobileMenu() {
-      document.getElementById("navbar-links").classList.toggle(
-        "active",
-      );
+      const navLinks = document.getElementById("navbar-links");
+      const isActive = navLinks.classList.toggle("active");
+      const btn = document.querySelector(".mobile-menu-btn");
+      if (btn) btn.setAttribute("aria-expanded", isActive ? "true" : "false");
     }
 
     // Close mobile menu when clicking a link
     document.querySelectorAll(".navbar-link").forEach((link) => {
       link.addEventListener("click", () => {
-        document.getElementById("navbar-links").classList.remove(
-          "active",
-        );
+        document.getElementById("navbar-links").classList.remove("active");
+        const btn = document.querySelector(".mobile-menu-btn");
+        if (btn) btn.setAttribute("aria-expanded", "false");
       });
     });
 
