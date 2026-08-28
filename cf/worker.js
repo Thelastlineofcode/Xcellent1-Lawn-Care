@@ -4,9 +4,9 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Handle root path redirect to index page
+    // Handle root path redirect to index page using full absolute URL
     if (url.pathname === "/") {
-      return Response.redirect("/index.html", 302);
+      return Response.redirect(new URL("/index.html", url.origin).toString(), 302);
     }
 
     // Route /api/* to Fly.io backend
