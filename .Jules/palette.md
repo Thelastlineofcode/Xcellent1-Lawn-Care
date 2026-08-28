@@ -1,0 +1,3 @@
+## 2025-05-18 - Modal Accessibility & Focus Lifecycle
+**Learning:** In static HTML landing pages with dynamic modals (like the service inquiry modal), missing ARIA attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`, `aria-label="Close"`) and lack of keyboard navigation (auto-focusing first field, Escape key listener, focus restoration) reduce accessibility for screen readers and keyboard users.
+**Action:** Always pair modal triggers with explicit ARIA roles/labels, shift focus to the first interactive input on modal open, support closing via Escape key, and restore focus to the trigger element on modal close.

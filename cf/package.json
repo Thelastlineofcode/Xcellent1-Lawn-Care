@@ -2,6 +2,9 @@
   "name": "xcellent1-worker",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "build": "echo 'No build step required'"
+  },
   "devDependencies": {
     "wrangler": "^4.79.0"
   }
