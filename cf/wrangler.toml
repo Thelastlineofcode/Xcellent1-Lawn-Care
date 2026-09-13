@@ -8,6 +8,9 @@ compatibility_flags = ["nodejs_compat"]
 directory = "../web/static"
 binding = "ASSETS"
 
+[build]
+command = "echo 'No build step required'"
+
 [vars]
 FLY_BACKEND_URL = "https://xcellent1-lawn-care-new.fly.dev"
 ENVIRONMENT = "production"
