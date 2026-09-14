@@ -15,6 +15,7 @@ __pycache__/
 # Build outputs
 dist/
 build/
+test-results/
 *.egg-info/
 
 # IDE and editor files
