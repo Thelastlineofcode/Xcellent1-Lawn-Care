@@ -1,0 +1,3 @@
+## 2025-05-18 - Modal Dialog Focus Lifecycle & Service Card Keyboard Interactivity
+**Learning:** Service cards configured as interactive modal triggers using non-semantic `<div>`s need explicit `role="button"`, `tabindex="0"`, `aria-haspopup="dialog"`, and `Enter`/`Space` handlers (`event.preventDefault()` for Space) alongside a full focus lifecycle (capturing `activeElement`, focusing first input, Escape key listener, and focus restoration) to be accessible to screen reader and keyboard users.
+**Action:** When making card elements or non-button triggers interactive, pair proper ARIA dialog attributes and keydown handlers with automated Playwright focus lifecycle tests.
