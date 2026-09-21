@@ -28,9 +28,6 @@ test.describe("Service Modal Accessibility and Focus Lifecycle", () => {
     const firstInput = page.locator("#firstName");
     await expect(firstInput).toBeFocused();
 
-    // Take screenshot of open modal
-    await page.screenshot({ path: "screenshots/service_modal_open.png" });
-
     // Press Escape to close modal
     await page.keyboard.press("Escape");
     await expect(modal).not.toBeVisible();
