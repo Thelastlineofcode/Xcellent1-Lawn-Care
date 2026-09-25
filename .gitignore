@@ -26,6 +26,9 @@ build/
 *.iml
 .vscode/
 
+# Test results
+test-results/
+
 # Deno cache and lock
 .deno/
 
