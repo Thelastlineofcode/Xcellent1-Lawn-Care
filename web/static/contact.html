@@ -52,7 +52,21 @@
           "addressRegion": "LA",
           "postalCode": "70068",
           "addressCountry": "US"
-        }
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 30.0655,
+          "longitude": -90.4682
+        },
+        "areaServed": ["LaPlace, LA", "Reserve, LA", "Garyville, LA", "Lutcher, LA", "Gramercy, LA", "Norco, LA", "Destrehan, LA", "Luling, LA", "Vacherie, LA", "Edgard, LA", "Killona, LA", "Gonzales, LA", "Donaldsonville, LA", "Houma, LA"],
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "08:00",
+          "closes": "17:30"
+        },
+        "sameAs": ["https://g.page/r/CZbYqiFFQ57SEBM"],
+        "serviceType": ["Lawn Mowing", "Landscaping", "Bush Hogging", "Yard Cleanup"]
       }
     }
     </script>
@@ -124,7 +138,12 @@
         box-sizing: border-box;
         font-family: inherit;
       }
-      .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      .form-group input:focus-visible, .form-group select:focus-visible, .form-group textarea:focus-visible {
+        outline: 2px solid #10b981;
+        outline-offset: 2px;
+        border-color: #10b981;
+      }
+      .form-group input:focus:not(:focus-visible), .form-group select:focus:not(:focus-visible), .form-group textarea:focus:not(:focus-visible) {
         outline: none;
         border-color: #10b981;
       }
@@ -183,7 +202,7 @@
         <a href="about.html" class="navbar-link">About</a>
         <a href="contact.html" class="navbar-link">Contact</a>
         <a href="careers.html" class="navbar-link">Careers</a>
-        <a href="tel:5048758079" class="navbar-link" aria-label="Call (504) 875-8079">📞 (504) 875-8079</a>
+        <a href="tel:+15048758079" class="navbar-link" aria-label="Call (504) 875-8079">📞 (504) 875-8079</a>
       </div>
     </nav>
 
@@ -201,8 +220,8 @@
 
           <div class="contact-card">
             <h2>📞 Call or Text</h2>
-            <a href="tel:5048758079" class="contact-phone">(504) 875-8079</a>
-            <p>Available Monday–Saturday. Call for a free quote or send a text with your address and we'll get back to you same day.</p>
+            <a href="tel:+15048758079" class="contact-phone">(504) 875-8079</a>
+            <p>Available Monday–Friday, 8:00 AM–5:30 PM. Call for a free quote or send a text with your address and we'll get back to you same day.</p>
           </div>
 
           <div class="contact-card">
@@ -215,11 +234,11 @@
             <h2>🕐 Business Hours</h2>
             <div class="hours-row">
               <span class="hours-day">Monday – Friday</span>
-              <span class="hours-time">7:00 AM – 6:00 PM</span>
+              <span class="hours-time">8:00 AM – 5:30 PM</span>
             </div>
             <div class="hours-row">
               <span class="hours-day">Saturday</span>
-              <span class="hours-time">8:00 AM – 4:00 PM</span>
+              <span class="hours-time">Closed</span>
             </div>
             <div class="hours-row">
               <span class="hours-day">Sunday</span>
@@ -321,15 +340,15 @@
           <!-- Contact Info -->
           <div>
             <h3 style="font-size: 1.25rem; margin-bottom: 1rem">📞 Contact Us</h3>
-            <p style="margin-bottom: 0.5rem"><a href="tel:5048758079" style="color: #10b981">(504) 875-8079</a></p>
+            <p style="margin-bottom: 0.5rem"><a href="tel:+15048758079" style="color: #10b981">(504) 875-8079</a></p>
             <p style="margin-bottom: 0.5rem"><a href="mailto:info@xcellent1lawncare.com" style="color: #10b981">info@xcellent1lawncare.com</a></p>
             <p style="font-size: 0.9rem; opacity: 0.8">📍 LaPlace, Louisiana 70068</p>
           </div>
           <!-- Business Hours -->
           <div>
             <h3 style="font-size: 1.25rem; margin-bottom: 1rem">🕐 Business Hours</h3>
-            <p style="margin-bottom: 0.25rem; font-size: 0.9rem">Monday - Friday: 7:00 AM - 6:00 PM</p>
-            <p style="margin-bottom: 0.25rem; font-size: 0.9rem">Saturday: 8:00 AM - 4:00 PM</p>
+            <p style="margin-bottom: 0.25rem; font-size: 0.9rem">Monday - Friday: 8:00 AM - 5:30 PM</p>
+            <p style="margin-bottom: 0.25rem; font-size: 0.9rem">Saturday: Closed</p>
             <p style="font-size: 0.9rem; opacity: 0.8">Sunday: Closed</p>
           </div>
           <!-- Connect -->
@@ -375,12 +394,12 @@
         const message = val("#message");
         const ok = document.getElementById("form-success");
         const btn = f.querySelector(".submit-btn");
-        const setNote = (html, bg, color) => {
+        const setNote = (message, bg, color) => {
           if (!ok) return;
           ok.style.display = "block";
           ok.style.background = bg;
           ok.style.color = color;
-          ok.innerHTML = html;
+          ok.textContent = message;
         };
         // If the API is unreachable, fall back to the user's mail/SMS app so no lead is ever lost.
         const mailtoFallback = () => {
@@ -391,13 +410,13 @@
           ].join("\n");
           const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
           if (isMobile) {
-            window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
+            window.location.href = "sms:+15048758079?&body=" + encodeURIComponent(body);
           } else {
             window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
               encodeURIComponent("Contact Request - " + service) + "&body=" + encodeURIComponent(body);
           }
           setNote("✅ Thanks, " + (name || "there") + "! We're opening your " +
-            (isMobile ? "messages" : "email app") + " to send your request — or call/text <a href=\"tel:5048758079\" style=\"color:#065f46\">(504) 875-8079</a>.",
+            (isMobile ? "messages" : "email app") + " to send your request — or call/text (504) 875-8079.",
             "#d1fae5", "#065f46");
         };
         if (btn) { btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = "Sending…"; }
@@ -410,7 +429,7 @@
           let j = {};
           try { j = await res.json(); } catch (_) {}
           if (res.status === 201 && j.ok) {
-            setNote("✅ Thanks, " + (name || "there") + "! We got your request and will reach out shortly. Prefer to talk now? Call or text <a href=\"tel:5048758079\" style=\"color:#065f46\">(504) 875-8079</a>.",
+            setNote("✅ Thanks, " + (name || "there") + "! We got your request and will reach out shortly. Prefer to talk now? Call or text (504) 875-8079.",
               "#d1fae5", "#065f46");
             f.reset();
           } else {

@@ -258,8 +258,14 @@
         transition: border-color 0.3s;
       }
 
-      .form-group input:focus,
-      .form-group select:focus {
+      .form-group input:focus-visible,
+      .form-group select:focus-visible {
+        outline: 2px solid #10b981;
+        outline-offset: 2px;
+        border-color: #10b981;
+      }
+      .form-group input:focus:not(:focus-visible),
+      .form-group select:focus:not(:focus-visible) {
         outline: none;
         border-color: #10b981;
       }
@@ -330,7 +336,7 @@
         </div>
       </div>
       <div class="navbar-links">
-        <a href="home.html" class="navbar-link">Home</a>
+        <a href="index.html" class="navbar-link">Home</a>
         <a href="services.html" class="navbar-link">Services</a>
         <a href="about.html" class="navbar-link">About</a>
         <a href="contact.html" class="navbar-link">Contact</a>
@@ -475,7 +481,7 @@
       </div>
 
       <div style="text-align: center">
-        <a href="home.html" class="back-link">← Back to Home</a>
+        <a href="index.html" class="back-link">← Back to Home</a>
       </div>
     </div>
 
@@ -495,7 +501,7 @@
           </div>
         </div>
         <div class="footer-links">
-          <a href="home.html">Home</a>
+          <a href="index.html">Home</a>
           <a href="services.html">Services</a>
           <a href="about.html">About</a>
           <a href="contact.html">Contact</a>
@@ -530,7 +536,7 @@
         ].join("\n");
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         if (isMobile) {
-          window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
+          window.location.href = "sms:+15048758079?&body=" + encodeURIComponent(body);
         } else {
           window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
             encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);

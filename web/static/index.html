@@ -81,14 +81,8 @@
           {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-            "opens": "07:00",
-            "closes": "18:00"
-          },
-          {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": "Saturday",
-            "opens": "07:00",
-            "closes": "14:00"
+            "opens": "08:00",
+            "closes": "17:30"
           }
         ],
         "priceRange": "$$",
@@ -366,7 +360,7 @@
 
 <body>
   <!-- Sticky Call Button -->
-  <a href="tel:5048758079" class="sticky-call-btn" aria-label="Call us">
+  <a href="tel:+15048758079" class="sticky-call-btn" aria-label="Call us">
     📞 <span>Call Now</span>
   </a>
 
@@ -386,8 +380,8 @@
       <a href="about.html" class="navbar-link">About</a>
       <a href="contact.html" class="navbar-link">Contact</a>
       <a href="careers.html" class="navbar-link">Careers</a>
-      <a href="blog.html" class="navbar-link">Blog</a>
-      <a href="tel:5048758079" class="navbar-link" aria-label="Call (504) 875-8079">📞 (504) 875-8079</a>
+      <a href="/blog" class="navbar-link">Blog</a>
+      <a href="tel:+15048758079" class="navbar-link" aria-label="Call (504) 875-8079">📞 (504) 875-8079</a>
     </div>
   </nav>
 
@@ -403,11 +397,12 @@
     </p>
     <div class="hero-buttons">
       <a href="#services" class="hero-button btn-primary">View Services</a>
-      <a href="tel:5048758079" class="hero-button btn-secondary">📞 (504) 875-8079</a>
+      <a href="tel:+15048758079" class="hero-button btn-secondary">📞 (504) 875-8079</a>
       <a href="#quote" class="hero-button btn-secondary">Free Quote</a>
       <a href="careers.html" class="hero-button btn-secondary">We're Hiring!</a>
     </div>
     <!-- Waitlist form -->
+    <div id="waitlist">
     <form id="waitlist-form" class="waitlist-form">
       <div class="waitlist-step" id="waitlist-step-1">
         <input aria-label="Name" name="name" class="form-field" placeholder="Your name" required autocomplete="name"
@@ -440,6 +435,7 @@
         <button type="submit" class="waitlist-submit">Get My Free Quote</button>
       </div>
     </form>
+    </div>
     <script>
       function showWaitlistStep(step) {
         for (let i = 1; i <= 3; i++) {
@@ -467,7 +463,7 @@
         ].join("\n");
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         if (isMobile) {
-          window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
+          window.location.href = "sms:+15048758079?&body=" + encodeURIComponent(body);
         } else {
           window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
             encodeURIComponent("Quote Request - " + service) + "&body=" + encodeURIComponent(body);
@@ -659,7 +655,7 @@
       </article>
     </div>
     <div style="text-align: center; margin-top: 2rem;">
-      <a href="blog.html" class="btn" style="display: inline-block;">View All Guides &rarr;</a>
+      <a href="/blog" class="btn" style="display: inline-block;">View All Guides &rarr;</a>
     </div>
   </section>
 
@@ -750,23 +746,23 @@
       </p>
 
       <div class="service-areas-badges">
-        <a href="locations/laplace.html" class="area-badge">LaPlace</a>
-        <a href="locations/reserve.html" class="area-badge">Reserve</a>
-        <a href="locations/garyville.html" class="area-badge">Garyville</a>
-        <a href="locations/gramercy.html" class="area-badge">Gramercy</a>
-        <a href="locations/lutcher.html" class="area-badge">Lutcher</a>
-        <a href="locations/edgard.html" class="area-badge">Edgard</a>
-        <a href="locations/gonzales.html" class="area-badge">Gonzales</a>
-        <a href="locations/donaldsonville.html" class="area-badge">Donaldsonville</a>
-        <a href="locations/luling.html" class="area-badge">Luling</a>
-        <a href="locations/vacherie.html" class="area-badge">Vacherie</a>
-        <a href="locations/killona.html" class="area-badge">Killona</a>
-        <a href="locations/houma.html" class="area-badge">Houma</a>
+        <a href="locations/laplace" class="area-badge">LaPlace</a>
+        <a href="locations/reserve" class="area-badge">Reserve</a>
+        <a href="locations/garyville" class="area-badge">Garyville</a>
+        <a href="locations/gramercy" class="area-badge">Gramercy</a>
+        <a href="locations/lutcher" class="area-badge">Lutcher</a>
+        <a href="locations/edgard" class="area-badge">Edgard</a>
+        <a href="locations/gonzales" class="area-badge">Gonzales</a>
+        <a href="locations/donaldsonville" class="area-badge">Donaldsonville</a>
+        <a href="locations/luling" class="area-badge">Luling</a>
+        <a href="locations/vacherie" class="area-badge">Vacherie</a>
+        <a href="locations/killona" class="area-badge">Killona</a>
+        <a href="locations/houma" class="area-badge">Houma</a>
         <span class="area-badge secondary">+ More</span>
       </div>
 
       <p class="service-areas-cta">
-        Not sure if we service your area? <a href="tel:5048758079">Give us a call!</a>
+        Not sure if we service your area? <a href="tel:+15048758079">Give us a call!</a>
       </p>
     </div>
   </section>
@@ -803,7 +799,7 @@
 
       <div class="why-us-cta">
         <p>Ready for a beautiful lawn?</p>
-        <a href="tel:5048758079" class="btn-call">📞 Call Now</a>
+        <a href="tel:+15048758079" class="btn-call">📞 Call Now</a>
         <a href="#services" class="btn-outline">View Services</a>
       </div>
     </div>
@@ -895,7 +891,7 @@
         care needs.
       </p>
       <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center">
-        <a href="tel:5048758079"
+        <a href="tel:+15048758079"
           style="display: inline-flex; align-items: center; gap: 0.5rem; background: white; color: #059669; padding: 1rem 2rem; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1.1rem">
           📞 (504) 875-8079
         </a>
@@ -979,7 +975,7 @@
             📞 Contact Us
           </h3>
           <p style="margin-bottom: 0.5rem">
-            <a href="tel:5048758079" style="color: #10b981">(504) 875-8079</a>
+            <a href="tel:+15048758079" style="color: #10b981">(504) 875-8079</a>
           </p>
           <p style="margin-bottom: 0.5rem">
             <a href="mailto:info@xcellent1lawncare.com" style="color: #10b981">info@xcellent1lawncare.com</a>
@@ -995,10 +991,10 @@
             🕐 Business Hours
           </h3>
           <p style="margin-bottom: 0.25rem; font-size: 0.9rem">
-            Monday - Friday: 7:00 AM - 6:00 PM
+            Monday - Friday: 8:00 AM - 5:30 PM
           </p>
           <p style="margin-bottom: 0.25rem; font-size: 0.9rem">
-            Saturday: 8:00 AM - 4:00 PM
+            Saturday: Closed
           </p>
           <p style="font-size: 0.9rem; opacity: 0.8">Sunday: Closed</p>
         </div>
@@ -1031,7 +1027,7 @@
 
       <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 1.5rem; text-align: center">
         <p style="margin-bottom: 0.5rem">
-          <a href="home.html" style="color: #10b981; margin: 0 0.5rem">Home</a> |
+          <a href="index.html" style="color: #10b981; margin: 0 0.5rem">Home</a> |
           <a href="services.html" style="color: #10b981; margin: 0 0.5rem">Services</a> |
           <a href="about.html" style="color: #10b981; margin: 0 0.5rem">About</a> |
           <a href="contact.html" style="color: #10b981; margin: 0 0.5rem">Contact</a> |
@@ -1075,7 +1071,7 @@
       const body = bodyLines.join("\n");
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       if (isMobile) {
-        window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
+        window.location.href = "sms:+15048758079?&body=" + encodeURIComponent(body);
       } else {
         window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
           encodeURIComponent("Quote Request - " + service) +
