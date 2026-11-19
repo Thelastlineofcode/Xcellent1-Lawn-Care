@@ -155,8 +155,19 @@ a:hover {
 
 .navbar-tagline {
   font-size: var(--font-size-sm);
-  opacity: 0.9;
   font-weight: 400;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
 }
 
 .navbar-links {
@@ -696,6 +707,12 @@ a:hover {
 
   .navbar-links {
     gap: var(--spacing-md);
+  }
+
+  .mobile-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .navbar-link {

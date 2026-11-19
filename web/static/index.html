@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lawn Care in LaPlace & River Parishes, LA | Xcellent1</title>
   <meta name="description"
-    content="Xcellent1 Lawn Care offers professional lawn mowing, edging, trimming & landscaping in LaPlace, Reserve, Garyville & the River Parishes, Louisiana. Licensed & insured. Free quotes. Call (504) 875-8079." />
+    content="Xcellent1 Lawn Care offers professional lawn mowing, edging, trimming & landscaping in LaPlace, Reserve, Garyville & the River Parishes. Licensed & insured." />
   <meta name="keywords"
     content="lawn care LaPlace, lawn service River Parishes, lawn mowing Louisiana, landscaping Reserve LA, yard maintenance Garyville, bush hogging Louisiana, lawn care near me" />
   <meta name="author" content="Xcellent1 Lawn Care" />
@@ -43,7 +43,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.ico" />
+  <link rel="icon" type="image/x-icon" sizes="32x32" href="images/favicon.ico" />
   <link rel="stylesheet" href="styles.clean.css" />
   <link rel="stylesheet" href="styles.premium.css" />
   <link rel="icon" type="image/png" sizes="192x192" href="images/xcellent1-icon-192.png" />
@@ -81,14 +81,8 @@
           {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-            "opens": "07:00",
-            "closes": "18:00"
-          },
-          {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": "Saturday",
-            "opens": "07:00",
-            "closes": "14:00"
+            "opens": "08:00",
+            "closes": "17:30"
           }
         ],
         "priceRange": "$$",
@@ -163,7 +157,7 @@
           {
             "@type": "Question",
             "name": "Is Xcellent1 Lawn Care available on weekends?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Yes. Xcellent1 Lawn Care serves clients Monday through Saturday in LaPlace and surrounding areas."}
+            "acceptedAnswer": {"@type": "Answer", "text": "No. Xcellent1 Lawn Care serves clients Monday through Friday, 8:00 AM to 5:30 PM, in LaPlace and surrounding areas. We are closed on Saturday and Sunday."}
           },
           {
             "@type": "Question",
@@ -179,8 +173,8 @@
       }
     </script>
   <!-- GSAP for smooth animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <style>
     /* Mobile Menu Toggle */
     .mobile-menu-btn {
@@ -191,6 +185,8 @@
       font-size: 1.5rem;
       cursor: pointer;
       padding: 0.5rem;
+      min-width: 2.75rem;
+      min-height: 2.75rem;
     }
 
     @media (max-width: 768px) {
@@ -281,7 +277,7 @@
 
     /* Service image backgrounds */
     .bg-service-lawn {
-      background: url("images/lawnservices.jpg") center/cover;
+      background: url("images/lawnservices.webp") center/cover;
     }
 
     .bg-service-flowerbed {
@@ -293,7 +289,7 @@
     }
 
     .bg-service-leaf {
-      background: url("images/lawnservices.jpg") center/cover;
+      background: url("images/lawnservices.webp") center/cover;
     }
 
     .bg-service-bushhog {
@@ -366,11 +362,12 @@
 
 <body>
   <!-- Sticky Call Button -->
-  <a href="tel:5048758079" class="sticky-call-btn" aria-label="Call us">
+  <a href="tel:+15048758079" class="sticky-call-btn" aria-label="Call Now">
     📞 <span>Call Now</span>
   </a>
 
-  <nav class="navbar">
+  <header>
+    <nav class="navbar">
     <div class="navbar-brand">
       <img src="images/xcellent1-logo-transparent.png" alt="Xcellent1 logo" class="navbar-logo" />
       <div class="navbar-title">
@@ -386,10 +383,12 @@
       <a href="about.html" class="navbar-link">About</a>
       <a href="contact.html" class="navbar-link">Contact</a>
       <a href="careers.html" class="navbar-link">Careers</a>
-      <a href="blog.html" class="navbar-link">Blog</a>
-      <a href="tel:5048758079" class="navbar-link" aria-label="Call (504) 875-8079">📞 (504) 875-8079</a>
+      <a href="/blog" class="navbar-link">Blog</a>
+      <a href="tel:+15048758079" class="navbar-link" aria-label="Call (504) 875-8079">📞 (504) 875-8079</a>
     </div>
   </nav>
+  </header>
+  <main>
 
   <section class="hero-home">
     <p class="hero-eyebrow">Licensed &amp; insured · LaPlace &amp; the River Parishes · Since 2023</p>
@@ -403,11 +402,12 @@
     </p>
     <div class="hero-buttons">
       <a href="#services" class="hero-button btn-primary">View Services</a>
-      <a href="tel:5048758079" class="hero-button btn-secondary">📞 (504) 875-8079</a>
+      <a href="tel:+15048758079" class="hero-button btn-secondary">📞 (504) 875-8079</a>
       <a href="#quote" class="hero-button btn-secondary">Free Quote</a>
       <a href="careers.html" class="hero-button btn-secondary">We're Hiring!</a>
     </div>
     <!-- Waitlist form -->
+    <div id="waitlist">
     <form id="waitlist-form" class="waitlist-form">
       <div class="waitlist-step" id="waitlist-step-1">
         <input aria-label="Name" name="name" class="form-field" placeholder="Your name" required autocomplete="name"
@@ -440,6 +440,7 @@
         <button type="submit" class="waitlist-submit">Get My Free Quote</button>
       </div>
     </form>
+    </div>
     <script>
       function showWaitlistStep(step) {
         for (let i = 1; i <= 3; i++) {
@@ -467,7 +468,7 @@
         ].join("\n");
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         if (isMobile) {
-          window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
+          window.location.href = "sms:+15048758079?&body=" + encodeURIComponent(body);
         } else {
           window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
             encodeURIComponent("Quote Request - " + service) + "&body=" + encodeURIComponent(body);
@@ -500,7 +501,7 @@
       <div class="service-card" onclick="openServiceModal('Weekly Lawn Maintenance')">
         <div class="service-image bg-service-lawn" role="img" aria-label="Weekly Lawn Maintenance">
           <noscript>
-            <img src="images/lawnservices.jpg" alt="Weekly Lawn Maintenance" />
+            <img src="images/lawnservices.webp" alt="Weekly Lawn Maintenance" width="1440" height="960" loading="lazy" decoding="async" />
           </noscript>
         </div>
         <div class="service-content">
@@ -519,7 +520,7 @@
       <div class="service-card" onclick="openServiceModal('Flower Bed Clean Out & Weed Removal')">
         <div class="service-image bg-service-flowerbed" role="img" aria-label="Flower Bed Clean Out & Weed Removal">
           <noscript>
-            <img src="images/flowerbedcleanup.webp" alt="Flower Bed Clean Out & Weed Removal" />
+            <img src="images/flowerbedcleanup.webp" alt="Flower Bed Clean Out & Weed Removal" width="800" height="800" loading="lazy" decoding="async" />
           </noscript>
         </div>
         <div class="service-content">
@@ -538,7 +539,7 @@
       <div class="service-card" onclick="openServiceModal('Spring Cleaning')" style="cursor: pointer">
         <div class="service-image bg-service-spring" role="img" aria-label="Spring Cleaning">
           <noscript>
-            <img src="images/springcleaning.webp" alt="Spring Cleaning" />
+            <img src="images/springcleaning.webp" alt="Spring Cleaning" width="800" height="800" loading="lazy" decoding="async" />
           </noscript>
         </div>
         <div class="service-content">
@@ -557,7 +558,7 @@
       <div class="service-card" onclick="openServiceModal('Leaf & Debris Removal')" style="cursor: pointer">
         <div class="service-image bg-service-leaf" role="img" aria-label="Leaf & Debris Removal">
           <noscript>
-            <img src="images/lawnservices.jpg" alt="Leaf & Debris Removal" />
+            <img src="images/lawnservices.webp" alt="Leaf & Debris Removal" width="1440" height="960" loading="lazy" decoding="async" />
           </noscript>
         </div>
         <div class="service-content">
@@ -576,7 +577,7 @@
       <div class="service-card" onclick="openServiceModal('Tractor / Bush Hog Services')" style="cursor: pointer">
         <div class="service-image bg-service-bushhog" role="img" aria-label="Tractor / Bush Hog Services">
           <noscript>
-            <img src="images/bushhog.webp" alt="Tractor / Bush Hog Services" />
+            <img src="images/bushhog.webp" alt="Tractor / Bush Hog Services" width="800" height="800" loading="lazy" decoding="async" />
           </noscript>
         </div>
         <div class="service-content">
@@ -622,7 +623,7 @@
     </div>
     <div class="blog-grid">
       <article class="blog-card">
-        <div class="blog-image" data-bg="images/lawnservices.jpg">
+        <div class="blog-image" data-bg="images/lawnservices.webp">
         </div>
         <div class="blog-content">
           <div class="blog-date">November 2025</div>
@@ -659,7 +660,7 @@
       </article>
     </div>
     <div style="text-align: center; margin-top: 2rem;">
-      <a href="blog.html" class="btn" style="display: inline-block;">View All Guides &rarr;</a>
+      <a href="/blog" class="btn" style="display: inline-block;">View All Guides &rarr;</a>
     </div>
   </section>
 
@@ -718,7 +719,7 @@
       </div>
 
       <a href="https://g.page/r/CZbYqiFFQ57SEBM/review" target="_blank" rel="noopener noreferrer"
-        class="google-reviews-btn" aria-label="Read our Google reviews">
+        class="google-reviews-btn" aria-label="Read Our Google Reviews">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -750,23 +751,23 @@
       </p>
 
       <div class="service-areas-badges">
-        <a href="locations/laplace.html" class="area-badge">LaPlace</a>
-        <a href="locations/reserve.html" class="area-badge">Reserve</a>
-        <a href="locations/garyville.html" class="area-badge">Garyville</a>
-        <a href="locations/gramercy.html" class="area-badge">Gramercy</a>
-        <a href="locations/lutcher.html" class="area-badge">Lutcher</a>
-        <a href="locations/edgard.html" class="area-badge">Edgard</a>
-        <a href="locations/gonzales.html" class="area-badge">Gonzales</a>
-        <a href="locations/donaldsonville.html" class="area-badge">Donaldsonville</a>
-        <a href="locations/luling.html" class="area-badge">Luling</a>
-        <a href="locations/vacherie.html" class="area-badge">Vacherie</a>
-        <a href="locations/killona.html" class="area-badge">Killona</a>
-        <a href="locations/houma.html" class="area-badge">Houma</a>
+        <a href="locations/laplace" class="area-badge">LaPlace</a>
+        <a href="locations/reserve" class="area-badge">Reserve</a>
+        <a href="locations/garyville" class="area-badge">Garyville</a>
+        <a href="locations/gramercy" class="area-badge">Gramercy</a>
+        <a href="locations/lutcher" class="area-badge">Lutcher</a>
+        <a href="locations/edgard" class="area-badge">Edgard</a>
+        <a href="locations/gonzales" class="area-badge">Gonzales</a>
+        <a href="locations/donaldsonville" class="area-badge">Donaldsonville</a>
+        <a href="locations/luling" class="area-badge">Luling</a>
+        <a href="locations/vacherie" class="area-badge">Vacherie</a>
+        <a href="locations/killona" class="area-badge">Killona</a>
+        <a href="locations/houma" class="area-badge">Houma</a>
         <span class="area-badge secondary">+ More</span>
       </div>
 
       <p class="service-areas-cta">
-        Not sure if we service your area? <a href="tel:5048758079">Give us a call!</a>
+        Not sure if we service your area? <a href="tel:+15048758079">Give us a call!</a>
       </p>
     </div>
   </section>
@@ -803,7 +804,7 @@
 
       <div class="why-us-cta">
         <p>Ready for a beautiful lawn?</p>
-        <a href="tel:5048758079" class="btn-call">📞 Call Now</a>
+        <a href="tel:+15048758079" class="btn-call">📞 Call Now</a>
         <a href="#services" class="btn-outline">View Services</a>
       </div>
     </div>
@@ -895,7 +896,7 @@
         care needs.
       </p>
       <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center">
-        <a href="tel:5048758079"
+        <a href="tel:+15048758079"
           style="display: inline-flex; align-items: center; gap: 0.5rem; background: white; color: #059669; padding: 1rem 2rem; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1.1rem">
           📞 (504) 875-8079
         </a>
@@ -955,6 +956,7 @@
   </div>
 
 
+  </main>
   <footer class="footer">
     <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem">
       <div
@@ -979,7 +981,7 @@
             📞 Contact Us
           </h3>
           <p style="margin-bottom: 0.5rem">
-            <a href="tel:5048758079" style="color: #10b981">(504) 875-8079</a>
+            <a href="tel:+15048758079" style="color: #10b981">(504) 875-8079</a>
           </p>
           <p style="margin-bottom: 0.5rem">
             <a href="mailto:info@xcellent1lawncare.com" style="color: #10b981">info@xcellent1lawncare.com</a>
@@ -995,10 +997,10 @@
             🕐 Business Hours
           </h3>
           <p style="margin-bottom: 0.25rem; font-size: 0.9rem">
-            Monday - Friday: 7:00 AM - 6:00 PM
+            Monday - Friday: 8:00 AM - 5:30 PM
           </p>
           <p style="margin-bottom: 0.25rem; font-size: 0.9rem">
-            Saturday: 8:00 AM - 4:00 PM
+            Saturday: Closed
           </p>
           <p style="font-size: 0.9rem; opacity: 0.8">Sunday: Closed</p>
         </div>
@@ -1031,7 +1033,7 @@
 
       <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 1.5rem; text-align: center">
         <p style="margin-bottom: 0.5rem">
-          <a href="home.html" style="color: #10b981; margin: 0 0.5rem">Home</a> |
+          <a href="index.html" style="color: #10b981; margin: 0 0.5rem">Home</a> |
           <a href="services.html" style="color: #10b981; margin: 0 0.5rem">Services</a> |
           <a href="about.html" style="color: #10b981; margin: 0 0.5rem">About</a> |
           <a href="contact.html" style="color: #10b981; margin: 0 0.5rem">Contact</a> |
@@ -1075,7 +1077,7 @@
       const body = bodyLines.join("\n");
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       if (isMobile) {
-        window.location.href = "sms:5048758079?&body=" + encodeURIComponent(body);
+        window.location.href = "sms:+15048758079?&body=" + encodeURIComponent(body);
       } else {
         window.location.href = "mailto:info@xcellent1lawncare.com?subject=" +
           encodeURIComponent("Quote Request - " + service) +
