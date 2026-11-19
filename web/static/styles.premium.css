@@ -71,7 +71,7 @@ h1, h2, h3,
   padding: 0.85rem 1.25rem;
 }
 .navbar-name { color: var(--x-paper); font-weight: 800; letter-spacing: 0.02em; }
-.navbar-tagline { color: var(--x-gold); font-weight: 600; letter-spacing: 0.34em; font-size: 0.62rem; }
+.navbar-tagline { color: #d99e4a; font-weight: 600; letter-spacing: 0.34em; font-size: 0.62rem; }
 .navbar-link { color: rgba(244, 241, 232, 0.82); font-weight: 600; position: relative; transition: color 0.2s; }
 .navbar-link:hover { color: var(--x-gold); }
 .navbar-link:focus { color: var(--x-gold); outline: none; }
@@ -242,11 +242,11 @@ h1, h2, h3,
 }
 .area-badge:hover { background: var(--x-green-d); color: #fff; border-color: var(--x-green-d); transform: translateY(-2px); }
 .area-badge:focus { background: var(--x-green-d); color: #fff; border-color: var(--x-green-d); transform: translateY(-2px); outline: none; }
-.area-badge.secondary { background: transparent; color: var(--x-gold-d); border-style: dashed; }
+.area-badge.secondary { background: transparent; color: #8a5a1d; border-style: dashed; }
 .service-areas-cta a { color: var(--x-green-d); font-weight: 700; }
 
 /* ==================== Why choose us ==================== */
-.why-us-section { background: linear-gradient(180deg, #fffdf8, #f4f1e8); padding: clamp(3.2rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem); }
+.why-us-section { color: var(--x-text); background: linear-gradient(180deg, #fffdf8, #f4f1e8); padding: clamp(3.2rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem); }
 .why-us-title { color: var(--x-ink); text-align: center; }
 .why-us-item {
   background: var(--x-paper); border: 1px solid var(--x-line); border-radius: var(--radius-lg);
